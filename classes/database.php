@@ -51,7 +51,7 @@ abstract class Database
 			{
 				$value = '('.$value->compile($this).')';
 			}
-			if ($value instanceof Database_Expression)
+			elseif ($value instanceof Database_Expression)
 			{
 				$value = $value->compile($this);
 			}
