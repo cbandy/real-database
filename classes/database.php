@@ -210,7 +210,7 @@ abstract class Database
 		}
 		elseif (is_int($value))
 		{
-			// no-op
+			$value = (string) $value;
 		}
 		elseif (is_array($value))
 		{
