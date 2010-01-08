@@ -13,7 +13,7 @@ abstract class Database
 	protected $_quote = '"';
 
 	/**
-	 * Escapes special characters in a SQL string.
+	 * Quotes a SQL string while escaping special characters.
 	 *
 	 * @param   string
 	 * @return  string
@@ -218,7 +218,7 @@ abstract class Database
 		}
 		else
 		{
-			$value = '\''.$this->escape( (string) $value).'\'';
+			$value = $this->escape( (string) $value);
 		}
 
 		if (isset($alias))
