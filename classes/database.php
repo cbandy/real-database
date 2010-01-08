@@ -9,16 +9,17 @@
  */
 abstract class Database
 {
-	// Quote character to use for identifiers (tables/columns/aliases)
+	// Character used to quote identifiers (tables, columns, aliases, etc.)
 	protected $_quote = '"';
 
 	/**
-	 * Quotes a SQL string while escaping special characters.
+	 * Quote a SQL string while escaping characters that could cause a SQL
+	 * injection attack.
 	 *
-	 * @param   string
+	 * @param   string  Value to quote
 	 * @return  string
 	 */
-	abstract protected function escape($value);
+	abstract public function escape($value);
 
 	/**
 	 * Quote a value for inclusion in a SQL query.
@@ -26,8 +27,8 @@ abstract class Database
 	 * @uses Database::quote_identifier()
 	 * @uses Database::quote_literal()
 	 *
-	 * @param   mixed
-	 * @param   string
+	 * @param   mixed   Value to quote
+	 * @param   string  Alias
 	 * @return  string
 	 */
 	public function quote($value, $alias = NULL)
@@ -78,8 +79,8 @@ abstract class Database
 	 * @uses Database::quote_identifier()
 	 * @uses Database::quote_table()
 	 *
-	 * @param   mixed
-	 * @param   string
+	 * @param   mixed   Column to quote
+	 * @param   string  Alias
 	 * @return  string
 	 */
 	public function quote_column($value, $alias = NULL)
@@ -131,11 +132,8 @@ abstract class Database
 	/**
 	 * Quote an identifier for inclusion in a SQL query.
 	 *
-	 * @uses Database::quote_column()
-	 * @uses Database::quote_table()
-	 *
-	 * @param   mixed
-	 * @param   string
+	 * @param   mixed   Identifier to quote
+	 * @param   string  Alias
 	 * @return  string
 	 */
 	public function quote_identifier($value, $alias = NULL)
@@ -150,6 +148,7 @@ abstract class Database
 			$namespace = $value;
 			$value = array_pop($namespace);
 		}
+		// TODO benchmark vs always explode
 		elseif (strpos($value, '.') !== FALSE)
 		{
 			$namespace = explode('.', $value);
@@ -190,8 +189,10 @@ abstract class Database
 	/**
 	 * Quote a literal value for inclusion in a SQL query.
 	 *
-	 * @param   mixed
-	 * @param   string
+	 * @uses Database::escape()
+	 *
+	 * @param   mixed   Value to quote
+	 * @param   string  Alias
 	 * @return  string
 	 */
 	public function quote_literal($value, $alias = NULL)
@@ -233,8 +234,8 @@ abstract class Database
 	 *
 	 * @uses Database::quote_identifier()
 	 *
-	 * @param   mixed
-	 * @param   string
+	 * @param   mixed   Table to quote
+	 * @param   string  Alias
 	 * @return  string
 	 */
 	public function quote_table($value, $alias = NULL)
