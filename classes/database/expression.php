@@ -15,15 +15,18 @@ class Database_Expression
 	// Unquoted parameters
 	protected $_parameters;
 
-	public function __construct($value, $parameters = NULL)
+	/**
+	 * @param   string
+	 * @param   array
+	 */
+	public function __construct($value, array $parameters = NULL)
 	{
 		$this->_value = $value;
 		$this->_parameters = $parameters;
 	}
 
 	/**
-	 * Bind a variable to a parameter.
-	 * TODO explain names
+	 * Bind a variable to a parameter. Names must begin with colon.
 	 *
 	 * @param   integer|string
 	 * @param   mixed
@@ -37,8 +40,7 @@ class Database_Expression
 	}
 
 	/**
-	 * Set the value of a parameter.
-	 * TODO explain names
+	 * Set the value of a parameter. Names must begin with colon.
 	 *
 	 * @param   integer|string
 	 * @param   mixed
@@ -52,8 +54,7 @@ class Database_Expression
 	}
 
 	/**
-	 * Add multiple parameter values.
-	 * TODO explain names
+	 * Add multiple parameter values. Names must begin with colon.
 	 *
 	 * @param   array
 	 * @return  $this
