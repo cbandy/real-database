@@ -22,16 +22,6 @@ class Database_Expression
 	}
 
 	/**
-	 * Get the expression value as a string.
-	 *
-	 * @return  string
-	 */
-	public function __toString()
-	{
-		return (string) $this->_value;
-	}
-
-	/**
 	 * Bind a variable to a parameter.
 	 * TODO explain names
 	 *
