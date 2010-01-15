@@ -35,7 +35,7 @@ abstract class Database
 	{
 		if (is_array($value))
 		{
-			$value = '('.implode(', ', array_map(array($this, __FUNCTION__), $value)).')';
+			$value = implode(', ', array_map(array($this, __FUNCTION__), $value));
 		}
 		elseif (is_object($value))
 		{
@@ -48,11 +48,7 @@ abstract class Database
 			if ($value instanceof Database_Identifier)
 				return $this->quote_identifier($value, $alias);
 
-			if ($value instanceof Database_Query)
-			{
-				$value = '('.$value->compile($this).')';
-			}
-			elseif ($value instanceof Database_Expression)
+			if ($value instanceof Database_Expression)
 			{
 				$value = $value->compile($this);
 			}
