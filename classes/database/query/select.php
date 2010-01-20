@@ -1,0 +1,157 @@
+<?php
+
+/**
+ * @package RealDatabase
+ *
+ * @author      Chris Bandy
+ * @copyright   (c) 2010 Chris Bandy
+ * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://dev.mysql.com/doc/en/select.html MySQL
+ * @link http://www.postgresql.org/docs/current/static/sql-select.html PostgreSQL
+ * @link http://www.sqlite.org/lang_select.html SQLite
+ * @link http://msdn.microsoft.com/en-us/library/ms189499.aspx Transact-SQL
+ */
+class Database_Query_Select extends Database_Query_Having
+{
+	public function __construct($columns = NULL)
+	{
+		parent::__construct('');
+
+		$this->distinct(FALSE)->select($columns)->_reset_order_by();
+	}
+
+	/**
+	 * @return  $this
+	 */
+	protected function _reset_order_by()
+	{
+		return $this->param(':orderby', array());
+	}
+
+	/**
+	 * @param   mixed   Converted to Database_Column
+	 * @param   string  Column alias
+	 * @return  $this
+	 */
+	public function column($column, $alias = NULL)
+	{
+		if ( ! $column instanceof Database_Expression
+			AND ! $column instanceof Database_Identifier)
+		{
+			$column = new Database_Column($column);
+		}
+
+		if ($alias)
+		{
+			$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
+		}
+
+		$this->_parameters[':columns'][] = $column;
+	}
+
+	/**
+	 * @param   boolean
+	 * @return  $this
+	 */
+	public function distinct($value = TRUE)
+	{
+		return $this->param(':distinct', new Database_Expression($value ? ' DISTINCT' : ''));
+	}
+
+	/**
+	 * @param   mixed   Converted to Database_Column
+	 * @param   mixed
+	 * @return  $this
+	 */
+	public function order_by($column, $direction = NULL)
+	{
+		if ( ! $column instanceof Database_Expression
+			AND ! $column instanceof Database_Identifier)
+		{
+			$column = new Database_Column($column);
+		}
+
+		if ($direction)
+		{
+			if ( ! $direction instanceof Database_Expression)
+			{
+				$direction = new Database_Expression(strtoupper($direction));
+			}
+
+			$column = new Database_Expression('? ?', array($column, $direction));
+		}
+
+		$this->_parameters[':orderby'][] = $column;
+
+		return $this;
+	}
+
+	/**
+	 * @param   mixed
+	 * @return  $this
+	 */
+	public function select($columns)
+	{
+		if ($columns === NULL)
+		{
+			$this->param(':columns', array());
+		}
+		elseif (is_array($columns))
+		{
+			foreach ($columns as $alias => $column)
+			{
+				if ( ! $column instanceof Database_Expression
+					AND ! $column instanceof Database_Identifier)
+				{
+					$column = new Database_Column($column);
+				}
+
+				if (is_string($alias) AND $alias !== '')
+				{
+					$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
+				}
+
+				$this->_parameters[':columns'][] = $column;
+			}
+		}
+		else
+		{
+			$this->param(':columns', $columns);
+		}
+
+		return $this;
+	}
+
+	public function compile(Database $db)
+	{
+		$this->_value = 'SELECT:distinct :columns';
+
+		if (count($this->_parameters[':from']))
+		{
+			$this->_value .= ' FROM :from';
+		}
+
+		if (count($this->_parameters[':where']))
+		{
+			$this->_value .= ' WHERE :where';
+		}
+
+		if (count($this->_parameters[':groupby']))
+		{
+			$this->_value .= ' GROUP BY :groupby';
+		}
+
+		if (count($this->_parameters[':having']))
+		{
+			$this->_value .= ' HAVING :having';
+		}
+
+		if (count($this->_parameters[':orderby']))
+		{
+			$this->_value .= ' ORDER BY :orderby';
+		}
+
+		return parent::compile($db);
+	}
+}
