@@ -9,7 +9,7 @@
  */
 abstract class Database_Query_Where extends Database_Query
 {
-	public function __construct($value, array $parameters = NULL)
+	public function __construct($value, array $parameters = array())
 	{
 		parent::__construct($value, $parameters);
 

@@ -19,7 +19,7 @@ class Database_Expression implements Countable
 	 * @param   string
 	 * @param   array
 	 */
-	public function __construct($value, array $parameters = NULL)
+	public function __construct($value, array $parameters = array())
 	{
 		$this->_value = $value;
 		$this->_parameters = $parameters;
