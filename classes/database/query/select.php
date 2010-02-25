@@ -48,6 +48,8 @@ class Database_Query_Select extends Database_Query_Having
 		}
 
 		$this->_parameters[':columns'][] = $column;
+
+		return $this;
 	}
 
 	/**
