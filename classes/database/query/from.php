@@ -95,13 +95,19 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @param   $type   string  Join type
 	 * @return  $this
 	 */
-	public function join($table, $alias = NULL)
+	public function join($table, $alias = NULL, $type = NULL)
 	{
-		return $this->_add(' JOIN', $table, $alias);
+		if ($type)
+		{
+			$type = ' '.strtoupper($type);
+		}
+
+		return $this->_add($type.' JOIN', $table, $alias);
 	}
 
 	/**

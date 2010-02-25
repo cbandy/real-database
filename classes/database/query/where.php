@@ -45,13 +45,16 @@ abstract class Database_Query_Where extends Database_Query
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string
+	 * @uses Database_Query_From::join()
+	 *
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @param   $type   string  Join type
 	 * @return  $this
 	 */
-	public function join($table, $alias = NULL)
+	public function join($table, $alias = NULL, $type = NULL)
 	{
-		$this->_parameters[':from']->join($table, $alias);
+		$this->_parameters[':from']->join($table, $alias, $type);
 
 		return $this;
 	}
