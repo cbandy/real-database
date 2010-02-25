@@ -8,30 +8,43 @@
  */
 class Database_From_Test extends PHPUnit_Framework_TestCase
 {
-	public function test_many()
+	public function test_add()
 	{
 		$db = new Database_From_Test_DB;
-		$from = new Database_Query_From('one', 'a');
-
-		$this->assertSame('"pre_one" AS "a"', $db->quote($from));
+		$from = new Database_Query_From('one');
 
 		$this->assertSame($from, $from->add('two', 'b'));
-		$this->assertSame('"pre_one" AS "a", "pre_two" AS "b"', $db->quote($from));
+		$this->assertSame('"pre_one", "pre_two" AS "b"', $db->quote($from));
+	}
+
+	public function test_constructor()
+	{
+		$db = new Database_From_Test_DB;
+
+		$this->assertSame('', $db->quote(new Database_Query_From));
+		$this->assertSame('"pre_one"', $db->quote(new Database_Query_From('one')));
+		$this->assertSame('"pre_one" AS "a"', $db->quote(new Database_Query_From('one', 'a')));
 	}
 
 	public function test_join()
 	{
 		$db = new Database_From_Test_DB;
-		$from = new Database_Query_From('one', 'a');
+		$from = new Database_Query_From('one');
 
 		$this->assertSame($from, $from->join('two', 'b'));
-		$this->assertSame('"pre_one" AS "a" JOIN "pre_two" AS "b"', $db->quote($from));
+		$this->assertSame('"pre_one" JOIN "pre_two" AS "b"', $db->quote($from));
+	}
 
-		$conditions = new Database_Query_Conditions;
-		$conditions->add('and', new Database_Column('one.x'), '=', new Database_Column('two.x'));
+	public function test_on()
+	{
+		$db = new Database_From_Test_DB;
+		$from = new Database_Query_From('one');
+		$from->join('two');
+
+		$conditions = new Database_Query_Conditions(new Database_Column('one.x'), '=', new Database_Column('two.x'));
 
 		$this->assertSame($from, $from->on($conditions));
-		$this->assertSame('"pre_one" AS "a" JOIN "pre_two" AS "b" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($from));
+		$this->assertSame('"pre_one" JOIN "pre_two" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($from));
 	}
 
 	public function test_parentheses()
