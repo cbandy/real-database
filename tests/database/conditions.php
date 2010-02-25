@@ -44,7 +44,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 		$conditions->add('and', 0, '<>', 1);
 		$this->assertSame('0 <> 1', $db->quote($conditions));
 
-		$conditions->open('and');
+		$this->assertSame($conditions, $conditions->open('and'));
 		$this->assertSame('0 <> 1 AND (', $db->quote($conditions));
 
 		$conditions->add('or', 2, '=', 2);
@@ -53,16 +53,16 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 		$conditions->add('or', 2, '=', 2);
 		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2', $db->quote($conditions));
 
-		$conditions->close();
+		$this->assertSame($conditions, $conditions->close());
 		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2)', $db->quote($conditions));
 
-		$conditions->open('or');
+		$this->assertSame($conditions, $conditions->open('or'));
 		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (', $db->quote($conditions));
 
 		$conditions->add('and', 3, '<>', 4);
 		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4', $db->quote($conditions));
 
-		$conditions->close();
+		$this->assertSame($conditions, $conditions->close());
 		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4)', $db->quote($conditions));
 	}
 }

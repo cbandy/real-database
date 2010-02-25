@@ -13,7 +13,8 @@ class Database_Expression_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Expression_Test_DB;
 
 		$expr = new Database_Expression('?');
-		$expr->bind(0, $var);
+
+		$this->assertSame($expr, $expr->bind(0, $var));
 
 		$this->assertSame('NULL', $db->quote($expr));
 
@@ -41,18 +42,18 @@ class Database_Expression_Test extends PHPUnit_Framework_TestCase
 
 		$expr = new Database_Expression('?');
 
-		$expr->parameters(array('A'));
+		$this->assertSame($expr, $expr->parameters(array('A')));
 		$this->assertSame("'A'", $db->quote($expr));
 
-		$expr->parameters(array('B'));
+		$this->assertSame($expr, $expr->parameters(array('B')));
 		$this->assertSame("'B'", $db->quote($expr));
 
 		$expr = new Database_Expression('? ?');
 
-		$expr->parameters(array('A', 'B'));
+		$this->assertSame($expr, $expr->parameters(array('A', 'B')));
 		$this->assertSame("'A' 'B'", $db->quote($expr));
 
-		$expr->parameters(array('C'));
+		$this->assertSame($expr, $expr->parameters(array('C')));
 		$this->assertSame("'C' 'B'", $db->quote($expr));
 	}
 }

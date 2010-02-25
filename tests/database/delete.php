@@ -13,7 +13,7 @@ class Database_Delete_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Delete_Test_DB;
 		$query = new Database_Query_Delete;
 
-		$query->from('one', 'a');
+		$this->assertSame($query, $query->from('one', 'a'));
 
 		$this->assertSame('DELETE FROM "pre_one" AS "a"', $db->quote($query));
 	}
@@ -23,10 +23,10 @@ class Database_Delete_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Delete_Test_DB;
 		$query = new Database_Query_Delete('one');
 
-		$query->using('two', 'b');
+		$this->assertSame($query, $query->using('two', 'b'));
 		$this->assertSame('DELETE FROM "pre_one" USING "pre_two" AS "b"', $db->quote($query));
 
-		$query->using('three');
+		$this->assertSame($query, $query->using('three'));
 		$this->assertSame('DELETE FROM "pre_one" USING "pre_two" AS "b", "pre_three"', $db->quote($query));
 
 		$query->join('four');
@@ -41,7 +41,7 @@ class Database_Delete_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Delete_Test_DB;
 		$query = new Database_Query_Delete('one');
 
-		$query->where(new Database_Query_Conditions(new Database_Column('one.x'), '=', 0));
+		$this->assertSame($query, $query->where(new Database_Query_Conditions(new Database_Column('one.x'), '=', 0)));
 
 		$this->assertSame('DELETE FROM "pre_one" WHERE "pre_one"."x" = 0', $db->quote($query));
 	}

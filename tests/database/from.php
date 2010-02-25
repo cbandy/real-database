@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -16,7 +15,7 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame('"pre_one" AS "a"', $db->quote($from));
 
-		$from->add('two', 'b');
+		$this->assertSame($from, $from->add('two', 'b'));
 		$this->assertSame('"pre_one" AS "a", "pre_two" AS "b"', $db->quote($from));
 	}
 
@@ -25,13 +24,13 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_From_Test_DB;
 		$from = new Database_Query_From('one', 'a');
 
-		$from->join('two', 'b');
+		$this->assertSame($from, $from->join('two', 'b'));
 		$this->assertSame('"pre_one" AS "a" JOIN "pre_two" AS "b"', $db->quote($from));
 
 		$conditions = new Database_Query_Conditions;
 		$conditions->add('and', new Database_Column('one.x'), '=', new Database_Column('two.x'));
 
-		$from->on($conditions);
+		$this->assertSame($from, $from->on($conditions));
 		$this->assertSame('"pre_one" AS "a" JOIN "pre_two" AS "b" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($from));
 	}
 
@@ -40,13 +39,13 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_From_Test_DB;
 		$from = new Database_Query_From;
 
-		$from->open();
+		$this->assertSame($from, $from->open());
 		$this->assertSame('(', $db->quote($from));
 
 		$from->add('one', 'a');
 		$this->assertSame('("pre_one" AS "a"', $db->quote($from));
 
-		$from->open();
+		$this->assertSame($from, $from->open());
 		$this->assertSame('("pre_one" AS "a", (', $db->quote($from));
 
 		$from->add('two');
@@ -55,10 +54,10 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 		$from->join('three');
 		$this->assertSame('("pre_one" AS "a", ("pre_two" JOIN "pre_three"', $db->quote($from));
 
-		$from->close();
+		$this->assertSame($from, $from->close());
 		$this->assertSame('("pre_one" AS "a", ("pre_two" JOIN "pre_three")', $db->quote($from));
 
-		$from->close();
+		$this->assertSame($from, $from->close());
 		$this->assertSame('("pre_one" AS "a", ("pre_two" JOIN "pre_three"))', $db->quote($from));
 	}
 }
