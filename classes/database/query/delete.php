@@ -35,26 +35,9 @@ class Database_Query_Delete extends Database_Query_Where
 		return $this->param(':table', new Database_Query_From($table, $alias));
 	}
 
-	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string  Table alias
-	 * @return  $this
-	 */
-	public function using($table, $alias = NULL)
-	{
-		return Database_Query_Where::from($table, $alias);
-	}
-
 	public function compile(Database $db)
 	{
 		$this->_value = 'DELETE FROM :table';
-
-		if (count($this->_parameters[':from']))
-		{
-			// Not allowed in SQLite
-			// Should be 'FROM' in MSSQL
-			$this->_value .= ' USING :from';
-		}
 
 		if (count($this->_parameters[':where']))
 		{
