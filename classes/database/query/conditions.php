@@ -104,4 +104,100 @@ class Database_Query_Conditions extends Database_Expression
 
 		return $this;
 	}
+
+	/**
+	 * @param   $logic          string
+	 * @param   $left_column    mixed   Converted to Database_Column
+	 * @param   $operator       string
+	 * @param   $right          mixed
+	 * @return  $this
+	 */
+	public function column($logic, $left_column, $operator, $right)
+	{
+		if ( ! $left_column instanceof Database_Expression
+			AND ! $left_column instanceof Database_Identifier)
+		{
+			$left_column = new Database_Column($left_column);
+		}
+
+		return $this->add($logic, $left_column, $operator, $right);
+	}
+
+	/**
+	 * @param   $logic          string
+	 * @param   $left_column    mixed   Converted to Database_Column
+	 * @param   $operator       string
+	 * @param   $right_column   mixed   Converted to Database_Column
+	 * @return  $this
+	 */
+	public function columns($logic, $left_column, $operator, $right_column)
+	{
+		if ( ! $right_column instanceof Database_Expression
+			AND ! $right_column instanceof Database_Identifier)
+		{
+			$right_column = new Database_Column($right_column);
+		}
+
+		return $this->column($logic, $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * @param   $left_column    mixed   Converted to Database_Column
+	 * @param   $operator       string
+	 * @param   $right          mixed
+	 * @return  $this
+	 */
+	public function and_column($left_column, $operator, $right)
+	{
+		return $this->column('AND', $left_column, $operator, $right);
+	}
+
+	/**
+	 * @param   $left_column    mixed   Converted to Database_Column
+	 * @param   $operator       string
+	 * @param   $right_column   mixed   Converted to Database_Column
+	 * @return  $this
+	 */
+	public function and_columns($left_column, $operator, $right_column)
+	{
+		return $this->columns('AND', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * @return  $this
+	 */
+	public function and_open()
+	{
+		return $this->open('AND');
+	}
+
+	/**
+	 * @param   $left_column    mixed   Converted to Database_Column
+	 * @param   $operator       string
+	 * @param   $right          mixed
+	 * @return  $this
+	 */
+	public function or_column($left_column, $operator, $right)
+	{
+		return $this->column('OR', $left_column, $operator, $right);
+	}
+
+	/**
+	 * @param   $left_column    mixed   Converted to Database_Column
+	 * @param   $operator       string
+	 * @param   $right_column   mixed   Converted to Database_Column
+	 * @return  $this
+	 */
+	public function or_columns($left_column, $operator, $right_column)
+	{
+		return $this->columns('OR', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * @return  $this
+	 */
+	public function or_open()
+	{
+		return $this->open('OR');
+	}
 }
