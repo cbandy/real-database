@@ -37,9 +37,9 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(array('one.x'));
 
-		$this->assertSame($query, $query->from('two', 'b')->join('three', 'c'));
+		$this->assertSame($query, $query->from('two', 'b')->join('three', 'c')->using(array('x')));
 
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_two" AS "b" JOIN "pre_three" AS "c"', $db->quote($query));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_two" AS "b" JOIN "pre_three" AS "c" USING ("x")', $db->quote($query));
 	}
 
 	public function test_where()

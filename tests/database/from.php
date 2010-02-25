@@ -73,6 +73,16 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($from, $from->close());
 		$this->assertSame('("pre_one" AS "a", ("pre_two" JOIN "pre_three"))', $db->quote($from));
 	}
+
+	public function test_using()
+	{
+		$db = new Database_From_Test_DB;
+		$from = new Database_Query_From('one');
+		$from->join('two');
+
+		$this->assertSame($from, $from->using(array('x', 'y')));
+		$this->assertSame('"pre_one" JOIN "pre_two" USING ("x", "y")', $db->quote($from));
+	}
 }
 
 class Database_From_Test_DB extends Database
