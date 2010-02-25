@@ -68,6 +68,19 @@ abstract class Database_Query_Where extends Database_Query
 	}
 
 	/**
+	 * @uses Database_Query_From::using()
+	 *
+	 * @param   $columns    array
+	 * @return  $this
+	 */
+	public function using(array $columns)
+	{
+		$this->_parameters[':from']->using($columns);
+
+		return $this;
+	}
+
+	/**
 	 * @param   Database_Query_Conditions
 	 * @return  $this
 	 */

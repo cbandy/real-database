@@ -116,4 +116,26 @@ class Database_Query_From extends Database_Expression
 
 		return $this;
 	}
+
+	/**
+	 * @param   $columns    array
+	 * @return  $this
+	 */
+	public function using(array $columns)
+	{
+		foreach ($columns as &$column)
+		{
+			if ( ! $column instanceof Database_Expression
+				AND ! $column instanceof Database_Identifier)
+			{
+				$column = new Database_Column($column);
+			}
+		}
+
+		$this->_empty = FALSE;
+		$this->_value .= ' USING (?)';
+		$this->_parameters[] = $columns;
+
+		return $this;
+	}
 }
