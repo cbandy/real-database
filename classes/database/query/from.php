@@ -144,4 +144,94 @@ class Database_Query_From extends Database_Expression
 
 		return $this;
 	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function cross_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'CROSS');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function full_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'FULL');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function inner_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'INNER');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function left_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'LEFT');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function natural_full_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'NATURAL FULL');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function natural_inner_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'NATURAL INNER');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function natural_left_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'NATURAL LEFT');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function natural_right_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'NATURAL RIGHT');
+	}
+
+	/**
+	 * @param   $table  mixed   Converted to Database_Table
+	 * @param   $alias  string  Table alias
+	 * @return  $this
+	 */
+	public function right_join($table, $alias = NULL)
+	{
+		return $this->join($table, $alias, 'RIGHT');
+	}
 }
