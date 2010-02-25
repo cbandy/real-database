@@ -33,6 +33,9 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($from, $from->join('two', 'b'));
 		$this->assertSame('"pre_one" JOIN "pre_two" AS "b"', $db->quote($from));
+
+		$this->assertSame($from, $from->join('three', NULL, 'left'));
+		$this->assertSame('"pre_one" JOIN "pre_two" AS "b" LEFT JOIN "pre_three"', $db->quote($from));
 	}
 
 	public function test_on()
