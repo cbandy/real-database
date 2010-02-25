@@ -38,6 +38,38 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"pre_one" JOIN "pre_two" AS "b" LEFT JOIN "pre_three"', $db->quote($from));
 	}
 
+	/**
+	 * @dataProvider provider_join_helpers
+	 */
+	public function test_join_helpers($method, $expected)
+	{
+		$db = new Database_From_Test_DB;
+		$from = new Database_Query_From('one');
+
+		$this->assertSame($from, $from->$method('two'));
+		$this->assertSame('"pre_one" '.$expected.' JOIN "pre_two"', $db->quote($from));
+
+		$this->assertSame($from, $from->$method('three', 'a'));
+		$this->assertSame('"pre_one" '.$expected.' JOIN "pre_two" '.$expected.' JOIN "pre_three" AS "a"', $db->quote($from));
+	}
+
+	public function provider_join_helpers()
+	{
+		return array
+		(
+			array('cross_join', 'CROSS'),
+			array('full_join',  'FULL'),
+			array('inner_join', 'INNER'),
+			array('left_join',  'LEFT'),
+			array('right_join', 'RIGHT'),
+
+			array('natural_full_join',  'NATURAL FULL'),
+			array('natural_inner_join', 'NATURAL INNER'),
+			array('natural_left_join',  'NATURAL LEFT'),
+			array('natural_right_join', 'NATURAL RIGHT'),
+		);
+	}
+
 	public function test_on()
 	{
 		$db = new Database_From_Test_DB;

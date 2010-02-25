@@ -42,6 +42,41 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('SELECT "pre_one"."x" FROM "pre_two" AS "b" JOIN "pre_three" AS "c" USING ("x")', $db->quote($query));
 	}
 
+	/**
+	 * @dataProvider provider_join
+	 */
+	public function test_join($method, $expected)
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select(array('one.x'));
+		$query->from('one');
+
+		$this->assertSame($query, $query->$method('two'));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" '.$expected.' "pre_two"', $db->quote($query));
+
+		$this->assertSame($query, $query->$method('three', 'a'));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" '.$expected.' "pre_two" '.$expected.' "pre_three" AS "a"', $db->quote($query));
+	}
+
+	public function provider_join()
+	{
+		return array
+		(
+			array('join', 'JOIN'),
+
+			array('cross_join', 'CROSS JOIN'),
+			array('full_join',  'FULL JOIN'),
+			array('inner_join', 'INNER JOIN'),
+			array('left_join',  'LEFT JOIN'),
+			array('right_join', 'RIGHT JOIN'),
+
+			array('natural_full_join',  'NATURAL FULL JOIN'),
+			array('natural_inner_join', 'NATURAL INNER JOIN'),
+			array('natural_left_join',  'NATURAL LEFT JOIN'),
+			array('natural_right_join', 'NATURAL RIGHT JOIN'),
+		);
+	}
+
 	public function test_where()
 	{
 		$db = new Database_Select_Test_DB;
