@@ -37,9 +37,11 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(array('one.x'));
 
-		$this->assertSame($query, $query->from('two', 'b')->join('three', 'c')->using(array('x')));
+		$this->assertSame($query, $query->from('one'));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one"', $db->quote($query));
 
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_two" AS "b" JOIN "pre_three" AS "c" USING ("x")', $db->quote($query));
+		$this->assertSame($query, $query->from('two', 'b'));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one", "pre_two" AS "b"', $db->quote($query));
 	}
 
 	/**
@@ -75,6 +77,28 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 			array('natural_left_join',  'NATURAL LEFT JOIN'),
 			array('natural_right_join', 'NATURAL RIGHT JOIN'),
 		);
+	}
+
+	public function test_on()
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select(array('one.x'));
+		$query->from('one')->join('two');
+
+		$conditions = new Database_Query_Conditions(new Database_Column('one.x'), '=', new Database_Column('two.x'));
+
+		$this->assertSame($query, $query->on($conditions));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" JOIN "pre_two" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($query));
+	}
+
+	public function test_using()
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select(array('one.x'));
+		$query->from('one')->join('two');
+
+		$this->assertSame($query, $query->using(array('x')));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" JOIN "pre_two" USING ("x")', $db->quote($query));
 	}
 
 	public function test_where()
