@@ -45,7 +45,7 @@ class Database_Query_From extends Database_Expression
 		}
 
 		$this->_empty = FALSE;
-		$this->_value .= '?';
+		$this->_value .= ($table instanceof Database_Query) ? '(?)' : '?';
 		$this->_parameters[] = $table;
 
 		if ( ! empty($alias))
