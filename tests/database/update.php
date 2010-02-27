@@ -47,8 +47,10 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Update_Test_DB;
 		$query = new Database_Query_Update('one', 'a', array('x' => 0));
 
-		$this->assertSame($query, $query->from('two', 'b')->join('three', 'c'));
+		$from = new Database_Query_From('two', 'b');
+		$from->join('three', 'c');
 
+		$this->assertSame($query, $query->from($from));
 		$this->assertSame('UPDATE "pre_one" AS "a" SET "x" = 0 FROM "pre_two" AS "b" JOIN "pre_three" AS "c"', $db->quote($query));
 	}
 

@@ -37,68 +37,11 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(array('one.x'));
 
-		$this->assertSame($query, $query->from('one'));
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one"', $db->quote($query));
+		$from = new Database_Query_From('one');
+		$from->add('two')->join('three');
 
-		$this->assertSame($query, $query->from('two', 'b'));
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one", "pre_two" AS "b"', $db->quote($query));
-	}
-
-	/**
-	 * @dataProvider provider_join
-	 */
-	public function test_join($method, $expected)
-	{
-		$db = new Database_Select_Test_DB;
-		$query = new Database_Query_Select(array('one.x'));
-		$query->from('one');
-
-		$this->assertSame($query, $query->$method('two'));
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" '.$expected.' "pre_two"', $db->quote($query));
-
-		$this->assertSame($query, $query->$method('three', 'a'));
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" '.$expected.' "pre_two" '.$expected.' "pre_three" AS "a"', $db->quote($query));
-	}
-
-	public function provider_join()
-	{
-		return array
-		(
-			array('join', 'JOIN'),
-
-			array('cross_join', 'CROSS JOIN'),
-			array('full_join',  'FULL JOIN'),
-			array('inner_join', 'INNER JOIN'),
-			array('left_join',  'LEFT JOIN'),
-			array('right_join', 'RIGHT JOIN'),
-
-			array('natural_full_join',  'NATURAL FULL JOIN'),
-			array('natural_inner_join', 'NATURAL INNER JOIN'),
-			array('natural_left_join',  'NATURAL LEFT JOIN'),
-			array('natural_right_join', 'NATURAL RIGHT JOIN'),
-		);
-	}
-
-	public function test_on()
-	{
-		$db = new Database_Select_Test_DB;
-		$query = new Database_Query_Select(array('one.x'));
-		$query->from('one')->join('two');
-
-		$conditions = new Database_Query_Conditions(new Database_Column('one.x'), '=', new Database_Column('two.x'));
-
-		$this->assertSame($query, $query->on($conditions));
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" JOIN "pre_two" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($query));
-	}
-
-	public function test_using()
-	{
-		$db = new Database_Select_Test_DB;
-		$query = new Database_Query_Select(array('one.x'));
-		$query->from('one')->join('two');
-
-		$this->assertSame($query, $query->using(array('x')));
-		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" JOIN "pre_two" USING ("x")', $db->quote($query));
+		$this->assertSame($query, $query->from($from));
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one", "pre_two" JOIN "pre_three"', $db->quote($query));
 	}
 
 	public function test_where()
