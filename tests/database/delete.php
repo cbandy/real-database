@@ -18,6 +18,18 @@ class Database_Delete_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('DELETE FROM "pre_one" AS "a"', $db->quote($query));
 	}
 
+	public function test_using()
+	{
+		$db = new Database_Delete_Test_DB;
+		$query = new Database_Query_Delete('one');
+
+		$from = new Database_Query_From('two', 'b');
+		$from->add('three')->join('four');
+
+		$this->assertSame($query, $query->using($from));
+		$this->assertSame('DELETE FROM "pre_one" USING "pre_two" AS "b", "pre_three" JOIN "pre_four"', $db->quote($query));
+	}
+
 	public function test_where()
 	{
 		$db = new Database_Delete_Test_DB;
