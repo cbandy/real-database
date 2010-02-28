@@ -144,15 +144,10 @@ abstract class Database
 			$namespace = $value;
 			$value = array_pop($namespace);
 		}
-		// TODO benchmark vs always explode
-		elseif (strpos($value, '.') !== FALSE)
+		else
 		{
 			$namespace = explode('.', $value);
 			$value = array_pop($namespace);
-		}
-		else
-		{
-			$namespace = NULL;
 		}
 
 		if (empty($namespace))
