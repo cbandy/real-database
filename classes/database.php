@@ -54,12 +54,12 @@ abstract class Database
 			}
 			else
 			{
-				$value = $this->quote_literal($value);
+				return $this->quote_literal($value, $alias);
 			}
 		}
 		else
 		{
-			$value = $this->quote_literal($value);
+			return $this->quote_literal($value, $alias);
 		}
 
 		if (isset($alias))
