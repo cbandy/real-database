@@ -204,6 +204,10 @@ abstract class Database
 		{
 			$value = (string) $value;
 		}
+		elseif (is_float($value))
+		{
+			$value = sprintf('%F', $value);
+		}
 		elseif (is_array($value))
 		{
 			$value = '('.implode(', ', array_map(array($this, __FUNCTION__), $value)).')';
