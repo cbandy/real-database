@@ -31,6 +31,7 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 			array(0, '0'),
 			array(-1, '-1'),
 			array(51678, '51678'),
+			array(12.345, '12.345000'),
 
 			array('string', "'string'"),
 			array("multiline\nstring", "'multiline\\nstring'"),
@@ -42,13 +43,14 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 			array(array(TRUE), "('1')"),
 
 			array(array(51678), '(51678)'),
+			array(array(12.345), '(12.345000)'),
 
 			array(array('string'), "('string')"),
 			array(array("multiline\nstring"), "('multiline\\nstring')"),
 
 			array(array(new Database_Quoting_Test_String), "('object')"),
 
-			array(array(NULL, FALSE, TRUE, 51678, 'string', "multiline\nstring", new Database_Quoting_Test_String), "(NULL, '0', '1', 51678, 'string', 'multiline\\nstring', 'object')"),
+			array(array(NULL, FALSE, TRUE, 51678, 12.345, 'string', "multiline\nstring", new Database_Quoting_Test_String), "(NULL, '0', '1', 51678, 12.345000, 'string', 'multiline\\nstring', 'object')"),
 		);
 	}
 
@@ -279,10 +281,10 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 					new Database_Expression('expression'),
 					new Database_Quoting_Test_String,
 					NULL, FALSE, TRUE,
-					0, -1, 51678,
+					0, -1, 51678, 12.345,
 					'string', "multiline\nstring",
 				),
-				'"one"."pre_two".*, "one"."pre_two"."three", "one"."two"."pre_three", "one"."two"."three", expression, \'object\', NULL, \'0\', \'1\', 0, -1, 51678, \'string\', \'multiline\nstring\''
+				'"one"."pre_two".*, "one"."pre_two"."three", "one"."two"."pre_three", "one"."two"."three", expression, \'object\', NULL, \'0\', \'1\', 0, -1, 51678, 12.345000, \'string\', \'multiline\nstring\''
 			),
 		);
 	}
