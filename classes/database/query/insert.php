@@ -15,10 +15,10 @@
 class Database_Query_Insert extends Database_Query
 {
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   array
+	 * @param   mixed   $table      Converted to Database_Table
+	 * @param   array   $columns
 	 */
-	public function __construct($table = NULL, $columns = array())
+	public function __construct($table = NULL, $columns = NULL)
 	{
 		parent::__construct('');
 
@@ -26,21 +26,30 @@ class Database_Query_Insert extends Database_Query
 	}
 
 	/**
-	 * @param   array
+	 * @param   array   $columns
 	 * @return  $this
 	 */
-	public function columns(array $columns)
+	public function columns($columns)
 	{
-		foreach ($columns as &$column)
+		if ($columns === NULL)
 		{
-			if ( ! $column instanceof Database_Expression
-				AND ! $column instanceof Database_Identifier)
+			unset($this->_parameters[':columns']);
+		}
+		else
+		{
+			foreach ($columns as &$column)
 			{
-				$column = new Database_Column($column);
+				if ( ! $column instanceof Database_Expression
+					AND ! $column instanceof Database_Identifier)
+				{
+					$column = new Database_Column($column);
+				}
 			}
+
+			$this->param(':columns', $columns);
 		}
 
-		return $this->param(':columns', $columns);
+		return $this;
 	}
 
 	/**
@@ -92,7 +101,7 @@ class Database_Query_Insert extends Database_Query
 	{
 		$this->_value = 'INSERT INTO :table ';
 
-		if (count($this->_parameters[':columns']))
+		if ( ! empty($this->_parameters[':columns']))
 		{
 			$this->_value .= '(:columns) ';
 		}
