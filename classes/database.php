@@ -9,6 +9,38 @@
  */
 abstract class Database
 {
+	/**
+	 * Create a DELETE query
+	 */
+	public static function delete($table = NULL, $alias = NULL)
+	{
+		return new Database_Query_Delete($table, $alias);
+	}
+
+	/**
+	 * Create an INSERT query
+	 */
+	public static function insert($table = NULL, $columns = NULL)
+	{
+		return new Database_Query_Insert($table, $columns);
+	}
+
+	/**
+	 * Create a SELECT query
+	 */
+	public static function select($columns = NULL)
+	{
+		return new Database_Query_Select($columns);
+	}
+
+	/**
+	 * Create an UPDATE query
+	 */
+	public static function update($table = NULL, $alias = NULL, $values = NULL)
+	{
+		return new Database_Query_Update($table, $alias, $values);
+	}
+
 	// Character used to quote identifiers (tables, columns, aliases, etc.)
 	protected $_quote = '"';
 
