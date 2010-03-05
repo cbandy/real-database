@@ -9,15 +9,19 @@
  */
 class Database_Expression implements Countable
 {
-	// Raw expression string
+	/**
+	 * @var string  Raw expression
+	 */
 	protected $_value;
 
-	// Unquoted parameters
+	/**
+	 * @var array   Unquoted parameters
+	 */
 	protected $_parameters;
 
 	/**
-	 * @param   string
-	 * @param   array
+	 * @param   string  $value      Raw expression
+	 * @param   array   $parameters Unquoted parameters
 	 */
 	public function __construct($value, array $parameters = array())
 	{
@@ -28,8 +32,8 @@ class Database_Expression implements Countable
 	/**
 	 * Bind a variable to a parameter. Names must begin with colon.
 	 *
-	 * @param   integer|string
-	 * @param   mixed
+	 * @param   int|string  $param  Parameter index or name
+	 * @param   mixed       $var    Variable to bind
 	 * @return  $this
 	 */
 	public function bind($param, & $var)
@@ -42,8 +46,8 @@ class Database_Expression implements Countable
 	/**
 	 * Set the value of a parameter. Names must begin with colon.
 	 *
-	 * @param   integer|string
-	 * @param   mixed
+	 * @param   int|string  $param  Parameter index or name
+	 * @param   mixed       $value  Value to assign
 	 * @return  $this
 	 */
 	public function param($param, $value)
@@ -56,7 +60,7 @@ class Database_Expression implements Countable
 	/**
 	 * Add multiple parameter values. Names must begin with colon.
 	 *
-	 * @param   array
+	 * @param   array   $params Values to assign
 	 * @return  $this
 	 */
 	public function parameters(array $params)
@@ -67,12 +71,12 @@ class Database_Expression implements Countable
 	}
 
 	/**
-	 * Compile the expression by replacing parameters with their values.
+	 * Compile the expression by replacing parameters with their quoted values
 	 *
 	 * @uses Database::quote()
 	 *
-	 * @param   Database
-	 * @return  string
+	 * @param   Database    $db Connection with which to quote the values
+	 * @return  string  Quoted SQL expression
 	 */
 	public function compile(Database $db)
 	{

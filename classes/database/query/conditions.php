@@ -9,12 +9,15 @@
  */
 class Database_Query_Conditions extends Database_Expression
 {
+	/**
+	 * @var bool    Whether or not the (sub-)expression has just begun
+	 */
 	protected $_empty = TRUE;
 
 	/**
-	 * @param   mixed
-	 * @param   string
-	 * @param   mixed
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
 	 */
 	public function __construct($left = NULL, $operator = NULL, $right = NULL)
 	{
@@ -27,14 +30,16 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   string
+	 * Open parenthesis using a logical operator when necessary
+	 *
+	 * @param   string  $logic  Logical operator
 	 * @return  $this
 	 */
 	public function open($logic)
 	{
 		if ( ! $this->_empty)
 		{
-			// Only append the logic operator between conditions
+			// Only append the logical operator between conditions
 			$this->_value .= ' '.strtoupper($logic).' ';
 		}
 
@@ -45,6 +50,8 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
+	 * Close parenthesis
+	 *
 	 * @return  $this
 	 */
 	public function close()
@@ -56,17 +63,19 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   string
-	 * @param   mixed
-	 * @param   string
-	 * @param   mixed
+	 * Add a condition using a logical operator when necessary
+	 *
+	 * @param   string  $logic      Logical operator
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
 	 * @return  $this
 	 */
 	public function add($logic, $left, $operator = NULL, $right = NULL)
 	{
 		if ( ! $this->_empty)
 		{
-			// Only append the logic operator between conditions
+			// Only append the logical operator between conditions
 			$this->_value .= ' '.strtoupper($logic).' ';
 		}
 
@@ -76,7 +85,7 @@ class Database_Query_Conditions extends Database_Expression
 
 		if ( ! empty($operator))
 		{
-			// Database operators are always uppercase
+			// SQL operators are always uppercase
 			$operator = strtoupper($operator);
 
 			$this->_value .= " $operator ";
@@ -106,10 +115,12 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   $logic          string
-	 * @param   $left_column    mixed   Converted to Database_Column
-	 * @param   $operator       string
-	 * @param   $right          mixed
+	 * Add a condition while converting the LHS to a column
+	 *
+	 * @param   string  $logic          Logical operator
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
 	public function column($logic, $left_column, $operator, $right)
@@ -124,10 +135,12 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   $logic          string
-	 * @param   $left_column    mixed   Converted to Database_Column
-	 * @param   $operator       string
-	 * @param   $right_column   mixed   Converted to Database_Column
+	 * Add a condition while converting both operands to columns
+	 *
+	 * @param   string  $logic          Logical operator
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
 	 * @return  $this
 	 */
 	public function columns($logic, $left_column, $operator, $right_column)
@@ -142,9 +155,11 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   $left_column    mixed   Converted to Database_Column
-	 * @param   $operator       string
-	 * @param   $right          mixed
+	 * Add a condition using AND while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
 	public function and_column($left_column, $operator, $right)
@@ -153,9 +168,11 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   $left_column    mixed   Converted to Database_Column
-	 * @param   $operator       string
-	 * @param   $right_column   mixed   Converted to Database_Column
+	 * Add a condition using AND while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
 	 * @return  $this
 	 */
 	public function and_columns($left_column, $operator, $right_column)
@@ -164,6 +181,8 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
+	 * Open a parenthesis using AND
+	 *
 	 * @return  $this
 	 */
 	public function and_open()
@@ -172,9 +191,11 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   $left_column    mixed   Converted to Database_Column
-	 * @param   $operator       string
-	 * @param   $right          mixed
+	 * Add a condition using OR while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
 	public function or_column($left_column, $operator, $right)
@@ -183,9 +204,11 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
-	 * @param   $left_column    mixed   Converted to Database_Column
-	 * @param   $operator       string
-	 * @param   $right_column   mixed   Converted to Database_Column
+	 * Add a condition using OR while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
 	 * @return  $this
 	 */
 	public function or_columns($left_column, $operator, $right_column)
@@ -194,6 +217,8 @@ class Database_Query_Conditions extends Database_Expression
 	}
 
 	/**
+	 * Open a parenthesis using OR
+	 *
 	 * @return  $this
 	 */
 	public function or_open()

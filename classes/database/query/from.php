@@ -9,11 +9,14 @@
  */
 class Database_Query_From extends Database_Expression
 {
+	/**
+	 * @var bool    Whether or not the (sub-)expression has just begun
+	 */
 	protected $_empty = TRUE;
 
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 */
 	public function __construct($table = NULL, $alias = NULL)
 	{
@@ -26,9 +29,11 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   string
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string
+	 * Add a table reference using a separator when necessary
+	 *
+	 * @param   string  $glue   Comma or JOIN
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	protected function _add($glue, $table, $alias)
@@ -58,6 +63,8 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
+	 * Open parenthesis
+	 *
 	 * @return  $this
 	 */
 	public function open()
@@ -74,6 +81,8 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
+	 * Close parenthesis
+	 *
 	 * @return  $this
 	 */
 	public function close()
@@ -85,8 +94,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string
+	 * Add a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function add($table, $alias = NULL)
@@ -95,9 +106,11 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
-	 * @param   $type   string  Join type
+	 * Join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
+	 * @param   string  $type   Join type (e.g., INNER)
 	 * @return  $this
 	 */
 	public function join($table, $alias = NULL, $type = NULL)
@@ -111,7 +124,9 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   Database_Query_Conditions
+	 * Set the join conditions
+	 *
+	 * @param   Database_Query_Conditions   $conditions
 	 * @return  $this
 	 */
 	public function on($conditions)
@@ -124,7 +139,9 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $columns    array
+	 * Set the join columns
+	 *
+	 * @param   array   $columns    Each element converted to Database_Column
 	 * @return  $this
 	 */
 	public function using(array $columns)
@@ -146,8 +163,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Cross join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function cross_join($table, $alias = NULL)
@@ -156,8 +175,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Full join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function full_join($table, $alias = NULL)
@@ -166,8 +187,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Inner join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function inner_join($table, $alias = NULL)
@@ -176,8 +199,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Left join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function left_join($table, $alias = NULL)
@@ -186,8 +211,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Naturally full join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function natural_full_join($table, $alias = NULL)
@@ -196,8 +223,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Naturally inner join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function natural_inner_join($table, $alias = NULL)
@@ -206,8 +235,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Naturally left join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function natural_left_join($table, $alias = NULL)
@@ -216,8 +247,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Naturally right join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function natural_right_join($table, $alias = NULL)
@@ -226,8 +259,10 @@ class Database_Query_From extends Database_Expression
 	}
 
 	/**
-	 * @param   $table  mixed   Converted to Database_Table
-	 * @param   $alias  string  Table alias
+	 * Right join a table or query
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function right_join($table, $alias = NULL)
