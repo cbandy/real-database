@@ -18,15 +18,7 @@ class Database_Query_Select extends Database_Query_Having
 	{
 		parent::__construct('');
 
-		$this->distinct(FALSE)->select($columns)->_reset_order_by();
-	}
-
-	/**
-	 * @return  $this
-	 */
-	protected function _reset_order_by()
-	{
-		return $this->param(':orderby', array());
+		$this->distinct(FALSE)->select($columns);
 	}
 
 	/**
@@ -161,17 +153,17 @@ class Database_Query_Select extends Database_Query_Having
 			$this->_value .= ' WHERE :where';
 		}
 
-		if (count($this->_parameters[':groupby']))
+		if (isset($this->_parameters[':groupby']) AND count($this->_parameters[':groupby']))
 		{
 			$this->_value .= ' GROUP BY :groupby';
 		}
 
-		if (count($this->_parameters[':having']))
+		if (isset($this->_parameters[':having']) AND count($this->_parameters[':having']))
 		{
 			$this->_value .= ' HAVING :having';
 		}
 
-		if (count($this->_parameters[':orderby']))
+		if ( ! empty($this->_parameters[':orderby']))
 		{
 			$this->_value .= ' ORDER BY :orderby';
 		}
