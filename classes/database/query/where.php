@@ -9,48 +9,21 @@
  */
 abstract class Database_Query_Where extends Database_Query
 {
-	public function __construct($value, array $parameters = array())
-	{
-		parent::__construct($value, $parameters);
-
-		$this->_reset_from()->_reset_where();
-	}
-
 	/**
-	 * @return  $this
-	 */
-	protected function _reset_from()
-	{
-		return $this->param(':from', new Database_Query_From);
-	}
-
-	/**
-	 * @return  $this
-	 */
-	protected function _reset_where()
-	{
-		return $this->param(':where', new Database_Query_Conditions);
-	}
-
-	/**
-	 * @param   $reference  Database_Query_From
+	 * @param   Database_Query_From $reference
 	 * @return  $this
 	 */
 	public function from($reference)
 	{
-		$this->_parameters[':from'] = $reference;
-
-		return $this;
+		return $this->param(':from', $reference);
 	}
 
 	/**
-	 * @param   Database_Query_Conditions
+	 * @param   Database_Query_Conditions   $conditions
 	 * @return  $this
 	 */
 	public function where($conditions)
 	{
-		$this->_parameters[':where'] = $conditions;
-
-		return $this;
+		return $this->param(':where', $conditions);
 	}
 }
