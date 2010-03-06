@@ -62,6 +62,28 @@ class Database_Query_Select extends Database_Query_Having
 	}
 
 	/**
+	 * Set the maximum number of rows
+	 *
+	 * @param   integer $count  Number of rows
+	 * @return  $this
+	 */
+	public function limit($count)
+	{
+		return $this->param(':limit', $count);
+	}
+
+	/**
+	 * Set the number of rows to skip
+	 *
+	 * @param   integer $start  Number of rows
+	 * @return  $this
+	 */
+	public function offset($start)
+	{
+		return $this->param(':offset', $start);
+	}
+
+	/**
 	 * @param   mixed   Converted to Database_Column
 	 * @param   mixed
 	 * @return  $this
@@ -152,6 +174,16 @@ class Database_Query_Select extends Database_Query_Having
 		if (count($this->_parameters[':orderby']))
 		{
 			$this->_value .= ' ORDER BY :orderby';
+		}
+
+		if (isset($this->_parameters[':limit']))
+		{
+			$this->_value .= ' LIMIT :limit';
+		}
+
+		if ( ! empty($this->_parameters[':offset']))
+		{
+			$this->_value .= ' OFFSET :offset';
 		}
 
 		return parent::compile($db);
