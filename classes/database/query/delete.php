@@ -48,14 +48,14 @@ class Database_Query_Delete extends Database_Query_Where
 	{
 		$this->_value = 'DELETE FROM :table';
 
-		if (count($this->_parameters[':from']))
+		if (isset($this->_parameters[':from']) AND count($this->_parameters[':from']))
 		{
 			// Not allowed in SQLite
 			// Should be 'FROM' in MSSQL
 			$this->_value .= ' USING :from';
 		}
 
-		if (count($this->_parameters[':where']))
+		if (isset($this->_parameters[':where']) AND count($this->_parameters[':where']))
 		{
 			$this->_value .= ' WHERE :where';
 		}

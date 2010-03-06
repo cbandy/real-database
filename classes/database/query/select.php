@@ -143,12 +143,12 @@ class Database_Query_Select extends Database_Query_Having
 	{
 		$this->_value = 'SELECT:distinct :columns';
 
-		if (count($this->_parameters[':from']))
+		if (isset($this->_parameters[':from']) AND count($this->_parameters[':from']))
 		{
 			$this->_value .= ' FROM :from';
 		}
 
-		if (count($this->_parameters[':where']))
+		if (isset($this->_parameters[':where']) AND count($this->_parameters[':where']))
 		{
 			$this->_value .= ' WHERE :where';
 		}
