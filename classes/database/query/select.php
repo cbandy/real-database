@@ -143,22 +143,22 @@ class Database_Query_Select extends Database_Query_Having
 	{
 		$this->_value = 'SELECT:distinct :columns';
 
-		if (isset($this->_parameters[':from']) AND count($this->_parameters[':from']))
+		if ( ! empty($this->_parameters[':from']))
 		{
 			$this->_value .= ' FROM :from';
 		}
 
-		if (isset($this->_parameters[':where']) AND count($this->_parameters[':where']))
+		if ( ! empty($this->_parameters[':where']))
 		{
 			$this->_value .= ' WHERE :where';
 		}
 
-		if (isset($this->_parameters[':groupby']) AND count($this->_parameters[':groupby']))
+		if ( ! empty($this->_parameters[':groupby']))
 		{
 			$this->_value .= ' GROUP BY :groupby';
 		}
 
-		if (isset($this->_parameters[':having']) AND count($this->_parameters[':having']))
+		if ( ! empty($this->_parameters[':having']))
 		{
 			$this->_value .= ' HAVING :having';
 		}

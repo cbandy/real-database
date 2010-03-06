@@ -85,14 +85,14 @@ class Database_Query_Update extends Database_Query_Where
 	{
 		$this->_value = 'UPDATE :table SET :values';
 
-		if (isset($this->_parameters[':from']) AND count($this->_parameters[':from']))
+		if ( ! empty($this->_parameters[':from']))
 		{
 			// Not allowed in MySQL
 			// Not allowed in SQLite
 			$this->_value .= ' FROM :from';
 		}
 
-		if (isset($this->_parameters[':where']) AND count($this->_parameters[':where']))
+		if ( ! empty($this->_parameters[':where']))
 		{
 			$this->_value .= ' WHERE :where';
 		}
