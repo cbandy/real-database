@@ -151,6 +151,46 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
+	 * Open parenthesis while converting the LHS to a column
+	 *
+	 * @param   string  $logic          Logical operator
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
+	 * @return  $this
+	 */
+	public function open_column($logic, $left_column, $operator, $right)
+	{
+		if ( ! $left_column instanceof Database_Expression
+			AND ! $left_column instanceof Database_Identifier)
+		{
+			$left_column = new Database_Column($left_column);
+		}
+
+		return $this->open($logic, $left_column, $operator, $right);
+	}
+
+	/**
+	 * Open parenthesis while converting both operands to columns
+	 *
+	 * @param   string  $logic          Logical operator
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @return  $this
+	 */
+	public function open_columns($logic, $left_column, $operator, $right_column)
+	{
+		if ( ! $right_column instanceof Database_Expression
+			AND ! $right_column instanceof Database_Identifier)
+		{
+			$right_column = new Database_Column($right_column);
+		}
+
+		return $this->open_column($logic, $left_column, $operator, $right_column);
+	}
+
+	/**
 	 * Close parenthesis
 	 *
 	 * @return  $this
@@ -203,6 +243,32 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
+	 * Open parenthesis using AND while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
+	 * @return  $this
+	 */
+	public function and_open_column($left_column, $operator, $right)
+	{
+		return $this->open_column('AND', $left_column, $operator, $right);
+	}
+
+	/**
+	 * Open parenthesis using AND while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @return  $this
+	 */
+	public function and_open_columns($left_column, $operator, $right_column)
+	{
+		return $this->open_columns('AND', $left_column, $operator, $right_column);
+	}
+
+	/**
 	 * Add a condition using OR while converting the LHS to a column
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -239,5 +305,31 @@ class Database_Conditions extends Database_Expression
 	public function or_open($left = NULL, $operator = NULL, $right = NULL)
 	{
 		return $this->open('OR', $left, $operator, $right);
+	}
+
+	/**
+	 * Open parenthesis using OR while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
+	 * @return  $this
+	 */
+	public function or_open_column($left_column, $operator, $right)
+	{
+		return $this->open_column('OR', $left_column, $operator, $right);
+	}
+
+	/**
+	 * Open parenthesis using OR while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @return  $this
+	 */
+	public function or_open_columns($left_column, $operator, $right_column)
+	{
+		return $this->open_columns('OR', $left_column, $operator, $right_column);
 	}
 }
