@@ -30,39 +30,6 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis using a logical operator when necessary
-	 *
-	 * @param   string  $logic  Logical operator
-	 * @return  $this
-	 */
-	public function open($logic)
-	{
-		if ( ! $this->_empty)
-		{
-			// Only append the logical operator between conditions
-			$this->_value .= ' '.strtoupper($logic).' ';
-		}
-
-		$this->_empty = TRUE;
-		$this->_value .= '(';
-
-		return $this;
-	}
-
-	/**
-	 * Close parenthesis
-	 *
-	 * @return  $this
-	 */
-	public function close()
-	{
-		$this->_empty = FALSE;
-		$this->_value .= ')';
-
-		return $this;
-	}
-
-	/**
 	 * Add a condition using a logical operator when necessary
 	 *
 	 * @param   string  $logic      Logical operator
@@ -152,6 +119,39 @@ class Database_Conditions extends Database_Expression
 		}
 
 		return $this->column($logic, $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Open parenthesis using a logical operator when necessary
+	 *
+	 * @param   string  $logic  Logical operator
+	 * @return  $this
+	 */
+	public function open($logic)
+	{
+		if ( ! $this->_empty)
+		{
+			// Only append the logical operator between conditions
+			$this->_value .= ' '.strtoupper($logic).' ';
+		}
+
+		$this->_empty = TRUE;
+		$this->_value .= '(';
+
+		return $this;
+	}
+
+	/**
+	 * Close parenthesis
+	 *
+	 * @return  $this
+	 */
+	public function close()
+	{
+		$this->_empty = FALSE;
+		$this->_value .= ')';
+
+		return $this;
 	}
 
 	/**
