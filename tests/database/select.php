@@ -20,6 +20,21 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('SELECT arbitrary', $db->quote($query));
 	}
 
+	public function test_distinct()
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select;
+
+		$this->assertSame($query, $query->distinct());
+		$this->assertSame('SELECT DISTINCT ', $db->quote($query));
+
+		$this->assertSame($query, $query->distinct(FALSE));
+		$this->assertSame('SELECT ', $db->quote($query));
+
+		$this->assertSame($query, $query->distinct(TRUE));
+		$this->assertSame('SELECT DISTINCT ', $db->quote($query));
+	}
+
 	public function test_column()
 	{
 		$db = new Database_Select_Test_DB;
@@ -87,6 +102,30 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->order_by('y', new Database_Expression('USING something')));
 		$this->assertSame('SELECT "x", "y" ORDER BY "x", other ASC, "y" USING something', $db->quote($query));
+	}
+
+	public function test_limit()
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select(array('x'));
+
+		$this->assertSame($query, $query->limit(5));
+		$this->assertSame('SELECT "x" LIMIT 5', $db->quote($query));
+
+		$this->assertSame($query, $query->limit(0));
+		$this->assertSame('SELECT "x" LIMIT 0', $db->quote($query));
+	}
+
+	public function test_offset()
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select(array('x'));
+
+		$this->assertSame($query, $query->offset(5));
+		$this->assertSame('SELECT "x" OFFSET 5', $db->quote($query));
+
+		$this->assertSame($query, $query->offset(0));
+		$this->assertSame('SELECT "x"', $db->quote($query));
 	}
 }
 

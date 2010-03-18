@@ -177,11 +177,14 @@ class Database_Query_Select extends Database_Query_Having
 
 		if (isset($this->_parameters[':limit']))
 		{
+			// Not allowed in MSSQL
 			$this->_value .= ' LIMIT :limit';
 		}
 
 		if ( ! empty($this->_parameters[':offset']))
 		{
+			// LIMIT required by MySQL and SQLite
+			// Not allowed in MSSQL
 			$this->_value .= ' OFFSET :offset';
 		}
 
