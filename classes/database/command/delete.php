@@ -12,7 +12,7 @@
  * @link http://www.sqlite.org/lang_delete.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms189835.aspx Transact-SQL
  */
-class Database_Query_Delete extends Database_Query
+class Database_Command_Delete extends Database_Command
 {
 	/**
 	 * @param   mixed   Converted to Database_Table

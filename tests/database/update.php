@@ -11,7 +11,7 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_table()
 	{
 		$db = new Database_Update_Test_DB;
-		$query = new Database_Query_Update;
+		$query = new Database_Command_Update;
 
 		$this->assertSame($query, $query->table('one', 'a'));
 
@@ -21,7 +21,7 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_set()
 	{
 		$db = new Database_Update_Test_DB;
-		$query = new Database_Query_Update('one');
+		$query = new Database_Command_Update('one');
 
 		$this->assertSame($query, $query->set(array('x' => 0, 'y' => 1)));
 		$this->assertSame('UPDATE "pre_one" SET "x" = 0, "y" = 1', $db->quote($query));
@@ -33,7 +33,7 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_value()
 	{
 		$db = new Database_Update_Test_DB;
-		$query = new Database_Query_Update('one');
+		$query = new Database_Command_Update('one');
 
 		$this->assertSame($query, $query->value('x', 0));
 		$this->assertSame('UPDATE "pre_one" SET "x" = 0', $db->quote($query));
@@ -45,7 +45,7 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_from()
 	{
 		$db = new Database_Update_Test_DB;
-		$query = new Database_Query_Update('one', 'a', array('x' => 0));
+		$query = new Database_Command_Update('one', 'a', array('x' => 0));
 
 		$from = new Database_From('two', 'b');
 		$from->join('three', 'c');
@@ -57,7 +57,7 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_where()
 	{
 		$db = new Database_Update_Test_DB;
-		$query = new Database_Query_Update('one', NULL, array('x' => 0));
+		$query = new Database_Command_Update('one', NULL, array('x' => 0));
 
 		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)));
 

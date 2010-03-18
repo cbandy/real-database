@@ -11,7 +11,7 @@ class Database_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_into()
 	{
 		$db = new Database_Insert_Test_DB;
-		$query = new Database_Query_Insert;
+		$query = new Database_Command_Insert;
 
 		$this->assertSame($query, $query->into('one'));
 
@@ -21,7 +21,7 @@ class Database_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_columns()
 	{
 		$db = new Database_Insert_Test_DB;
-		$query = new Database_Query_Insert('one');
+		$query = new Database_Command_Insert('one');
 
 		$this->assertSame($query, $query->columns(array('a', new Database_Expression('b'), new Database_Column('c'))));
 
@@ -31,7 +31,7 @@ class Database_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_values()
 	{
 		$db = new Database_Insert_Test_DB;
-		$query = new Database_Query_Insert('one', array('a','b'));
+		$query = new Database_Command_Insert('one', array('a','b'));
 
 		$this->assertSame($query, $query->values(array(0,1), array(2,3)));
 		$this->assertSame('INSERT INTO "pre_one" ("a", "b") VALUES (0, 1), (2, 3)', $db->quote($query));

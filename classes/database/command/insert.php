@@ -12,7 +12,7 @@
  * @link http://www.sqlite.org/lang_insert.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms174335.aspx Transact-SQL
  */
-class Database_Query_Insert extends Database_Query
+class Database_Command_Insert extends Database_Command
 {
 	/**
 	 * @param   mixed   $table      Converted to Database_Table

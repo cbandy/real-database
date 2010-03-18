@@ -15,7 +15,7 @@ class Database_Factories_Test extends PHPUnit_Framework_TestCase
 
 	public function test_delete()
 	{
-		$this->assertType('Database_Query_Delete', Database::delete());
+		$this->assertType('Database_Command_Delete', Database::delete());
 	}
 
 	public function test_expression()
@@ -30,7 +30,7 @@ class Database_Factories_Test extends PHPUnit_Framework_TestCase
 
 	public function test_insert()
 	{
-		$this->assertType('Database_Query_Insert', Database::insert());
+		$this->assertType('Database_Command_Insert', Database::insert());
 	}
 
 	public function test_select()
@@ -40,6 +40,6 @@ class Database_Factories_Test extends PHPUnit_Framework_TestCase
 
 	public function test_update()
 	{
-		$this->assertType('Database_Query_Update', Database::update());
+		$this->assertType('Database_Command_Update', Database::update());
 	}
 }

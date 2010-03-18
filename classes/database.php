@@ -27,7 +27,7 @@ abstract class Database
 	 */
 	public static function delete($table = NULL, $alias = NULL)
 	{
-		return new Database_Query_Delete($table, $alias);
+		return new Database_Command_Delete($table, $alias);
 	}
 
 	/**
@@ -59,7 +59,7 @@ abstract class Database
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_Query_Insert($table, $columns);
+		return new Database_Command_Insert($table, $columns);
 	}
 
 	/**
@@ -75,7 +75,7 @@ abstract class Database
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
 	{
-		return new Database_Query_Update($table, $alias, $values);
+		return new Database_Command_Update($table, $alias, $values);
 	}
 
 	// Character used to quote identifiers (tables, columns, aliases, etc.)
