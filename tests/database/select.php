@@ -20,6 +20,21 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('SELECT arbitrary', $db->quote($query));
 	}
 
+	public function test_distinct()
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select;
+
+		$this->assertSame($query, $query->distinct());
+		$this->assertSame('SELECT DISTINCT ', $db->quote($query));
+
+		$this->assertSame($query, $query->distinct(FALSE));
+		$this->assertSame('SELECT ', $db->quote($query));
+
+		$this->assertSame($query, $query->distinct(TRUE));
+		$this->assertSame('SELECT DISTINCT ', $db->quote($query));
+	}
+
 	public function test_column()
 	{
 		$db = new Database_Select_Test_DB;
