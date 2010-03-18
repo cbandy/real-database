@@ -122,12 +122,16 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis using a logical operator when necessary
+	 * Open parenthesis using a logical operator when necessary, optionally
+	 * adding another condition.
 	 *
-	 * @param   string  $logic  Logical operator
+	 * @param   string  $logic      Logical operator
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
 	 * @return  $this
 	 */
-	public function open($logic)
+	public function open($logic, $left = NULL, $operator = NULL, $right = NULL)
 	{
 		if ( ! $this->_empty)
 		{
@@ -137,6 +141,11 @@ class Database_Conditions extends Database_Expression
 
 		$this->_empty = TRUE;
 		$this->_value .= '(';
+
+		if ($left !== NULL OR $operator !== NULL)
+		{
+			$this->add(NULL, $left, $operator, $right);
+		}
 
 		return $this;
 	}
@@ -181,13 +190,16 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open a parenthesis using AND
+	 * Open a parenthesis using AND, optionally adding another condition.
 	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
 	 * @return  $this
 	 */
-	public function and_open()
+	public function and_open($left = NULL, $operator = NULL, $right = NULL)
 	{
-		return $this->open('AND');
+		return $this->open('AND', $left, $operator, $right);
 	}
 
 	/**
@@ -217,12 +229,15 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open a parenthesis using OR
+	 * Open a parenthesis using OR, optionally adding another condition.
 	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
 	 * @return  $this
 	 */
-	public function or_open()
+	public function or_open($left = NULL, $operator = NULL, $right = NULL)
 	{
-		return $this->open('OR');
+		return $this->open('OR', $left, $operator, $right);
 	}
 }
