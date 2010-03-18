@@ -18,7 +18,7 @@ class Database_Query_Select extends Database_Query_Having
 	{
 		parent::__construct('');
 
-		$this->distinct(FALSE)->select($columns);
+		$this->select($columns);
 	}
 
 	/**
@@ -50,7 +50,7 @@ class Database_Query_Select extends Database_Query_Having
 	 */
 	public function distinct($value = TRUE)
 	{
-		return $this->param(':distinct', new Database_Expression($value ? ' DISTINCT' : ''));
+		return $this->param(':distinct', $value ? new Database_Expression('DISTINCT') : FALSE);
 	}
 
 	/**
@@ -141,7 +141,14 @@ class Database_Query_Select extends Database_Query_Having
 
 	public function compile(Database $db)
 	{
-		$this->_value = 'SELECT:distinct :columns';
+		$this->_value = 'SELECT';
+
+		if ( ! empty($this->_parameters[':distinct']))
+		{
+			$this->_value .= ' :distinct';
+		}
+
+		$this->_value .= ' :columns';
 
 		if ( ! empty($this->_parameters[':from']))
 		{
