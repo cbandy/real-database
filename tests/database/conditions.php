@@ -94,6 +94,30 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($conditions, $conditions->close());
 		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->open('and', 5, '<>', 6));
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->close());
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->open('or', 7, '<>', 8));
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6) OR (7 <> 8', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->close());
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6) OR (7 <> 8)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->open_column('and', 'a', 'is', NULL));
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6) OR (7 <> 8) AND ("a" IS NULL', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->close());
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6) OR (7 <> 8) AND ("a" IS NULL)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->open_columns('or', 'a', '=', 'b'));
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6) OR (7 <> 8) AND ("a" IS NULL) OR ("a" = "b"', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->close());
+		$this->assertSame('0 <> 1 AND (2 = 2 OR 2 = 2) OR (3 <> 4) AND (5 <> 6) OR (7 <> 8) AND ("a" IS NULL) OR ("a" = "b")', $db->quote($conditions));
 	}
 
 	public function test_parentheses_helpers()
@@ -110,14 +134,23 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 		$conditions->add('and', 0, '<>', 1);
 		$this->assertSame('((0 <> 1', $db->quote($conditions));
 
-		$this->assertSame($conditions, $conditions->and_open());
-		$this->assertSame('((0 <> 1 AND (', $db->quote($conditions));
-
-		$conditions->add('and', 2, '=', 2);
+		$this->assertSame($conditions, $conditions->and_open(2, '=', 2));
 		$this->assertSame('((0 <> 1 AND (2 = 2', $db->quote($conditions));
 
-		$this->assertSame($conditions, $conditions->or_open());
-		$this->assertSame('((0 <> 1 AND (2 = 2 OR (', $db->quote($conditions));
+		$this->assertSame($conditions, $conditions->or_open(3, '<>', 4));
+		$this->assertSame('((0 <> 1 AND (2 = 2 OR (3 <> 4', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->and_open_column('a', 'is', NULL));
+		$this->assertSame('((0 <> 1 AND (2 = 2 OR (3 <> 4 AND ("a" IS NULL', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->or_open_column('a', 'is', NULL));
+		$this->assertSame('((0 <> 1 AND (2 = 2 OR (3 <> 4 AND ("a" IS NULL OR ("a" IS NULL', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->and_open_columns('b', '=', 'c'));
+		$this->assertSame('((0 <> 1 AND (2 = 2 OR (3 <> 4 AND ("a" IS NULL OR ("a" IS NULL AND ("b" = "c"', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->or_open_columns('c', '<>', 'd'));
+		$this->assertSame('((0 <> 1 AND (2 = 2 OR (3 <> 4 AND ("a" IS NULL OR ("a" IS NULL AND ("b" = "c" OR ("c" <> "d"', $db->quote($conditions));
 	}
 }
 
