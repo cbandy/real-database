@@ -26,6 +26,32 @@ class Database_Query_Update extends Database_Query_Where
 		$this->table($table, $alias)->set($values);
 	}
 
+	protected function _build()
+	{
+		$value = 'UPDATE :table SET :values';
+
+		if ( ! empty($this->_parameters[':from']))
+		{
+			// Not allowed in MySQL
+			// Not allowed in SQLite
+			$value .= ' FROM :from';
+		}
+
+		if ( ! empty($this->_parameters[':where']))
+		{
+			$value .= ' WHERE :where';
+		}
+
+		return $value;
+	}
+
+	public function compile(Database $db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::compile($db);
+	}
+
 	/**
 	 * @param   mixed   Converted to Database_Table
 	 * @param   string  Table alias
@@ -79,24 +105,5 @@ class Database_Query_Update extends Database_Query_Where
 		$this->_parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
 
 		return $this;
-	}
-
-	public function compile(Database $db)
-	{
-		$this->_value = 'UPDATE :table SET :values';
-
-		if ( ! empty($this->_parameters[':from']))
-		{
-			// Not allowed in MySQL
-			// Not allowed in SQLite
-			$this->_value .= ' FROM :from';
-		}
-
-		if ( ! empty($this->_parameters[':where']))
-		{
-			$this->_value .= ' WHERE :where';
-		}
-
-		return parent::compile($db);
 	}
 }

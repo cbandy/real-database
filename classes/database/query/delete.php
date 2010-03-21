@@ -25,6 +25,32 @@ class Database_Query_Delete extends Database_Query_Where
 		$this->from($table, $alias);
 	}
 
+	protected function _build()
+	{
+		$value = 'DELETE FROM :table';
+
+		if ( ! empty($this->_parameters[':from']))
+		{
+			// Not allowed in SQLite
+			// Should be 'FROM' in MSSQL
+			$value .= ' USING :from';
+		}
+
+		if ( ! empty($this->_parameters[':where']))
+		{
+			$value .= ' WHERE :where';
+		}
+
+		return $value;
+	}
+
+	public function compile(Database $db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::compile($db);
+	}
+
 	/**
 	 * @param   mixed   Converted to Database_Table
 	 * @param   string  Table alias
@@ -42,24 +68,5 @@ class Database_Query_Delete extends Database_Query_Where
 	public function using($reference)
 	{
 		return Database_Query_Where::from($reference);
-	}
-
-	public function compile(Database $db)
-	{
-		$this->_value = 'DELETE FROM :table';
-
-		if ( ! empty($this->_parameters[':from']))
-		{
-			// Not allowed in SQLite
-			// Should be 'FROM' in MSSQL
-			$this->_value .= ' USING :from';
-		}
-
-		if ( ! empty($this->_parameters[':where']))
-		{
-			$this->_value .= ' WHERE :where';
-		}
-
-		return parent::compile($db);
 	}
 }

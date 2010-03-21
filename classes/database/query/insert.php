@@ -25,6 +25,39 @@ class Database_Query_Insert extends Database_Query
 		$this->into($table)->columns($columns);
 	}
 
+	protected function _build()
+	{
+		$value = 'INSERT INTO :table ';
+
+		if ( ! empty($this->_parameters[':columns']))
+		{
+			$value .= '(:columns) ';
+		}
+
+		if ( ! isset($this->_parameters[':values']))
+		{
+			// Not allowed by MySQL
+			$value .= 'DEFAULT VALUES';
+		}
+		elseif (is_array($this->_parameters[':values']))
+		{
+			$value .= 'VALUES :values';
+		}
+		else
+		{
+			$value .= ':values';
+		}
+
+		return $value;
+	}
+
+	public function compile(Database $db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::compile($db);
+	}
+
 	/**
 	 * @param   array   $columns
 	 * @return  $this
@@ -95,31 +128,5 @@ class Database_Query_Insert extends Database_Query
 		}
 
 		return $this;
-	}
-
-	public function compile(Database $db)
-	{
-		$this->_value = 'INSERT INTO :table ';
-
-		if ( ! empty($this->_parameters[':columns']))
-		{
-			$this->_value .= '(:columns) ';
-		}
-
-		if ( ! isset($this->_parameters[':values']))
-		{
-			// Not allowed by MySQL
-			$this->_value .= 'DEFAULT VALUES';
-		}
-		elseif (is_array($this->_parameters[':values']))
-		{
-			$this->_value .= 'VALUES :values';
-		}
-		else
-		{
-			$this->_value .= ':values';
-		}
-
-		return parent::compile($db);
 	}
 }

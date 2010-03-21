@@ -21,6 +21,65 @@ class Database_Query_Select extends Database_Query_Having
 		$this->select($columns);
 	}
 
+	protected function _build()
+	{
+		$value = 'SELECT';
+
+		if ( ! empty($this->_parameters[':distinct']))
+		{
+			$value .= ' :distinct';
+		}
+
+		$value .= ' :columns';
+
+		if ( ! empty($this->_parameters[':from']))
+		{
+			$value .= ' FROM :from';
+		}
+
+		if ( ! empty($this->_parameters[':where']))
+		{
+			$value .= ' WHERE :where';
+		}
+
+		if ( ! empty($this->_parameters[':groupby']))
+		{
+			$value .= ' GROUP BY :groupby';
+		}
+
+		if ( ! empty($this->_parameters[':having']))
+		{
+			$value .= ' HAVING :having';
+		}
+
+		if ( ! empty($this->_parameters[':orderby']))
+		{
+			$value .= ' ORDER BY :orderby';
+		}
+
+		if (isset($this->_parameters[':limit']))
+		{
+			// Not allowed in MSSQL
+			$value .= ' LIMIT :limit';
+		}
+
+		if ( ! empty($this->_parameters[':offset']))
+		{
+			// LIMIT required by MySQL and SQLite
+			// Not allowed in MSSQL
+			$value .= ' OFFSET :offset';
+		}
+
+		return $value;
+	}
+
+	public function compile(Database $db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::compile($db);
+	}
+
 	/**
 	 * @param   mixed   Converted to Database_Column
 	 * @param   string  Column alias
@@ -137,57 +196,5 @@ class Database_Query_Select extends Database_Query_Having
 		}
 
 		return $this;
-	}
-
-	public function compile(Database $db)
-	{
-		$this->_value = 'SELECT';
-
-		if ( ! empty($this->_parameters[':distinct']))
-		{
-			$this->_value .= ' :distinct';
-		}
-
-		$this->_value .= ' :columns';
-
-		if ( ! empty($this->_parameters[':from']))
-		{
-			$this->_value .= ' FROM :from';
-		}
-
-		if ( ! empty($this->_parameters[':where']))
-		{
-			$this->_value .= ' WHERE :where';
-		}
-
-		if ( ! empty($this->_parameters[':groupby']))
-		{
-			$this->_value .= ' GROUP BY :groupby';
-		}
-
-		if ( ! empty($this->_parameters[':having']))
-		{
-			$this->_value .= ' HAVING :having';
-		}
-
-		if ( ! empty($this->_parameters[':orderby']))
-		{
-			$this->_value .= ' ORDER BY :orderby';
-		}
-
-		if (isset($this->_parameters[':limit']))
-		{
-			// Not allowed in MSSQL
-			$this->_value .= ' LIMIT :limit';
-		}
-
-		if ( ! empty($this->_parameters[':offset']))
-		{
-			// LIMIT required by MySQL and SQLite
-			// Not allowed in MSSQL
-			$this->_value .= ' OFFSET :offset';
-		}
-
-		return parent::compile($db);
 	}
 }
