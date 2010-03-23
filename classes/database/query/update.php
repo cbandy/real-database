@@ -12,7 +12,7 @@
  * @link http://www.sqlite.org/lang_update.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms177523.aspx Transact-SQL
  */
-class Database_Query_Update extends Database_Query_Where
+class Database_Query_Update extends Database_Query
 {
 	/**
 	 * @param   mixed   Converted to Database_Table
@@ -105,5 +105,23 @@ class Database_Query_Update extends Database_Query_Where
 		$this->_parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
 
 		return $this;
+	}
+
+	/**
+	 * @param   Database_Query_From $reference
+	 * @return  $this
+	 */
+	public function from($reference)
+	{
+		return $this->param(':from', $reference);
+	}
+
+	/**
+	 * @param   Database_Query_Conditions   $conditions
+	 * @return  $this
+	 */
+	public function where($conditions)
+	{
+		return $this->param(':where', $conditions);
 	}
 }

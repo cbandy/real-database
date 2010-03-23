@@ -12,7 +12,7 @@
  * @link http://www.sqlite.org/lang_delete.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms189835.aspx Transact-SQL
  */
-class Database_Query_Delete extends Database_Query_Where
+class Database_Query_Delete extends Database_Query
 {
 	/**
 	 * @param   mixed   Converted to Database_Table
@@ -62,11 +62,20 @@ class Database_Query_Delete extends Database_Query_Where
 	}
 
 	/**
-	 * @param   $reference  Database_Query_From
+	 * @param   Database_Query_From $reference
 	 * @return  $this
 	 */
 	public function using($reference)
 	{
-		return Database_Query_Where::from($reference);
+		return $this->param(':from', $reference);
+	}
+
+	/**
+	 * @param   Database_Query_Conditions   $conditions
+	 * @return  $this
+	 */
+	public function where($conditions)
+	{
+		return $this->param(':where', $conditions);
 	}
 }
