@@ -7,7 +7,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Query_Conditions extends Database_Expression
+class Database_Conditions extends Database_Expression
 {
 	/**
 	 * @var bool    Whether or not the (sub-)expression has just begun

@@ -11,7 +11,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 	public function test_between()
 	{
 		$db = new Database_Conditions_Test_DB;
-		$conditions = new Database_Query_Conditions('2009-11-19', 'between', array('2009-11-1', '2009-12-1'));
+		$conditions = new Database_Conditions('2009-11-19', 'between', array('2009-11-1', '2009-12-1'));
 
 		$this->assertSame("'2009-11-19' BETWEEN '2009-11-1' AND '2009-12-1'", $db->quote($conditions));
 	}
@@ -19,7 +19,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 	public function test_column()
 	{
 		$db = new Database_Conditions_Test_DB;
-		$conditions = new Database_Query_Conditions;
+		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->column('and', 'a', '=', 0));
 		$this->assertSame('"a" = 0', $db->quote($conditions));
@@ -34,7 +34,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 	public function test_columns()
 	{
 		$db = new Database_Conditions_Test_DB;
-		$conditions = new Database_Query_Conditions;
+		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->columns('and', 'a', '=', 'b'));
 		$this->assertSame('"a" = "b"', $db->quote($conditions));
@@ -49,7 +49,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 	public function test_in()
 	{
 		$db = new Database_Conditions_Test_DB;
-		$conditions = new Database_Query_Conditions(new Database_Identifier('a'), 'in', array('x', 5, new Database_Identifier('z')));
+		$conditions = new Database_Conditions(new Database_Identifier('a'), 'in', array('x', 5, new Database_Identifier('z')));
 
 		$this->assertSame('"a" IN (\'x\', 5, "z")', $db->quote($conditions));
 	}
@@ -57,7 +57,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 	public function test_mixed()
 	{
 		$db = new Database_Conditions_Test_DB;
-		$conditions = new Database_Query_Conditions(new Database_Identifier('a'), 'is', NULL);
+		$conditions = new Database_Conditions(new Database_Identifier('a'), 'is', NULL);
 
 		$conditions
 			->add('and', new Database_Identifier('b'), '=', 'literal')
@@ -69,7 +69,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 	public function test_parentheses()
 	{
 		$db = new Database_Conditions_Test_DB;
-		$conditions = new Database_Query_Conditions;
+		$conditions = new Database_Conditions;
 
 		$conditions->add('and', 0, '<>', 1);
 		$this->assertSame('0 <> 1', $db->quote($conditions));
@@ -99,7 +99,7 @@ class Database_Conditions_Test extends PHPUnit_Framework_TestCase
 	public function test_parentheses_helpers()
 	{
 		$db = new Database_Conditions_Test_DB;
-		$conditions = new Database_Query_Conditions;
+		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_open());
 		$this->assertSame('(', $db->quote($conditions));

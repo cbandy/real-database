@@ -59,7 +59,7 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Update_Test_DB;
 		$query = new Database_Query_Update('one', NULL, array('x' => 0));
 
-		$this->assertSame($query, $query->where(new Database_Query_Conditions(new Database_Column('y'), '=', 1)));
+		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)));
 
 		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE "y" = 1', $db->quote($query));
 	}

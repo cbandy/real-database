@@ -76,7 +76,7 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 		$from = new Database_From('one');
 		$from->join('two');
 
-		$conditions = new Database_Query_Conditions(new Database_Column('one.x'), '=', new Database_Column('two.x'));
+		$conditions = new Database_Conditions(new Database_Column('one.x'), '=', new Database_Column('two.x'));
 
 		$this->assertSame($from, $from->on($conditions));
 		$this->assertSame('"pre_one" JOIN "pre_two" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($from));

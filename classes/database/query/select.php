@@ -140,7 +140,7 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   Database_Query_Conditions   $conditions
+	 * @param   Database_Conditions $conditions
 	 * @return  $this
 	 */
 	public function having($conditions)
@@ -235,7 +235,7 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   Database_Query_Conditions   $conditions
+	 * @param   Database_Conditions $conditions
 	 * @return  $this
 	 */
 	public function where($conditions)

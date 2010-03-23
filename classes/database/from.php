@@ -126,7 +126,7 @@ class Database_From extends Database_Expression
 	/**
 	 * Set the join conditions
 	 *
-	 * @param   Database_Query_Conditions   $conditions
+	 * @param   Database_Conditions $conditions
 	 * @return  $this
 	 */
 	public function on($conditions)

@@ -117,7 +117,7 @@ class Database_Query_Update extends Database_Query
 	}
 
 	/**
-	 * @param   Database_Query_Conditions   $conditions
+	 * @param   Database_Conditions $conditions
 	 * @return  $this
 	 */
 	public function where($conditions)

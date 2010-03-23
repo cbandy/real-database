@@ -64,7 +64,7 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(new Database_Expression(1));
 
-		$this->assertSame($query, $query->where(new Database_Query_Conditions(new Database_Column('y'), '=', 1)));
+		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)));
 
 		$this->assertSame('SELECT 1 WHERE "y" = 1', $db->quote($query));
 	}
@@ -84,7 +84,7 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(array('x'));
 
-		$this->assertSame($query, $query->having(new Database_Query_Conditions(new Database_Column('x'), '=', 1)));
+		$this->assertSame($query, $query->having(new Database_Conditions(new Database_Column('x'), '=', 1)));
 
 		$this->assertSame('SELECT "x" HAVING "x" = 1', $db->quote($query));
 	}
