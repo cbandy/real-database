@@ -306,6 +306,10 @@ class Database_Quoting_Test_DB extends Database
 		return "'$value'";
 	}
 
+	public function execute_command($statement) {}
+
+	public function execute_query($statement, $as_object = FALSE) {}
+
 	public function table_prefix()
 	{
 		return 'pre_';

@@ -91,6 +91,30 @@ abstract class Database
 	abstract public function escape($value);
 
 	/**
+	 * Execute a SQL statement, returning the number of rows affected
+	 *
+	 * Do not use this method to count the rows returned by a query (e.g., a
+	 * SELECT statement). Always use execute_query() for statements that return
+	 * results.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL command
+	 * @return  integer Number of affected rows
+	 */
+	abstract public function execute_command($statement);
+
+	/**
+	 * Execute a SQL statement, returning the result set or NULL when the
+	 * statement is not a query (e.g., a DELETE statement)
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL query
+	 * @param   mixed   $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @return  Database_Result Result set or NULL
+	 */
+	abstract public function execute_query($statement, $as_object = FALSE);
+
+	/**
 	 * Quote a value for inclusion in a SQL query.
 	 *
 	 * @uses Database::quote_identifier()
