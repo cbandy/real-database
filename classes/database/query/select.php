@@ -113,7 +113,7 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   Database_Query_From $reference
+	 * @param   Database_From   $reference
 	 * @return  $this
 	 */
 	public function from($reference)

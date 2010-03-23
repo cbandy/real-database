@@ -59,7 +59,7 @@ class Database_Query_Update extends Database_Query
 	 */
 	public function table($table, $alias = NULL)
 	{
-		return $this->param(':table', new Database_Query_From($table, $alias));
+		return $this->param(':table', new Database_From($table, $alias));
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Database_Query_Update extends Database_Query
 	}
 
 	/**
-	 * @param   Database_Query_From $reference
+	 * @param   Database_From   $reference
 	 * @return  $this
 	 */
 	public function from($reference)

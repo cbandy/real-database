@@ -52,7 +52,7 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(array('one.x'));
 
-		$from = new Database_Query_From('one');
+		$from = new Database_From('one');
 		$from->add('two')->join('three');
 
 		$this->assertSame($query, $query->from($from));
