@@ -122,6 +122,10 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 
 class Database_From_Test_DB extends Database
 {
+	public function connect() {}
+
+	public function disconnect() {}
+
 	public function escape($value)
 	{
 		return "'$value'";

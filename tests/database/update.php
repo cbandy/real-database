@@ -67,6 +67,10 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 
 class Database_Update_Test_DB extends Database
 {
+	public function connect() {}
+
+	public function disconnect() {}
+
 	public function escape($value)
 	{
 		return "'$value'";

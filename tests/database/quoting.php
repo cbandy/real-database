@@ -293,6 +293,10 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 
 class Database_Quoting_Test_DB extends Database
 {
+	public function connect() {}
+
+	public function disconnect() {}
+
 	public function escape($value)
 	{
 		// Add slashes to newlines and quotes

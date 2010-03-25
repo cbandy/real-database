@@ -81,6 +81,38 @@ abstract class Database
 	// Character used to quote identifiers (tables, columns, aliases, etc.)
 	protected $_quote = '"';
 
+	public function __destruct()
+	{
+		$this->disconnect();
+	}
+
+	/**
+	 * Set the connection character set
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $charset    Character set
+	 * @return  void
+	 */
+	public function charset($charset)
+	{
+		$this->execute_command('SET NAMES '.$this->escape($charset));
+	}
+
+	/**
+	 * Connect
+	 *
+	 * @throws  Database_Exception
+	 * @return  void
+	 */
+	abstract public function connect();
+
+	/**
+	 * Disconnect
+	 *
+	 * @return  void
+	 */
+	abstract public function disconnect();
+
 	/**
 	 * Quote a SQL string while escaping characters that could cause a SQL
 	 * injection attack.
