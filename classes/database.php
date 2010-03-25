@@ -249,8 +249,10 @@ abstract class Database
 	/**
 	 * Quote a value for inclusion in a SQL query.
 	 *
+	 * @uses Database::quote_column()
 	 * @uses Database::quote_identifier()
 	 * @uses Database::quote_literal()
+	 * @uses Database::quote_table()
 	 *
 	 * @param   mixed   Value to quote
 	 * @param   string  Alias
