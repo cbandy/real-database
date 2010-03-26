@@ -360,4 +360,11 @@ abstract class Database
 
 		return $value;
 	}
+
+	/**
+	 * Return the table prefix
+	 *
+	 * @return  string
+	 */
+	abstract public function table_prefix();
 }
