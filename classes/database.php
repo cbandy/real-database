@@ -87,6 +87,14 @@ abstract class Database
 	}
 
 	/**
+	 * Start a transaction
+	 *
+	 * @throws  Database_Exception
+	 * @return  void
+	 */
+	abstract public function begin();
+
+	/**
 	 * Set the connection character set
 	 *
 	 * @throws  Database_Exception
@@ -97,6 +105,14 @@ abstract class Database
 	{
 		$this->execute_command('SET NAMES '.$this->escape($charset));
 	}
+
+	/**
+	 * Commit the current transaction
+	 *
+	 * @throws  Database_Exception
+	 * @return  void
+	 */
+	abstract public function commit();
 
 	/**
 	 * Connect
@@ -392,6 +408,14 @@ abstract class Database
 
 		return $value;
 	}
+
+	/**
+	 * Abort the current transaction
+	 *
+	 * @throws  Database_Exception
+	 * @return  void
+	 */
+	abstract public function rollback();
 
 	/**
 	 * Return the table prefix

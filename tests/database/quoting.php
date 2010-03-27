@@ -293,6 +293,10 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 
 class Database_Quoting_Test_DB extends Database
 {
+	public function begin() {}
+
+	public function commit() {}
+
 	public function connect() {}
 
 	public function disconnect() {}
@@ -313,6 +317,8 @@ class Database_Quoting_Test_DB extends Database
 	public function execute_command($statement) {}
 
 	public function execute_query($statement, $as_object = FALSE) {}
+
+	public function rollback() {}
 
 	public function table_prefix()
 	{
