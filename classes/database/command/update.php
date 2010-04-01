@@ -45,7 +45,7 @@ class Database_Command_Update extends Database_Command
 		return $value;
 	}
 
-	public function compile(Database $db)
+	public function compile($db)
 	{
 		$this->_value = $this->_build();
 

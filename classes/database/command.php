@@ -12,9 +12,10 @@ class Database_Command extends Database_Expression
 	/**
 	 * Execute the command on a Database
 	 *
+	 * @param   Database    $db Connection on which to execute
 	 * @return  integer Number of affected rows
 	 */
-	public function execute(Database $db)
+	public function execute($db)
 	{
 		return $db->execute_command($this->compile($db));
 	}

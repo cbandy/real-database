@@ -39,9 +39,10 @@ class Database_Query extends Database_Expression
 	/**
 	 * Execute the query against a Database
 	 *
+	 * @param   Database    $db Connection on which to execute
 	 * @return  Database_Result Result set
 	 */
-	public function execute(Database $db)
+	public function execute($db)
 	{
 		return $db->execute_query($this->compile($db), $this->_as_object);
 	}

@@ -78,7 +78,7 @@ class Database_Expression
 	 * @param   Database    $db Connection with which to quote the values
 	 * @return  string  Quoted SQL expression
 	 */
-	public function compile(Database $db)
+	public function compile($db)
 	{
 		if (empty($this->_parameters))
 			return (string) $this->_value;
