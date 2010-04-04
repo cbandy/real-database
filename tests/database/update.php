@@ -67,6 +67,8 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 
 class Database_Update_Test_DB extends Database
 {
+	public function __construct($name = NULL, $config = NULL) {}
+
 	public function begin() {}
 
 	public function commit() {}

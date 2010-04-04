@@ -122,6 +122,8 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 
 class Database_From_Test_DB extends Database
 {
+	public function __construct($name = NULL, $config = NULL) {}
+
 	public function begin() {}
 
 	public function commit() {}

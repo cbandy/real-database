@@ -10,6 +10,11 @@
 abstract class Database
 {
 	/**
+	 * @var array   Singleton instances
+	 */
+	protected static $_instances;
+
+	/**
 	 * Create a conditions accumulator
 	 *
 	 * @param   mixed   $left       Left operand
@@ -63,6 +68,39 @@ abstract class Database
 	}
 
 	/**
+	 * Get a singleton Database instance
+	 *
+	 * The configuration group will be loaded from the database configuration
+	 * file based on the instance name unless it is passed directly.
+	 *
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
+	 * @return  Database
+	 */
+	public static function instance($name = 'default', $config = NULL)
+	{
+		if ( ! isset(Database::$_instances[$name]))
+		{
+			if ($config === NULL)
+			{
+				// Load the configuration
+				$config = Kohana::config('database')->$name;
+			}
+
+			if ( ! isset($config['type']))
+				throw new Kohana_Exception('Database type not defined in ":name" configuration', array(':name' => $name));
+
+			// Set the driver class name
+			$driver = 'Database_'.$config['type'];
+
+			// Create the database connection instance
+			new $driver($name, $config);
+		}
+
+		return Database::$_instances[$name];
+	}
+
+	/**
 	 * Create a SELECT query
 	 */
 	public static function select($columns = NULL)
@@ -78,8 +116,38 @@ abstract class Database
 		return new Database_Command_Update($table, $alias, $values);
 	}
 
+	/**
+	 * @var array   Configuration
+	 */
+	protected $_config;
+
+	/**
+	 * @var string  Instance name
+	 */
+	protected $_instance;
+
 	// Character used to quote identifiers (tables, columns, aliases, etc.)
 	protected $_quote = '"';
+
+	/**
+	 * Create a singleton database instance
+	 *
+	 * The database type is not verified.
+	 *
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
+	 */
+	protected function __construct($name, $config)
+	{
+		if (isset(Database::$_instances[$name]))
+			throw new Kohana_Exception('Database instance ":name" already exists', array(':name' => $name));
+
+		$this->_config = $config;
+		$this->_instance = $name;
+
+		// Store the database instance
+		Database::$_instances[$name] = $this;
+	}
 
 	public function __destruct()
 	{
