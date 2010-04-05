@@ -28,7 +28,11 @@ abstract class Database
 	}
 
 	/**
-	 * Create a DELETE query
+	 * Create a DELETE command
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
+	 * @return  Database_Command_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
 	{
@@ -60,7 +64,11 @@ abstract class Database
 	}
 
 	/**
-	 * Create an INSERT query
+	 * Create an INSERT command
+	 *
+	 * @param   mixed   $table      Converted to Database_Table
+	 * @param   array   $columns
+	 * @return  Database_Command_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
@@ -102,6 +110,9 @@ abstract class Database
 
 	/**
 	 * Create a SELECT query
+	 *
+	 * @param   mixed   $columns
+	 * @return  Database_Query_Select
 	 */
 	public static function select($columns = NULL)
 	{
@@ -109,7 +120,12 @@ abstract class Database
 	}
 
 	/**
-	 * Create an UPDATE query
+	 * Create an UPDATE command
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
+	 * @param   array   $values
+	 * @return  Database_Command_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
 	{
