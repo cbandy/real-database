@@ -201,7 +201,7 @@ abstract class Database
 	 * Quote a SQL string while escaping characters that could cause a SQL
 	 * injection attack.
 	 *
-	 * @param   string  Value to quote
+	 * @param   mixed   Value to quote
 	 * @return  string
 	 */
 	abstract public function escape($value);
@@ -423,7 +423,7 @@ abstract class Database
 		}
 		else
 		{
-			$value = $this->escape( (string) $value);
+			$value = $this->escape($value);
 		}
 
 		if (isset($alias))
