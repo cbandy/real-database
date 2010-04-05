@@ -10,11 +10,48 @@
 abstract class Database
 {
 	/**
+	 * Create a conditions accumulator
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
+	 * @return  Database_Conditions
+	 */
+	public static function conditions($left = NULL, $operator = NULL, $right = NULL)
+	{
+		return new Database_Conditions($left, $operator, $right);
+	}
+
+	/**
 	 * Create a DELETE query
 	 */
 	public static function delete($table = NULL, $alias = NULL)
 	{
 		return new Database_Query_Delete($table, $alias);
+	}
+
+	/**
+	 * Create an expression
+	 *
+	 * @param   string  $value      Raw expression
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  Database_Expression
+	 */
+	public static function expression($value, $parameters = array())
+	{
+		return new Database_Expression($value, $parameters);
+	}
+
+	/**
+	 * Create a table reference accumulator
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
+	 * @return  Database_From
+	 */
+	public static function from($table = NULL, $alias = NULL)
+	{
+		return new Database_From($table, $alias);
 	}
 
 	/**
