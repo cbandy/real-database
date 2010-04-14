@@ -34,7 +34,7 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 			array(12.345, '12.345000'),
 
 			array('string', "'string'"),
-			array("multiline\nstring", "'multiline\\nstring'"),
+			array("multiline\nstring", "'multiline\nstring'"),
 
 			array(new Database_Quoting_Test_String, "'object'"),
 
@@ -46,11 +46,11 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 			array(array(12.345), '(12.345000)'),
 
 			array(array('string'), "('string')"),
-			array(array("multiline\nstring"), "('multiline\\nstring')"),
+			array(array("multiline\nstring"), "('multiline\nstring')"),
 
 			array(array(new Database_Quoting_Test_String), "('object')"),
 
-			array(array(NULL, FALSE, TRUE, 51678, 12.345, 'string', "multiline\nstring", new Database_Quoting_Test_String), "(NULL, '0', '1', 51678, 12.345000, 'string', 'multiline\\nstring', 'object')"),
+			array(array(NULL, FALSE, TRUE, 51678, 12.345, 'string', "multiline\nstring", new Database_Quoting_Test_String), "(NULL, '0', '1', 51678, 12.345000, 'string', 'multiline\nstring', 'object')"),
 		);
 	}
 
@@ -270,7 +270,7 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 			array(51678, '51678'),
 
 			array('string', "'string'"),
-			array("multiline\nstring", "'multiline\\nstring'"),
+			array("multiline\nstring", "'multiline\nstring'"),
 
 			array(
 				array(
@@ -284,7 +284,7 @@ class Database_Quoting_Test extends PHPUnit_Framework_TestCase
 					0, -1, 51678, 12.345,
 					'string', "multiline\nstring",
 				),
-				'"one"."pre_two".*, "one"."pre_two"."three", "one"."two"."pre_three", "one"."two"."three", expression, \'object\', NULL, \'0\', \'1\', 0, -1, 51678, 12.345000, \'string\', \'multiline\nstring\''
+				'"one"."pre_two".*, "one"."pre_two"."three", "one"."two"."pre_three", "one"."two"."three", expression, '."'object', NULL, '0', '1', 0, -1, 51678, 12.345000, 'string', 'multiline\nstring'"
 			),
 		);
 	}
@@ -302,19 +302,6 @@ class Database_Quoting_Test_DB extends Database
 	public function connect() {}
 
 	public function disconnect() {}
-
-	public function escape($value)
-	{
-		// Add slashes to newlines and quotes
-		$value = strtr($value, array(
-			"\n" => '\n',
-			"\r" => '\r',
-			"'" => "\\'",
-			'"' => '\"',
-		));
-
-		return "'$value'";
-	}
 
 	public function execute_command($statement) {}
 

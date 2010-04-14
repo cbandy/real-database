@@ -7,7 +7,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_SQLite2 extends Database implements Database_iInsert
+class Database_SQLite2 extends Database_Escape implements Database_iInsert
 {
 	/**
 	 * Create an INSERT command

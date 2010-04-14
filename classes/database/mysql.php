@@ -7,7 +7,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_MySQL extends Database implements Database_iInsert
+class Database_MySQL extends Database_Escape implements Database_iInsert
 {
 	/**
 	 * @var boolean Whether or not mysql_set_charset() exists

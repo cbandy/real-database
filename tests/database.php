@@ -35,11 +35,6 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->_db->disconnect();
 	}
 
-	public function test_escape()
-	{
-		$this->assertNotEquals('asdf', $this->_db->escape('asdf'));
-	}
-
 	public function test_execute_command()
 	{
 		$this->assertSame(0, $this->_db->execute_command(''));

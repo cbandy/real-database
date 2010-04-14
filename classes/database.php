@@ -238,15 +238,6 @@ abstract class Database
 	abstract public function disconnect();
 
 	/**
-	 * Quote a SQL string while escaping characters that could cause a SQL
-	 * injection attack.
-	 *
-	 * @param   mixed   Value to quote
-	 * @return  string
-	 */
-	abstract public function escape($value);
-
-	/**
 	 * Execute a SQL statement, returning the number of rows affected
 	 *
 	 * Do not use this method to count the rows returned by a query (e.g., a
@@ -426,8 +417,6 @@ abstract class Database
 	/**
 	 * Quote a literal value for inclusion in a SQL query.
 	 *
-	 * @uses Database::escape()
-	 *
 	 * @param   mixed   Value to quote
 	 * @return  string
 	 */
@@ -459,7 +448,7 @@ abstract class Database
 		}
 		else
 		{
-			$value = $this->escape($value);
+			$value = "'$value'";
 		}
 
 		return $value;
