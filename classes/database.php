@@ -291,26 +291,29 @@ abstract class Database
 		elseif (is_object($value))
 		{
 			if ($value instanceof Database_Column)
-				return $this->quote_column($value, $alias);
-
-			if ($value instanceof Database_Table)
-				return $this->quote_table($value, $alias);
-
-			if ($value instanceof Database_Identifier)
-				return $this->quote_identifier($value, $alias);
-
-			if ($value instanceof Database_Expression)
+			{
+				$value = $this->quote_column($value);
+			}
+			elseif ($value instanceof Database_Table)
+			{
+				$value = $this->quote_table($value);
+			}
+			elseif ($value instanceof Database_Identifier)
+			{
+				$value = $this->quote_identifier($value);
+			}
+			elseif ($value instanceof Database_Expression)
 			{
 				$value = $value->compile($this);
 			}
 			else
 			{
-				return $this->quote_literal($value, $alias);
+				$value = $this->quote_literal($value);
 			}
 		}
 		else
 		{
-			return $this->quote_literal($value, $alias);
+			$value = $this->quote_literal($value);
 		}
 
 		if (isset($alias))
@@ -327,10 +330,9 @@ abstract class Database
 	 * @uses Database::quote_table()
 	 *
 	 * @param   mixed   Column to quote
-	 * @param   string  Alias
 	 * @return  string
 	 */
-	public function quote_column($value, $alias = NULL)
+	public function quote_column($value)
 	{
 		if ($value instanceof Database_Identifier)
 		{
@@ -370,9 +372,6 @@ abstract class Database
 			$value = $prefix.$this->_quote.$value.$this->_quote;
 		}
 
-		if (isset($alias))
-			return $value.' AS '.$this->_quote.$alias.$this->_quote;
-
 		return $value;
 	}
 
@@ -380,10 +379,9 @@ abstract class Database
 	 * Quote an identifier for inclusion in a SQL query.
 	 *
 	 * @param   mixed   Identifier to quote
-	 * @param   string  Alias
 	 * @return  string
 	 */
-	public function quote_identifier($value, $alias = NULL)
+	public function quote_identifier($value)
 	{
 		if ($value instanceof Database_Identifier)
 		{
@@ -422,9 +420,6 @@ abstract class Database
 
 		$value = $prefix.$this->_quote.$value.$this->_quote;
 
-		if (isset($alias))
-			return $value.' AS '.$this->_quote.$alias.$this->_quote;
-
 		return $value;
 	}
 
@@ -434,10 +429,9 @@ abstract class Database
 	 * @uses Database::escape()
 	 *
 	 * @param   mixed   Value to quote
-	 * @param   string  Alias
 	 * @return  string
 	 */
-	public function quote_literal($value, $alias = NULL)
+	public function quote_literal($value)
 	{
 		if ($value === NULL)
 		{
@@ -468,9 +462,6 @@ abstract class Database
 			$value = $this->escape($value);
 		}
 
-		if (isset($alias))
-			return $value.' AS '.$this->_quote.$alias.$this->_quote;
-
 		return $value;
 	}
 
@@ -479,12 +470,12 @@ abstract class Database
 	 * Adds the table prefix.
 	 *
 	 * @uses Database::quote_identifier()
+	 * @uses Database::table_prefix()
 	 *
 	 * @param   mixed   Table to quote
-	 * @param   string  Alias
 	 * @return  string
 	 */
-	public function quote_table($value, $alias = NULL)
+	public function quote_table($value)
 	{
 		if ($value instanceof Database_Identifier)
 		{
@@ -512,9 +503,6 @@ abstract class Database
 		}
 
 		$value = $prefix.$this->_quote.$this->table_prefix().$value.$this->_quote;
-
-		if (isset($alias))
-			return $value.' AS '.$this->_quote.$alias.$this->_quote;
 
 		return $value;
 	}
