@@ -211,7 +211,7 @@ abstract class Database
 	 */
 	public function charset($charset)
 	{
-		$this->execute_command('SET NAMES '.$this->escape($charset));
+		$this->execute_command("SET NAMES '$charset'");
 	}
 
 	/**
