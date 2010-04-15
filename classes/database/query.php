@@ -7,7 +7,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Query extends Database_Expression
+class Database_Query extends Database_Command
 {
 	protected $_as_object = FALSE;
 
