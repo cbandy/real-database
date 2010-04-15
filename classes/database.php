@@ -15,6 +15,18 @@ abstract class Database
 	protected static $_instances;
 
 	/**
+	 * Create a command
+	 *
+	 * @param   string  $statement  SQL command
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  Database_Command
+	 */
+	public static function command($statement, $parameters = array())
+	{
+		return new Database_Command($statement, $parameters);
+	}
+
+	/**
 	 * Create a conditions accumulator
 	 *
 	 * @param   mixed   $left       Left operand
@@ -106,6 +118,18 @@ abstract class Database
 		}
 
 		return Database::$_instances[$name];
+	}
+
+	/**
+	 * Create a query
+	 *
+	 * @param   string  $statement  SQL query
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  Database_Query
+	 */
+	public static function query($statement, $parameters = array())
+	{
+		return new Database_Query($statement, $parameters);
 	}
 
 	/**

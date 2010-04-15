@@ -83,10 +83,13 @@ class Database_Test extends PHPUnit_Framework_TestCase
 
 	public function test_factories_dynamic()
 	{
+		$this->assertTrue($this->_db->command('') instanceof Database_Command);
 		$this->assertTrue($this->_db->delete() instanceof Database_Command_Delete);
 		$this->assertTrue($this->_db->insert() instanceof Database_Command_Insert);
-		$this->assertTrue($this->_db->select() instanceof Database_Query_Select);
 		$this->assertTrue($this->_db->update() instanceof Database_Command_Update);
+
+		$this->assertTrue($this->_db->query('') instanceof Database_Query);
+		$this->assertTrue($this->_db->select() instanceof Database_Query_Select);
 
 		$this->assertTrue($this->_db->conditions() instanceof Database_Conditions);
 		$this->assertTrue($this->_db->expression('') instanceof Database_Expression);
@@ -95,10 +98,12 @@ class Database_Test extends PHPUnit_Framework_TestCase
 
 	public function test_factories_static()
 	{
+		$this->assertType('Database_Command', Database::command(''));
 		$this->assertType('Database_Command_Delete', Database::delete());
 		$this->assertType('Database_Command_Insert', Database::insert());
 		$this->assertType('Database_Command_Update', Database::update());
 
+		$this->assertType('Database_Query', Database::query(''));
 		$this->assertType('Database_Query_Select', Database::select());
 
 		$this->assertType('Database_Conditions', Database::conditions());
