@@ -130,6 +130,16 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->offset(0));
 		$this->assertSame('SELECT "x"', $db->quote($query));
 	}
+
+	public function test_prepare()
+	{
+		$db = new Database_Select_Test_DB;
+		$query = new Database_Query_Select;
+
+		$prepared = $query->prepare($db);
+
+		$this->assertTrue($prepared instanceof Database_Prepared_Query);
+	}
 }
 
 class Database_Select_Test_DB extends Database

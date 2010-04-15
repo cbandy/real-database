@@ -42,6 +42,16 @@ class Database_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->values(NULL));
 		$this->assertSame('INSERT INTO "pre_one" ("a", "b") DEFAULT VALUES', $db->quote($query));
 	}
+
+	public function test_prepare()
+	{
+		$db = new Database_Insert_Test_DB;
+		$query = new Database_Command_Insert;
+
+		$prepared = $query->prepare($db);
+
+		$this->assertTrue($prepared instanceof Database_Prepared_Command);
+	}
 }
 
 class Database_Insert_Test_DB extends Database

@@ -51,6 +51,13 @@ class Database_Command_Delete extends Database_Command
 		return parent::compile($db);
 	}
 
+	public function prepare($db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::prepare($db);
+	}
+
 	/**
 	 * @param   mixed   Converted to Database_Table
 	 * @param   string  Table alias

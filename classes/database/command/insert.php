@@ -58,6 +58,13 @@ class Database_Command_Insert extends Database_Command
 		return parent::compile($db);
 	}
 
+	public function prepare($db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::prepare($db);
+	}
+
 	/**
 	 * @param   array   $columns
 	 * @return  $this

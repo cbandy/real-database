@@ -17,6 +17,17 @@ class Database_Command extends Database_Expression
 	 */
 	public function execute($db)
 	{
-		return $db->execute_command($this->compile($db));
+		return $this->prepare($db)->execute();
+	}
+
+	/**
+	 * Prepare the command to be executed on a Database
+	 *
+	 * @param   Database    $db Connection on which to prepare (and later execute)
+	 * @return  Database_Prepared_Command
+	 */
+	public function prepare($db)
+	{
+		return $db->prepare_command($this->_value, $this->_parameters);
 	}
 }

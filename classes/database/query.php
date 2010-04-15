@@ -44,6 +44,17 @@ class Database_Query extends Database_Command
 	 */
 	public function execute($db)
 	{
-		return $db->execute_query($this->compile($db), $this->_as_object);
+		return $this->prepare($db)->as_object($this->_as_object)->execute();
+	}
+
+	/**
+	 * Prepare the query to be executed against a Database
+	 *
+	 * @param   Database    $db Connection on which to prepare (and later execute)
+	 * @return  Database_Prepared_Query
+	 */
+	public function prepare($db)
+	{
+		return $db->prepare_query($this->_value, $this->_parameters);
 	}
 }

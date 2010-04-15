@@ -35,6 +35,15 @@ class Database_Query_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('array', $result->current());
 	}
 
+	public function test_prepare()
+	{
+		$query = new Database_Query('SELECT * FROM '.$this->_table);
+
+		$prepared = $query->prepare($this->_db);
+
+		$this->assertTrue($prepared instanceof Database_Prepared_Query);
+	}
+
 	public function test_as_assoc()
 	{
 		$query = new Database_Query('SELECT * FROM '.$this->_table);

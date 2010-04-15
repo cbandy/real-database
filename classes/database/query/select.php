@@ -80,6 +80,13 @@ class Database_Query_Select extends Database_Query
 		return parent::compile($db);
 	}
 
+	public function prepare($db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::prepare($db);
+	}
+
 	/**
 	 * @param   mixed   Converted to Database_Column
 	 * @param   string  Column alias

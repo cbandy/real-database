@@ -64,6 +64,13 @@ class Database_Query_Set extends Database_Query
 		return parent::compile($db);
 	}
 
+	public function prepare($db)
+	{
+		$this->_value = $this->_build();
+
+		return parent::prepare($db);
+	}
+
 	/**
 	 * Open parenthesis
 	 *
