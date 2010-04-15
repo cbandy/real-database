@@ -262,6 +262,32 @@ abstract class Database
 	abstract public function execute_query($statement, $as_object = FALSE);
 
 	/**
+	 * Prepare a SQL statement which will only return the number of rows affected
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL command
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  Database_Prepared_Command
+	 */
+	public function prepare_command($statement, $parameters = array())
+	{
+		return new Database_Prepared_Command($this, $statement, $parameters);
+	}
+
+	/**
+	 * Prepare a SQL statement which will return a result set
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL query
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  Database_Prepared_Query
+	 */
+	public function prepare_query($statement, $parameters = array())
+	{
+		return new Database_Prepared_Query($this, $statement, $parameters);
+	}
+
+	/**
 	 * Quote a value for inclusion in a SQL query.
 	 *
 	 * @uses Database::quote_column()

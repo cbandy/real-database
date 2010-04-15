@@ -106,6 +106,16 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_From', Database::from());
 	}
 
+	public function test_prepare_command()
+	{
+		$this->assertTrue($this->_db->prepare_command('') instanceof Database_Prepared_Command);
+	}
+
+	public function test_prepare_query()
+	{
+		$this->assertTrue($this->_db->prepare_query('') instanceof Database_Prepared_Query);
+	}
+
 	public function test_transactions()
 	{
 		$this->_create_table();
