@@ -24,7 +24,7 @@ class Database_From extends Database_Expression
 
 		if ($table !== NULL)
 		{
-			$this->add($table, $alias);
+			$this->_add(NULL, $table, $alias);
 		}
 	}
 
