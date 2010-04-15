@@ -44,6 +44,9 @@ class Database_Query extends Database_Command
 	 */
 	public function execute($db)
 	{
+		if ($db instanceof Database_Escape)
+			return $db->execute_query($this->compile($db), $this->_as_object);
+
 		return $this->prepare($db)->as_object($this->_as_object)->execute();
 	}
 
