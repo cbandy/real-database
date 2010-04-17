@@ -86,10 +86,10 @@ class Database_Expression
 	public function compile($db)
 	{
 		if (empty($this->parameters))
-			return (string) $this->_value;
+			return $this->__toString();
 
 		$position = 0;
 
-		return preg_replace('/(:\w++|\?)/e', '$db->quote($this->parameters[ ("$1" === "?") ? $position++ : "$1" ])', $this->_value);
+		return preg_replace('/(:\w++|\?)/e', '$db->quote($this->parameters[ ("$1" === "?") ? $position++ : "$1" ])', $this->__toString());
 	}
 }

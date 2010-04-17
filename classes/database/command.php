@@ -31,6 +31,6 @@ class Database_Command extends Database_Expression
 	 */
 	public function prepare($db)
 	{
-		return $db->prepare_command($this->_value, $this->parameters);
+		return $db->prepare_command($this->__toString(), $this->parameters);
 	}
 }
