@@ -17,7 +17,7 @@ class Database_Expression
 	/**
 	 * @var array   Unquoted parameters
 	 */
-	protected $_parameters;
+	public $parameters;
 
 	/**
 	 * @param   string  $value      Raw expression
@@ -26,7 +26,7 @@ class Database_Expression
 	public function __construct($value, array $parameters = array())
 	{
 		$this->_value = $value;
-		$this->_parameters = $parameters;
+		$this->parameters = $parameters;
 	}
 
 	/**
@@ -38,7 +38,7 @@ class Database_Expression
 	 */
 	public function bind($param, & $var)
 	{
-		$this->_parameters[$param] =& $var;
+		$this->parameters[$param] =& $var;
 
 		return $this;
 	}
@@ -52,7 +52,7 @@ class Database_Expression
 	 */
 	public function param($param, $value)
 	{
-		$this->_parameters[$param] = $value;
+		$this->parameters[$param] = $value;
 
 		return $this;
 	}
@@ -65,7 +65,7 @@ class Database_Expression
 	 */
 	public function parameters(array $params)
 	{
-		$this->_parameters = $params + $this->_parameters;
+		$this->parameters = $params + $this->parameters;
 
 		return $this;
 	}
@@ -80,11 +80,11 @@ class Database_Expression
 	 */
 	public function compile($db)
 	{
-		if (empty($this->_parameters))
+		if (empty($this->parameters))
 			return (string) $this->_value;
 
 		$position = 0;
 
-		return preg_replace('/(:\w++|\?)/e', '$db->quote($this->_parameters[ ("$1" === "?") ? $position++ : "$1" ])', $this->_value);
+		return preg_replace('/(:\w++|\?)/e', '$db->quote($this->parameters[ ("$1" === "?") ? $position++ : "$1" ])', $this->_value);
 	}
 }

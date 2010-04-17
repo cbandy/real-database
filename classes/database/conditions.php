@@ -80,7 +80,7 @@ class Database_Conditions extends Database_Expression
 		}
 
 		$this->_empty = FALSE;
-		$this->_parameters[] = $left;
+		$this->parameters[] = $left;
 		$this->_value .= '?';
 
 		if ( ! empty($operator))
@@ -92,7 +92,7 @@ class Database_Conditions extends Database_Expression
 
 			if ($operator === 'IN')
 			{
-				$this->_parameters[] = $right;
+				$this->parameters[] = $right;
 				$this->_value .= '(?)';
 			}
 			elseif ($operator === 'BETWEEN' AND is_array($right))
@@ -100,13 +100,13 @@ class Database_Conditions extends Database_Expression
 				// BETWEEN always has exactly two arguments
 				list($min, $max) = $right;
 
-				$this->_parameters[] = $min;
-				$this->_parameters[] = $max;
+				$this->parameters[] = $min;
+				$this->parameters[] = $max;
 				$this->_value .= "? AND ?";
 			}
 			else
 			{
-				$this->_parameters[] = $right;
+				$this->parameters[] = $right;
 				$this->_value .= '?';
 			}
 		}

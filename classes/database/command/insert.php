@@ -29,17 +29,17 @@ class Database_Command_Insert extends Database_Command
 	{
 		$value = 'INSERT INTO :table ';
 
-		if ( ! empty($this->_parameters[':columns']))
+		if ( ! empty($this->parameters[':columns']))
 		{
 			$value .= '(:columns) ';
 		}
 
-		if ( ! isset($this->_parameters[':values']))
+		if ( ! isset($this->parameters[':values']))
 		{
 			// Not allowed by MySQL
 			$value .= 'DEFAULT VALUES';
 		}
-		elseif (is_array($this->_parameters[':values']))
+		elseif (is_array($this->parameters[':values']))
 		{
 			$value .= 'VALUES :values';
 		}
@@ -73,7 +73,7 @@ class Database_Command_Insert extends Database_Command
 	{
 		if ($columns === NULL)
 		{
-			unset($this->_parameters[':columns']);
+			unset($this->parameters[':columns']);
 		}
 		else
 		{
@@ -116,7 +116,7 @@ class Database_Command_Insert extends Database_Command
 	{
 		if ($values === NULL)
 		{
-			unset($this->_parameters[':values']);
+			unset($this->parameters[':values']);
 		}
 		elseif (is_array($values))
 		{
@@ -126,7 +126,7 @@ class Database_Command_Insert extends Database_Command
 			foreach ($values as $row)
 			{
 				// Wrap each row in parentheses
-				$this->_parameters[':values'][] = new Database_Expression('(?)', array($row));
+				$this->parameters[':values'][] = new Database_Expression('(?)', array($row));
 			}
 		}
 		else

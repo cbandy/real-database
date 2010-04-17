@@ -30,14 +30,14 @@ class Database_Command_Update extends Database_Command
 	{
 		$value = 'UPDATE :table SET :values';
 
-		if ( ! empty($this->_parameters[':from']))
+		if ( ! empty($this->parameters[':from']))
 		{
 			// Not allowed in MySQL
 			// Not allowed in SQLite
 			$value .= ' FROM :from';
 		}
 
-		if ( ! empty($this->_parameters[':where']))
+		if ( ! empty($this->parameters[':where']))
 		{
 			$value .= ' WHERE :where';
 		}
@@ -85,7 +85,7 @@ class Database_Command_Update extends Database_Command
 			{
 				$column = new Database_Column($column);
 
-				$this->_parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
+				$this->parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
 			}
 		}
 		else
@@ -109,7 +109,7 @@ class Database_Command_Update extends Database_Command
 			$column = new Database_Column($column);
 		}
 
-		$this->_parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
+		$this->parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
 
 		return $this;
 	}

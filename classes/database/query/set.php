@@ -36,18 +36,18 @@ class Database_Query_Set extends Database_Query
 	{
 		$value = ':queries';
 
-		if ( ! empty($this->_parameters[':orderby']))
+		if ( ! empty($this->parameters[':orderby']))
 		{
 			$value .= ' ORDER BY :orderby';
 		}
 
-		if (isset($this->_parameters[':limit']))
+		if (isset($this->parameters[':limit']))
 		{
 			// Not allowed in MSSQL
 			$value .= ' LIMIT :limit';
 		}
 
-		if ( ! empty($this->_parameters[':offset']))
+		if ( ! empty($this->parameters[':offset']))
 		{
 			// LIMIT required by MySQL and SQLite
 			// Not allowed in MSSQL
@@ -81,11 +81,11 @@ class Database_Query_Set extends Database_Query
 	{
 		if ( ! $this->_empty)
 		{
-			$this->_parameters[':queries']->_value .= ' '.strtoupper($operator).' ';
+			$this->parameters[':queries']->_value .= ' '.strtoupper($operator).' ';
 		}
 
 		$this->_empty = TRUE;
-		$this->_parameters[':queries']->_value .= '(';
+		$this->parameters[':queries']->_value .= '(';
 
 		return $this;
 	}
@@ -98,7 +98,7 @@ class Database_Query_Set extends Database_Query
 	public function close()
 	{
 		$this->_empty = FALSE;
-		$this->_parameters[':queries']->_value .= ')';
+		$this->parameters[':queries']->_value .= ')';
 
 		return $this;
 	}
@@ -114,12 +114,12 @@ class Database_Query_Set extends Database_Query
 	{
 		if ( ! $this->_empty)
 		{
-			$this->_parameters[':queries']->_value .= ' '.strtoupper($operator).' ';
+			$this->parameters[':queries']->_value .= ' '.strtoupper($operator).' ';
 		}
 
 		$this->_empty = FALSE;
-		$this->_parameters[':queries']->_parameters[] = $query;
-		$this->_parameters[':queries']->_value .= "(?)";
+		$this->parameters[':queries']->parameters[] = $query;
+		$this->parameters[':queries']->_value .= "(?)";
 
 		return $this;
 	}
@@ -189,7 +189,7 @@ class Database_Query_Set extends Database_Query
 			$column = new Database_Expression('? ?', array($column, $direction));
 		}
 
-		$this->_parameters[':orderby'][] = $column;
+		$this->parameters[':orderby'][] = $column;
 
 		return $this;
 	}

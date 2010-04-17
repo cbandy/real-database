@@ -16,25 +16,25 @@ class Database_SQLite2_Insert extends Database_Command_Insert_Identity
 	 */
 	public function compile($db)
 	{
-		if (empty($this->_parameters[':values'])
-			OR ! is_array($this->_parameters[':values'])
-			OR count($this->_parameters[':values']) === 1)
+		if (empty($this->parameters[':values'])
+			OR ! is_array($this->parameters[':values'])
+			OR count($this->parameters[':values']) === 1)
 		{
 			// Inserting defaults, expression, or single row
 			return parent::compile($db);
 		}
 
 		// Build INSERT statement for each row
-		$expression = new Database_Expression('INSERT INTO :table ', $this->_parameters[':values']);
-		$expression->_parameters[':table'] = $this->_parameters[':table'];
+		$expression = new Database_Expression('INSERT INTO :table ', $this->parameters[':values']);
+		$expression->parameters[':table'] = $this->parameters[':table'];
 
-		if ( ! empty($this->_parameters[':columns']))
+		if ( ! empty($this->parameters[':columns']))
 		{
-			$expression->_parameters[':columns'] = $this->_parameters[':columns'];
+			$expression->parameters[':columns'] = $this->parameters[':columns'];
 			$expression->_value .= '(:columns) ';
 		}
 
-		$expression->_value = str_repeat($expression->_value.'VALUES ?;', count($this->_parameters[':values']));
+		$expression->_value = str_repeat($expression->_value.'VALUES ?;', count($this->parameters[':values']));
 
 		return $expression->compile($db);
 	}

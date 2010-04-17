@@ -58,6 +58,6 @@ class Database_Query extends Database_Command
 	 */
 	public function prepare($db)
 	{
-		return $db->prepare_query($this->_value, $this->_parameters);
+		return $db->prepare_query($this->_value, $this->parameters);
 	}
 }

@@ -17,7 +17,7 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 	{
 		$value = parent::_build();
 
-		if ( ! empty($this->_parameters[':returning']))
+		if ( ! empty($this->parameters[':returning']))
 		{
 			$value .= ' RETURNING :returning';
 		}
@@ -57,7 +57,7 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 	 */
 	public function execute($db)
 	{
-		if (empty($this->_parameters[':returning']))
+		if (empty($this->parameters[':returning']))
 			return parent::execute($db);
 
 		return $db->execute_query($this->compile($db), $this->_as_object);
@@ -73,7 +73,7 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 	{
 		if ($columns === NULL)
 		{
-			unset($this->_parameters[':returning']);
+			unset($this->parameters[':returning']);
 		}
 		elseif (is_array($columns))
 		{
@@ -90,7 +90,7 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 					$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
 				}
 
-				$this->_parameters[':returning'][] = $column;
+				$this->parameters[':returning'][] = $column;
 			}
 		}
 		else

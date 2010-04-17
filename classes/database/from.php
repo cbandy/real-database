@@ -51,12 +51,12 @@ class Database_From extends Database_Expression
 
 		$this->_empty = FALSE;
 		$this->_value .= ($table instanceof Database_Query) ? '(?)' : '?';
-		$this->_parameters[] = $table;
+		$this->parameters[] = $table;
 
 		if ( ! empty($alias))
 		{
 			$this->_value .= ' AS ?';
-			$this->_parameters[] = new Database_Identifier($alias);
+			$this->parameters[] = new Database_Identifier($alias);
 		}
 
 		return $this;
@@ -133,7 +133,7 @@ class Database_From extends Database_Expression
 	{
 		$this->_empty = FALSE;
 		$this->_value .= ' ON (?)';
-		$this->_parameters[] = $conditions;
+		$this->parameters[] = $conditions;
 
 		return $this;
 	}
@@ -157,7 +157,7 @@ class Database_From extends Database_Expression
 
 		$this->_empty = FALSE;
 		$this->_value .= ' USING (?)';
-		$this->_parameters[] = $columns;
+		$this->parameters[] = $columns;
 
 		return $this;
 	}

@@ -29,14 +29,14 @@ class Database_Command_Delete extends Database_Command
 	{
 		$value = 'DELETE FROM :table';
 
-		if ( ! empty($this->_parameters[':from']))
+		if ( ! empty($this->parameters[':from']))
 		{
 			// Not allowed in SQLite
 			// Should be 'FROM' in MSSQL
 			$value .= ' USING :from';
 		}
 
-		if ( ! empty($this->_parameters[':where']))
+		if ( ! empty($this->parameters[':where']))
 		{
 			$value .= ' WHERE :where';
 		}

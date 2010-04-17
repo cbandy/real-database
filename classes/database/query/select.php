@@ -25,45 +25,45 @@ class Database_Query_Select extends Database_Query
 	{
 		$value = 'SELECT';
 
-		if ( ! empty($this->_parameters[':distinct']))
+		if ( ! empty($this->parameters[':distinct']))
 		{
 			$value .= ' :distinct';
 		}
 
 		$value .= ' :columns';
 
-		if ( ! empty($this->_parameters[':from']))
+		if ( ! empty($this->parameters[':from']))
 		{
 			$value .= ' FROM :from';
 		}
 
-		if ( ! empty($this->_parameters[':where']))
+		if ( ! empty($this->parameters[':where']))
 		{
 			$value .= ' WHERE :where';
 		}
 
-		if ( ! empty($this->_parameters[':groupby']))
+		if ( ! empty($this->parameters[':groupby']))
 		{
 			$value .= ' GROUP BY :groupby';
 		}
 
-		if ( ! empty($this->_parameters[':having']))
+		if ( ! empty($this->parameters[':having']))
 		{
 			$value .= ' HAVING :having';
 		}
 
-		if ( ! empty($this->_parameters[':orderby']))
+		if ( ! empty($this->parameters[':orderby']))
 		{
 			$value .= ' ORDER BY :orderby';
 		}
 
-		if (isset($this->_parameters[':limit']))
+		if (isset($this->parameters[':limit']))
 		{
 			// Not allowed in MSSQL
 			$value .= ' LIMIT :limit';
 		}
 
-		if ( ! empty($this->_parameters[':offset']))
+		if ( ! empty($this->parameters[':offset']))
 		{
 			// LIMIT required by MySQL and SQLite
 			// Not allowed in MSSQL
@@ -105,7 +105,7 @@ class Database_Query_Select extends Database_Query
 			$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
 		}
 
-		$this->_parameters[':columns'][] = $column;
+		$this->parameters[':columns'][] = $column;
 
 		return $this;
 	}
@@ -206,7 +206,7 @@ class Database_Query_Select extends Database_Query
 			$column = new Database_Expression('? ?', array($column, $direction));
 		}
 
-		$this->_parameters[':orderby'][] = $column;
+		$this->parameters[':orderby'][] = $column;
 
 		return $this;
 	}
@@ -236,7 +236,7 @@ class Database_Query_Select extends Database_Query
 					$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
 				}
 
-				$this->_parameters[':columns'][] = $column;
+				$this->parameters[':columns'][] = $column;
 			}
 		}
 		else
