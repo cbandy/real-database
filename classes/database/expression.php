@@ -29,6 +29,11 @@ class Database_Expression
 		$this->parameters = $parameters;
 	}
 
+	public function __toString()
+	{
+		return (string) $this->_value;
+	}
+
 	/**
 	 * Bind a variable to a parameter. Names must begin with colon.
 	 *
