@@ -13,9 +13,9 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 {
 	protected $_as_object = FALSE;
 
-	protected function _build()
+	public function __toString()
 	{
-		$value = parent::_build();
+		$value = parent::__toString();
 
 		if ( ! empty($this->parameters[':returning']))
 		{

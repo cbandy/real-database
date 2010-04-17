@@ -21,7 +21,7 @@ class Database_Query_Select extends Database_Query
 		$this->select($columns);
 	}
 
-	protected function _build()
+	public function __toString()
 	{
 		$value = 'SELECT';
 
@@ -71,20 +71,6 @@ class Database_Query_Select extends Database_Query
 		}
 
 		return $value;
-	}
-
-	public function compile($db)
-	{
-		$this->_value = $this->_build();
-
-		return parent::compile($db);
-	}
-
-	public function prepare($db)
-	{
-		$this->_value = $this->_build();
-
-		return parent::prepare($db);
 	}
 
 	/**

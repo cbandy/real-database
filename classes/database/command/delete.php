@@ -25,7 +25,7 @@ class Database_Command_Delete extends Database_Command
 		$this->from($table, $alias);
 	}
 
-	protected function _build()
+	public function __toString()
 	{
 		$value = 'DELETE FROM :table';
 
@@ -42,20 +42,6 @@ class Database_Command_Delete extends Database_Command
 		}
 
 		return $value;
-	}
-
-	public function compile($db)
-	{
-		$this->_value = $this->_build();
-
-		return parent::compile($db);
-	}
-
-	public function prepare($db)
-	{
-		$this->_value = $this->_build();
-
-		return parent::prepare($db);
 	}
 
 	/**

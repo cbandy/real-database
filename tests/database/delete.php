@@ -42,16 +42,6 @@ class Database_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame('DELETE FROM "pre_one" WHERE "pre_one"."x" = 0', $db->quote($query));
 	}
-
-	public function test_prepare()
-	{
-		$db = new Database_Delete_Test_DB;
-		$query = new Database_Command_Delete;
-
-		$prepared = $query->prepare($db);
-
-		$this->assertTrue($prepared instanceof Database_Prepared_Command);
-	}
 }
 
 class Database_Delete_Test_DB extends Database

@@ -26,7 +26,7 @@ class Database_Command_Update extends Database_Command
 		$this->table($table, $alias)->set($values);
 	}
 
-	protected function _build()
+	public function __toString()
 	{
 		$value = 'UPDATE :table SET :values';
 
@@ -43,20 +43,6 @@ class Database_Command_Update extends Database_Command
 		}
 
 		return $value;
-	}
-
-	public function compile($db)
-	{
-		$this->_value = $this->_build();
-
-		return parent::compile($db);
-	}
-
-	public function prepare($db)
-	{
-		$this->_value = $this->_build();
-
-		return parent::prepare($db);
 	}
 
 	/**

@@ -66,16 +66,6 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE "y" = 1', $db->quote($query));
 	}
-
-	public function test_prepare()
-	{
-		$db = new Database_Update_Test_DB;
-		$query = new Database_Command_Update;
-
-		$prepared = $query->prepare($db);
-
-		$this->assertTrue($prepared instanceof Database_Prepared_Command);
-	}
 }
 
 class Database_Update_Test_DB extends Database
