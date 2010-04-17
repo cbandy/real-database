@@ -60,7 +60,7 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 		if (empty($this->parameters[':returning']))
 			return parent::execute($db);
 
-		return $db->execute_query($this->compile($db), $this->_as_object);
+		return $db->execute_query($db->quote($this), $this->_as_object);
 	}
 
 	/**

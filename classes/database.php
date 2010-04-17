@@ -291,6 +291,7 @@ abstract class Database
 	 * Quote a value for inclusion in a SQL query.
 	 *
 	 * @uses Database::quote_column()
+	 * @uses Database::quote_expression()
 	 * @uses Database::quote_identifier()
 	 * @uses Database::quote_literal()
 	 * @uses Database::quote_table()
@@ -307,7 +308,11 @@ abstract class Database
 		}
 		elseif (is_object($value))
 		{
-			if ($value instanceof Database_Column)
+			if ($value instanceof Database_Expression)
+			{
+				$value = $this->quote_expression($value);
+			}
+			elseif ($value instanceof Database_Column)
 			{
 				$value = $this->quote_column($value);
 			}
@@ -318,10 +323,6 @@ abstract class Database
 			elseif ($value instanceof Database_Identifier)
 			{
 				$value = $this->quote_identifier($value);
-			}
-			elseif ($value instanceof Database_Expression)
-			{
-				$value = $value->compile($this);
 			}
 			else
 			{
@@ -390,6 +391,45 @@ abstract class Database
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Quote an expression's parameters for inclusion in a SQL query.
+	 *
+	 * @param   Database_Expression Expression to quote
+	 * @return  string
+	 */
+	public function quote_expression($value)
+	{
+		$parameters = $value->parameters;
+		$value = (string) $value;
+
+		$chunks = preg_split('/(?:\?|:\w++)/', $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
+
+		$position = 0;
+		$prev = $chunks[0];
+		$result = $prev[0];
+
+		for ($i = 1; $i < count($chunks); ++$i)
+		{
+			if ($value[$chunks[$i][1] - 1] === '?')
+			{
+				$placeholder = $position++;
+			}
+			else
+			{
+				$offset = $prev[1] + strlen($prev[0]);
+				$placeholder = substr($value, $offset, $chunks[$i][1] - $offset);
+			}
+
+			//if ( ! array_key_exists($placeholder, $parameters))
+			//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+
+			$prev = $chunks[$i];
+			$result .= $this->quote($parameters[$placeholder]).$prev[0];
+		}
+
+		return $result;
 	}
 
 	/**

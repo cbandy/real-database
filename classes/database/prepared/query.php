@@ -45,6 +45,6 @@ class Database_Prepared_Query extends Database_Prepared_Command
 	 */
 	public function execute()
 	{
-		return $this->_db->execute_query($this->compile($this->_db), $this->_as_object);
+		return $this->_db->execute_query($this->_db->quote($this), $this->_as_object);
 	}
 }

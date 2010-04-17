@@ -74,22 +74,4 @@ class Database_Expression
 
 		return $this;
 	}
-
-	/**
-	 * Compile the expression by replacing parameters with their quoted values
-	 *
-	 * @uses Database::quote()
-	 *
-	 * @param   Database    $db Connection with which to quote the values
-	 * @return  string  Quoted SQL expression
-	 */
-	public function compile($db)
-	{
-		if (empty($this->parameters))
-			return $this->__toString();
-
-		$position = 0;
-
-		return preg_replace('/(:\w++|\?)/e', '$db->quote($this->parameters[ ("$1" === "?") ? $position++ : "$1" ])', $this->__toString());
-	}
 }

@@ -12,16 +12,16 @@
 class Database_SQLite2_Insert extends Database_Command_Insert_Identity
 {
 	/**
-	 * @param   Database_SQLite2    $db
+	 * @return  Database_Expression
 	 */
-	public function compile($db)
+	protected function _build()
 	{
 		if (empty($this->parameters[':values'])
 			OR ! is_array($this->parameters[':values'])
 			OR count($this->parameters[':values']) === 1)
 		{
 			// Inserting defaults, expression, or single row
-			return parent::compile($db);
+			return $this;
 		}
 
 		// Build INSERT statement for each row
@@ -36,6 +36,29 @@ class Database_SQLite2_Insert extends Database_Command_Insert_Identity
 
 		$expression->_value = str_repeat($expression->_value.'VALUES ?;', count($this->parameters[':values']));
 
-		return $expression->compile($db);
+		return $expression;
+	}
+
+	/**
+	 * @param   Database_SQLite2    $db
+	 */
+	public function execute($db)
+	{
+		$expression = $this->_build();
+
+		if ( ! empty($this->_return))
+			return $db->execute_insert($db->quote($expression));
+
+		return $db->execute_command($db->quote($expression));
+	}
+
+	/**
+	 * @param   Database_SQLite2    $db
+	 */
+	public function prepare($db)
+	{
+		$expression = $this->_build();
+
+		return $db->prepare_command($expression->__toString(), $expression->parameters);
 	}
 }

@@ -34,6 +34,6 @@ class Database_Prepared_Command extends Database_Expression
 	 */
 	public function execute()
 	{
-		return $this->_db->execute_command($this->compile($this->_db));
+		return $this->_db->execute_command($this->_db->quote($this));
 	}
 }

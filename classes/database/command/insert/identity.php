@@ -21,7 +21,7 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 	public function execute($db)
 	{
 		if ( ! empty($this->_return))
-			return $db->execute_insert($this->compile($db));
+			return $db->execute_insert($db->quote($this));
 
 		return parent::execute($db);
 	}

@@ -18,7 +18,7 @@ class Database_Command extends Database_Expression
 	public function execute($db)
 	{
 		if ($db instanceof Database_Escape)
-			return $db->execute_command($this->compile($db));
+			return $db->execute_command($db->quote($this));
 
 		return $this->prepare($db)->execute();
 	}
