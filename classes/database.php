@@ -166,6 +166,11 @@ abstract class Database
 	 */
 	protected $_instance;
 
+	/**
+	 * @var string  Regular expression which matches expression placeholders
+	 */
+	protected $_placeholder = '/(?:\?|:\w++)/';
+
 	// Character used to quote identifiers (tables, columns, aliases, etc.)
 	protected $_quote = '"';
 
@@ -404,7 +409,7 @@ abstract class Database
 		$parameters = $value->parameters;
 		$value = (string) $value;
 
-		$chunks = preg_split('/(?:\?|:\w++)/', $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
+		$chunks = preg_split($this->_placeholder, $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
 		$position = 0;
 		$prev = $chunks[0];
