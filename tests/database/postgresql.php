@@ -247,6 +247,64 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('asdf', $this->_db->prepare('asdf', 'SELECT * FROM "temp_test_table"'));
 	}
 
+	public function test_prepare_command()
+	{
+		$query = $this->_db->prepare_command('DELETE FROM "temp_test_table"');
+
+		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Command, 'No parameters');
+		$this->assertSame('DELETE FROM "temp_test_table"', (string) $query, 'No parameters');
+		$this->assertSame(array(), $query->parameters, 'No parameters');
+
+		$query = $this->_db->prepare_command('DELETE FROM ? WHERE :cond', array(new Database_Table('temp_test_table'), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
+
+		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Command, 'Parameters');
+		$this->assertSame('DELETE FROM "temp_test_table" WHERE "value" = $1', (string) $query, 'Parameters');
+		$this->assertSame(array(60), $query->parameters, 'Parameters');
+	}
+
+	public function test_prepare_query()
+	{
+		$query = $this->_db->prepare_query('SELECT * FROM "temp_test_table"');
+
+		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Query, 'No parameters');
+		$this->assertSame('SELECT * FROM "temp_test_table"', (string) $query, 'No parameters');
+		$this->assertSame(array(), $query->parameters, 'No parameters');
+
+		$query = $this->_db->prepare_query('SELECT * FROM ? WHERE :cond', array(new Database_Table('temp_test_table'), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
+
+		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Query, 'Parameters');
+		$this->assertSame('SELECT * FROM "temp_test_table" WHERE "value" = $1', (string) $query, 'Parameters');
+		$this->assertSame(array(60), $query->parameters, 'Parameters');
+	}
+
+	public function test_prepared_command_deallocate()
+	{
+		$query = $this->_db->prepare_command('DELETE FROM "temp_test_table"');
+
+		$this->assertNull($query->deallocate());
+
+		try
+		{
+			$query->deallocate();
+			$this->fail('Calling deallocate() twice should fail with a Database_Exception');
+		}
+		catch (Database_Exception $e) {}
+	}
+
+	public function test_prepared_query_deallocate()
+	{
+		$query = $this->_db->prepare_query('SELECT * FROM "temp_test_table"');
+
+		$this->assertNull($query->deallocate());
+
+		try
+		{
+			$query->deallocate();
+			$this->fail('Calling deallocate() twice should fail with a Database_Exception');
+		}
+		catch (Database_Exception $e) {}
+	}
+
 	public function test_select()
 	{
 		$query = $this->_db->select(array('value'));
