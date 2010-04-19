@@ -149,6 +149,27 @@ class Database_PDO extends Database implements Database_iInsert
 		return new Database_PDO_Result($statement, $as_object);
 	}
 
+	/**
+	 * Create a prepared statement after connecting
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL statement
+	 * @return  PDOStatement
+	 */
+	public function prepare($statement)
+	{
+		$this->_connection or $this->connect();
+
+		try
+		{
+			return $this->_connection->prepare($statement);
+		}
+		catch (PDOException $e)
+		{
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+	}
+
 	public function rollback()
 	{
 		$this->_connection or $this->connect();
