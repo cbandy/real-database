@@ -145,6 +145,72 @@ class Database_PostgreSQL extends Database_Escape
 	}
 
 	/**
+	 * Evaluate a result resource as though it were a command
+	 *
+	 * Frees the resource.
+	 *
+	 * @throws  Database_Exception
+	 * @param   resource    Result resource
+	 * @return  integer Number of affected rows
+	 */
+	protected function _evaluate_command($result)
+	{
+		switch (pg_result_status($result))
+		{
+			case PGSQL_COMMAND_OK:
+				$rows = pg_affected_rows($result);
+			break;
+			case PGSQL_TUPLES_OK:
+				$rows = pg_num_rows($result);
+			break;
+			case PGSQL_BAD_RESPONSE:
+			case PGSQL_NONFATAL_ERROR:
+			case PGSQL_FATAL_ERROR:
+				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+
+			case PGSQL_COPY_IN:
+			case PGSQL_COPY_OUT:
+				pg_end_copy($this->_connection);
+			default:
+				$rows = 0;
+		}
+
+		pg_free_result($result);
+
+		return $rows;
+	}
+
+	/**
+	 * Evaluate a result resource as though it were a query
+	 *
+	 * Frees the resource.
+	 *
+	 * @throws  Database_Exception
+	 * @param   resource    $result     Result resource
+	 * @param   mixed       $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @return  Database_Result Result set or NULL
+	 */
+	protected function _evaluate_query($result, $as_object)
+	{
+		$status = pg_result_status($result);
+
+		if ($status === PGSQL_TUPLES_OK)
+			return new Database_PostgreSQL_Result($result, $as_object);
+
+		if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
+			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+
+		if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
+		{
+			pg_end_copy($this->_connection);
+		}
+
+		pg_free_result($result);
+
+		return NULL;
+	}
+
+	/**
 	 * Execute a statement after connecting
 	 *
 	 * @throws  Database_Exception
@@ -269,31 +335,7 @@ class Database_PostgreSQL extends Database_Escape
 
 	public function execute_command($statement)
 	{
-		$result = $this->_execute($statement);
-
-		switch (pg_result_status($result))
-		{
-			case PGSQL_COMMAND_OK:
-				$rows = pg_affected_rows($result);
-			break;
-			case PGSQL_TUPLES_OK:
-				$rows = pg_num_rows($result);
-			break;
-			case PGSQL_BAD_RESPONSE:
-			case PGSQL_NONFATAL_ERROR:
-			case PGSQL_FATAL_ERROR:
-				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
-
-			case PGSQL_COPY_IN:
-			case PGSQL_COPY_OUT:
-				pg_end_copy($this->_connection);
-			default:
-				$rows = 0;
-		}
-
-		pg_free_result($result);
-
-		return $rows;
+		return $this->_evaluate_command($this->_execute($statement));
 	}
 
 	public function execute_query($statement, $as_object = FALSE)
@@ -301,23 +343,7 @@ class Database_PostgreSQL extends Database_Escape
 		if (empty($statement))
 			return NULL;
 
-		$result = $this->_execute($statement);
-		$status = pg_result_status($result);
-
-		if ($status === PGSQL_TUPLES_OK)
-			return new Database_PostgreSQL_Result($result, $as_object);
-
-		if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
-			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
-
-		if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
-		{
-			pg_end_copy($this->_connection);
-		}
-
-		pg_free_result($result);
-
-		return NULL;
+		return $this->_evaluate_query($this->_execute($statement), $as_object);
 	}
 
 	public function rollback()
