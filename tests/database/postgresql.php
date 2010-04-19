@@ -97,6 +97,71 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertNull($this->_db->execute_query('COPY "temp_test_table" TO STDOUT'));
 	}
 
+	public function test_execute_prepared_command()
+	{
+		$name = $this->_db->prepare(NULL, 'UPDATE "temp_test_table" SET "value" = 20 WHERE "value" = 65');
+
+		$this->assertSame(2, $this->_db->execute_prepared_command($name));
+
+		$name = $this->_db->prepare(NULL, 'UPDATE "temp_test_table" SET "value" = $1 WHERE "value" = $2');
+
+		$this->assertSame(1, $this->_db->execute_prepared_command($name, array(20, 50)));
+		$this->assertSame(3, $this->_db->execute_prepared_command($name, array(30, 20)));
+
+		try
+		{
+			$this->_db->execute_prepared_command($name);
+			$this->fail('Executing without the required parameters should raise a Database_Exception');
+		}
+		catch (Database_Exception $e) {}
+	}
+
+	public function test_execute_prepared_query()
+	{
+		$name = $this->_db->prepare(NULL, 'SELECT * FROM "temp_test_table" WHERE "value" = $1');
+
+		$result = $this->_db->execute_prepared_query($name, array(60));
+
+		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Parameters (1)');
+		$this->assertSame(1, $result->count(), 'Parameters (1)');
+		$this->assertEquals(60, $result->get('value'));
+
+		$result = $this->_db->execute_prepared_query($name, array(50));
+
+		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Parameters (2)');
+		$this->assertSame(1, $result->count(), 'Parameters (2)');
+		$this->assertEquals(50, $result->get('value'));
+
+		try
+		{
+			$this->_db->execute_prepared_query($name);
+			$this->fail('Executing without the required parameters should raise a Database_Exception');
+		}
+		catch (Database_Exception $e) {}
+
+		$name = $this->_db->prepare(NULL, 'SELECT * FROM "temp_test_table"');
+
+		$result = $this->_db->execute_prepared_query($name);
+
+		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'No parameters');
+		$this->assertType('array', $result->current(), 'No parameters');
+
+		$result = $this->_db->execute_prepared_query($name, array(), FALSE);
+
+		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (FALSE)');
+		$this->assertType('array', $result->current(), 'Result type (FALSE)');
+
+		$result = $this->_db->execute_prepared_query($name, array(), TRUE);
+
+		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (TRUE)');
+		$this->assertType('stdClass', $result->current(), 'Result type (TRUE)');
+
+		$result = $this->_db->execute_prepared_query($name, array(), 'Database_PostgreSQL_Test_Class');
+
+		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (Database_PostgreSQL_Test_Class)');
+		$this->assertType('Database_PostgreSQL_Test_Class', $result->current(), 'Result type (Database_PostgreSQL_Test_Class)');
+	}
+
 	public function test_insert()
 	{
 		$query = $this->_db->insert('temp_test_table', array('value'));
@@ -167,6 +232,19 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
 		$this->assertEquals(array( (object) array('id' => 6), (object) array('id' => 7)), $result->as_array(), 'Each column');
+	}
+
+	public function test_prepare()
+	{
+		$name = $this->_db->prepare(NULL, 'SELECT * FROM "temp_test_table"');
+
+		$this->assertNotEquals('', $name, 'Returns a generated name');
+
+		$result = $this->_db->execute_query("SELECT * FROM pg_prepared_statements WHERE name = '$name'");
+		$this->assertSame(1, $result->count(), 'Created successfully');
+		$this->assertSame('f', $result->get('from_sql'), 'Definitely programmatic');
+
+		$this->assertSame('asdf', $this->_db->prepare('asdf', 'SELECT * FROM "temp_test_table"'));
 	}
 
 	public function test_select()
@@ -248,3 +326,5 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
 	}
 }
+
+class Database_PostgreSQL_Test_Class {}
