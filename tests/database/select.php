@@ -52,10 +52,13 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(array('one.x'));
 
+		$this->assertSame($query, $query->from('one', 'a'), 'Chainable (table)');
+		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" AS "a"', $db->quote($query));
+
 		$from = new Database_From('one');
 		$from->add('two')->join('three');
 
-		$this->assertSame($query, $query->from($from));
+		$this->assertSame($query, $query->from($from), 'Chainable (from)');
 		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one", "pre_two" JOIN "pre_three"', $db->quote($query));
 	}
 

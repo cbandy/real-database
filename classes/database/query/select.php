@@ -113,11 +113,17 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   Database_From   $reference
+	 * @param   mixed   $reference      Database_From or converted to Database_Table
+	 * @param   string  $table_alias    Table alias when converting to Database_Table
 	 * @return  $this
 	 */
-	public function from($reference)
+	public function from($reference, $table_alias = NULL)
 	{
+		if ( ! $reference instanceof Database_From)
+		{
+			$reference = new Database_From($reference, $table_alias);
+		}
+
 		return $this->param(':from', $reference);
 	}
 

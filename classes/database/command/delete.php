@@ -62,11 +62,17 @@ class Database_Command_Delete extends Database_Command
 	}
 
 	/**
-	 * @param   Database_From   $reference
+	 * @param   mixed   $reference      Database_From or converted to Database_Table
+	 * @param   string  $table_alias    Table alias when converting to Database_Table
 	 * @return  $this
 	 */
-	public function using($reference)
+	public function using($reference, $table_alias = NULL)
 	{
+		if ( ! $reference instanceof Database_From)
+		{
+			$reference = new Database_From($reference, $table_alias);
+		}
+
 		return $this->param(':from', $reference);
 	}
 

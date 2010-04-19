@@ -23,10 +23,13 @@ class Database_Delete_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Delete_Test_DB;
 		$query = new Database_Command_Delete('one');
 
+		$this->assertSame($query, $query->using('two', 'b'), 'Chainable (table)');
+		$this->assertSame('DELETE FROM "pre_one" USING "pre_two" AS "b"', $db->quote($query));
+
 		$from = new Database_From('two', 'b');
 		$from->add('three')->join('four');
 
-		$this->assertSame($query, $query->using($from));
+		$this->assertSame($query, $query->using($from), 'Chainable (from)');
 		$this->assertSame('DELETE FROM "pre_one" USING "pre_two" AS "b", "pre_three" JOIN "pre_four"', $db->quote($query));
 	}
 
