@@ -231,6 +231,27 @@ class Database_PostgreSQL extends Database_Escape
 	}
 
 	/**
+	 * Execute a prepared statement after connecting
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $name       Statement name
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  resource
+	 */
+	protected function _execute_prepared($name, $parameters)
+	{
+		$this->_connection or $this->connect();
+
+		if ( ! pg_send_execute($this->_connection, $name, $parameters))
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+
+		if ( ! $result = pg_get_result($this->_connection))
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+
+		return $result;
+	}
+
+	/**
 	 * Start a transaction
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/sql-set-transaction.html
@@ -338,12 +359,72 @@ class Database_PostgreSQL extends Database_Escape
 		return $this->_evaluate_command($this->_execute($statement));
 	}
 
+	/**
+	 * Execute a prepared command, returning the number of affected rows
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $name       Statement name
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  integer Number of affected rows
+	 */
+	public function execute_prepared_command($name, $parameters = array())
+	{
+		return $this->_evaluate_command($this->_execute_prepared($name, $parameters));
+	}
+
+	/**
+	 * Execute a prepared query, returning the result set or NULL when the
+	 * statement is not a query (e.g., a DELETE statement)
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $name       Statement name
+	 * @param   array   $parameters Unquoted parameters
+	 * @return  Database_Result Result set or NULL
+	 */
+	public function execute_prepared_query($name, $parameters = array(), $as_object = FALSE)
+	{
+		return $this->_evaluate_query($this->_execute_prepared($name, $parameters), $as_object);
+	}
+
 	public function execute_query($statement, $as_object = FALSE)
 	{
 		if (empty($statement))
 			return NULL;
 
 		return $this->_evaluate_query($this->_execute($statement), $as_object);
+	}
+
+	/**
+	 * Create a prepared statement after connecting
+	 *
+	 * @link http://php.net/manual/function.pg-prepare
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $name       Statement name or NULL to have one generated
+	 * @param   string  $statement  SQL statement
+	 * @return  string  Statement name
+	 */
+	public function prepare($name, $statement)
+	{
+		if ($name === NULL)
+		{
+			$name = 'kohana_'.sha1($statement);
+		}
+
+		$this->_connection or $this->connect();
+
+		if ( ! pg_send_prepare($this->_connection, $name, $statement))
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+
+		if ( ! $result = pg_get_result($this->_connection))
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+
+		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
+			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+
+		pg_free_result($result);
+
+		return $name;
 	}
 
 	public function rollback()
