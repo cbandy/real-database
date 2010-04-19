@@ -252,6 +252,72 @@ class Database_PostgreSQL extends Database_Escape
 	}
 
 	/**
+	 * Recursively replace Expression and Identifier parameters until all
+	 * parameters are unquoted literals.
+	 *
+	 * @param   string  $statement          SQL statement
+	 * @param   array   $parameters         Unquoted parameters
+	 * @param   array   $result_parameters  Parameters for the resulting statement
+	 * @return  string  SQL statement
+	 */
+	protected function _parse($statement, $parameters, & $result_parameters)
+	{
+		$chunks = preg_split($this->_placeholder, $statement, NULL, PREG_SPLIT_OFFSET_CAPTURE);
+
+		$names = NULL;
+		$position = 0;
+		$prev = $chunks[0];
+		$result = $prev[0];
+
+		for ($i = 1; $i < count($chunks); ++$i)
+		{
+			if ($statement[$chunks[$i][1] - 1] === '?')
+			{
+				$placeholder = $position++;
+			}
+			else
+			{
+				$offset = $prev[1] + strlen($prev[0]);
+				$placeholder = substr($statement, $offset, $chunks[$i][1] - $offset);
+			}
+
+			//if ( ! array_key_exists($placeholder, $parameters))
+			//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+
+			$value = $parameters[$placeholder];
+
+			if ($value instanceof Database_Expression)
+			{
+				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+			}
+			elseif ($value instanceof Database_Identifier)
+			{
+				$result .= $this->quote($value);
+			}
+			elseif (is_int($placeholder))
+			{
+				$result_parameters[] = $value;
+				$result .= '$'.count($result_parameters);
+			}
+			else
+			{
+				if ( ! isset($names[$placeholder]))
+				{
+					$result_parameters[] = $value;
+					$names[$placeholder] = '$'.count($result_parameters);
+				}
+
+				$result .= $names[$placeholder];
+			}
+
+			$prev = $chunks[$i];
+			$result .= $prev[0];
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Start a transaction
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/sql-set-transaction.html
@@ -425,6 +491,24 @@ class Database_PostgreSQL extends Database_Escape
 		pg_free_result($result);
 
 		return $name;
+	}
+
+	public function prepare_command($statement, $parameters = array())
+	{
+		$params = array();
+		$statement = $this->_parse($statement, $parameters, $params);
+		$name = $this->prepare(NULL, $statement);
+
+		return new Database_PostgreSQL_Prepared_Command($this, $name, $statement, $params);
+	}
+
+	public function prepare_query($statement, $parameters = array())
+	{
+		$params = array();
+		$statement = $this->_parse($statement, $parameters, $params);
+		$name = $this->prepare(NULL, $statement);
+
+		return new Database_PostgreSQL_Prepared_Query($this, $name, $statement, $params);
 	}
 
 	public function rollback()
