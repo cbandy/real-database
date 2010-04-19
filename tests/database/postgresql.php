@@ -305,6 +305,13 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		catch (Database_Exception $e) {}
 	}
 
+	public function test_quote_expression()
+	{
+		$expression = new Database_Expression("SELECT :value::interval, 'yes':::type", array(':value' => '1 week', ':type' => new Database_Expression('boolean')));
+
+		$this->assertSame("SELECT '1 week'::interval, 'yes'::boolean", $this->_db->quote_expression($expression));
+	}
+
 	public function test_select()
 	{
 		$query = $this->_db->select(array('value'));

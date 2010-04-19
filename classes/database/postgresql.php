@@ -61,6 +61,8 @@ class Database_PostgreSQL extends Database_Escape
 	 */
 	protected $_connection;
 
+	protected $_placeholder = '/(?:\?|(?<=::|[^:]):\w++)/';
+
 	/**
 	 * @var string  Table prefix
 	 */
