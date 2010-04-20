@@ -312,6 +312,32 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("SELECT '1 week'::interval, 'yes'::boolean", $this->_db->quote_expression($expression));
 	}
 
+	public function test_savepoint_transactions()
+	{
+		$select = 'SELECT * FROM "temp_test_table"';
+
+		$this->assertSame(5, $this->_db->execute_query($select)->count(), 'Initial');
+
+		$this->_db->begin();
+		$this->_db->execute_command('DELETE FROM "temp_test_table" WHERE "value" = 65');
+
+		$this->assertSame(3, $this->_db->execute_query($select)->count(), 'Deleted 65');
+
+		$this->assertNull($this->_db->savepoint('test_savepoint'));
+
+		$this->_db->execute_command('DELETE FROM "temp_test_table" WHERE "value" = 55');
+
+		$this->assertSame(2, $this->_db->execute_query($select)->count(), 'Deleted 55');
+
+		$this->assertNull($this->_db->rollback('test_savepoint'));
+
+		$this->assertSame(3, $this->_db->execute_query($select)->count(), 'Rollback 55');
+
+		$this->assertNull($this->_db->rollback());
+
+		$this->assertSame(5, $this->_db->execute_query($select)->count(), 'Rollback 65');
+	}
+
 	public function test_select()
 	{
 		$query = $this->_db->select(array('value'));

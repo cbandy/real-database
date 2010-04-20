@@ -513,9 +513,33 @@ class Database_PostgreSQL extends Database_Escape
 		return new Database_PostgreSQL_Prepared_Query($this, $name, $statement, $params);
 	}
 
-	public function rollback()
+	/**
+	 * Abort the current transaction or roll back to a savepoint
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $savepoint  Savepoint name
+	 * @return  void
+	 */
+	public function rollback($savepoint = NULL)
 	{
-		$result = $this->_execute('ROLLBACK');
+		$result = $this->_execute($savepoint ? "ROLLBACK TO $savepoint" : 'ROLLBACK');
+
+		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
+			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+
+		pg_free_result($result);
+	}
+
+	/**
+	 * Define a new savepoint in the current transaction
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $name   Savepoint name
+	 * @return  void
+	 */
+	public function savepoint($name)
+	{
+		$result = $this->_execute("SAVEPOINT $name");
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
 			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
