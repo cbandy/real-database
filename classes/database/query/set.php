@@ -58,12 +58,14 @@ class Database_Query_Set extends Database_Query
 	}
 
 	/**
-	 * Open parenthesis
+	 * Open parenthesis using a combination operator when necessary, optionally
+	 * adding another query
 	 *
-	 * @param   string  $operator   EXCEPT, INTERSECT, or UNION
+	 * @param   string          $operator   EXCEPT, INTERSECT, or UNION
+	 * @param   Database_Query  $query
 	 * @return  $this
 	 */
-	public function open($operator)
+	public function open($operator, $query = NULL)
 	{
 		if ( ! $this->_empty)
 		{
@@ -72,6 +74,11 @@ class Database_Query_Set extends Database_Query
 
 		$this->_empty = TRUE;
 		$this->parameters[':queries']->_value .= '(';
+
+		if ($query !== NULL)
+		{
+			$this->add(NULL, $query);
+		}
 
 		return $this;
 	}
@@ -105,7 +112,7 @@ class Database_Query_Set extends Database_Query
 
 		$this->_empty = FALSE;
 		$this->parameters[':queries']->parameters[] = $query;
-		$this->parameters[':queries']->_value .= "(?)";
+		$this->parameters[':queries']->_value .= '(?)';
 
 		return $this;
 	}
@@ -121,6 +128,18 @@ class Database_Query_Set extends Database_Query
 	}
 
 	/**
+	 * Open a parenthesis using EXCEPT, optionally adding another query
+	 *
+	 * @param   Database_Query  $query
+	 * @param   boolean         $all    Allow duplicate rows
+	 * @return  $this
+	 */
+	public function except_open($query = NULL, $all = FALSE)
+	{
+		return $this->open($all ? 'EXCEPT ALL' : 'EXCEPT', $query);
+	}
+
+	/**
 	 * @param   Database_Query  $query
 	 * @param   boolean         $all    Allow duplicate rows
 	 * @return  $this
@@ -128,6 +147,18 @@ class Database_Query_Set extends Database_Query
 	public function intersect($query, $all = FALSE)
 	{
 		return $this->add($all ? 'INTERSECT ALL' : 'INTERSECT', $query);
+	}
+
+	/**
+	 * Open a parenthesis using INTERSECT, optionally adding another query
+	 *
+	 * @param   Database_Query  $query
+	 * @param   boolean         $all    Allow duplicate rows
+	 * @return  $this
+	 */
+	public function intersect_open($query = NULL, $all = FALSE)
+	{
+		return $this->open($all ? 'INTERSECT ALL' : 'INTERSECT', $query);
 	}
 
 	/**
@@ -188,5 +219,17 @@ class Database_Query_Set extends Database_Query
 	public function union($query, $all = FALSE)
 	{
 		return $this->add($all ? 'UNION ALL' : 'UNION', $query);
+	}
+
+	/**
+	 * Open a parenthesis using UNION, optionally adding another query
+	 *
+	 * @param   Database_Query  $query
+	 * @param   boolean         $all    Allow duplicate rows
+	 * @return  $this
+	 */
+	public function union_open($query = NULL, $all = FALSE)
+	{
+		return $this->open($all ? 'UNION ALL' : 'UNION', $query);
 	}
 }
