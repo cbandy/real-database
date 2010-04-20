@@ -27,4 +27,11 @@ class Database_Escape_Test extends PHPUnit_Framework_TestCase
 	{
 		$this->assertNotEquals('asdf', $this->_db->escape('asdf'));
 	}
+
+	public function test_quote_literal()
+	{
+		$this->assertNotEquals('asdf', $this->_db->quote_literal('asdf'));
+
+		$this->assertSame('NULL', $this->_db->quote_literal(NULL));
+	}
 }
