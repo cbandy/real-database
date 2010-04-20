@@ -31,6 +31,41 @@ class Database_Set_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('(a) EXCEPT (b) EXCEPT (c) EXCEPT ALL (d)', $db->quote($query));
 	}
 
+	public function test_except_open()
+	{
+		$db = new Database_Set_Test_DB;
+		$query = new Database_Query_Set(new Database_Query('a'));
+
+		$this->assertSame($query, $query->except_open(), 'Chainable (void)');
+		$this->assertSame('(a) EXCEPT (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->except_open(NULL), 'Chainable (NULL)');
+		$this->assertSame('(a) EXCEPT () EXCEPT (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->except_open(NULL, FALSE), 'Chainable (NULL, FALSE)');
+		$this->assertSame('(a) EXCEPT () EXCEPT () EXCEPT (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->except_open(NULL, TRUE), 'Chainable (NULL, TRUE)');
+		$this->assertSame('(a) EXCEPT () EXCEPT () EXCEPT () EXCEPT ALL (', $db->quote($query));
+
+		$query = new Database_Query_Set(new Database_Query('a'));
+
+		$this->assertSame($query, $query->except_open(new Database_Query('b')), 'Chainable (query)');
+		$this->assertSame('(a) EXCEPT ((b)', $db->quote($query));
+
+		$this->assertSame($query, $query->except_open(new Database_Query('c'), FALSE), 'Chainable (query, FALSE)');
+		$this->assertSame('(a) EXCEPT ((b) EXCEPT ((c)', $db->quote($query));
+
+		$this->assertSame($query, $query->except_open(new Database_Query('d'), TRUE), 'Chainable (query, TRUE)');
+		$this->assertSame('(a) EXCEPT ((b) EXCEPT ((c) EXCEPT ALL ((d)', $db->quote($query));
+	}
+
 	public function test_intersect()
 	{
 		$db = new Database_Set_Test_DB;
@@ -46,6 +81,41 @@ class Database_Set_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('(a) INTERSECT (b) INTERSECT (c) INTERSECT ALL (d)', $db->quote($query));
 	}
 
+	public function test_intersect_open()
+	{
+		$db = new Database_Set_Test_DB;
+		$query = new Database_Query_Set(new Database_Query('a'));
+
+		$this->assertSame($query, $query->intersect_open(), 'Chainable (void)');
+		$this->assertSame('(a) INTERSECT (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->intersect_open(NULL), 'Chainable (NULL)');
+		$this->assertSame('(a) INTERSECT () INTERSECT (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->intersect_open(NULL, FALSE), 'Chainable (NULL, FALSE)');
+		$this->assertSame('(a) INTERSECT () INTERSECT () INTERSECT (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->intersect_open(NULL, TRUE), 'Chainable (NULL, TRUE)');
+		$this->assertSame('(a) INTERSECT () INTERSECT () INTERSECT () INTERSECT ALL (', $db->quote($query));
+
+		$query = new Database_Query_Set(new Database_Query('a'));
+
+		$this->assertSame($query, $query->intersect_open(new Database_Query('b')), 'Chainable (query)');
+		$this->assertSame('(a) INTERSECT ((b)', $db->quote($query));
+
+		$this->assertSame($query, $query->intersect_open(new Database_Query('c'), FALSE), 'Chainable (query, FALSE)');
+		$this->assertSame('(a) INTERSECT ((b) INTERSECT ((c)', $db->quote($query));
+
+		$this->assertSame($query, $query->intersect_open(new Database_Query('d'), TRUE), 'Chainable (query, TRUE)');
+		$this->assertSame('(a) INTERSECT ((b) INTERSECT ((c) INTERSECT ALL ((d)', $db->quote($query));
+	}
+
 	public function test_union()
 	{
 		$db = new Database_Set_Test_DB;
@@ -59,6 +129,41 @@ class Database_Set_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->union(new Database_Query('d'), TRUE), 'Chainable (TRUE)');
 		$this->assertSame('(a) UNION (b) UNION (c) UNION ALL (d)', $db->quote($query));
+	}
+
+	public function test_union_open()
+	{
+		$db = new Database_Set_Test_DB;
+		$query = new Database_Query_Set(new Database_Query('a'));
+
+		$this->assertSame($query, $query->union_open(), 'Chainable (void)');
+		$this->assertSame('(a) UNION (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->union_open(NULL), 'Chainable (NULL)');
+		$this->assertSame('(a) UNION () UNION (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->union_open(NULL, FALSE), 'Chainable (NULL, FALSE)');
+		$this->assertSame('(a) UNION () UNION () UNION (', $db->quote($query));
+
+		$query->close();
+
+		$this->assertSame($query, $query->union_open(NULL, TRUE), 'Chainable (NULL, TRUE)');
+		$this->assertSame('(a) UNION () UNION () UNION () UNION ALL (', $db->quote($query));
+
+		$query = new Database_Query_Set(new Database_Query('a'));
+
+		$this->assertSame($query, $query->union_open(new Database_Query('b')), 'Chainable (query)');
+		$this->assertSame('(a) UNION ((b)', $db->quote($query));
+
+		$this->assertSame($query, $query->union_open(new Database_Query('c'), FALSE), 'Chainable (query, FALSE)');
+		$this->assertSame('(a) UNION ((b) UNION ((c)', $db->quote($query));
+
+		$this->assertSame($query, $query->union_open(new Database_Query('d'), TRUE), 'Chainable (query, TRUE)');
+		$this->assertSame('(a) UNION ((b) UNION ((c) UNION ALL ((d)', $db->quote($query));
 	}
 
 	public function test_parentheses()
