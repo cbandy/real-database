@@ -315,12 +315,13 @@ class Database_PostgreSQL extends Database_Escape
 	{
 		$chunks = preg_split($this->_placeholder, $statement, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
+		$max = count($chunks);
 		$names = NULL;
 		$position = 0;
 		$prev = $chunks[0];
 		$result = $prev[0];
 
-		for ($i = 1; $i < count($chunks); ++$i)
+		for ($i = 1; $i < $max; ++$i)
 		{
 			if ($statement[$chunks[$i][1] - 1] === '?')
 			{

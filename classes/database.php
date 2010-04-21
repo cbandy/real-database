@@ -411,11 +411,12 @@ abstract class Database
 
 		$chunks = preg_split($this->_placeholder, $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
+		$max = count($chunks);
 		$position = 0;
 		$prev = $chunks[0];
 		$result = $prev[0];
 
-		for ($i = 1; $i < count($chunks); ++$i)
+		for ($i = 1; $i < $max; ++$i)
 		{
 			if ($value[$chunks[$i][1] - 1] === '?')
 			{
