@@ -29,11 +29,11 @@ class Database_Command_Delete extends Database_Command
 	{
 		$value = 'DELETE FROM :table';
 
-		if ( ! empty($this->parameters[':from']))
+		if ( ! empty($this->parameters[':using']))
 		{
 			// Not allowed in SQLite
 			// Should be 'FROM' in MSSQL
-			$value .= ' USING :from';
+			$value .= ' USING :using';
 		}
 
 		if ( ! empty($this->parameters[':where']))
@@ -66,7 +66,7 @@ class Database_Command_Delete extends Database_Command
 			$reference = new Database_From($reference, $table_alias);
 		}
 
-		return $this->param(':from', $reference);
+		return $this->param(':using', $reference);
 	}
 
 	/**
