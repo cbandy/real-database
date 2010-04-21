@@ -27,6 +27,28 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->_db->disconnect();
 	}
 
+	public function test_copy_from()
+	{
+		$this->_db->copy_from('temp_test_table', array("8\t\\N", "9\t75"));
+
+		$this->assertEquals(array(
+			array('id' => 1, 'value' => 50),
+			array('id' => 2, 'value' => 55),
+			array('id' => 3, 'value' => 60),
+			array('id' => 4, 'value' => 65),
+			array('id' => 5, 'value' => 65),
+			array('id' => 8, 'value' => NULL),
+			array('id' => 9, 'value' => 75),
+		), $this->_db->execute_query('SELECT * FROM "temp_test_table" ORDER BY "id"')->as_array());
+	}
+
+	public function test_copy_to()
+	{
+		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (NULL)');
+
+		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "6\t\\N\n"), $this->_db->copy_to('temp_test_table'));
+	}
+
 	public function test_delete()
 	{
 		$query = $this->_db->delete('temp_test_table');

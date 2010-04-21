@@ -10,6 +10,24 @@
 class Database_PostgreSQL extends Database_Escape
 {
 	/**
+	 * @link http://bugs.php.net/51607
+	 * @var boolean
+	 */
+	protected static $_BUG_COPY_QUOTE_TABLE;
+
+	/**
+	 * @link http://bugs.php.net/51609
+	 * @var boolean
+	 */
+	protected static $_BUG_COPY_TO_NULL;
+
+	/**
+	 * @link http://bugs.php.net/50195
+	 * @var boolean
+	 */
+	protected static $_BUG_COPY_TO_SCHEMA;
+
+	/**
 	 * Create a DELETE command
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
@@ -19,6 +37,37 @@ class Database_PostgreSQL extends Database_Escape
 	public static function delete($table = NULL, $alias = NULL)
 	{
 		return new Database_PostgreSQL_Delete($table, $alias);
+	}
+
+	/**
+	 * @link http://php.net/manual/reserved.constants
+	 * @return  void
+	 */
+	public static function initialize()
+	{
+		if (defined('PHP_VERSION_ID'))
+		{
+			// Only available in PHP >= 5.2.7
+			$php_version_id = PHP_VERSION_ID;
+		}
+		else
+		{
+			list($major, $minor, $release) = explode('.', PHP_VERSION);
+			$php_version_id = $major * 10000 + $minor * 100 + $release;
+		}
+
+		if ($php_version_id < 50300)
+		{
+			Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE = $php_version_id < 50214;
+			Database_PostgreSQL::$_BUG_COPY_TO_NULL     = $php_version_id < 50214;
+			Database_PostgreSQL::$_BUG_COPY_TO_SCHEMA   = $php_version_id < 50212;
+		}
+		else
+		{
+			Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE = $php_version_id < 50303;
+			Database_PostgreSQL::$_BUG_COPY_TO_NULL     = $php_version_id < 50303;
+			Database_PostgreSQL::$_BUG_COPY_TO_SCHEMA   = $php_version_id < 50302;
+		}
 	}
 
 	/**
@@ -391,6 +440,110 @@ class Database_PostgreSQL extends Database_Escape
 		}
 	}
 
+	/**
+	 * Insert records into a table from an array of strings describing each row
+	 *
+	 * @throws  Database_Exception
+	 * @param   mixed   $table      Converted to Database_Table
+	 * @param   array   $rows       Each element is a delimited string
+	 * @param   string  $delimiter  Column delimiter
+	 * @param   string  $null       NULL representation
+	 * @return  void
+	 */
+	public function copy_from($table, $rows, $delimiter = "\t", $null = '\\N')
+	{
+		$table = $this->quote_table($table);
+
+		if (Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE)
+		{
+			$table = trim($table, $this->_quote);
+		}
+
+		try
+		{
+			// Raises E_WARNING on error
+			$result = pg_copy_from($this->_connection, $table, $rows, addslashes($delimiter), addslashes($null));
+		}
+		catch (Exception $e)
+		{
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if ( ! $result)
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+	}
+
+	/**
+	 * Retrieve records from a table into an array of strings describing each row
+	 *
+	 * @throws  Database_Exception
+	 * @throws  Kohana_Exception
+	 * @param   mixed   $table      Converted to Database_Table
+	 * @param   string  $delimiter  Column delimiter
+	 * @param   string  $null       NULL representation
+	 * @return  array   Rows from the table as delimited strings
+	 */
+	public function copy_to($table, $delimiter = "\t", $null = '\\N')
+	{
+		if ( ! Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE)
+		{
+			$table = $this->quote_table($table);
+		}
+		elseif (Database_PostgreSQL::$_BUG_COPY_TO_SCHEMA)
+		{
+			$table = trim($this->quote_table($table), $this->_quote);
+		}
+		else
+		{
+			if ( ! $table instanceof Database_Identifier)
+			{
+				$table = new Database_Table($table);
+			}
+
+			if (empty($table->namespace))
+			{
+				$table = trim($this->quote_table($table), $this->_quote);
+			}
+			else
+			{
+				$table = $this->quote_table($table);
+			}
+		}
+
+		if (Database_PostgreSQL::$_BUG_COPY_TO_NULL)
+		{
+			if ($null !== '\\N')
+				throw new Kohana_Exception('Setting the NULL representation is broken before PHP 5.2.14 and 5.3.3');
+
+			try
+			{
+				// Raises E_WARNING on error
+				$result = pg_copy_to($this->_connection, $table, addslashes($delimiter));
+			}
+			catch (Exception $e)
+			{
+				throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			}
+		}
+		else
+		{
+			try
+			{
+				// Raises E_WARNING on error
+				$result = pg_copy_to($this->_connection, $table, addslashes($delimiter), addslashes($null));
+			}
+			catch (Exception $e)
+			{
+				throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			}
+		}
+
+		if ($result === FALSE)
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+
+		return $result;
+	}
+
 	public function disconnect()
 	{
 		if (is_resource($this->_connection))
@@ -552,3 +705,6 @@ class Database_PostgreSQL extends Database_Escape
 		return $this->_prefix;
 	}
 }
+
+// Static initialization
+Database_PostgreSQL::initialize();
