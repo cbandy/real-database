@@ -34,6 +34,8 @@ class Database_PostgreSQL_Select extends Database_Query_Select
 			}
 		}
 
-		return $this->param(':distinct', new Database_Expression('DISTINCT ON (?)', array($columns)));
+		$this->parameters[':distinct'] = new Database_Expression('DISTINCT ON (?)', array($columns));
+
+		return $this;
 	}
 }

@@ -52,7 +52,17 @@ class Database_Command_Update extends Database_Command
 	 */
 	public function table($table, $alias = NULL)
 	{
-		return $this->param(':table', new Database_From($table, $alias));
+		if ( ! $table instanceof Database_Expression
+			AND ! $table instanceof Database_Identifier)
+		{
+			$table = new Database_Table($table);
+		}
+
+		$this->parameters[':table'] = empty($alias)
+			? $table
+			: new Database_Expression('? AS ?', array($table, new Database_Identifier($alias)));
+
+		return $this;
 	}
 
 	/**
@@ -61,11 +71,7 @@ class Database_Command_Update extends Database_Command
 	 */
 	public function set($values)
 	{
-		if ($values === NULL)
-		{
-			$this->param(':values', array());
-		}
-		elseif (is_array($values))
+		if (is_array($values))
 		{
 			foreach ($values as $column => $value)
 			{
@@ -74,9 +80,13 @@ class Database_Command_Update extends Database_Command
 				$this->parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
 			}
 		}
+		elseif ($values === NULL)
+		{
+			$this->parameters[':values'] = array();
+		}
 		else
 		{
-			$this->param(':values', $values);
+			$this->parameters[':values'] = $values;
 		}
 
 		return $this;
@@ -112,7 +122,9 @@ class Database_Command_Update extends Database_Command
 			$reference = new Database_From($reference, $table_alias);
 		}
 
-		return $this->param(':from', $reference);
+		$this->parameters[':from'] = $reference;
+
+		return $this;
 	}
 
 	/**
@@ -121,6 +133,8 @@ class Database_Command_Update extends Database_Command
 	 */
 	public function where($conditions)
 	{
-		return $this->param(':where', $conditions);
+		$this->parameters[':where'] = $conditions;
+
+		return $this;
 	}
 }

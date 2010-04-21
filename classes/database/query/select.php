@@ -102,7 +102,9 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function distinct($value = TRUE)
 	{
-		return $this->param(':distinct', $value ? new Database_Expression('DISTINCT') : FALSE);
+		$this->parameters[':distinct'] = $value ? new Database_Expression('DISTINCT') : FALSE;
+
+		return $this;
 	}
 
 	/**
@@ -117,7 +119,9 @@ class Database_Query_Select extends Database_Query
 			$reference = new Database_From($reference, $table_alias);
 		}
 
-		return $this->param(':from', $reference);
+		$this->parameters[':from'] = $reference;
+
+		return $this;
 	}
 
 	/**
@@ -135,7 +139,9 @@ class Database_Query_Select extends Database_Query
 			}
 		}
 
-		return $this->param(':groupby', $columns);
+		$this->parameters[':groupby'] = $columns;
+
+		return $this;
 	}
 
 	/**
@@ -144,7 +150,9 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function having($conditions)
 	{
-		return $this->param(':having', $conditions);
+		$this->parameters[':having'] = $conditions;
+
+		return $this;
 	}
 
 	/**
@@ -155,7 +163,9 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function limit($count)
 	{
-		return $this->param(':limit', $count);
+		$this->parameters[':limit'] = $count;
+
+		return $this;
 	}
 
 	/**
@@ -166,7 +176,9 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function offset($start)
 	{
-		return $this->param(':offset', $start);
+		$this->parameters[':offset'] = $start;
+
+		return $this;
 	}
 
 	/**
@@ -184,12 +196,9 @@ class Database_Query_Select extends Database_Query
 
 		if ($direction)
 		{
-			if ( ! $direction instanceof Database_Expression)
-			{
-				$direction = new Database_Expression(strtoupper($direction));
-			}
-
-			$column = new Database_Expression('? ?', array($column, $direction));
+			$column = ($direction instanceof Database_Expression)
+				? new Database_Expression('? ?', array($column, $direction))
+				: new Database_Expression('? '.strtoupper($direction), array($column));
 		}
 
 		$this->parameters[':orderby'][] = $column;
@@ -203,11 +212,7 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function select($columns)
 	{
-		if ($columns === NULL)
-		{
-			$this->param(':columns', array());
-		}
-		elseif (is_array($columns))
+		if (is_array($columns))
 		{
 			foreach ($columns as $alias => $column)
 			{
@@ -225,9 +230,13 @@ class Database_Query_Select extends Database_Query
 				$this->parameters[':columns'][] = $column;
 			}
 		}
+		elseif ($columns === NULL)
+		{
+			$this->parameters[':columns'] = array();
+		}
 		else
 		{
-			$this->param(':columns', $columns);
+			$this->parameters[':columns'] = $columns;
 		}
 
 		return $this;
@@ -239,6 +248,8 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function where($conditions)
 	{
-		return $this->param(':where', $conditions);
+		$this->parameters[':where'] = $conditions;
+
+		return $this;
 	}
 }

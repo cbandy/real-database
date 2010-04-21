@@ -169,7 +169,9 @@ class Database_Query_Set extends Database_Query
 	 */
 	public function limit($count)
 	{
-		return $this->param(':limit', $count);
+		$this->parameters[':limit'] = $count;
+
+		return $this;
 	}
 
 	/**
@@ -180,7 +182,9 @@ class Database_Query_Set extends Database_Query
 	 */
 	public function offset($start)
 	{
-		return $this->param(':offset', $start);
+		$this->parameters[':offset'] = $start;
+
+		return $this;
 	}
 
 	/**

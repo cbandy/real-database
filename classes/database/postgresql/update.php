@@ -71,11 +71,7 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 	 */
 	public function returning($columns)
 	{
-		if ($columns === NULL)
-		{
-			unset($this->parameters[':returning']);
-		}
-		elseif (is_array($columns))
+		if (is_array($columns))
 		{
 			foreach ($columns as $alias => $column)
 			{
@@ -93,9 +89,13 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 				$this->parameters[':returning'][] = $column;
 			}
 		}
+		elseif ($columns === NULL)
+		{
+			unset($this->parameters[':returning']);
+		}
 		else
 		{
-			$this->param(':returning', $columns);
+			$this->parameters[':returning'] = $columns;
 		}
 
 		return $this;

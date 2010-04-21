@@ -51,7 +51,17 @@ class Database_Command_Delete extends Database_Command
 	 */
 	public function from($table, $alias = NULL)
 	{
-		return $this->param(':table', new Database_From($table, $alias));
+		if ( ! $table instanceof Database_Expression
+			AND ! $table instanceof Database_Identifier)
+		{
+			$table = new Database_Table($table);
+		}
+
+		$this->parameters[':table'] = empty($alias)
+			? $table
+			: new Database_Expression('? AS ?', array($table, new Database_Identifier($alias)));
+
+		return $this;
 	}
 
 	/**
@@ -66,7 +76,9 @@ class Database_Command_Delete extends Database_Command
 			$reference = new Database_From($reference, $table_alias);
 		}
 
-		return $this->param(':using', $reference);
+		$this->parameters[':using'] = $reference;
+
+		return $this;
 	}
 
 	/**
@@ -75,6 +87,8 @@ class Database_Command_Delete extends Database_Command
 	 */
 	public function where($conditions)
 	{
-		return $this->param(':where', $conditions);
+		$this->parameters[':where'] = $conditions;
+
+		return $this;
 	}
 }

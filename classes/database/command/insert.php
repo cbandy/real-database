@@ -72,7 +72,7 @@ class Database_Command_Insert extends Database_Command
 				}
 			}
 
-			$this->param(':columns', $columns);
+			$this->parameters[':columns'] = $columns;
 		}
 
 		return $this;
@@ -90,7 +90,9 @@ class Database_Command_Insert extends Database_Command
 			$table = new Database_Table($table);
 		}
 
-		return $this->param(':table', $table);
+		$this->parameters[':table'] = $table;
+
+		return $this;
 	}
 
 	/**
@@ -100,11 +102,7 @@ class Database_Command_Insert extends Database_Command
 	 */
 	public function values($values)
 	{
-		if ($values === NULL)
-		{
-			unset($this->parameters[':values']);
-		}
-		elseif (is_array($values))
+		if (is_array($values))
 		{
 			$values = func_get_args();
 
@@ -115,9 +113,13 @@ class Database_Command_Insert extends Database_Command
 				$this->parameters[':values'][] = new Database_Expression('(?)', array($row));
 			}
 		}
+		elseif ($values === NULL)
+		{
+			unset($this->parameters[':values']);
+		}
 		else
 		{
-			$this->param(':values', $values);
+			$this->parameters[':values'] = $values;
 		}
 
 		return $this;

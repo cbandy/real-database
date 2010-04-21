@@ -96,7 +96,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 		}
 		else
 		{
-			$this->param(':returning', $this->_return);
+			$this->parameters[':returning'] = $this->_return;
 		}
 
 		return $this;
@@ -112,11 +112,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	{
 		$this->_return = NULL;
 
-		if ($columns === NULL)
-		{
-			unset($this->parameters[':returning']);
-		}
-		elseif (is_array($columns))
+		if (is_array($columns))
 		{
 			foreach ($columns as $alias => $column)
 			{
@@ -134,9 +130,13 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 				$this->parameters[':returning'][] = $column;
 			}
 		}
+		elseif ($columns === NULL)
+		{
+			unset($this->parameters[':returning']);
+		}
 		else
 		{
-			$this->param(':returning', $columns);
+			$this->parameters[':returning'] = $columns;
 		}
 
 		return $this;
