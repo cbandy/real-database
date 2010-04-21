@@ -25,14 +25,14 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select;
 
-		$this->assertSame($query, $query->distinct());
-		$this->assertSame('SELECT DISTINCT ', $db->quote($query));
+		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
+		$this->assertSame('SELECT DISTINCT ', $db->quote($query), 'Distinct (void)');
 
-		$this->assertSame($query, $query->distinct(FALSE));
-		$this->assertSame('SELECT ', $db->quote($query));
+		$this->assertSame($query, $query->distinct(FALSE), 'Chainable (FALSE)');
+		$this->assertSame('SELECT ', $db->quote($query), 'Distinct (FALSE)');
 
-		$this->assertSame($query, $query->distinct(TRUE));
-		$this->assertSame('SELECT DISTINCT ', $db->quote($query));
+		$this->assertSame($query, $query->distinct(TRUE), 'Chainable (TRUE)');
+		$this->assertSame('SELECT DISTINCT ', $db->quote($query), 'Distinct (TRUE)');
 	}
 
 	public function test_column()
