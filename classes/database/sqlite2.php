@@ -98,6 +98,19 @@ class Database_SQLite2 extends Database_Escape implements Database_iInsert
 		return "'$value'";
 	}
 
+	/**
+	 * Execute a SQL statement, returning the number of rows affected
+	 *
+	 * DELETE statements that do not have a WHERE clause are optimized
+	 * internally such that no count is obtained. These statements will always
+	 * return 0.
+	 *
+	 * @link http://www.sqlite.org/c_interface.html
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL command
+	 * @return  integer Number of affected rows
+	 */
 	public function execute_command($statement)
 	{
 		if (empty($statement))
