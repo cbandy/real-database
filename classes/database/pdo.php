@@ -7,20 +7,8 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PDO extends Database implements Database_iInsert
+class Database_PDO extends Database
 {
-	/**
-	 * Create an INSERT command
-	 *
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns
-	 * @return  Database_Command_Insert_Identity
-	 */
-	public static function insert($table = NULL, $columns = NULL)
-	{
-		return new Database_Command_Insert_Identity($table, $columns);
-	}
-
 	/**
 	 * @var PDO
 	 */
