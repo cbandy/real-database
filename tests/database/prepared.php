@@ -27,7 +27,7 @@ class Database_Prepared_Test extends PHPUnit_Framework_TestCase
 
 	public function test_command_execute()
 	{
-		$result = Database::command('DELETE FROM '.$this->_table)->prepare($this->_db)->execute();
+		$result = Database::command('DELETE FROM '.$this->_table.' WHERE 1 = 1')->prepare($this->_db)->execute();
 
 		$this->assertSame(1, $result);
 	}

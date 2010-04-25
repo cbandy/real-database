@@ -31,7 +31,7 @@ class Database_Command_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame(1, $command->execute($this->_db));
 
-		$command = new Database_Command('DELETE FROM '.$this->_table);
+		$command = new Database_Command('DELETE FROM '.$this->_table.' WHERE 1 = 1');
 
 		$this->assertSame(2, $command->execute($this->_db));
 	}
