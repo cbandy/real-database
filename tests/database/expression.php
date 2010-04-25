@@ -36,6 +36,22 @@ class Database_Expression_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("'A' 8 'C'", $db->quote(new Database_Expression('? :x ?', array('A', 'C', ':x' => 8))));
 	}
 
+	public function test_param()
+	{
+		$db = new Database_Expression_Test_DB;
+
+		$expr = new Database_Expression('?');
+
+		$this->assertSame($expr, $expr->param(0, NULL));
+		$this->assertSame('NULL', $db->quote($expr));
+
+		$this->assertSame($expr, $expr->param(0, 1));
+		$this->assertSame('1', $db->quote($expr));
+
+		$this->assertSame($expr, $expr->param(0, 'A'));
+		$this->assertSame("'A'", $db->quote($expr));
+	}
+
 	public function test_parameters()
 	{
 		$db = new Database_Expression_Test_DB;
