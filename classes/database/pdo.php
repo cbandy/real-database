@@ -142,6 +142,15 @@ class Database_PDO extends Database
 		$this->_connection = NULL;
 	}
 
+	/**
+	 * Quote a value while escaping characters that could cause a SQL injection
+	 * attack.
+	 *
+	 * Not all drivers support this method.
+	 *
+	 * @param   mixed   Value to quote
+	 * @return  string
+	 */
 	public function escape($value)
 	{
 		$this->_connection or $this->connect();
@@ -166,6 +175,16 @@ class Database_PDO extends Database
 		}
 	}
 
+	/**
+	 * Execute an INSERT statement, returning the number of affected rows and
+	 * the identity of one affected row.
+	 *
+	 * Not all drivers support this method. When inserting multiple rows, the
+	 * row to which the identity value belongs depends on the driver.
+	 *
+	 * @param   string  $statement  INSERT statement
+	 * @return  array   List including number of affected rows and an identity value
+	 */
 	public function execute_insert($statement)
 	{
 		return array($this->execute_command($statement), $this->_connection->lastInsertId());
