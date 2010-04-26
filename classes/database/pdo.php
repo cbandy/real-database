@@ -235,16 +235,18 @@ class Database_PDO extends Database
 
 	public function prepare_command($statement, $parameters = array())
 	{
-		$params = array();
+		$params = array(NULL);
 		$statement = $this->prepare($this->_parse($statement, $parameters, $params));
+		unset($params[0]);
 
 		return new Database_PDO_Command($this, $statement, $params);
 	}
 
 	public function prepare_query($statement, $parameters = array())
 	{
-		$params = array();
+		$params = array(NULL);
 		$statement = $this->prepare($this->_parse($statement, $parameters, $params));
+		unset($params[0]);
 
 		return new Database_PDO_Query($this, $statement, $params);
 	}
