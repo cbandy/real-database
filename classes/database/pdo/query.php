@@ -45,7 +45,7 @@ class Database_PDO_Query extends Database_Prepared_Query
 			$this->_value->bindParam($param, $var);
 		}
 
-		return $this;
+		return parent::bind($param, $var);
 	}
 
 	public function execute()
@@ -87,7 +87,7 @@ class Database_PDO_Query extends Database_Prepared_Query
 			$this->_value->bindValue($param, $value);
 		}
 
-		return $this;
+		return parent::param($param, $value);
 	}
 
 	public function parameters(array $params)
