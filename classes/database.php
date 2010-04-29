@@ -309,7 +309,7 @@ abstract class Database
 	{
 		if (is_array($value))
 		{
-			$value = implode(', ', array_map(array($this, __FUNCTION__), $value));
+			$value = empty($value) ? '' : implode(', ', array_map(array($this, __FUNCTION__), $value));
 		}
 		elseif (is_object($value))
 		{
