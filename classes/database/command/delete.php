@@ -82,12 +82,19 @@ class Database_Command_Delete extends Database_Command
 	}
 
 	/**
-	 * @param   Database_Conditions $conditions
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
 	 * @return  $this
 	 */
-	public function where($conditions)
+	public function where($left, $operator = NULL, $right = NULL)
 	{
-		$this->parameters[':where'] = $conditions;
+		if ($operator !== NULL)
+		{
+			$left = new Database_Conditions($left, $operator, $right);
+		}
+
+		$this->parameters[':where'] = $left;
 
 		return $this;
 	}

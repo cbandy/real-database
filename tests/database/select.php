@@ -67,9 +67,17 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(new Database_Expression(1));
 
-		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)));
-
+		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)), 'Chainable (conditions)');
 		$this->assertSame('SELECT 1 WHERE "y" = 1', $db->quote($query));
+
+		$this->assertSame($query, $query->where(new Database_Column('y'), '=', 0), 'Chainable (operands)');
+		$this->assertSame('SELECT 1 WHERE "y" = 0', $db->quote($query));
+
+		$conditions = new Database_Conditions;
+		$conditions->open(NULL)->add(NULL, new Database_Column('y'), '=', 0)->close();
+
+		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
+		$this->assertSame('SELECT 1 WHERE ("y" = 0) = \'1\'', $db->quote($query));
 	}
 
 	public function test_group_by()
@@ -87,9 +95,17 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Select_Test_DB;
 		$query = new Database_Query_Select(array('x'));
 
-		$this->assertSame($query, $query->having(new Database_Conditions(new Database_Column('x'), '=', 1)));
-
+		$this->assertSame($query, $query->having(new Database_Conditions(new Database_Column('x'), '=', 1)), 'Chainable (conditions)');
 		$this->assertSame('SELECT "x" HAVING "x" = 1', $db->quote($query));
+
+		$this->assertSame($query, $query->having(new Database_Column('x'), '=', 0), 'Chainable (operands)');
+		$this->assertSame('SELECT "x" HAVING "x" = 0', $db->quote($query));
+
+		$conditions = new Database_Conditions;
+		$conditions->open(NULL)->add(NULL, new Database_Column('x'), '=', 0)->close();
+
+		$this->assertSame($query, $query->having($conditions, '=', TRUE), 'Chainable (conditions as operand)');
+		$this->assertSame('SELECT "x" HAVING ("x" = 0) = \'1\'', $db->quote($query));
 	}
 
 	public function test_order_by()

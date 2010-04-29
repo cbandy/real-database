@@ -62,9 +62,17 @@ class Database_Update_Test extends PHPUnit_Framework_TestCase
 		$db = new Database_Update_Test_DB;
 		$query = new Database_Command_Update('one', NULL, array('x' => 0));
 
-		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)));
-
+		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)), 'Chainable (conditions)');
 		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE "y" = 1', $db->quote($query));
+
+		$this->assertSame($query, $query->where(new Database_Column('y'), '=', 0), 'Chainable (operands)');
+		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE "y" = 0', $db->quote($query));
+
+		$conditions = new Database_Conditions;
+		$conditions->open(NULL)->add(NULL, new Database_Column('y'), '=', 0)->close();
+
+		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
+		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE ("y" = 0) = \'1\'', $db->quote($query));
 	}
 }
 
