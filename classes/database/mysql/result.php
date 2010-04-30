@@ -34,7 +34,9 @@ class Database_MySQL_Result extends Database_Result
 	{
 		if ($this->_internal_position !== $this->_position)
 		{
-			mysql_data_seek($this->_result, $this->_position);
+			// Raises E_WARNING when position is out of bounds
+			if ( ! mysql_data_seek($this->_result, $this->_position))
+				throw new OutOfBoundsException;
 
 			$this->_internal_position = $this->_position + 1;
 		}
@@ -44,7 +46,10 @@ class Database_MySQL_Result extends Database_Result
 		}
 
 		if ($this->_as_object)
+		{
+			// Raises E_WARNING when class does not exist
 			return mysql_fetch_object($this->_result, $this->_as_object);
+		}
 
 		return mysql_fetch_assoc($this->_result);
 	}

@@ -68,7 +68,17 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 	{
 		$this->_connection or $this->connect();
 
-		if (($result = mysql_query($statement, $this->_connection)) === FALSE)
+		try
+		{
+			// Raises E_WARNING upon error
+			$result = mysql_query($statement, $this->_connection);
+		}
+		catch (Exception $e)
+		{
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if ($result === FALSE)
 			throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection));
 
 		return $result;
@@ -95,6 +105,17 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 		$this->_execute('COMMIT');
 	}
 
+	/**
+	 * Connect
+	 *
+	 * @link http://php.net/manual/function.mysql-connect
+	 * @link http://php.net/manual/ini.core#ini.sql.safe-mode
+	 *
+	 * @todo SQL Safe Mode can be supported, but only for _one_ MySQL instance
+	 *
+	 * @throws  Database_Exception
+	 * @return  void
+	 */
 	public function connect()
 	{
 		extract($this->_config['connection']);
@@ -103,6 +124,8 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 
 		try
 		{
+			// Raises E_NOTICE when sql.safe_mode is set
+			// Raises E_WARNING upon error
 			$this->_connection = empty($persistent)
 				? mysql_connect($hostname, $username, $password, TRUE, $flags)
 				: mysql_pconnect($hostname, $username, $password, $flags);
