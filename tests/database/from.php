@@ -78,8 +78,14 @@ class Database_From_Test extends PHPUnit_Framework_TestCase
 
 		$conditions = new Database_Conditions(new Database_Column('one.x'), '=', new Database_Column('two.x'));
 
-		$this->assertSame($from, $from->on($conditions));
+		$this->assertSame($from, $from->on($conditions), 'Chainable (conditions)');
 		$this->assertSame('"pre_one" JOIN "pre_two" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($from));
+
+		$from = new Database_From('one');
+		$from->join('two');
+
+		$this->assertSame($from, $from->on('one.y', '=', 'two.y'), 'Chainable (operands)');
+		$this->assertSame('"pre_one" JOIN "pre_two" ON ("pre_one"."y" = "pre_two"."y")', $db->quote($from));
 	}
 
 	public function test_parentheses()

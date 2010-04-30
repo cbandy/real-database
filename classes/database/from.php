@@ -126,14 +126,33 @@ class Database_From extends Database_Expression
 	/**
 	 * Set the join conditions
 	 *
-	 * @param   Database_Conditions $conditions
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
 	 * @return  $this
 	 */
-	public function on($conditions)
+	public function on($left_column, $operator = NULL, $right_column = NULL)
 	{
+		if ($operator !== NULL)
+		{
+			if ( ! $left_column instanceof Database_Expression
+				AND ! $left_column instanceof Database_Identifier)
+			{
+				$left_column = new Database_Column($left_column);
+			}
+
+			if ( ! $right_column instanceof Database_Expression
+				AND ! $right_column instanceof Database_Identifier)
+			{
+				$right_column = new Database_Column($right_column);
+			}
+
+			$left_column = new Database_Conditions($left_column, $operator, $right_column);
+		}
+
 		$this->_empty = FALSE;
 		$this->_value .= ' ON (?)';
-		$this->parameters[] = $conditions;
+		$this->parameters[] = $left_column;
 
 		return $this;
 	}
