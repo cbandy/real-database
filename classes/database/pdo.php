@@ -330,6 +330,16 @@ class Database_PDO extends Database
 		return new Database_PDO_Query($this, $statement, $params);
 	}
 
+	/**
+	 * Whether or not profiling is enabled
+	 *
+	 * @return  boolean
+	 */
+	public function profiling()
+	{
+		return ! empty($this->_config['profiling']);
+	}
+
 	public function rollback()
 	{
 		$this->_connection or $this->connect();
