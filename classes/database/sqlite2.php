@@ -47,6 +47,11 @@ class Database_SQLite2 extends Database_Escape implements Database_iInsert
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
 		try
 		{
 			// Raises E_WARNING upon error
@@ -54,11 +59,28 @@ class Database_SQLite2 extends Database_Escape implements Database_iInsert
 		}
 		catch (Exception $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
 		}
 
 		if ( ! $result)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $error));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
 	}
 
 	public function begin()
@@ -133,6 +155,11 @@ class Database_SQLite2 extends Database_Escape implements Database_iInsert
 
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
 		try
 		{
 			// Raises E_WARNING upon error
@@ -140,11 +167,28 @@ class Database_SQLite2 extends Database_Escape implements Database_iInsert
 		}
 		catch (Exception $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
 		}
 
 		if ( ! $result)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $error));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
 
 		if ($result->numFields() === 0)
 			return NULL;
