@@ -285,14 +285,31 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", "prepare($statement)");
+		}
+
 		try
 		{
-			return $this->_connection->prepare($statement);
+			$result = $this->_connection->prepare($statement);
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
 		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return $result;
 	}
 
 	public function prepare_command($statement, $parameters = array())
