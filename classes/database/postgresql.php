@@ -206,24 +206,27 @@ class Database_PostgreSQL extends Database_Escape
 	 */
 	protected function _evaluate_command($result)
 	{
-		switch (pg_result_status($result))
+		$status = pg_result_status($result);
+
+		if ($status === PGSQL_COMMAND_OK)
 		{
-			case PGSQL_COMMAND_OK:
-				$rows = pg_affected_rows($result);
-			break;
-			case PGSQL_TUPLES_OK:
-				$rows = pg_num_rows($result);
-			break;
-			case PGSQL_BAD_RESPONSE:
-			case PGSQL_NONFATAL_ERROR:
-			case PGSQL_FATAL_ERROR:
+			$rows = pg_affected_rows($result);
+		}
+		elseif ($status === PGSQL_TUPLES_OK)
+		{
+			$rows = pg_num_rows($result);
+		}
+		else
+		{
+			if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
 				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
 
-			case PGSQL_COPY_IN:
-			case PGSQL_COPY_OUT:
+			if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
+			{
 				pg_end_copy($this->_connection);
-			default:
-				$rows = 0;
+			}
+
+			$rows = 0;
 		}
 
 		pg_free_result($result);
