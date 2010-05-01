@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package PostgreSQL
+ * @package     RealDatabase
+ * @subpackage  PostgreSQL
+ * @category    Queries
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

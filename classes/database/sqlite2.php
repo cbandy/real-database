@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package SQLite
+ * @package     RealDatabase
+ * @subpackage  SQLite
+ * @category    Drivers
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

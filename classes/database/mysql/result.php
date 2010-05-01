@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package MySQL
+ * @package     RealDatabase
+ * @subpackage  MySQL
+ * @category    Result Sets
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

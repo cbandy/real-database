@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package PDO
+ * @package     RealDatabase
+ * @subpackage  PDO
+ * @category    Prepared Statements
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

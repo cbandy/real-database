@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package PostgreSQL
+ * @package     RealDatabase
+ * @subpackage  PostgreSQL
+ * @category    Drivers
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

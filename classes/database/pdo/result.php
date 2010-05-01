@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package PDO
+ * @package     RealDatabase
+ * @subpackage  PDO
+ * @category    Result Sets
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
