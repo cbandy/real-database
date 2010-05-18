@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PostgreSQL extends Database_Escape
+class Database_PostgreSQL extends Database implements Database_iEscape
 {
 	/**
 	 * @link http://bugs.php.net/51607
@@ -728,6 +728,22 @@ class Database_PostgreSQL extends Database_Escape
 		$name = $this->prepare(NULL, $statement);
 
 		return new Database_PostgreSQL_Prepared_Query($this, $name, $statement, $params);
+	}
+
+	/**
+	 * Quote a literal value for inclusion in a SQL query
+	 *
+	 * @uses Database_PostgreSQL::escape()
+	 *
+	 * @param   mixed   $value  Value to quote
+	 * @return  string
+	 */
+	public function quote_literal($value)
+	{
+		if (is_object($value) OR is_string($value))
+			return $this->escape($value);
+
+		return parent::quote_literal($value);
 	}
 
 	/**

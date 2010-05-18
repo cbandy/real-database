@@ -14,8 +14,8 @@ class Database_Escape_Test extends PHPUnit_Framework_TestCase
 	{
 		$this->_db = Database::instance('testing');
 
-		if ( ! $this->_db instanceof Database_Escape)
-			$this->markTestSkipped('Database instance not Database_Escape');
+		if ( ! $this->_db instanceof Database_iEscape)
+			$this->markTestSkipped('Database instance not Database_iEscape');
 	}
 
 	public function tearDown()

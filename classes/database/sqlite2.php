@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_SQLite2 extends Database_Escape implements Database_iInsert
+class Database_SQLite2 extends Database implements Database_iEscape, Database_iInsert
 {
 	/**
 	 * Create an INSERT command
@@ -196,6 +196,22 @@ class Database_SQLite2 extends Database_Escape implements Database_iInsert
 			return NULL;
 
 		return new Database_SQLite2_Result($result, $as_object);
+	}
+
+	/**
+	 * Quote a literal value for inclusion in a SQL query
+	 *
+	 * @uses Database_SQLite2::escape()
+	 *
+	 * @param   mixed   $value  Value to quote
+	 * @return  string
+	 */
+	public function quote_literal($value)
+	{
+		if (is_object($value) OR is_string($value))
+			return $this->escape($value);
+
+		return parent::quote_literal($value);
 	}
 
 	public function rollback()
