@@ -41,7 +41,7 @@ class Database_Delete_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('one.x'), '=', 0)), 'Chainable (conditions)');
 		$this->assertSame('DELETE FROM "pre_one" WHERE "pre_one"."x" = 0', $db->quote($query));
 
-		$this->assertSame($query, $query->where(new Database_Column('one.x'), '=', 1), 'Chainable (operands)');
+		$this->assertSame($query, $query->where('one.x', '=', 1), 'Chainable (operands)');
 		$this->assertSame('DELETE FROM "pre_one" WHERE "pre_one"."x" = 1', $db->quote($query));
 
 		$conditions = new Database_Conditions;

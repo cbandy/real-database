@@ -145,19 +145,28 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   mixed   $left       Left operand
-	 * @param   string  $operator   Comparison operator
-	 * @param   mixed   $right      Right operand
+	 * Set the group search condition(s). When no operator is specified, the
+	 * first argument is used directly.
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
-	public function having($left, $operator = NULL, $right = NULL)
+	public function having($left_column, $operator = NULL, $right = NULL)
 	{
 		if ($operator !== NULL)
 		{
-			$left = new Database_Conditions($left, $operator, $right);
+			if ( ! $left_column instanceof Database_Expression
+				AND ! $left_column instanceof Database_Identifier)
+			{
+				$left_column = new Database_Column($left_column);
+			}
+
+			$left_column = new Database_Conditions($left_column, $operator, $right);
 		}
 
-		$this->parameters[':having'] = $left;
+		$this->parameters[':having'] = $left_column;
 
 		return $this;
 	}
@@ -250,19 +259,28 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   mixed   $left       Left operand
-	 * @param   string  $operator   Comparison operator
-	 * @param   mixed   $right      Right operand
+	 * Set the search condition(s). When no operator is specified, the first
+	 * argument is used directly.
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
-	public function where($left, $operator = NULL, $right = NULL)
+	public function where($left_column, $operator = NULL, $right = NULL)
 	{
 		if ($operator !== NULL)
 		{
-			$left = new Database_Conditions($left, $operator, $right);
+			if ( ! $left_column instanceof Database_Expression
+				AND ! $left_column instanceof Database_Identifier)
+			{
+				$left_column = new Database_Column($left_column);
+			}
+
+			$left_column = new Database_Conditions($left_column, $operator, $right);
 		}
 
-		$this->parameters[':where'] = $left;
+		$this->parameters[':where'] = $left_column;
 
 		return $this;
 	}

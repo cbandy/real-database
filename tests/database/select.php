@@ -70,7 +70,7 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)), 'Chainable (conditions)');
 		$this->assertSame('SELECT 1 WHERE "y" = 1', $db->quote($query));
 
-		$this->assertSame($query, $query->where(new Database_Column('y'), '=', 0), 'Chainable (operands)');
+		$this->assertSame($query, $query->where('y', '=', 0), 'Chainable (operands)');
 		$this->assertSame('SELECT 1 WHERE "y" = 0', $db->quote($query));
 
 		$conditions = new Database_Conditions;
@@ -98,7 +98,7 @@ class Database_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->having(new Database_Conditions(new Database_Column('x'), '=', 1)), 'Chainable (conditions)');
 		$this->assertSame('SELECT "x" HAVING "x" = 1', $db->quote($query));
 
-		$this->assertSame($query, $query->having(new Database_Column('x'), '=', 0), 'Chainable (operands)');
+		$this->assertSame($query, $query->having('x', '=', 0), 'Chainable (operands)');
 		$this->assertSame('SELECT "x" HAVING "x" = 0', $db->quote($query));
 
 		$conditions = new Database_Conditions;
