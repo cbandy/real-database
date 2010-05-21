@@ -28,7 +28,7 @@ class Database_Result_Array extends Database_Result
 
 	public function as_array($key = NULL, $value = NULL)
 	{
-		if ($key === NULL AND $value === NULL)
+		if ($key === NULL AND $value === NULL OR $this->_count === 0)
 			return $this->_data;
 
 		return parent::as_array($key, $value);

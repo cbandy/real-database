@@ -33,10 +33,12 @@ class Database_SQLite2_Result extends Database_Result
 
 	public function as_array($key = NULL, $value = NULL)
 	{
+		if ($this->_count === 0)
+			return array();
+
 		if ( ! $this->_as_object AND $key === NULL AND $value === NULL)
 		{
-			if ( ! $this->_result->rewind())
-				return array();
+			$this->_result->rewind();
 
 			return $this->_result->fetchAll(SQLITE_ASSOC);
 		}

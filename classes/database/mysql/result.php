@@ -30,6 +30,14 @@ class Database_MySQL_Result extends Database_Result
 		mysql_free_result($this->_result);
 	}
 
+	public function as_array($key = NULL, $value = NULL)
+	{
+		if ($this->_count === 0)
+			return array();
+
+		return parent::as_array($key, $value);
+	}
+
 	public function current()
 	{
 		if ($this->_internal_position !== $this->_position)
