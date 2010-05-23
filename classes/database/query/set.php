@@ -188,8 +188,10 @@ class Database_Query_Set extends Database_Query
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Column
-	 * @param   mixed
+	 * Append a column or expression by which rows should be sorted
+	 *
+	 * @param   mixed   $column     Converted to Database_Column
+	 * @param   mixed   $direction  Direction of sort
 	 * @return  $this
 	 */
 	public function order_by($column, $direction = NULL)
@@ -202,12 +204,9 @@ class Database_Query_Set extends Database_Query
 
 		if ($direction)
 		{
-			if ( ! $direction instanceof Database_Expression)
-			{
-				$direction = new Database_Expression(strtoupper($direction));
-			}
-
-			$column = new Database_Expression('? ?', array($column, $direction));
+			$column = ($direction instanceof Database_Expression)
+				? new Database_Expression('? ?', array($column, $direction))
+				: new Database_Expression('? '.strtoupper($direction), array($column));
 		}
 
 		$this->parameters[':orderby'][] = $column;
