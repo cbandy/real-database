@@ -11,11 +11,14 @@
  */
 class Database_PostgreSQL_Result extends Database_Result
 {
+	/**
+	 * @var resource    From pg_query() or pg_get_result()
+	 */
 	protected $_result;
 
 	/**
-	 * @param   resource    $result
-	 * @param   mixed       $as_object
+	 * @param   resource    $result     From pg_query() or pg_get_result()
+	 * @param   mixed       $as_object  Result object class, TRUE for stdClass, FALSE for associative array
 	 */
 	public function __construct($result, $as_object)
 	{

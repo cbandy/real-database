@@ -11,13 +11,13 @@
 class Database_Result_Array extends Database_Result
 {
 	/**
-	 * @var array
+	 * @var array   Rows
 	 */
 	protected $_data;
 
 	/**
-	 * @param   array   $data
-	 * @param   mixed   $as_object
+	 * @param   array   $data       Rows
+	 * @param   mixed   $as_object  Class of each row, TRUE for stdClass, FALSE for associative array
 	 */
 	public function __construct($data, $as_object)
 	{

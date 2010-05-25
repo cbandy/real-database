@@ -19,8 +19,8 @@
 class Database_PDO_Result extends Database_Result_Array
 {
 	/**
-	 * @param   PDOStatement    $statement
-	 * @param   mixed           $as_object
+	 * @param   PDOStatement    $statement  Executed statement
+	 * @param   mixed           $as_object  Result object class, TRUE for stdClass, FALSE for associative array
 	 */
 	public function __construct($statement, $as_object)
 	{

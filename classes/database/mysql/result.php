@@ -11,9 +11,20 @@
  */
 class Database_MySQL_Result extends Database_Result
 {
+	/**
+	 * @var integer Position of the result resource
+	 */
 	protected $_internal_position = 0;
+
+	/**
+	 * @var resource    From mysql_query()
+	 */
 	protected $_result;
 
+	/**
+	 * @param   resource    $result     From mysql_query()
+	 * @param   mixed       $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 */
 	public function __construct($result, $as_object)
 	{
 		parent::__construct($result, $as_object);
