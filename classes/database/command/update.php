@@ -93,11 +93,13 @@ class Database_Command_Update extends Database_Command
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Column
-	 * @param   mixed
+	 * Append a column assignment
+	 *
+	 * @param   mixed   $column Converted to Database_Column
+	 * @param   mixed   $value  Value assigned to the column
 	 * @return  $this
 	 */
-	public function value($column, $value = NULL)
+	public function value($column, $value)
 	{
 		if ( ! $column instanceof Database_Expression
 			AND ! $column instanceof Database_Identifier)
