@@ -26,13 +26,13 @@ class Database_PDO_Result extends Database_Result_Array
 		{
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 		}
-		elseif (is_string($as_object))
+		elseif ($as_object === TRUE)
 		{
-			$statement->setFetchMode(PDO::FETCH_CLASS, $as_object);
+			$statement->setFetchMode(PDO::FETCH_OBJ);
 		}
 		else
 		{
-			$statement->setFetchMode(PDO::FETCH_OBJ);
+			$statement->setFetchMode(PDO::FETCH_CLASS, $as_object);
 		}
 
 		parent::__construct($statement->fetchAll(), $as_object);
