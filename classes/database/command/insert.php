@@ -34,7 +34,7 @@ class Database_Command_Insert extends Database_Command
 			$value .= '(:columns) ';
 		}
 
-		if ( ! isset($this->parameters[':values']))
+		if (empty($this->parameters[':values']))
 		{
 			// Not allowed by MySQL
 			$value .= 'DEFAULT VALUES';
@@ -52,16 +52,14 @@ class Database_Command_Insert extends Database_Command
 	}
 
 	/**
-	 * @param   array   $columns
+	 * Set the list of columns to be populated with values
+	 *
+	 * @param   array|NULL  $columns    Each element converted to Database_Column
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
-		if ($columns === NULL)
-		{
-			unset($this->parameters[':columns']);
-		}
-		else
+		if ($columns !== NULL)
 		{
 			foreach ($columns as &$column)
 			{
@@ -71,9 +69,9 @@ class Database_Command_Insert extends Database_Command
 					$column = new Database_Column($column);
 				}
 			}
-
-			$this->parameters[':columns'] = $columns;
 		}
+
+		$this->parameters[':columns'] = $columns;
 
 		return $this;
 	}
@@ -96,8 +94,9 @@ class Database_Command_Insert extends Database_Command
 	}
 
 	/**
-	 * @param   mixed|NULL
-	 * @param   ...
+	 * Append rows of values to be inserted
+	 *
+	 * @param   mixed|NULL  $values,... Row of values
 	 * @return  $this
 	 */
 	public function values($values)
@@ -112,10 +111,6 @@ class Database_Command_Insert extends Database_Command
 				// Wrap each row in parentheses
 				$this->parameters[':values'][] = new Database_Expression('(?)', array($row));
 			}
-		}
-		elseif ($values === NULL)
-		{
-			unset($this->parameters[':values']);
 		}
 		else
 		{
