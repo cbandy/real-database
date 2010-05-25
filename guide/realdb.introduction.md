@@ -49,27 +49,43 @@ SQL queries are built by recursively nesting expressions, identifiers and litera
 
 ## Execution
 
-The most direct way to execute is to send raw SQL to
-[execute_command()](api/Database#execute_command) and [execute_query()](api/Database#execute_query).
-Identifiers and literals can be quoted for raw SQL using
-[quote_identifier()](api/Database#quote_identifier), [quote_table()](api/Database#quote_table),
-[quote_column()](api/Database#quote_column) and [quote_literal()](api/Database#quote_literal).
+The most direct way to execute is to send raw SQL to [execute_command()][] and [execute_query()][].
+Identifiers and literals can be quoted for raw SQL using [quote_identifier()][], [quote_table()][],
+[quote_column()][] and [quote_literal()][].
 
-Slightly more convenient is to use parameters with the [Command](api/Database_Command) and
-[Query](api/Database_Query) objects. These have the added convenience of consistent caching and
-system-agnostic execution.
+Slightly more convenient is to use parameters with the [Command][] and [Query][] objects. These
+have the added convenience of consistent caching and system-agnostic execution.
+
+[execute_command()]:    api/Database#execute_command
+[execute_query()]:      api/Database#execute_query
+
+[quote_identifier()]:   api/Database#quote_identifier
+[quote_table()]:        api/Database#quote_table
+[quote_column()]:       api/Database#quote_column
+[quote_literal()]:      api/Database#quote_literal
+
+[Command]:  api/Database_Command
+[Query]:    api/Database_Query
 
 
 ## Building
 
-There are five builder classes for the four basic SQL statements:
+There are five builder classes for the four basic SQL DML statements:
 
-<table>
-    <tr><td> DELETE </td><td> <a href="api/Database_Command_Delete">Command_Delete</a> </td></tr>
-    <tr><td> INSERT </td><td> <a href="api/Database_Command_Insert">Command_Insert</a> </td></tr>
-    <tr><td> UPDATE </td><td> <a href="api/Database_Command_Update">Command_Update</a> </td></tr>
-    <tr><td> SELECT </td><td> <a href="api/Database_Query_Select">Query_Select</a> <br/> <a href="api/Database_Query_Set">Query_Set</a> </td></tr>
-</table>
+ SQL    | Class
+ ---    | -----
+ DELETE | [Command_Delete][]
+ INSERT | [Command_Insert][]
+ UPDATE | [Command_Update][]
+ SELECT | [Query_Select][] <br /> [Query_Set][]
+
+*[DML]: Data Manipulation Language
+
+[Command_Delete]:   api/Database_Command_Delete
+[Command_Insert]:   api/Database_Command_Insert
+[Command_Update]:   api/Database_Command_Update
+[Query_Select]:     api/Database_Query_Select
+[Query_Set]:        api/Database_Query_Set
 
 These provide a convenient and powerful interface for building both simple and complex SQL queries.
 
