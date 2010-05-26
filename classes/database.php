@@ -172,7 +172,9 @@ abstract class Database
 	 */
 	protected $_placeholder = '/(?:\?|:\w++)/';
 
-	// Character used to quote identifiers (tables, columns, aliases, etc.)
+	/**
+	 * @var string  Character used to quote identifiers (tables, columns, aliases, etc.)
+	 */
 	protected $_quote = '"';
 
 	/**
@@ -294,7 +296,7 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a value for inclusion in a SQL query.
+	 * Quote a value for inclusion in a SQL query
 	 *
 	 * @uses Database::quote_column()
 	 * @uses Database::quote_expression()
@@ -302,8 +304,8 @@ abstract class Database
 	 * @uses Database::quote_literal()
 	 * @uses Database::quote_table()
 	 *
-	 * @param   mixed   Value to quote
-	 * @param   string  Alias
+	 * @param   mixed   $value  Value to quote
+	 * @param   string  $alias  Alias
 	 * @return  string
 	 */
 	public function quote($value, $alias = NULL)
@@ -347,13 +349,13 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a column identifier for inclusion in a SQL query.
-	 * Adds the table prefix unless the namespace is an instance of Database_Identifier.
+	 * Quote a column identifier for inclusion in a SQL query. Adds the table
+	 * prefix unless the namespace is an instance of Database_Identifier.
 	 *
 	 * @uses Database::quote_identifier()
 	 * @uses Database::quote_table()
 	 *
-	 * @param   mixed   Column to quote
+	 * @param   mixed   $value  Column to quote
 	 * @return  string
 	 */
 	public function quote_column($value)
@@ -400,9 +402,9 @@ abstract class Database
 	}
 
 	/**
-	 * Quote an expression's parameters for inclusion in a SQL query.
+	 * Quote an expression's parameters for inclusion in a SQL query
 	 *
-	 * @param   Database_Expression Expression to quote
+	 * @param   Database_Expression $value  Expression to quote
 	 * @return  string
 	 */
 	public function quote_expression($value)
@@ -440,9 +442,9 @@ abstract class Database
 	}
 
 	/**
-	 * Quote an identifier for inclusion in a SQL query.
+	 * Quote an identifier for inclusion in a SQL query
 	 *
-	 * @param   mixed   Identifier to quote
+	 * @param   mixed   $value  Identifier to quote
 	 * @return  string
 	 */
 	public function quote_identifier($value)
@@ -488,9 +490,9 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query.
+	 * Quote a literal value for inclusion in a SQL query
 	 *
-	 * @param   mixed   Value to quote
+	 * @param   mixed   $value  Value to quote
 	 * @return  string
 	 */
 	public function quote_literal($value)
@@ -528,13 +530,12 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a table identifier for inclusion in a SQL query.
-	 * Adds the table prefix.
+	 * Quote a table identifier for inclusion in a SQL query. Adds the table prefix.
 	 *
 	 * @uses Database::quote_identifier()
 	 * @uses Database::table_prefix()
 	 *
-	 * @param   mixed   Table to quote
+	 * @param   mixed   $value  Table to quote
 	 * @return  string
 	 */
 	public function quote_table($value)
