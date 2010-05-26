@@ -11,7 +11,7 @@
 class Database_Expression
 {
 	/**
-	 * @var string  Raw expression
+	 * @var mixed   SQL expression with or without parameter placeholders
 	 */
 	protected $_value;
 
@@ -21,7 +21,7 @@ class Database_Expression
 	public $parameters;
 
 	/**
-	 * @param   string  $value      Raw expression
+	 * @param   mixed   $value      SQL expression
 	 * @param   array   $parameters Unquoted parameters
 	 */
 	public function __construct($value, array $parameters = array())

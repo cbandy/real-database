@@ -10,6 +10,9 @@
  */
 class Database_Command_Insert_Identity extends Database_Command_Insert
 {
+	/**
+	 * @var mixed   Column to return when executed
+	 */
 	protected $_return;
 
 	/**
@@ -28,8 +31,10 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 	}
 
 	/**
-	 * Name of the IDENTITY column to return when executed. Behavior varies
-	 * between database implementations. Reliable only when inserting one row.
+	 * Name of the IDENTITY column to return when executed
+	 *
+	 * Behavior varies between database implementations. Reliable only when
+	 * inserting one row.
 	 *
 	 * @param   mixed   $column Converted to Database_Column
 	 * @return  $this

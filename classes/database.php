@@ -55,7 +55,7 @@ abstract class Database
 	/**
 	 * Create an expression
 	 *
-	 * @param   string  $value      Raw expression
+	 * @param   mixed   $value      SQL expression
 	 * @param   array   $parameters Unquoted parameters
 	 * @return  Database_Expression
 	 */
@@ -80,7 +80,7 @@ abstract class Database
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns
+	 * @param   array   $columns    Each element converted to Database_Column
 	 * @return  Database_Command_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -137,7 +137,7 @@ abstract class Database
 	/**
 	 * Create a SELECT query
 	 *
-	 * @param   mixed   $columns
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
 	 * @return  Database_Query_Select
 	 */
 	public static function select($columns = NULL)
@@ -150,7 +150,7 @@ abstract class Database
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
 	 * @param   string  $alias  Table alias
-	 * @param   array   $values
+	 * @param   array   $values Hash of (column => value) assignments
 	 * @return  Database_Command_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)

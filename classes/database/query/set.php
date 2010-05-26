@@ -119,6 +119,8 @@ class Database_Query_Set extends Database_Query
 	}
 
 	/**
+	 * Add a query using EXCEPT
+	 *
 	 * @param   Database_Query  $query
 	 * @param   boolean         $all    Allow duplicate rows
 	 * @return  $this
@@ -141,6 +143,8 @@ class Database_Query_Set extends Database_Query
 	}
 
 	/**
+	 * Add a query using INTERSECT
+	 *
 	 * @param   Database_Query  $query
 	 * @param   boolean         $all    Allow duplicate rows
 	 * @return  $this
@@ -217,6 +221,8 @@ class Database_Query_Set extends Database_Query
 	}
 
 	/**
+	 * Add a query using UNION
+	 *
 	 * @param   Database_Query  $query
 	 * @param   boolean         $all    Allow duplicate rows
 	 * @return  $this
