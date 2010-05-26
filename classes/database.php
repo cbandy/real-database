@@ -94,6 +94,7 @@ abstract class Database
 	 * The configuration group will be loaded from the database configuration
 	 * file based on the instance name unless it is passed directly.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
 	 * @param   array   $config Configuration
 	 * @return  Database
@@ -182,6 +183,7 @@ abstract class Database
 	 *
 	 * The database type is not verified.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
 	 * @param   array   $config Configuration
 	 */
