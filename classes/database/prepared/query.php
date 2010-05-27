@@ -10,6 +10,9 @@
  */
 class Database_Prepared_Query extends Database_Prepared_Command
 {
+	/**
+	 * @var mixed   Type as which to return results
+	 */
 	protected $_as_object = FALSE;
 
 	/**
