@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package PostgreSQL
+ * @package     RealDatabase
+ * @subpackage  PostgreSQL
+ * @category    Commands
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -11,6 +13,9 @@
  */
 class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 {
+	/**
+	 * @var mixed   Type as which to return results
+	 */
 	protected $_as_object = FALSE;
 
 	public function __toString()
@@ -51,10 +56,13 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	}
 
 	/**
-	 * @param   Database_PostgreSQL $db
-	 * @return  integer         Number of affected rows
-	 * @return  array           List including number of affected rows and identity of first row
-	 * @return  Database_Result Result set
+	 * Execute the INSERT on a Database. Returns an array when identity() is
+	 * set. Returns a result set when returning() is set.
+	 *
+	 * @param   Database_PostgreSQL $db Connection on which to execute
+	 * @return  integer                     Number of affected rows
+	 * @return  array                       List including number of affected rows and identity of first row
+	 * @return  Database_PostgreSQL_Result  Result set
 	 */
 	public function execute($db)
 	{
@@ -83,6 +91,8 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	}
 
 	/**
+	 * Set the name of the column to return from the first row when executed
+	 *
 	 * @param   mixed   $column Converted to Database_Column
 	 * @return  $this
 	 */
@@ -103,7 +113,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	}
 
 	/**
-	 * Return values when executed
+	 * Append values to return when executed
 	 *
 	 * @param   mixed   $columns    Each element converted to Database_Column
 	 * @return  $this

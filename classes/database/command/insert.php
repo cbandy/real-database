@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @package RealDatabase
+ * @package     RealDatabase
+ * @category    Commands
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -15,8 +16,11 @@
 class Database_Command_Insert extends Database_Command
 {
 	/**
+	 * @uses Database_Command_Insert::into()
+	 * @uses Database_Command_Insert::columns()
+	 *
 	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns
+	 * @param   array   $columns    Each element converted to Database_Column
 	 */
 	public function __construct($table = NULL, $columns = NULL)
 	{
@@ -77,7 +81,9 @@ class Database_Command_Insert extends Database_Command
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Table
+	 * Set the table in which to insert rows
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
 	 * @return  $this
 	 */
 	public function into($table)

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package PDO
+ * @package     RealDatabase
+ * @subpackage  PDO
+ * @category    Prepared Statements
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -10,8 +12,10 @@
 class Database_PDO_Query extends Database_Prepared_Query
 {
 	/**
+	 * @uses Database_PDO_Query::parameters()
+	 *
 	 * @param   Database_PDO    $db
-	 * @param   PDOStatement    $statement
+	 * @param   PDOStatement    $statement  Prepared statement
 	 * @param   array           $parameters Unquoted parameters
 	 */
 	public function __construct($db, $statement, $parameters = array())

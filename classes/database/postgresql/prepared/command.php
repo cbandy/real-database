@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package PostgreSQL
+ * @package     RealDatabase
+ * @subpackage  PostgreSQL
+ * @category    Prepared Statements
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package SQLite
+ * @package     RealDatabase
+ * @subpackage  SQLite
+ * @category    Drivers
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -13,7 +15,7 @@ class Database_SQLite2 extends Database_Escape implements Database_iInsert
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns
+	 * @param   array   $columns    Each element converted to Database_Column
 	 * @return  Database_SQLite2_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)

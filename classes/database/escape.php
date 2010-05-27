@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @package RealDatabase
+ * @package     RealDatabase
+ * @category    Driver Interfaces
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package MySQL
+ * @package     RealDatabase
+ * @subpackage  MySQL
+ * @category    Drivers
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -15,7 +17,11 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 	protected static $_SET_CHARSET;
 
 	/**
+	 * Initialize runtime constants
+	 *
 	 * @link http://php.net/manual/function.mysql-set-charset
+	 *
+	 * @return  void
 	 */
 	public static function initialize()
 	{
@@ -27,7 +33,7 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns
+	 * @param   array   $columns    Each element converted to Database_Column
 	 * @return  Database_Command_Insert_Identity
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -62,7 +68,7 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $statement  SQL statement
-	 * @return  mixed
+	 * @return  resource|TRUE   Result resource for a query or TRUE for a command
 	 */
 	protected function _execute($statement)
 	{

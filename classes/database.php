@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @package RealDatabase
+ * @package     RealDatabase
+ * @category    Driver Interfaces
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -54,7 +55,7 @@ abstract class Database
 	/**
 	 * Create an expression
 	 *
-	 * @param   string  $value      Raw expression
+	 * @param   mixed   $value      SQL expression
 	 * @param   array   $parameters Unquoted parameters
 	 * @return  Database_Expression
 	 */
@@ -79,7 +80,7 @@ abstract class Database
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns
+	 * @param   array   $columns    Each element converted to Database_Column
 	 * @return  Database_Command_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -93,6 +94,7 @@ abstract class Database
 	 * The configuration group will be loaded from the database configuration
 	 * file based on the instance name unless it is passed directly.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
 	 * @param   array   $config Configuration
 	 * @return  Database
@@ -135,7 +137,7 @@ abstract class Database
 	/**
 	 * Create a SELECT query
 	 *
-	 * @param   mixed   $columns
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
 	 * @return  Database_Query_Select
 	 */
 	public static function select($columns = NULL)
@@ -148,7 +150,7 @@ abstract class Database
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
 	 * @param   string  $alias  Table alias
-	 * @param   array   $values
+	 * @param   array   $values Hash of (column => value) assignments
 	 * @return  Database_Command_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
@@ -171,7 +173,9 @@ abstract class Database
 	 */
 	protected $_placeholder = '/(?:\?|:\w++)/';
 
-	// Character used to quote identifiers (tables, columns, aliases, etc.)
+	/**
+	 * @var string  Character used to quote identifiers (tables, columns, aliases, etc.)
+	 */
 	protected $_quote = '"';
 
 	/**
@@ -179,6 +183,7 @@ abstract class Database
 	 *
 	 * The database type is not verified.
 	 *
+	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
 	 * @param   array   $config Configuration
 	 */
@@ -298,7 +303,7 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a value for inclusion in a SQL query.
+	 * Quote a value for inclusion in a SQL query
 	 *
 	 * @uses Database::quote_column()
 	 * @uses Database::quote_expression()
@@ -306,8 +311,8 @@ abstract class Database
 	 * @uses Database::quote_literal()
 	 * @uses Database::quote_table()
 	 *
-	 * @param   mixed   Value to quote
-	 * @param   string  Alias
+	 * @param   mixed   $value  Value to quote
+	 * @param   string  $alias  Alias
 	 * @return  string
 	 */
 	public function quote($value, $alias = NULL)
@@ -351,13 +356,13 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a column identifier for inclusion in a SQL query.
-	 * Adds the table prefix unless the namespace is an instance of Database_Identifier.
+	 * Quote a column identifier for inclusion in a SQL query. Adds the table
+	 * prefix unless the namespace is an instance of Database_Identifier.
 	 *
 	 * @uses Database::quote_identifier()
 	 * @uses Database::quote_table()
 	 *
-	 * @param   mixed   Column to quote
+	 * @param   mixed   $value  Column to quote
 	 * @return  string
 	 */
 	public function quote_column($value)
@@ -404,9 +409,9 @@ abstract class Database
 	}
 
 	/**
-	 * Quote an expression's parameters for inclusion in a SQL query.
+	 * Quote an expression's parameters for inclusion in a SQL query
 	 *
-	 * @param   Database_Expression Expression to quote
+	 * @param   Database_Expression $value  Expression to quote
 	 * @return  string
 	 */
 	public function quote_expression($value)
@@ -444,9 +449,9 @@ abstract class Database
 	}
 
 	/**
-	 * Quote an identifier for inclusion in a SQL query.
+	 * Quote an identifier for inclusion in a SQL query
 	 *
-	 * @param   mixed   Identifier to quote
+	 * @param   mixed   $value  Identifier to quote
 	 * @return  string
 	 */
 	public function quote_identifier($value)
@@ -492,9 +497,9 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query.
+	 * Quote a literal value for inclusion in a SQL query
 	 *
-	 * @param   mixed   Value to quote
+	 * @param   mixed   $value  Value to quote
 	 * @return  string
 	 */
 	public function quote_literal($value)
@@ -532,13 +537,12 @@ abstract class Database
 	}
 
 	/**
-	 * Quote a table identifier for inclusion in a SQL query.
-	 * Adds the table prefix.
+	 * Quote a table identifier for inclusion in a SQL query. Adds the table prefix.
 	 *
 	 * @uses Database::quote_identifier()
 	 * @uses Database::table_prefix()
 	 *
-	 * @param   mixed   Table to quote
+	 * @param   mixed   $value  Table to quote
 	 * @return  string
 	 */
 	public function quote_table($value)

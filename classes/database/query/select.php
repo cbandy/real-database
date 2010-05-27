@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @package RealDatabase
+ * @package     RealDatabase
+ * @category    Queries
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -14,6 +15,11 @@
  */
 class Database_Query_Select extends Database_Query
 {
+	/**
+	 * @uses Database_Query_Select::select()
+	 *
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 */
 	public function __construct($columns = NULL)
 	{
 		parent::__construct('');
@@ -74,8 +80,10 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Column
-	 * @param   string  Column alias
+	 * Append one column or expression to be selected
+	 *
+	 * @param   mixed   $column Converted to Database_Column
+	 * @param   string  $alias  Column alias
 	 * @return  $this
 	 */
 	public function column($column, $alias = NULL)
@@ -97,7 +105,9 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   boolean
+	 * Set whether or not retrieved rows should be unique
+	 *
+	 * @param   boolean $value
 	 * @return  $this
 	 */
 	public function distinct($value = TRUE)
@@ -108,6 +118,8 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
+	 * Set the table(s) from which to retrieve rows
+	 *
 	 * @param   mixed   $reference      Database_From or converted to Database_Table
 	 * @param   string  $table_alias    Table alias when converting to Database_Table
 	 * @return  $this
@@ -125,10 +137,12 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
+	 * Set the columns by which rows should be grouped
+	 *
 	 * @param   array   $columns    Each element converted to Database_Column
 	 * @return  $this
 	 */
-	public function group_by(array $columns)
+	public function group_by($columns)
 	{
 		foreach ($columns as &$column)
 		{
@@ -198,8 +212,10 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Column
-	 * @param   mixed
+	 * Append a column or expression by which rows should be sorted
+	 *
+	 * @param   mixed   $column     Converted to Database_Column
+	 * @param   mixed   $direction  Direction of sort
 	 * @return  $this
 	 */
 	public function order_by($column, $direction = NULL)
@@ -223,7 +239,9 @@ class Database_Query_Select extends Database_Query
 	}
 
 	/**
-	 * @param   mixed
+	 * Append multiple columns or expressions to be selected
+	 *
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
 	 * @return  $this
 	 */
 	public function select($columns)

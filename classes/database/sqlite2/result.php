@@ -1,7 +1,9 @@
 <?php
 
 /**
- * @package SQLite
+ * @package     RealDatabase
+ * @subpackage  SQLite
+ * @category    Result Sets
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -16,7 +18,7 @@ class Database_SQLite2_Result extends Database_Result
 
 	/**
 	 * @param   SQLiteResult    $result
-	 * @param   mixed           $as_object
+	 * @param   mixed           $as_object  Result object class, TRUE for stdClass, FALSE for associative array
 	 */
 	public function __construct($result, $as_object)
 	{

@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @package RealDatabase
+ * @package     RealDatabase
+ * @category    Commands
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -15,8 +16,10 @@
 class Database_Command_Delete extends Database_Command
 {
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string  Table alias
+	 * @uses Database_Command_Delete::from()
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 */
 	public function __construct($table = NULL, $alias = NULL)
 	{
@@ -45,8 +48,10 @@ class Database_Command_Delete extends Database_Command
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string  Table alias
+	 * Set the table from which to delete rows
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function from($table, $alias = NULL)
@@ -65,6 +70,8 @@ class Database_Command_Delete extends Database_Command
 	}
 
 	/**
+	 * Set the table(s) referenced in the search conditions
+	 *
 	 * @param   mixed   $reference      Database_From or converted to Database_Table
 	 * @param   string  $table_alias    Table alias when converting to Database_Table
 	 * @return  $this

@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @package RealDatabase
+ * @package     RealDatabase
+ * @category    Prepared Statements
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -9,6 +10,9 @@
  */
 class Database_Prepared_Query extends Database_Prepared_Command
 {
+	/**
+	 * @var mixed   Type as which to return results
+	 */
 	protected $_as_object = FALSE;
 
 	/**

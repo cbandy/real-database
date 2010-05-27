@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @package RealDatabase
+ * @package     RealDatabase
+ * @category    Commands
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -15,9 +16,12 @@
 class Database_Command_Update extends Database_Command
 {
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string  Table alias
-	 * @param   array
+	 * @uses Database_Command_Update::table()
+	 * @uses Database_Command_Update::set()
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
+	 * @param   array   $values Hash of (column => value) assignments
 	 */
 	public function __construct($table = NULL, $alias = NULL, $values = NULL)
 	{
@@ -46,8 +50,10 @@ class Database_Command_Update extends Database_Command
 	}
 
 	/**
-	 * @param   mixed   Converted to Database_Table
-	 * @param   string  Table alias
+	 * Set the table in which to update rows
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function table($table, $alias = NULL)
@@ -66,7 +72,9 @@ class Database_Command_Update extends Database_Command
 	}
 
 	/**
-	 * @param   mixed
+	 * Append multiple column assignments
+	 *
+	 * @param   mixed   $values Hash of (column => value) assignments
 	 * @return  $this
 	 */
 	public function set($values)
@@ -113,6 +121,8 @@ class Database_Command_Update extends Database_Command
 	}
 
 	/**
+	 * Set the table(s) referenced in the search conditions
+	 *
 	 * @param   mixed   $reference      Database_From or converted to Database_Table
 	 * @param   string  $table_alias    Table alias when converting to Database_Table
 	 * @return  $this
