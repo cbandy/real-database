@@ -36,7 +36,7 @@ class Database_PDO extends Database
 
 	/**
 	 * Recursively replace Expression and Identifier parameters until all
-	 * parameters are positional literals.
+	 * parameters are positional literals
 	 *
 	 * @param   string  $statement          SQL statement
 	 * @param   array   $parameters         Unquoted parameters
@@ -146,11 +146,11 @@ class Database_PDO extends Database
 
 	/**
 	 * Quote a value while escaping characters that could cause a SQL injection
-	 * attack.
+	 * attack
 	 *
 	 * Not all drivers support this method.
 	 *
-	 * @param   mixed   Value to quote
+	 * @param   mixed   $value  Value to quote
 	 * @return  string
 	 */
 	public function escape($value)
@@ -179,7 +179,7 @@ class Database_PDO extends Database
 
 	/**
 	 * Execute an INSERT statement, returning the number of affected rows and
-	 * the identity of one affected row.
+	 * the identity of one affected row
 	 *
 	 * Not all drivers support this method. When inserting multiple rows, the
 	 * row to which the identity value belongs depends on the driver.
@@ -219,7 +219,7 @@ class Database_PDO extends Database
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $statement  SQL statement
-	 * @return  PDOStatement
+	 * @return  PDOStatement    Prepared statement
 	 */
 	public function prepare($statement)
 	{
@@ -237,8 +237,12 @@ class Database_PDO extends Database
 
 	public function prepare_command($statement, $parameters = array())
 	{
+		// PDOStatement parameters are 1-indexed, pad the array with a value
 		$params = array(NULL);
+
 		$statement = $this->prepare($this->_parse($statement, $parameters, $params));
+
+		// Remove padding
 		unset($params[0]);
 
 		return new Database_PDO_Command($this, $statement, $params);
@@ -246,8 +250,12 @@ class Database_PDO extends Database
 
 	public function prepare_query($statement, $parameters = array())
 	{
+		// PDOStatement parameters are 1-indexed, pad the array with a value
 		$params = array(NULL);
+
 		$statement = $this->prepare($this->_parse($statement, $parameters, $params));
+
+		// Remove padding
 		unset($params[0]);
 
 		return new Database_PDO_Query($this, $statement, $params);
