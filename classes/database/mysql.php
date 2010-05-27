@@ -68,6 +68,11 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
 		try
 		{
 			// Raises E_WARNING upon error
@@ -75,11 +80,28 @@ class Database_MySQL extends Database_Escape implements Database_iInsert
 		}
 		catch (Exception $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
 		}
 
 		if ($result === FALSE)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
 
 		return $result;
 	}

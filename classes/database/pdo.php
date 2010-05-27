@@ -92,13 +92,28 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", 'begin()');
+		}
+
 		try
 		{
 			$this->_connection->beginTransaction();
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
 		}
 	}
 
@@ -106,13 +121,28 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", 'commit()');
+		}
+
 		try
 		{
 			$this->_connection->commit();
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
 		}
 	}
 
@@ -165,14 +195,31 @@ class Database_PDO extends Database
 
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
 		try
 		{
-			return $this->_connection->exec($statement);
+			$result = $this->_connection->exec($statement);
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
 		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return $result;
 	}
 
 	/**
@@ -197,13 +244,28 @@ class Database_PDO extends Database
 
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
 		try
 		{
 			$statement = $this->_connection->query($statement);
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
 		}
 
 		if ($statement->columnCount() === 0)
@@ -223,14 +285,31 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", "prepare($statement)");
+		}
+
 		try
 		{
-			return $this->_connection->prepare($statement);
+			$result = $this->_connection->prepare($statement);
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
 		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return $result;
 	}
 
 	public function prepare_command($statement, $parameters = array())
@@ -251,9 +330,24 @@ class Database_PDO extends Database
 		return new Database_PDO_Query($this, $statement, $params);
 	}
 
+	/**
+	 * Whether or not profiling is enabled
+	 *
+	 * @return  boolean
+	 */
+	public function profiling()
+	{
+		return ! empty($this->_config['profiling']);
+	}
+
 	public function rollback()
 	{
 		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", 'rollback()');
+		}
 
 		try
 		{
@@ -261,7 +355,17 @@ class Database_PDO extends Database
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
 		}
 	}
 

@@ -199,6 +199,11 @@ abstract class Database
 		$this->disconnect();
 	}
 
+	public function __toString()
+	{
+		return $this->_instance;
+	}
+
 	/**
 	 * Start a transaction
 	 *

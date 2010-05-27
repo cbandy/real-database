@@ -50,13 +50,28 @@ class Database_PDO_Command extends Database_Prepared_Command
 
 	public function execute()
 	{
+		if ($this->_db->profiling())
+		{
+			$benchmark = Profiler::start("Database ($this->_db)", 'Prepared: '.$this->_value->queryString);
+		}
+
 		try
 		{
 			$this->_value->execute();
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
 		}
 
 		return $this->_value->rowCount();

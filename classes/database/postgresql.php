@@ -275,11 +275,35 @@ class Database_PostgreSQL extends Database_Escape
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
 		if ( ! pg_send_query($this->_connection, $statement))
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		}
 
 		if ( ! $result = pg_get_result($this->_connection))
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
 
 		return $result;
 	}
@@ -296,11 +320,35 @@ class Database_PostgreSQL extends Database_Escape
 	{
 		$this->_connection or $this->connect();
 
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", "Prepared: $name");
+		}
+
 		if ( ! pg_send_execute($this->_connection, $name, $parameters))
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		}
 
 		if ( ! $result = pg_get_result($this->_connection))
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
 
 		return $result;
 	}

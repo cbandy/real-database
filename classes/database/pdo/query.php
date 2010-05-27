@@ -53,13 +53,28 @@ class Database_PDO_Query extends Database_Prepared_Query
 		if (empty($this->_value->queryString))
 			return NULL;
 
+		if ($this->_db->profiling())
+		{
+			$benchmark = Profiler::start("Database ($this->_db)", 'Prepared: '.$this->_value->queryString);
+		}
+
 		try
 		{
 			$this->_value->execute();
 		}
 		catch (PDOException $e)
 		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
 		}
 
 		if ($this->_value->columnCount() === 0)
