@@ -13,6 +13,9 @@
  */
 class Database_PostgreSQL_Delete extends Database_Command_Delete
 {
+	/**
+	 * @var mixed   Type as which to return results
+	 */
 	protected $_as_object = FALSE;
 
 	public function __toString()
@@ -53,9 +56,12 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 	}
 
 	/**
-	 * @param   Database_PostgreSQL $db
-	 * @return  integer         Number of affected rows
-	 * @return  Database_Result Result set
+	 * Execute the DELETE on a Database. Returns a result set when returning()
+	 * is set.
+	 *
+	 * @param   Database_PostgreSQL $db Connection on which to execute
+	 * @return  integer                     Number of affected rows
+	 * @return  Database_PostgreSQL_Result  Result set
 	 */
 	public function execute($db)
 	{
@@ -66,7 +72,7 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 	}
 
 	/**
-	 * Return values when executed
+	 * Append values to return when executed
 	 *
 	 * @param   mixed   $columns    Each element converted to Database_Column
 	 * @return  $this

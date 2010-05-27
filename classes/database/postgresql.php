@@ -42,7 +42,10 @@ class Database_PostgreSQL extends Database_Escape
 	}
 
 	/**
+	 * Initialize runtime constants
+	 *
 	 * @link http://php.net/manual/reserved.constants
+	 *
 	 * @return  void
 	 */
 	public static function initialize()
@@ -76,7 +79,7 @@ class Database_PostgreSQL extends Database_Escape
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns
+	 * @param   array   $columns    Each element converted to Database_Column
 	 * @return  Database_PostgreSQL_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -87,6 +90,7 @@ class Database_PostgreSQL extends Database_Escape
 	/**
 	 * Create a SELECT query
 	 *
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
 	 * @return  Database_PostgreSQL_Select
 	 */
 	public static function select($columns = NULL)
@@ -99,7 +103,7 @@ class Database_PostgreSQL extends Database_Escape
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
 	 * @param   string  $alias  Table alias
-	 * @param   array   $values
+	 * @param   array   $values Hash of (column => value) assignments
 	 * @return  Database_PostgreSQL_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
@@ -108,7 +112,7 @@ class Database_PostgreSQL extends Database_Escape
 	}
 
 	/**
-	 * @var resource
+	 * @var resource    Unique connection to the server
 	 */
 	protected $_connection;
 
@@ -125,7 +129,7 @@ class Database_PostgreSQL extends Database_Escape
 	protected $_schema;
 
 	/**
-	 * @var string  Server version
+	 * @var string  Version of the connected server
 	 */
 	protected $_version;
 
@@ -271,7 +275,7 @@ class Database_PostgreSQL extends Database_Escape
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $statement  SQL statement
-	 * @return  resource
+	 * @return  resource    Result resource
 	 */
 	protected function _execute($statement)
 	{
@@ -292,7 +296,7 @@ class Database_PostgreSQL extends Database_Escape
 	 * @throws  Database_Exception
 	 * @param   string  $name       Statement name
 	 * @param   array   $parameters Unquoted parameters
-	 * @return  resource
+	 * @return  resource    Result resource
 	 */
 	protected function _execute_prepared($name, $parameters)
 	{
@@ -309,9 +313,9 @@ class Database_PostgreSQL extends Database_Escape
 
 	/**
 	 * Recursively replace Expression and Identifier parameters until all
-	 * parameters are unquoted literals.
+	 * parameters are unquoted literals
 	 *
-	 * @param   string  $statement          SQL statement
+	 * @param   string  $statement          SQL statement with (or without) parameters
 	 * @param   array   $parameters         Unquoted parameters
 	 * @param   array   $result_parameters  Parameters for the resulting statement
 	 * @return  string  SQL statement
@@ -561,7 +565,13 @@ class Database_PostgreSQL extends Database_Escape
 	}
 
 	/**
+	 * Quote a value while escaping characters that could cause a SQL injection
+	 * attack.
+	 *
 	 * @link http://archives.postgresql.org/pgsql-php/2007-02/msg00014.php
+	 *
+	 * @param   mixed   $value  Value to quote
+	 * @return  string
 	 */
 	public function escape($value)
 	{
