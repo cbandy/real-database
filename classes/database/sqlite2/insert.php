@@ -14,6 +14,8 @@
 class Database_SQLite2_Insert extends Database_Command_Insert_Identity
 {
 	/**
+	 * Build separate INSERT statements for multiple rows
+	 *
 	 * @return  Database_Expression
 	 */
 	protected function _build()
@@ -42,7 +44,11 @@ class Database_SQLite2_Insert extends Database_Command_Insert_Identity
 	}
 
 	/**
-	 * @param   Database_SQLite2    $db
+	 * Execute the INSERT on a Database. Returns an array when identity() is set.
+	 *
+	 * @param   Database_SQLite2    $db Connection on which to execute
+	 * @return  integer Number of affected rows
+	 * @return  array   List including number of affected rows and identity value
 	 */
 	public function execute($db)
 	{
@@ -55,7 +61,10 @@ class Database_SQLite2_Insert extends Database_Command_Insert_Identity
 	}
 
 	/**
-	 * @param   Database_SQLite2    $db
+	 * Prepare the INSERT to be executed on a Database
+	 *
+	 * @param   Database_SQLite2    $db Connection on which to prepare (and later execute)
+	 * @return  Database_Prepared_Command
 	 */
 	public function prepare($db)
 	{
