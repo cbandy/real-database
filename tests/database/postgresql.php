@@ -273,13 +273,13 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 	{
 		$query = $this->_db->prepare_command('DELETE FROM "temp_test_table"');
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Command, 'No parameters');
+		$this->assertTrue($query instanceof Database_PostgreSQL_Command, 'No parameters');
 		$this->assertSame('DELETE FROM "temp_test_table"', (string) $query, 'No parameters');
 		$this->assertSame(array(), $query->parameters, 'No parameters');
 
 		$query = $this->_db->prepare_command('DELETE FROM ? WHERE :cond', array(new Database_Table('temp_test_table'), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Command, 'Parameters');
+		$this->assertTrue($query instanceof Database_PostgreSQL_Command, 'Parameters');
 		$this->assertSame('DELETE FROM "temp_test_table" WHERE "value" = $1', (string) $query, 'Parameters');
 		$this->assertSame(array(60), $query->parameters, 'Parameters');
 	}
@@ -288,13 +288,13 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 	{
 		$query = $this->_db->prepare_query('SELECT * FROM "temp_test_table"');
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Query, 'No parameters');
+		$this->assertTrue($query instanceof Database_PostgreSQL_Query, 'No parameters');
 		$this->assertSame('SELECT * FROM "temp_test_table"', (string) $query, 'No parameters');
 		$this->assertSame(array(), $query->parameters, 'No parameters');
 
 		$query = $this->_db->prepare_query('SELECT * FROM ? WHERE :cond', array(new Database_Table('temp_test_table'), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Prepared_Query, 'Parameters');
+		$this->assertTrue($query instanceof Database_PostgreSQL_Query, 'Parameters');
 		$this->assertSame('SELECT * FROM "temp_test_table" WHERE "value" = $1', (string) $query, 'Parameters');
 		$this->assertSame(array(60), $query->parameters, 'Parameters');
 	}

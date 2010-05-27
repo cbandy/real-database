@@ -718,7 +718,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		$statement = $this->_parse($statement, $parameters, $params);
 		$name = $this->prepare(NULL, $statement);
 
-		return new Database_PostgreSQL_Prepared_Command($this, $name, $statement, $params);
+		return new Database_PostgreSQL_Command($this, $name, $statement, $params);
 	}
 
 	public function prepare_query($statement, $parameters = array())
@@ -727,7 +727,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		$statement = $this->_parse($statement, $parameters, $params);
 		$name = $this->prepare(NULL, $statement);
 
-		return new Database_PostgreSQL_Prepared_Query($this, $name, $statement, $params);
+		return new Database_PostgreSQL_Query($this, $name, $statement, $params);
 	}
 
 	/**

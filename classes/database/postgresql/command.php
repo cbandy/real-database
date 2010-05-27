@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PostgreSQL_Prepared_Command extends Database_Prepared_Command
+class Database_PostgreSQL_Command extends Database_Prepared_Command
 {
 	/**
 	 * @var string  Statement name
