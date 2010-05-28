@@ -38,7 +38,7 @@ class Database_PDO extends Database
 	 * Recursively replace Expression and Identifier parameters until all
 	 * parameters are positional literals
 	 *
-	 * @param   string  $statement          SQL statement
+	 * @param   string  $statement          SQL statement with (or without) placeholders
 	 * @param   array   $parameters         Unquoted parameters
 	 * @param   array   $result_parameters  Parameters for the resulting statement
 	 * @return  string  SQL statement
