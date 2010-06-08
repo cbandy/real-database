@@ -82,9 +82,8 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 		}
 		else
 		{
-			// Guess that reset() will give us the singular value
-			$result = $result->current();
-			$result = reset($result);
+			// Guess that current() will give us the singular value
+			$result = current($result->current());
 		}
 
 		return array($rows, $result);
