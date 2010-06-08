@@ -49,64 +49,6 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "6\t\\N\n"), $this->_db->copy_to('temp_test_table'));
 	}
 
-	public function test_delete()
-	{
-		$query = $this->_db->delete('temp_test_table');
-
-		$this->assertTrue($query instanceof Database_PostgreSQL_Delete);
-
-		$query->where(Database::conditions()->column(NULL, 'value', 'between', array(52,62)));
-
-		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
-
-		$result = $query->execute($this->_db);
-
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
-		$this->assertEquals(array(array('more' => 2), array('more' => 3)), $result->as_array(), 'Each aliased column');
-
-		$query->where(Database::conditions()->column(NULL, 'id', '=', 4));
-
-		$this->assertSame($query, $query->returning(new Database_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
-
-		$result = $query->execute($this->_db);
-
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
-		$this->assertEquals(array(array('rawr' => 'asdf')), $result->as_array());
-
-		$query->where(NULL);
-
-		$this->assertSame($query, $query->returning(NULL), 'Chainable (reset)');
-		$this->assertSame(2, $query->execute($this->_db));
-	}
-
-	public function test_delete_assoc()
-	{
-		$query = $this->_db->delete('temp_test_table')
-			->where(Database::conditions()->column(NULL, 'value', 'between', array(52,62)))
-			->returning(array('id'));
-
-		$this->assertSame($query, $query->as_assoc(), 'Chainable');
-
-		$result = $query->execute($this->_db);
-
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
-		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
-	}
-
-	public function test_delete_object()
-	{
-		$query = $this->_db->delete('temp_test_table')
-			->where(Database::conditions()->column(NULL, 'value', 'between', array(52,62)))
-			->returning(array('id'));
-
-		$this->assertSame($query, $query->as_object());
-
-		$result = $query->execute($this->_db);
-
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
-		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
-	}
-
 	public function test_execute_command_query()
 	{
 		$this->assertSame(5, $this->_db->execute_command('SELECT * FROM "temp_test_table"'), 'Number of returned rows');
