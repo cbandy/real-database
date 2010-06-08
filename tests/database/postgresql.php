@@ -253,61 +253,6 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->distinct(new Database_Expression('"value" % 10 = 0')), 'Chainable (expression)');
 		$this->assertSame(2, $query->execute($this->_db)->count(), 'Distinct on expression');
 	}
-
-	public function test_update()
-	{
-		$query = $this->_db->update('temp_test_table', NULL, array('value' => 100));
-
-		$this->assertTrue($query instanceof Database_PostgreSQL_Update);
-
-		$query->where(Database::conditions()->column(NULL, 'value', 'between', array(52,62)));
-
-		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
-
-		$result = $query->execute($this->_db);
-
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
-		$this->assertEquals(array(array('more' => 2), array('more' => 3)), $result->as_array(), 'Each aliased column');
-
-		$query->where(Database::conditions()->column(NULL, 'value', '=', 100));
-
-		$this->assertSame($query, $query->returning(new Database_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
-
-		$result = $query->execute($this->_db);
-
-		$this->assertEquals(array(array('rawr' => 'asdf'), array('rawr' => 'asdf')), $result->as_array(), 'Each expression');
-
-		$this->assertSame($query, $query->returning(NULL), 'Chainable (reset)');
-		$this->assertSame(2, $query->execute($this->_db));
-	}
-
-	public function test_update_assoc()
-	{
-		$query = $this->_db->update('temp_test_table', NULL, array('value' => 100))
-			->where(Database::conditions()->column(NULL, 'value', 'between', array(52,62)))
-			->returning(array('id'));
-
-		$this->assertSame($query, $query->as_assoc(), 'Chainable');
-
-		$result = $query->execute($this->_db);
-
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
-		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
-	}
-
-	public function test_update_object()
-	{
-		$query = $this->_db->update('temp_test_table', NULL, array('value' => 100))
-			->where(Database::conditions()->column(NULL, 'value', 'between', array(52,62)))
-			->returning(array('id'));
-
-		$this->assertSame($query, $query->as_object(), 'Chainable');
-
-		$result = $query->execute($this->_db);
-
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
-		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
-	}
 }
 
 class Database_PostgreSQL_Test_Class {}
