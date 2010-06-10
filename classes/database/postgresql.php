@@ -791,6 +791,16 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	{
 		return $this->_prefix;
 	}
+
+	/**
+	 * Return the version of the connected server
+	 *
+	 * @return  string
+	 */
+	public function version()
+	{
+		return $this->_version;
+	}
 }
 
 // Static initialization
