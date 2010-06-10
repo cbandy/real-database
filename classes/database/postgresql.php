@@ -641,7 +641,14 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 
 	public function execute_command($statement)
 	{
-		return $this->_evaluate_command($this->_execute($statement));
+		$rows = $this->_evaluate_command($this->_execute($statement));
+
+		while ($result = pg_get_result($this->_connection))
+		{
+			$rows += $this->_evaluate_command($result);
+		}
+
+		return $rows;
 	}
 
 	/**
