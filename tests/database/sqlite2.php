@@ -9,6 +9,7 @@
 class Database_SQLite2_Test extends PHPUnit_Framework_TestCase
 {
 	protected $_db;
+	protected $_table;
 
 	public function setUp()
 	{
@@ -18,10 +19,12 @@ class Database_SQLite2_Test extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('Database not configured for SQLite2');
 
 		$this->_db = Database::instance('testing');
-		$this->_db->execute_command('CREATE TEMPORARY TABLE temp_test_table (id INTEGER PRIMARY KEY, value INTEGER)');
-		$this->_db->execute_command('INSERT INTO temp_test_table (value) VALUES (50)');
-		$this->_db->execute_command('INSERT INTO temp_test_table (value) VALUES (55)');
-		$this->_db->execute_command('INSERT INTO temp_test_table (value) VALUES (60)');
+		$this->_table = $this->_db->quote_table('temp_test_table');
+
+		$this->_db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' (id INTEGER PRIMARY KEY, value INTEGER)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' (value) VALUES (50)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' (value) VALUES (55)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' (value) VALUES (60)');
 	}
 
 	public function tearDown()
@@ -31,13 +34,13 @@ class Database_SQLite2_Test extends PHPUnit_Framework_TestCase
 
 	public function test_execute_command_query()
 	{
-		$this->assertSame(0, $this->_db->execute_command('SELECT * FROM temp_test_table'), 'Always zero');
+		$this->assertSame(0, $this->_db->execute_command('SELECT * FROM '.$this->_table), 'Always zero');
 	}
 
 	public function test_execute_insert()
 	{
 		$this->assertSame(array(0,3), $this->_db->execute_insert(''), 'Prior identity');
-		$this->assertSame(array(1,4), $this->_db->execute_insert('INSERT INTO temp_test_table (value) VALUES (65)'));
+		$this->assertSame(array(1,4), $this->_db->execute_insert('INSERT INTO '.$this->_table.' (value) VALUES (65)'));
 	}
 
 	public function test_insert()

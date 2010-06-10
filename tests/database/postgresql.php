@@ -9,6 +9,7 @@
 class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 {
 	protected $_db;
+	protected $_table;
 
 	public function setUp()
 	{
@@ -18,8 +19,14 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('Database not configured for PostgreSQL');
 
 		$this->_db = Database::instance('testing');
-		$this->_db->execute_command('CREATE TEMPORARY TABLE "temp_test_table" ("id" bigserial PRIMARY KEY, "value" integer)');
-		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (50), (55), (60), (65), (65)');
+		$this->_table = $this->_db->quote_table('temp_test_table');
+
+		$this->_db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' ("id" bigserial PRIMARY KEY, "value" integer)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' ("value") VALUES (50)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' ("value") VALUES (55)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' ("value") VALUES (60)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' ("value") VALUES (65)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' ("value") VALUES (65)');
 	}
 
 	public function tearDown()
@@ -39,35 +46,35 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 			array('id' => 5, 'value' => 65),
 			array('id' => 8, 'value' => NULL),
 			array('id' => 9, 'value' => 75),
-		), $this->_db->execute_query('SELECT * FROM "temp_test_table" ORDER BY "id"')->as_array());
+		), $this->_db->execute_query('SELECT * FROM '.$this->_table.' ORDER BY "id"')->as_array());
 	}
 
 	public function test_copy_to()
 	{
-		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (NULL)');
+		$this->_db->execute_command('INSERT INTO '.$this->_table.' ("value") VALUES (NULL)');
 
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "6\t\\N\n"), $this->_db->copy_to('temp_test_table'));
 	}
 
 	public function test_execute_command_query()
 	{
-		$this->assertSame(5, $this->_db->execute_command('SELECT * FROM "temp_test_table"'), 'Number of returned rows');
+		$this->assertSame(5, $this->_db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');
 	}
 
 	public function test_execute_copy()
 	{
-		$this->assertSame(0, $this->_db->execute_command('COPY "temp_test_table" TO STDOUT'));
+		$this->assertSame(0, $this->_db->execute_command('COPY '.$this->_table.' TO STDOUT'));
 
-		$this->assertNull($this->_db->execute_query('COPY "temp_test_table" TO STDOUT'));
+		$this->assertNull($this->_db->execute_query('COPY '.$this->_table.' TO STDOUT'));
 	}
 
 	public function test_execute_prepared_command()
 	{
-		$name = $this->_db->prepare(NULL, 'UPDATE "temp_test_table" SET "value" = 20 WHERE "value" = 65');
+		$name = $this->_db->prepare(NULL, 'UPDATE '.$this->_table.' SET "value" = 20 WHERE "value" = 65');
 
 		$this->assertSame(2, $this->_db->execute_prepared_command($name));
 
-		$name = $this->_db->prepare(NULL, 'UPDATE "temp_test_table" SET "value" = $1 WHERE "value" = $2');
+		$name = $this->_db->prepare(NULL, 'UPDATE '.$this->_table.' SET "value" = $1 WHERE "value" = $2');
 
 		$this->assertSame(1, $this->_db->execute_prepared_command($name, array(20, 50)));
 		$this->assertSame(3, $this->_db->execute_prepared_command($name, array(30, 20)));
@@ -82,7 +89,7 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 
 	public function test_execute_prepared_query()
 	{
-		$name = $this->_db->prepare(NULL, 'SELECT * FROM "temp_test_table" WHERE "value" = $1');
+		$name = $this->_db->prepare(NULL, 'SELECT * FROM '.$this->_table.' WHERE "value" = $1');
 
 		$result = $this->_db->execute_prepared_query($name, array(60));
 
@@ -103,7 +110,7 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		}
 		catch (Database_Exception $e) {}
 
-		$name = $this->_db->prepare(NULL, 'SELECT * FROM "temp_test_table"');
+		$name = $this->_db->prepare(NULL, 'SELECT * FROM '.$this->_table);
 
 		$result = $this->_db->execute_prepared_query($name);
 
@@ -128,7 +135,7 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 
 	public function test_prepare()
 	{
-		$name = $this->_db->prepare(NULL, 'SELECT * FROM "temp_test_table"');
+		$name = $this->_db->prepare(NULL, 'SELECT * FROM '.$this->_table);
 
 		$this->assertNotEquals('', $name, 'Returns a generated name');
 
@@ -136,42 +143,42 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(1, $result->count(), 'Created successfully');
 		$this->assertSame('f', $result->get('from_sql'), 'Definitely programmatic');
 
-		$this->assertSame('asdf', $this->_db->prepare('asdf', 'SELECT * FROM "temp_test_table"'));
+		$this->assertSame('asdf', $this->_db->prepare('asdf', 'SELECT * FROM '.$this->_table));
 	}
 
 	public function test_prepare_command()
 	{
-		$query = $this->_db->prepare_command('DELETE FROM "temp_test_table"');
+		$query = $this->_db->prepare_command('DELETE FROM '.$this->_table);
 
 		$this->assertTrue($query instanceof Database_PostgreSQL_Command, 'No parameters');
-		$this->assertSame('DELETE FROM "temp_test_table"', (string) $query, 'No parameters');
+		$this->assertSame('DELETE FROM '.$this->_table, (string) $query, 'No parameters');
 		$this->assertSame(array(), $query->parameters, 'No parameters');
 
 		$query = $this->_db->prepare_command('DELETE FROM ? WHERE :cond', array(new Database_Table('temp_test_table'), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
 
 		$this->assertTrue($query instanceof Database_PostgreSQL_Command, 'Parameters');
-		$this->assertSame('DELETE FROM "temp_test_table" WHERE "value" = $1', (string) $query, 'Parameters');
+		$this->assertSame('DELETE FROM '.$this->_table.' WHERE "value" = $1', (string) $query, 'Parameters');
 		$this->assertSame(array(60), $query->parameters, 'Parameters');
 	}
 
 	public function test_prepare_query()
 	{
-		$query = $this->_db->prepare_query('SELECT * FROM "temp_test_table"');
+		$query = $this->_db->prepare_query('SELECT * FROM '.$this->_table);
 
 		$this->assertTrue($query instanceof Database_PostgreSQL_Query, 'No parameters');
-		$this->assertSame('SELECT * FROM "temp_test_table"', (string) $query, 'No parameters');
+		$this->assertSame('SELECT * FROM '.$this->_table, (string) $query, 'No parameters');
 		$this->assertSame(array(), $query->parameters, 'No parameters');
 
 		$query = $this->_db->prepare_query('SELECT * FROM ? WHERE :cond', array(new Database_Table('temp_test_table'), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
 
 		$this->assertTrue($query instanceof Database_PostgreSQL_Query, 'Parameters');
-		$this->assertSame('SELECT * FROM "temp_test_table" WHERE "value" = $1', (string) $query, 'Parameters');
+		$this->assertSame('SELECT * FROM '.$this->_table.' WHERE "value" = $1', (string) $query, 'Parameters');
 		$this->assertSame(array(60), $query->parameters, 'Parameters');
 	}
 
 	public function test_prepared_command_deallocate()
 	{
-		$query = $this->_db->prepare_command('DELETE FROM "temp_test_table"');
+		$query = $this->_db->prepare_command('DELETE FROM '.$this->_table);
 
 		$this->assertNull($query->deallocate());
 
@@ -185,7 +192,7 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 
 	public function test_prepared_query_deallocate()
 	{
-		$query = $this->_db->prepare_query('SELECT * FROM "temp_test_table"');
+		$query = $this->_db->prepare_query('SELECT * FROM '.$this->_table);
 
 		$this->assertNull($query->deallocate());
 
@@ -206,18 +213,18 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 
 	public function test_savepoint_transactions()
 	{
-		$select = 'SELECT * FROM "temp_test_table"';
+		$select = 'SELECT * FROM '.$this->_table;
 
 		$this->assertSame(5, $this->_db->execute_query($select)->count(), 'Initial');
 
 		$this->_db->begin();
-		$this->_db->execute_command('DELETE FROM "temp_test_table" WHERE "value" = 65');
+		$this->_db->execute_command('DELETE FROM '.$this->_table.' WHERE "value" = 65');
 
 		$this->assertSame(3, $this->_db->execute_query($select)->count(), 'Deleted 65');
 
 		$this->assertNull($this->_db->savepoint('test_savepoint'));
 
-		$this->_db->execute_command('DELETE FROM "temp_test_table" WHERE "value" = 55');
+		$this->_db->execute_command('DELETE FROM '.$this->_table.' WHERE "value" = 55');
 
 		$this->assertSame(2, $this->_db->execute_query($select)->count(), 'Deleted 55');
 

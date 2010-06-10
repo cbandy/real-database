@@ -19,12 +19,15 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 			$this->markTestSkipped('Database not configured for PostgreSQL');
 
 		$this->_db = Database::instance('testing');
-		$this->_db->execute_command('CREATE TEMPORARY TABLE "temp_test_table" ("id" bigserial PRIMARY KEY, "value" integer)');
-		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (50)');
-		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (55)');
-		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (60)');
-		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (65)');
-		$this->_db->execute_command('INSERT INTO "temp_test_table" ("value") VALUES (65)');
+
+		$table = $this->_db->quote_table('temp_test_table');
+
+		$this->_db->execute_command('CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)');
+		$this->_db->execute_command('INSERT INTO '.$table.' ("value") VALUES (50)');
+		$this->_db->execute_command('INSERT INTO '.$table.' ("value") VALUES (55)');
+		$this->_db->execute_command('INSERT INTO '.$table.' ("value") VALUES (60)');
+		$this->_db->execute_command('INSERT INTO '.$table.' ("value") VALUES (65)');
+		$this->_db->execute_command('INSERT INTO '.$table.' ("value") VALUES (65)');
 	}
 
 	public function tearDown()
