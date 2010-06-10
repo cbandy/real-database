@@ -49,15 +49,86 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->identity('id'), 'Chainable (column)');
 		$this->assertEquals(array(2,6), $query->execute($this->_db), 'Identity of the _first_ row');
 
+		$this->assertSame($query, $query->identity(new Database_Expression("'asdf'")), 'Chainable (expression)');
+
 		if ($this->_db->version() < '8.2')
 		{
-			// Not supported
-			$this->assertSame($query, $query->identity(new Database_Expression("'asdf'")), 'Chainable (expression)');
+			try
+			{
+				$query->execute($this->_db);
+
+				$this->setExpectedException('Database_Exception');
+			}
+			catch (Database_Exception $e) {}
+		}
+		else
+		{
 			$this->assertEquals(array(2,'asdf'), $query->execute($this->_db), 'Expression result');
 		}
 
 		$this->assertSame($query, $query->identity(NULL), 'Chainable (reset)');
 		$this->assertSame(2, $query->execute($this->_db), 'No identity');
+	}
+
+	public function test_identity_assigned()
+	{
+		$query = $this->_db->insert('temp_test_table', array('id', 'value'))
+			->identity('id');
+
+		$query->values(array(20, 75), array(21, 80));
+		$this->assertEquals(array(2,20), $query->execute($this->_db), 'Identity of the first row (literal)');
+		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n"), $this->_db->copy_to('temp_test_table'));
+
+		$query->values(NULL)->values(array(new Database_Expression('DEFAULT'), 85), array(30, 90));
+		$this->assertEquals(array(2,6), $query->execute($this->_db), 'Identity of the first row (default)');
+		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n", "6\t85\n", "30\t90\n"), $this->_db->copy_to('temp_test_table'));
+	}
+
+	public function test_identity_query()
+	{
+		$query = $this->_db->insert('temp_test_table', array('value'))
+			->values($this->_db->query('SELECT 75 as "value" UNION SELECT 80'))
+			->identity('id');
+
+		if ($this->_db->version() < '8.2')
+		{
+			$this->assertEquals(array(2,7), $query->execute($this->_db), 'Identity of the _last_ row');
+		}
+		else
+		{
+			$this->assertEquals(array(2,6), $query->execute($this->_db), 'Identity of the _first_ row');
+		}
+	}
+
+	public function test_identity_table_expression()
+	{
+		if ($this->_db->version() < '8.2')
+		{
+			$this->setExpectedException('Database_Exception');
+		}
+
+		$result = $this->_db->insert(new Database_Expression($this->_db->quote_table('temp_test_table')))
+			->columns(array('id', 'value'))
+			->values(array(20, 75), array(21, 80))
+			->identity('id')
+			->execute($this->_db);
+
+		$this->assertEquals(array(2,20), $result, 'Identity of the first row');
+	}
+
+	public function test_identity_without_columns()
+	{
+		if ($this->_db->version() < '8.2')
+		{
+			$this->setExpectedException('Database_Exception');
+		}
+
+		$result = $this->_db->insert('temp_test_table')
+			->values(array(20, 75), array(21, 80))
+			->identity('id')
+			->execute($this->_db);
+
+		$this->assertEquals(array(2,20), $result, 'Identity of the first row');
 	}
 
 	public function test_returning()
