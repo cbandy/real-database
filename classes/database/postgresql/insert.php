@@ -31,6 +31,165 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	}
 
 	/**
+	 * Execute the INSERT using a syntax compatible with PostgreSQL versions
+	 * prior to 8.2
+	 *
+	 * Pre-fetches the identity of the first row when possible. Reads the value
+	 * of the identity sequence after execution as a fallback.
+	 *
+	 * @link http://www.postgresql.org/docs/8.1/static/sql-insert.html
+	 *
+	 * @throws  Database_Exception
+	 * @param   Database_PostgreSQL $db Connection on which to execute
+	 * @return  integer                     Number of affected rows
+	 * @return  array                       List including number of affected rows and an identity value
+	 * @return  Database_PostgreSQL_Result  Result set
+	 */
+	protected function _execute_81($db)
+	{
+		if (empty($this->_return))
+		{
+			if (empty($this->parameters[':values'])
+				OR ! is_array($this->parameters[':values'])
+				OR count($this->parameters[':values']) === 1)
+			{
+				// Default values, an expression or a single row
+				return $db->execute_command($db->quote_expression($this));
+			}
+
+			// Build an INSERT statement for each row
+			$expression = new Database_Expression('INSERT INTO :table', $this->parameters[':values']);
+			$expression->parameters[':table'] = $this->parameters[':table'];
+
+			if ( ! empty($this->parameters[':columns']))
+			{
+				$expression->_value .= ' (:columns)';
+				$expression->parameters[':columns'] = $this->parameters[':columns'];
+			}
+
+			$expression->_value .= ' VALUES ?';
+
+			if ( ! empty($this->parameters[':returning']))
+			{
+				// Not supported prior to PostgreSQL 8.2
+				$expression->_value .= ' RETURNING :returning';
+				$expression->parameters[':returning'] = $this->parameters[':returning'];
+			}
+
+			$expression->_value = str_repeat($expression->_value.';', count($this->parameters[':values']));
+
+			return $db->execute_command($db->quote_expression($expression));
+		}
+
+		if ($this->_return instanceof Database_Expression)
+			throw new Database_Exception('PostgreSQL versions prior to 8.2 do not support retrieving an identity Expression');
+
+		if (empty($this->parameters[':columns']))
+			throw new Database_Exception('PostgreSQL versions prior to 8.2 cannot return a reliable identifier without an explicit column list');
+
+		if ( ! $this->parameters[':table'] instanceof Database_Identifier OR ! $this->_return instanceof Database_Identifier)
+			throw new Database_Exception('PostgreSQL versions prior to 8.2 cannot return a reliable identifier without a clear table and identity column');
+
+		if (($index = array_search($this->_return, $this->parameters[':columns'])) === FALSE)
+		{
+			// Identity not assigned in values
+
+			if (empty($this->parameters[':values'])
+				OR ! is_array($this->parameters[':values']))
+			{
+				// Default values or an expression
+
+				// Execute the INSERT without a RETURNING clause
+				$rows = $db->execute_command($db->quote_expression(new Database_Expression(parent::__toString(), $this->parameters)));
+
+				// Retrieve the last ID
+				$result = $this->_sequence_value($db, 'currval');
+			}
+			else
+			{
+				// Retrieve the next ID
+				$result = $this->_sequence_value($db, 'nextval');
+
+				// Set the ID of the first row
+				$row = reset($this->parameters[':values']);
+				$row = $row->parameters;
+				$row[] = $result;
+				$values[] = new Database_Expression('(?, ?)', $row);
+
+				// Generate the remaining IDs on the server
+				while ($row = next($this->parameters[':values']))
+				{
+					$values[] = new Database_Expression('(?, DEFAULT)', $row->parameters);
+				}
+
+				// Build an INSERT statement for each row
+				$expression = new Database_Expression(str_repeat('INSERT INTO :table (:columns) VALUES ?;', count($values)), $values);
+				$expression->parameters[':table'] = $this->parameters[':table'];
+				$expression->parameters[':columns'] = $this->parameters[':columns'];
+
+				// Append the identity column
+				$expression->parameters[':columns'][] = $this->_return;
+
+				$rows = $db->execute_command($db->quote_expression($expression));
+			}
+		}
+		else
+		{
+			// Values of the first row
+			$row = reset($this->parameters[':values']);
+			$row = reset($row->parameters);
+
+			if ( ! $row[$index] instanceof Database_Expression OR $row[$index]->_value !== 'DEFAULT')
+			{
+				// Convert the assigned identity value
+				$result = current($db->execute_query('SELECT '.$db->quote($row[$index]))->current());
+			}
+			else
+			{
+				// Retrieve the next ID
+				$result = $this->_sequence_value($db, 'nextval');
+
+				$assign = TRUE;
+			}
+		}
+
+		if ( ! isset($rows))
+		{
+			// Build an INSERT statement for each row
+			$expression = new Database_Expression(str_repeat('INSERT INTO :table (:columns) VALUES ?;', count($this->parameters[':values'])), $this->parameters[':values']);
+			$expression->parameters[':table'] = $this->parameters[':table'];
+			$expression->parameters[':columns'] = $this->parameters[':columns'];
+
+			if (isset($assign))
+			{
+				// Set the ID of the first row
+				$row = reset($expression->parameters);
+				$expression->parameters[key($expression->parameters)]->parameters[key($row->parameters)][$index] = $result;
+			}
+
+			$rows = $db->execute_command($db->quote_expression($expression));
+		}
+
+		return array($rows, $result);
+	}
+
+	/**
+	 * Fetch the current or next value of the identity sequence
+	 *
+	 * @throws  Database_Exception
+	 * @param   Database_PostgreSQL $db     Connection on which to execute
+	 * @param   string              $method 'currval' or 'nextval'
+	 * @return  integer
+	 */
+	protected function _sequence_value($db, $method)
+	{
+		$sequence = new Database_Identifier(array($db->table_prefix().$this->parameters[':table']->name.'_'.$this->_return->name.'_seq'));
+		$sequence->namespace = $this->parameters[':table']->namespace;
+
+		return (int) current($db->execute_query("SELECT $method(".$db->quote_literal($db->quote_identifier($sequence)).')')->current());
+	}
+
+	/**
 	 * Return results as associative arrays when executed
 	 *
 	 * @return  $this
@@ -59,6 +218,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	 * Execute the INSERT on a Database. Returns an array when identity() is
 	 * set. Returns a result set when returning() is set.
 	 *
+	 * @throws  Database_Exception
 	 * @param   Database_PostgreSQL $db Connection on which to execute
 	 * @return  integer                     Number of affected rows
 	 * @return  array                       List including number of affected rows and identity of first row
@@ -66,6 +226,9 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	 */
 	public function execute($db)
 	{
+		if ($db->version() < '8.2')
+			return $this->_execute_81($db);
+
 		if (empty($this->parameters[':returning']))
 			return parent::execute($db);
 
