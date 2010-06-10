@@ -46,8 +46,12 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->identity('id'), 'Chainable (column)');
 		$this->assertEquals(array(2,6), $query->execute($this->_db), 'Identity of the _first_ row');
 
-		$this->assertSame($query, $query->identity(new Database_Expression("'asdf'")), 'Chainable (expression)');
-		$this->assertEquals(array(2,'asdf'), $query->execute($this->_db), 'Expression result');
+		if ($this->_db->version() < '8.2')
+		{
+			// Not supported
+			$this->assertSame($query, $query->identity(new Database_Expression("'asdf'")), 'Chainable (expression)');
+			$this->assertEquals(array(2,'asdf'), $query->execute($this->_db), 'Expression result');
+		}
 
 		$this->assertSame($query, $query->identity(NULL), 'Chainable (reset)');
 		$this->assertSame(2, $query->execute($this->_db), 'No identity');
@@ -55,6 +59,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 	public function test_returning()
 	{
+		if ($this->_db->version() < '8.2')
+			$this->markTestSkipped('Not supported');
+
 		$query = $this->_db->insert('temp_test_table', array('value'))
 			->values(array(75), array(80));
 
@@ -77,6 +84,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 	public function test_as_assoc()
 	{
+		if ($this->_db->version() < '8.2')
+			$this->markTestSkipped('Not supported');
+
 		$query = $this->_db->insert('temp_test_table', array('value'))
 			->values(array(75), array(80))
 			->returning(array('id'));
@@ -91,6 +101,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 	public function test_as_object()
 	{
+		if ($this->_db->version() < '8.2')
+			$this->markTestSkipped('Not supported');
+
 		$query = $this->_db->insert('temp_test_table', array('value'))
 			->values(array(75), array(80))
 			->returning(array('id'));
