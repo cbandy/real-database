@@ -66,13 +66,13 @@ class Database_PostgreSQL_Result extends Database_Result
 		return pg_fetch_assoc($this->_result, $this->_position);
 	}
 
-	public function get($name, $default = NULL)
+	public function get($name = NULL, $default = NULL)
 	{
 		if ($this->_as_object)
 			return parent::get($name, $default);
 
 		if ($this->valid()
-			AND ($name = pg_field_num($this->_result, $name)) >= 0
+			AND ($name === NULL OR ($name = pg_field_num($this->_result, $name)) >= 0)
 			AND ($result = pg_fetch_result($this->_result, $this->_position, $name)) !== NULL)
 		{
 			// Field exists and is not NULL

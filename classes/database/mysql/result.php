@@ -74,4 +74,18 @@ class Database_MySQL_Result extends Database_Result
 
 		return mysql_fetch_assoc($this->_result);
 	}
+
+	public function get($name = NULL, $default = NULL)
+	{
+		if ($this->_as_object OR $name !== NULL)
+			return parent::get($name, $default);
+
+		if ($this->valid()
+			AND ($result = mysql_result($this->_result, $this->_position)) !== NULL)
+		{
+			return $result;
+		}
+
+		return $default;
+	}
 }

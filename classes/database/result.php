@@ -126,17 +126,22 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	/**
 	 * Return a column from the current row
 	 *
-	 * @param   string  $name       Column
+	 * @param   string  $name       Column name or NULL to return the first
 	 * @param   mixed   $default    Default value if the column is NULL
 	 * @return  mixed
 	 */
-	public function get($name, $default = NULL)
+	public function get($name = NULL, $default = NULL)
 	{
 		if ($this->valid())
 		{
 			$row = $this->current();
 
-			if ($this->_as_object)
+			if ($name === NULL)
+			{
+				if (($result = reset($row)) !== NULL)
+					return $result;
+			}
+			elseif ($this->_as_object)
 			{
 				if (isset($row->$name))
 					return $row->$name;

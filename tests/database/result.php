@@ -80,12 +80,14 @@ class Database_Result_Test extends PHPUnit_Framework_TestCase
 	{
 		$result = $this->_select_all();
 
+		$this->assertEquals(50, $result->get());
 		$this->assertEquals(50, $result->get('value'));
 		$this->assertEquals(50, $result->get('value', 'other'));
 		$this->assertEquals('other', $result->get('non', 'other'));
 
 		$result = $this->_select_all(TRUE);
 
+		$this->assertEquals(50, $result->get());
 		$this->assertEquals(50, $result->get('value'));
 		$this->assertEquals(50, $result->get('value', 'other'));
 		$this->assertEquals('other', $result->get('non', 'other'));

@@ -60,4 +60,23 @@ class Database_SQLite2_Result extends Database_Result
 
 		return $this->_result->fetch(SQLITE_ASSOC);
 	}
+
+	public function get($name = NULL, $default = NULL)
+	{
+		if ($this->_as_object OR $name !== NULL)
+			return parent::get($name, $default);
+
+		if ($this->valid())
+		{
+			if ($this->_result->key() !== $this->_position)
+			{
+				$this->_result->seek($this->_position);
+			}
+
+			if (($result = $this->_result->fetchSingle()) !== NULL)
+				return $result;
+		}
+
+		return $default;
+	}
 }
