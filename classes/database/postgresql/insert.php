@@ -142,7 +142,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 			if ( ! $row[$index] instanceof Database_Expression OR $row[$index]->_value !== 'DEFAULT')
 			{
 				// Convert the assigned identity value
-				$result = current($db->execute_query('SELECT '.$db->quote($row[$index]))->current());
+				$result = $db->execute_query('SELECT '.$db->quote($row[$index]))->get();
 			}
 			else
 			{
@@ -186,7 +186,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 		$sequence = new Database_Identifier(array($db->table_prefix().$this->parameters[':table']->name.'_'.$this->_return->name.'_seq'));
 		$sequence->namespace = $this->parameters[':table']->namespace;
 
-		return (int) current($db->execute_query("SELECT $method(".$db->quote_literal($db->quote_identifier($sequence)).')')->current());
+		return (int) $db->execute_query("SELECT $method(".$db->quote_literal($db->quote_identifier($sequence)).')')->get();
 	}
 
 	/**
@@ -238,16 +238,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 			return $result;
 
 		$rows = $result->count();
-
-		if ($this->_return instanceof Database_Identifier)
-		{
-			$result = $result->get($this->_return->name);
-		}
-		else
-		{
-			// Guess that current() will give us the singular value
-			$result = current($result->current());
-		}
+		$result = $result->get($this->_return instanceof Database_Identifier ? $this->_return->name : NULL);
 
 		return array($rows, $result);
 	}
