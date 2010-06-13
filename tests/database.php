@@ -84,6 +84,7 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertTrue($this->_db->update() instanceof Database_Command_Update);
 
 		$this->assertTrue($this->_db->query('') instanceof Database_Query);
+		$this->assertTrue($this->_db->query_set() instanceof Database_Query_Set);
 		$this->assertTrue($this->_db->select() instanceof Database_Query_Select);
 
 		$this->assertTrue($this->_db->conditions() instanceof Database_Conditions);
@@ -99,6 +100,7 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_Command_Update', Database::update());
 
 		$this->assertType('Database_Query', Database::query(''));
+		$this->assertType('Database_Query_Set', Database::query_set());
 		$this->assertType('Database_Query_Select', Database::select());
 
 		$this->assertType('Database_Conditions', Database::conditions());

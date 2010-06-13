@@ -135,6 +135,17 @@ abstract class Database
 	}
 
 	/**
+	 * Create a query set
+	 *
+	 * @param   Database_Query  $query
+	 * @return  Database_Query_Set
+	 */
+	public static function query_set($query = NULL)
+	{
+		return new Database_Query_Set($query);
+	}
+
+	/**
 	 * Create a SELECT query
 	 *
 	 * @param   mixed   $columns    Hash of (alias => column) pairs
