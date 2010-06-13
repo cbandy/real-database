@@ -1,3 +1,4 @@
+
 # Introduction
 
 Library tries to make building SQL for one or more database systems as painless as possible for the
@@ -17,19 +18,20 @@ Explicit and powerful:
 
 ## Support
 
-Each database system has different features of SQL, different data types and different supported
-SQL syntaxes.
+Each database system has different features, different data types and different supported SQL
+syntaxes.
 
-Four common systems targetted: MySQL, PostgreSQL, Microsoft SQL Server and SQLite. The generic
-builders and driver interface support features implemented by two or more of these systems.
+Four common systems targeted: MySQL, PostgreSQL, Microsoft SQL Server and SQLite. The [generic
+builders](realdb.building) and driver interface support features implemented by two or more of
+these systems.
 
 Library intends to support any system for which PHP has a driver.
 
 
 ## Identifiers
 
-Identifiers are database things. Tables, Columns and Aliases. Specified as dot-delimited string or
-array of parts.
+Identifiers are the unique names which refer to tables, columns, indexes, aliases, etc. They can be
+specified as a dot-delimited string or an array of parts.
 
     Database_Identifier('x.y.z') == Database_Identifier(array('x','y','z'))
 
@@ -41,8 +43,11 @@ When working with table aliases, you may want to create a Column that is not aff
 
 ## Expressions
 
-Expressions are SQL. Can have a mix of positional and named parameters bound. Positional parameters
-`?` and named parameters `:name`.
+Expressions are portions of a SQL statement that are sent to the database without being modified.
+Every expression can have parameters which will be quoted during execution.
+
+Positional parameters are marked with a `?` while named parameters begin with a colon, e.g. `:name`.
+One expression can have a mix of both positional and named parameters.
 
 SQL queries are built by recursively nesting expressions, identifiers and literals.
 
@@ -54,34 +59,19 @@ The most direct way to execute is to send raw SQL to [Database::execute_command]
 [Database::quote_identifier], [Database::quote_table], [Database::quote_column] and
 [Database::quote_literal].
 
-Slightly more convenient is to use parameters with the [Database_Command] and [Database_Query]
-objects. These have the added convenience of consistent caching and system-agnostic execution.
-
-
-## Building
-
-There are five builder classes for the four basic SQL DML statements:
-
- SQL    | Class
- ---    | -----
- DELETE | [Database_Command_Delete]
- INSERT | [Database_Command_Insert]
- UPDATE | [Database_Command_Update]
- SELECT | [Database_Query_Select] <br /> [Database_Query_Set]
-
-*[DML]: Data Manipulation Language
-
-These provide a convenient and powerful interface for building both simple and complex SQL queries.
-
     // Raw SQL and execute_query()
     $db->execute_query(
         'SELECT '.$db->quote_column('value')
         .' FROM '.$db->quote_table('things')
         .' WHERE '.$db->quote_column('name').' = '.$db->quote_literal('find'));
 
-    // SELECT builder
-    $db
-        ->select(array('value'))
-        ->from('things')
-        ->where(new Database_Column('name'), '=', 'find')
-        ->execute($db);
+Slightly more convenient is to use parameters with the [Database_Command] and [Database_Query]
+objects. These have the added convenience of consistent caching and system-agnostic execution.
+
+    // SQL with parameters
+    $db->query('SELECT ? FROM ? WHERE ? = ?', array(
+        new Database_Column('value'),
+        new Database_Table('things'),
+        new Database_Column('name'),
+        'find',
+    ))->execute($db);
