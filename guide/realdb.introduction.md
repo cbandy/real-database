@@ -75,3 +75,18 @@ objects. These have the added convenience of consistent caching and system-agnos
         new Database_Column('name'),
         'find',
     ))->execute($db);
+
+
+## Results
+
+[Database_Result] provides a consistent interface to read and iterate over fresh and cached rows.
+The simplest and most typical use is in a `foreach`:
+
+    foreach ($query->execute($db) as $row)
+    {
+        echo '<tr><td>'.$row->id.'</td><td>'.$row->name.'</td></tr>';
+    }
+
+The `get()` method provides an optimized way to fetch a single column.
+
+    $count = $db->execute_query('SELECT COUNT(*) FROM '.$db->quote_table('things'))->get();
