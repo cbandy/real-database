@@ -10,7 +10,9 @@ class Database_DateTime_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_constructor()
 	{
-		$this->assertSame('2009-11-17 00:00:00'.date('P', strtotime('2009-11-17')), (string) new Database_DateTime('2009-11-17'));
+		$this->assertSame('2009-11-17 12:34:56+00:00', (string) new Database_DateTime(1258461296));
+
+		$this->assertSame('2009-11-17 00:00:00'.date('P', 1258461296), (string) new Database_DateTime('2009-11-17'));
 		$this->assertSame('2009-11-17 00:00:00+00:00', (string) new Database_DateTime('2009-11-17', 'UTC'));
 		$this->assertSame('2009-11-17 00:00:00+00:00', (string) new Database_DateTime('2009-11-17', new DateTimeZone('UTC')));
 

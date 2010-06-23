@@ -21,12 +21,17 @@ class Database_DateTime extends DateTime
 	protected $_format;
 
 	/**
-	 * @param   string  $time       Time in a format accepted by strtotime()
-	 * @param   mixed   $timezone   Converted to DateTimeZone
-	 * @param   string  $format     Format accepted by date(), defaults to Database_DateTime::SQL
+	 * @param   integer|string  $time       Unix timestamp or time in a format accepted by strtotime()
+	 * @param   mixed           $timezone   Fallback timezone, converted to DateTimeZone
+	 * @param   string          $format     Format accepted by date(), defaults to Database_DateTime::SQL
 	 */
 	public function __construct($time = 'now', $timezone = NULL, $format = Database_DateTime::SQL)
 	{
+		if (is_int($time))
+		{
+			$time = '@'.$time;
+		}
+
 		if ( ! $timezone)
 		{
 			// Passing NULL as the second argument raises an Exception
