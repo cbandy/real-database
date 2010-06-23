@@ -16,6 +16,17 @@ abstract class Database
 	protected static $_instances;
 
 	/**
+	 * Create a column identifier
+	 *
+	 * @param   array|string    $value
+	 * @return  Database_Column
+	 */
+	public static function column($value)
+	{
+		return new Database_Column($value);
+	}
+
+	/**
 	 * Create a command
 	 *
 	 * @param   string  $statement  SQL command
@@ -74,6 +85,17 @@ abstract class Database
 	public static function from($table = NULL, $alias = NULL)
 	{
 		return new Database_From($table, $alias);
+	}
+
+	/**
+	 * Create an identifier
+	 *
+	 * @param   array|string    $value
+	 * @return  Database_Identifier
+	 */
+	public static function identifier($value)
+	{
+		return new Database_Identifier($value);
 	}
 
 	/**
@@ -154,6 +176,17 @@ abstract class Database
 	public static function select($columns = NULL)
 	{
 		return new Database_Query_Select($columns);
+	}
+
+	/**
+	 * Create a table identifier
+	 *
+	 * @param   array|string    $value
+	 * @return  Database_Table
+	 */
+	public static function table($value)
+	{
+		return new Database_Table($value);
 	}
 
 	/**

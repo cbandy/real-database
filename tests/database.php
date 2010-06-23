@@ -87,6 +87,10 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertTrue($this->_db->query_set() instanceof Database_Query_Set);
 		$this->assertTrue($this->_db->select() instanceof Database_Query_Select);
 
+		$this->assertTrue($this->_db->column('') instanceof Database_Column);
+		$this->assertTrue($this->_db->identifier('') instanceof Database_Identifier);
+		$this->assertTrue($this->_db->table('') instanceof Database_Table);
+
 		$this->assertTrue($this->_db->conditions() instanceof Database_Conditions);
 		$this->assertTrue($this->_db->expression('') instanceof Database_Expression);
 		$this->assertTrue($this->_db->from() instanceof Database_From);
@@ -102,6 +106,10 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_Query', Database::query(''));
 		$this->assertType('Database_Query_Set', Database::query_set());
 		$this->assertType('Database_Query_Select', Database::select());
+
+		$this->assertType('Database_Column', Database::column(''));
+		$this->assertType('Database_Identifier', Database::identifier(''));
+		$this->assertType('Database_Table', Database::table(''));
 
 		$this->assertType('Database_Conditions', Database::conditions());
 		$this->assertType('Database_Expression', Database::expression(''));
