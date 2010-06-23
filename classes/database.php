@@ -16,6 +16,17 @@ abstract class Database
 	protected static $_instances;
 
 	/**
+	 * Create a binary value
+	 *
+	 * @param   mixed   $value
+	 * @return  Database_Binary
+	 */
+	public static function binary($value)
+	{
+		return new Database_Binary($value);
+	}
+
+	/**
 	 * Create a column identifier
 	 *
 	 * @param   array|string    $value
@@ -49,6 +60,19 @@ abstract class Database
 	public static function conditions($left = NULL, $operator = NULL, $right = NULL)
 	{
 		return new Database_Conditions($left, $operator, $right);
+	}
+
+	/**
+	 * Create a timestamp value
+	 *
+	 * @param   integer|string  $time       Unix timestamp or time in a format accepted by strtotime()
+	 * @param   mixed           $timezone   Fallback timezone, converted to DateTimeZone
+	 * @param   string          $format     Format accepted by date(), defaults to Database_DateTime::SQL
+	 * @return  Database_DateTime
+	 */
+	public static function datetime($time = 'now', $timezone = NULL, $format = Database_DateTime::SQL)
+	{
+		return new Database_DateTime($time, $timezone, $format);
 	}
 
 	/**

@@ -78,6 +78,9 @@ class Database_Test extends PHPUnit_Framework_TestCase
 
 	public function test_factories_dynamic()
 	{
+		$this->assertTrue($this->_db->binary('') instanceof Database_Binary);
+		$this->assertTrue($this->_db->datetime() instanceof Database_DateTime);
+
 		$this->assertTrue($this->_db->command('') instanceof Database_Command);
 		$this->assertTrue($this->_db->delete() instanceof Database_Command_Delete);
 		$this->assertTrue($this->_db->insert() instanceof Database_Command_Insert);
@@ -98,6 +101,9 @@ class Database_Test extends PHPUnit_Framework_TestCase
 
 	public function test_factories_static()
 	{
+		$this->assertType('Database_Binary', Database::binary(''));
+		$this->assertType('Database_DateTime', Database::datetime());
+
 		$this->assertType('Database_Command', Database::command(''));
 		$this->assertType('Database_Command_Delete', Database::delete());
 		$this->assertType('Database_Command_Insert', Database::insert());
