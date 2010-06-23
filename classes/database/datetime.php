@@ -67,4 +67,24 @@ class Database_DateTime extends DateTime
 
 		return $this;
 	}
+
+	/**
+	 * Resets the display timezone
+	 *
+	 * @link http://php.net/manual/datetime.settimezone
+	 *
+	 * @param   mixed   $timezone   Converted to DateTimeZone
+	 * @return  $this
+	 */
+	public function setTimezone($timezone)
+	{
+		if ( ! $timezone instanceof DateTimeZone)
+		{
+			$timezone = new DateTimeZone($timezone);
+		}
+
+		parent::setTimezone($timezone);
+
+		return $this;
+	}
 }

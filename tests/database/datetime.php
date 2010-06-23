@@ -30,4 +30,15 @@ class Database_DateTime_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame('12:34:56', (string) $dt->setFormat('H:i:s'));
 	}
+
+	public function test_setTimezone()
+	{
+		$dt = new Database_DateTime('2009-11-17T12:34:56+00');
+
+		$this->assertSame($dt, $dt->setTimezone('US/Central'), 'string');
+		$this->assertSame('2009-11-17 06:34:56-06:00', (string) $dt);
+
+		$this->assertSame($dt, $dt->setTimezone(new DateTimeZone('UTC')), 'DateTimeZone');
+		$this->assertSame('2009-11-17 12:34:56+00:00', (string) $dt);
+	}
 }
