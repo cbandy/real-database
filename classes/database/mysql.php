@@ -60,6 +60,28 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 
 	protected $_quote = '`';
 
+	/**
+	 * Create a MySQL connection
+	 *
+	 *  Configuration Option  | Type    | Description
+	 *  --------------------  | ----    | -----------
+	 *  charset               | string  | Character set
+	 *  profiling             | boolean | Enable execution profiling
+	 *  schema                | string  | Table prefix
+	 *  connection.database   | string  |
+	 *  connection.flags      | integer | Combination of client constants, e.g. MYSQL_CLIENT_SSL
+	 *  connection.hostname   | string  | Server address or path to a local socket
+	 *  connection.password   | string  |
+	 *  connection.persistent | boolean | Use the PHP connection pool
+	 *  connection.port       | integer | Server port
+	 *  connection.username   | string  |
+	 *
+	 * @link http://php.net/manual/mysql.constants Client constants
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
+	 */
 	protected function __construct($name, $config)
 	{
 		parent::__construct($name, $config);

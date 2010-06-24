@@ -28,6 +28,20 @@ class Database_SQLite2 extends Database implements Database_iEscape, Database_iI
 	 */
 	protected $_connection;
 
+	/**
+	 * Create a SQLite2 connection
+	 *
+	 *  Configuration Option  | Type    | Description
+	 *  --------------------  | ----    | -----------
+	 *  charset               | string  | Character set
+	 *  profiling             | boolean | Enable execution profiling
+	 *  schema                | string  | Table prefix
+	 *  connection.filename   | string  | Path to the database file or ':memory:'
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
+	 */
 	protected function __construct($name, $config)
 	{
 		parent::__construct($name, $config);

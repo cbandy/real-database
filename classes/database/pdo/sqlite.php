@@ -23,6 +23,28 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 		return new Database_Command_Insert_Multiple($table, $columns);
 	}
 
+	/**
+	 * Create a PDO connection for SQLite
+	 *
+	 *  Configuration Option  | Type    | Description
+	 *  --------------------  | ----    | -----------
+	 *  charset               | string  | Character set
+	 *  profiling             | boolean | Enable execution profiling
+	 *  schema                | string  | Table prefix
+	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
+	 *  connection.options    | array   | PDO options
+	 *  connection.persistent | boolean | Use the PHP connection pool
+	 *  connection.uri        | string  | URI to a file containing the DSN
+	 *
+	 * *[DSN]: Data Source Name
+	 * *[URI]: Uniform Resource Identifier
+	 *
+	 * @link http://php.net/manual/ref.pdo-sqlite.connection PDO SQLite DSN
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
+	 */
 	protected function __construct($name, $config)
 	{
 		parent::__construct($name, $config);

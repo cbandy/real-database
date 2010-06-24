@@ -133,6 +133,31 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 */
 	protected $_version;
 
+	/**
+	 * Create a PostgreSQL connection
+	 *
+	 *  Configuration Option  | Type    | Description
+	 *  --------------------  | ----    | -----------
+	 *  charset               | string  | Character set
+	 *  profiling             | boolean | Enable execution profiling
+	 *  schema                | string  | Default schema and table prefix separated by a period, e.g. 'schema.prefix'
+	 *  connection.database   | string  |
+	 *  connection.hostname   | string  | Server address or path to a local socket
+	 *  connection.password   | string  |
+	 *  connection.persistent | boolean | Use the PHP connection pool
+	 *  connection.port       | integer | Server port
+	 *  connection.ssl        | mixed   | TRUE to require, FALSE to disable, or 'prefer' to negotiate
+	 *  connection.username   | string  |
+	 *
+	 * Instead of separate parameters, the full connection string can be
+	 * configured in `connection.info` to be passed directly to `pg_connect()`.
+	 *
+	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
+	 */
 	protected function __construct($name, $config)
 	{
 		parent::__construct($name, $config);

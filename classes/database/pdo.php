@@ -16,6 +16,30 @@ class Database_PDO extends Database
 	 */
 	protected $_connection;
 
+	/**
+	 * Create a PDO connection
+	 *
+	 *  Configuration Option  | Type    | Description
+	 *  --------------------  | ----    | -----------
+	 *  charset               | string  | Character set
+	 *  profiling             | boolean | Enable execution profiling
+	 *  schema                | string  | Table prefix
+	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
+	 *  connection.options    | array   | Driver-specific options
+	 *  connection.password   | string  |
+	 *  connection.persistent | boolean | Use the PHP connection pool
+	 *  connection.uri        | string  | URI to a file containing the DSN
+	 *  connection.username   | string  |
+	 *
+	 * *[DSN]: Data Source Name
+	 * *[URI]: Uniform Resource Identifier
+	 *
+	 * @link http://php.net/manual/pdo.construct PDO connection parameters
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
+	 */
 	protected function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
