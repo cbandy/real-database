@@ -52,6 +52,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	{
 		parent::__construct($name, $config);
 
+		if ( ! isset($this->_config['connection']['flags']))
+		{
+			$this->_config['connection']['flags'] = 0;
+		}
+
 		if ( ! empty($this->_config['connection']['port']))
 		{
 			$this->_config['connection']['hostname'] .= ':'.$this->_config['connection']['port'];
@@ -147,8 +152,6 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	public function connect()
 	{
 		extract($this->_config['connection']);
-
-		$flags = empty($ssl) ? 0 : MYSQL_CLIENT_SSL;
 
 		try
 		{

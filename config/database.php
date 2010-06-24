@@ -15,7 +15,7 @@ return array
 			'password' => NULL,
 			'database' => 'kohana',
 			'persistent' => FALSE,
-			'ssl'   => NULL,
+			'flags' => NULL,
 		),
 	),
 );
