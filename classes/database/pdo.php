@@ -28,6 +28,11 @@ class Database_PDO extends Database
 			$this->_config['connection']['options'][PDO::ATTR_PERSISTENT] = TRUE;
 		}
 
+		if ( ! empty($this->_config['connection']['uri']))
+		{
+			$this->_config['connection']['dsn'] = 'uri:'.$this->_config['connection']['uri'];
+		}
+
 		if (empty($this->_config['schema']))
 		{
 			$this->_config['schema'] = '';
