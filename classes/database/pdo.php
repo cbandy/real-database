@@ -28,7 +28,7 @@ class Database_PDO extends Database
 			$this->_config['connection']['options'][PDO::ATTR_PERSISTENT] = TRUE;
 		}
 
-		if ( ! isset($this->_config['schema']))
+		if (empty($this->_config['schema']))
 		{
 			$this->_config['schema'] = '';
 		}
