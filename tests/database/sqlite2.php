@@ -47,7 +47,7 @@ class Database_SQLite2_Test extends PHPUnit_Framework_TestCase
 	{
 		$query = $this->_db->insert('temp_test_table', array('value'));
 
-		$this->assertTrue($query instanceof Database_SQLite2_Insert);
+		$this->assertTrue($query instanceof Database_Command_Insert_Multiple);
 
 		$query->identity('id')->values(array('65'), array('70'));
 

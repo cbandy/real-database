@@ -16,11 +16,11 @@ class Database_SQLite2 extends Database implements Database_iEscape, Database_iI
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
 	 * @param   array   $columns    Each element converted to Database_Column
-	 * @return  Database_SQLite2_Insert
+	 * @return  Database_Command_Insert_Multiple
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_SQLite2_Insert($table, $columns);
+		return new Database_Command_Insert_Multiple($table, $columns);
 	}
 
 	/**
