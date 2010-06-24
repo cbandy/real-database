@@ -17,6 +17,13 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	protected static $_SET_CHARSET;
 
 	/**
+	 * @see Database_MySQL::_select_database()
+	 *
+	 * @var array   Active databases
+	 */
+	protected static $_databases;
+
+	/**
 	 * Initialize runtime constants
 	 *
 	 * @link http://php.net/manual/function.mysql-set-charset
@@ -46,6 +53,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	 */
 	protected $_connection;
 
+	/**
+	 * @var string  Persistent connection hash according to PHP driver
+	 */
+	protected $_connection_id;
+
 	protected $_quote = '`';
 
 	protected function __construct($name, $config)
@@ -66,6 +78,8 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		{
 			$this->_config['schema'] = '';
 		}
+
+		$this->_connection_id = $this->_config['connection']['hostname'].'_'.$this->_config['connection']['username'].'_'.$this->_config['connection']['password'].'_'.$this->_config['connection']['flags'];
 	}
 
 	/**
@@ -77,7 +91,15 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	 */
 	protected function _execute($statement)
 	{
-		$this->_connection or $this->connect();
+		if ( ! $this->_connection)
+		{
+			$this->connect();
+		}
+		elseif ( ! empty($this->_config['connection']['persistent']) AND $this->_config['connection']['database'] !== Database_MySQL::$_databases[$this->_connection_id])
+		{
+			// Select database on persistent connections
+			$this->_select_database($this->_config['connection']['database']);
+		}
 
 		if ( ! empty($this->_config['profiling']))
 		{
@@ -115,6 +137,21 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Set and track the active database
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $database   Database
+	 * @return  void
+	 */
+	protected function _select_database($database)
+	{
+		if ( ! mysql_select_db($database, $this->_connection))
+			throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection));
+
+		Database_MySQL::$_databases[$this->_connection_id] = $database;
 	}
 
 	public function begin()
@@ -169,8 +206,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		if ( ! is_resource($this->_connection))
 			throw new Database_Exception('Unable to connect to MySQL ":name"', array(':name' => $this->_instance));
 
-		if ( ! mysql_select_db($database, $this->_connection))
-			throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection));
+		$this->_select_database($database);
 
 		if ( ! empty($this->_config['charset']))
 		{
