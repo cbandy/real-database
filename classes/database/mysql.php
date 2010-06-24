@@ -48,7 +48,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 
 	protected $_quote = '`';
 
-	public function __construct($name, $config)
+	protected function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
 
