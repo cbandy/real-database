@@ -15,7 +15,7 @@ class Database_PDO_Test extends PHPUnit_Framework_TestCase
 	{
 		$config = Kohana::config('database')->testing;
 
-		if ($config['type'] !== 'PDO')
+		if (strncmp($config['type'], 'PDO', 3))
 			$this->markTestSkipped('Database not configured for PDO');
 
 		$this->_db = Database::instance('testing');
