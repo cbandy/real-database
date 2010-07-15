@@ -35,6 +35,22 @@ class Database_MySQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(3, $this->_db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');
 	}
 
+	/**
+	 * @expectedException Database_Exception
+	 */
+	public function test_execute_compound_command()
+	{
+		$this->_db->execute_command('DELETE FROM '.$this->_table.'; DELETE FROM '.$this->_table);
+	}
+
+	/**
+	 * @expectedException Database_Exception
+	 */
+	public function test_execute_compound_query()
+	{
+		$this->_db->execute_query('SELECT * FROM '.$this->_table.'; SELECT * FROM '.$this->_table);
+	}
+
 	public function test_execute_insert()
 	{
 		$this->assertSame(array(0,1), $this->_db->execute_insert(''), 'First identity from prior INSERT');

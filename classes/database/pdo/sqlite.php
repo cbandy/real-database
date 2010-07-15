@@ -29,6 +29,7 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *  Configuration Option  | Type    | Description
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
+	 *  pragmas               | array   | [PRAGMA][] settings as "key => value" pairs
 	 *  profiling             | boolean | Enable execution profiling
 	 *  schema                | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
@@ -38,6 +39,7 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *
 	 * *[DSN]: Data Source Name
 	 * *[URI]: Uniform Resource Identifier
+	 * [PRAGMA]: http://www.sqlite.org/pragma.html
 	 *
 	 * @link http://php.net/manual/ref.pdo-sqlite.connection PDO SQLite DSN
 	 *
@@ -56,6 +58,19 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	public function charset($charset)
 	{
 		$this->execute_command('PRAGMA encoding = "'.$charset.'"');
+	}
+
+	public function connect()
+	{
+		parent::connect();
+
+		if ( ! empty($this->_config['pragmas']))
+		{
+			foreach ($this->_config['pragmas'] as $pragma => $value)
+			{
+				$this->execute_command('PRAGMA '.$pragma.' = '.$this->quote_literal($value));
+			}
+		}
 	}
 
 	/**

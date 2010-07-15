@@ -80,17 +80,17 @@ class Database_Result_Test extends PHPUnit_Framework_TestCase
 	{
 		$result = $this->_select_all();
 
-		$this->assertEquals(50, $result->get());
-		$this->assertEquals(50, $result->get('value'));
-		$this->assertEquals(50, $result->get('value', 'other'));
-		$this->assertEquals('other', $result->get('non', 'other'));
+		$this->assertEquals(50, $result->get(), 'Associative, void');
+		$this->assertEquals(50, $result->get('value'), 'Associative, value');
+		$this->assertEquals(50, $result->get('value', 'other'), 'Associative, default');
+		$this->assertEquals('other', $result->get('non', 'other'), 'Associative, non-existent');
 
 		$result = $this->_select_all(TRUE);
 
-		$this->assertEquals(50, $result->get());
-		$this->assertEquals(50, $result->get('value'));
-		$this->assertEquals(50, $result->get('value', 'other'));
-		$this->assertEquals('other', $result->get('non', 'other'));
+		$this->assertEquals(50, $result->get(), 'Object, void');
+		$this->assertEquals(50, $result->get('value'), 'Object, value');
+		$this->assertEquals(50, $result->get('value', 'other'), 'Object, default');
+		$this->assertEquals('other', $result->get('non', 'other'), 'Object, non-existent');
 	}
 
 	public function test_next()

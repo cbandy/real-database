@@ -61,6 +61,21 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(5, $this->_db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');
 	}
 
+	public function test_execute_compound_command()
+	{
+		$this->assertSame(2, $this->_db->execute_command('DELETE FROM '.$this->_table.' WHERE "id" = 3; DELETE FROM '.$this->_table.' WHERE "id" = 5'), 'Total number of rows');
+
+		try
+		{
+			// Connection should have no pending results
+			$this->_db->execute_query('SELECT * FROM '.$this->_table);
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+	}
+
 	public function test_execute_copy()
 	{
 		$this->assertSame(0, $this->_db->execute_command('COPY '.$this->_table.' TO STDOUT'));
