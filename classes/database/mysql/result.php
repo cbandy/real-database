@@ -80,10 +80,12 @@ class Database_MySQL_Result extends Database_Result
 		if ($this->_as_object OR $name !== NULL)
 			return parent::get($name, $default);
 
-		if ($this->valid()
-			AND ($result = mysql_result($this->_result, $this->_position)) !== NULL)
+		if ($this->valid())
 		{
-			return $result;
+			$this->_internal_position = $this->_position + 1;
+
+			if (($result = mysql_result($this->_result, $this->_position)) !== NULL)
+				return $result;
 		}
 
 		return $default;
