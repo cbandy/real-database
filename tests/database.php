@@ -132,6 +132,20 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertTrue($this->_db->prepare_query('') instanceof Database_Prepared_Query);
 	}
 
+	public function test_reconnect()
+	{
+		$this->_db->disconnect();
+
+		try
+		{
+			$this->_db->connect();
+		}
+		catch (Exception $e)
+		{
+			$this->fail($e->getMessage());
+		}
+	}
+
 	public function test_transactions()
 	{
 		$this->_create_table();
