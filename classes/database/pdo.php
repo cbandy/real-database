@@ -23,7 +23,7 @@ class Database_PDO extends Database
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Table prefix
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
 	 *  connection.options    | array   | Driver-specific options
 	 *  connection.password   | string  |
@@ -57,9 +57,9 @@ class Database_PDO extends Database
 			$this->_config['connection']['dsn'] = 'uri:'.$this->_config['connection']['uri'];
 		}
 
-		if (empty($this->_config['schema']))
+		if (empty($this->_config['table_prefix']))
 		{
-			$this->_config['schema'] = '';
+			$this->_config['table_prefix'] = '';
 		}
 	}
 
@@ -410,6 +410,6 @@ class Database_PDO extends Database
 
 	public function table_prefix()
 	{
-		return $this->_config['schema'];
+		return $this->_config['table_prefix'];
 	}
 }

@@ -35,7 +35,7 @@ class Database_SQLite2 extends Database implements Database_iEscape, Database_iI
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Table prefix
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.filename   | string  | Path to the database file or ':memory:'
 	 *
 	 * @throws  Kohana_Exception
@@ -46,9 +46,9 @@ class Database_SQLite2 extends Database implements Database_iEscape, Database_iI
 	{
 		parent::__construct($name, $config);
 
-		if (empty($this->_config['schema']))
+		if (empty($this->_config['table_prefix']))
 		{
-			$this->_config['schema'] = '';
+			$this->_config['table_prefix'] = '';
 		}
 	}
 
@@ -235,6 +235,6 @@ class Database_SQLite2 extends Database implements Database_iEscape, Database_iI
 
 	public function table_prefix()
 	{
-		return $this->_config['schema'];
+		return $this->_config['table_prefix'];
 	}
 }

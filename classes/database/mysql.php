@@ -67,7 +67,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Table prefix
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.database   | string  |
 	 *  connection.flags      | integer | Combination of client constants, e.g. MYSQL_CLIENT_SSL
 	 *  connection.hostname   | string  | Server address or path to a local socket
@@ -96,9 +96,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 			$this->_config['connection']['hostname'] .= ':'.$this->_config['connection']['port'];
 		}
 
-		if ( ! isset($this->_config['schema']))
+		if ( ! isset($this->_config['table_prefix']))
 		{
-			$this->_config['schema'] = '';
+			$this->_config['table_prefix'] = '';
 		}
 
 		$this->_connection_id = $this->_config['connection']['hostname'].'_'.$this->_config['connection']['username'].'_'.$this->_config['connection']['password'].'_'.$this->_config['connection']['flags'];
@@ -311,7 +311,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 
 	public function table_prefix()
 	{
-		return $this->_config['schema'];
+		return $this->_config['table_prefix'];
 	}
 }
 

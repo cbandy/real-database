@@ -119,11 +119,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	protected $_placeholder = '/(?:\?|(?<=::|[^:]):\w++)/';
 
 	/**
-	 * @var string  Table prefix
-	 */
-	protected $_prefix;
-
-	/**
 	 * @var string  Default schema
 	 */
 	protected $_schema;
@@ -140,7 +135,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Default schema and table prefix separated by a period, e.g. 'schema.prefix'
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.database   | string  |
 	 *  connection.hostname   | string  | Server address or path to a local socket
 	 *  connection.password   | string  |
@@ -162,16 +157,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	{
 		parent::__construct($name, $config);
 
-		if (empty($this->_config['schema']))
+		if (empty($this->_config['table_prefix']))
 		{
-			$this->_prefix = $this->_schema = '';
-		}
-		else
-		{
-			// Separate table prefix from schema
-			$schema = explode('.', $this->_config['schema'], 2);
-			$this->_schema = reset($schema);
-			$this->_prefix = (string) next($schema);
+			$this->_config['table_prefix'] = '';
 		}
 
 		if (empty($this->_config['connection']['info']))
@@ -511,16 +499,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		{
 			$this->charset($this->_config['charset']);
 		}
-
-		if ($this->_schema)
-		{
-			$result = $this->_execute('SET search_path = '.$this->_schema.', pg_catalog');
-
-			if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
-
-			pg_free_result($result);
-		}
 	}
 
 	/**
@@ -814,7 +792,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 
 	public function table_prefix()
 	{
-		return $this->_prefix;
+		return $this->_config['table_prefix'];
 	}
 
 	/**
