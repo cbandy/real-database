@@ -246,6 +246,66 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		}
 	}
 
+	/**
+	 * Return information about a MySQL data type
+	 *
+	 * @link http://dev.mysql.com/doc/en/data-types.html
+	 *
+	 * @param   string  $type       SQL data type
+	 * @param   string  $attribute  Attribute to return
+	 * @return  array|mixed Array of attributes or an attribute value
+	 */
+	public function datatype($type, $attribute = NULL)
+	{
+		static $types = array
+		(
+			'blob'                      => array('type' => 'binary'),
+			'bool'                      => array('type' => 'boolean'),
+			'bigint unsigned'           => array('type' => 'integer', 'min' => '0', 'max' => '18446744073709551615'),
+			'datetime'                  => array('type' => 'string'),
+			'decimal unsigned'          => array('type' => 'float', 'exact' => TRUE, 'min' => '0'),
+			'double'                    => array('type' => 'float'),
+			'double precision unsigned' => array('type' => 'float', 'min' => '0'),
+			'double unsigned'           => array('type' => 'float', 'min' => '0'),
+			'enum'                      => array('type' => 'string'),
+			'fixed'                     => array('type' => 'float', 'exact' => TRUE),
+			'fixed unsigned'            => array('type' => 'float', 'exact' => TRUE, 'min' => '0'),
+			'float unsigned'            => array('type' => 'float', 'min' => '0'),
+			'int unsigned'              => array('type' => 'integer', 'min' => '0', 'max' => '4294967295'),
+			'integer unsigned'          => array('type' => 'integer', 'min' => '0', 'max' => '4294967295'),
+			'longblob'                  => array('type' => 'binary'),
+			'longtext'                  => array('type' => 'string'),
+			'mediumblob'                => array('type' => 'binary'),
+			'mediumint'                 => array('type' => 'integer', 'min' => '-8388608', 'max' => '8388607'),
+			'mediumint unsigned'        => array('type' => 'integer', 'min' => '0', 'max' => '16777215'),
+			'mediumtext'                => array('type' => 'string'),
+			'national varchar'          => array('type' => 'string'),
+			'numeric unsigned'          => array('type' => 'float', 'exact' => TRUE, 'min' => '0'),
+			'nvarchar'                  => array('type' => 'string'),
+			'point'                     => array('type' => 'binary'),
+			'real unsigned'             => array('type' => 'float', 'min' => '0'),
+			'set'                       => array('type' => 'string'),
+			'smallint unsigned'         => array('type' => 'integer', 'min' => '0', 'max' => '65535'),
+			'text'                      => array('type' => 'string'),
+			'tinyblob'                  => array('type' => 'binary'),
+			'tinyint'                   => array('type' => 'integer', 'min' => '-128', 'max' => '127'),
+			'tinyint unsigned'          => array('type' => 'integer', 'min' => '0', 'max' => '255'),
+			'tinytext'                  => array('type' => 'string'),
+			'year'                      => array('type' => 'string'),
+		);
+
+		// Strip ZEROFILL attribute
+		$type = str_replace(' zerofill', '', $type);
+
+		if ( ! isset($types[$type]))
+			return parent::datatype($type, $attribute);
+
+		if ($attribute !== NULL)
+			return @$types[$type][$attribute];
+
+		return $types[$type];
+	}
+
 	public function escape($value)
 	{
 		$this->_connection or $this->connect();
