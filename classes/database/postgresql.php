@@ -135,6 +135,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
+	 *  search_path           | string  | Initial search_path
 	 *  table_prefix          | string  | Table prefix
 	 *  connection.database   | string  |
 	 *  connection.hostname   | string  | Server address or path to a local socket
@@ -148,6 +149,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 * configured in `connection.info` to be passed directly to `pg_connect()`.
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
+	 * @link http://www.postgresql.org/docs/current/static/ddl-schemas.html#DDL-SCHEMAS-PATH Schema search path
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
@@ -499,6 +501,16 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		{
 			$this->charset($this->_config['charset']);
 		}
+
+		if ( ! empty($this->_config['search_path']))
+		{
+			$result = $this->_execute('SET search_path = '.$this->_config['search_path']);
+
+			if (pg_result_status($result) !== PGSQL_COMMAND_OK)
+				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+
+			pg_free_result($result);
+		}
 	}
 
 	/**
@@ -788,6 +800,30 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
 
 		pg_free_result($result);
+	}
+
+	/**
+	 * Return the default schema
+	 *
+	 * @return  string
+	 */
+	public function schema()
+	{
+		if (empty($this->_schema))
+		{
+			// Retrieve explicit search_path
+			$result = $this->_execute('SELECT current_schemas(FALSE)');
+
+			if (pg_result_status($result) !== PGSQL_TUPLES_OK)
+				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+
+			// Default schema is first in the array
+			list($this->_schema) = explode(',', trim(pg_fetch_result($result, 0), '{}'), 2);
+
+			pg_free_result($result);
+		}
+
+		return $this->_schema;
 	}
 
 	public function table_prefix()
