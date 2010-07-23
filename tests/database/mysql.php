@@ -30,6 +30,23 @@ class Database_MySQL_Test extends PHPUnit_Framework_TestCase
 		$this->_db->disconnect();
 	}
 
+	public function provider_datatype()
+	{
+		return array
+		(
+			array('tinyint unsigned zerofill', NULL, array('type' => 'integer', 'min' => '0', 'max' => '255')),
+			array('point', NULL, array('type' => 'binary')),
+		);
+	}
+
+	/**
+	 * @dataProvider provider_datatype
+	 */
+	public function test_datatype($type, $attribute, $expected)
+	{
+		$this->assertSame($expected, $this->_db->datatype($type, $attribute));
+	}
+
 	public function test_execute_command_query()
 	{
 		$this->assertSame(3, $this->_db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');
