@@ -656,7 +656,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		);
 
 		if ( ! isset($types[$type]))
-			return parent::datatype($type);
+			return parent::datatype($type, $attribute);
 
 		if ($attribute !== NULL)
 			return @$types[$type][$attribute];
