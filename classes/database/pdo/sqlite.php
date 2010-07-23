@@ -74,6 +74,49 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	}
 
 	/**
+	 * Return information about a SQLite data type
+	 *
+	 * @link http://www.sqlite.org/datatype3.html
+	 *
+	 * @param   string  $type       SQL data type
+	 * @param   string  $attribute  Attribute to return
+	 * @return  array|mixed Array of attributes or an attribute value
+	 */
+	public function datatype($type, $attribute = NULL)
+	{
+		if (strpos($type, 'int') !== FALSE)
+		{
+			$result = array('type' => 'integer');
+		}
+		elseif (strpos($type, 'char') !== FALSE
+			OR strpos($type, 'clob') !== FALSE
+			OR strpos($type, 'text') !== FALSE)
+		{
+			$result = array('type' => 'string');
+		}
+		elseif (strpos($type, 'blob') !== FALSE)
+		{
+			$result = array('type' => 'binary');
+		}
+		elseif (strpos($type, 'real') !== FALSE
+			OR strpos($type, 'floa') !== FALSE
+			OR strpos($type, 'doub') !== FALSE)
+		{
+			$result = array('type' => 'float');
+		}
+		else
+		{
+			// Anything else is probably being used as intended by the standard
+			return parent::datatype($type, $attribute);
+		}
+
+		if ($attribute !== NULL)
+			return @$result[$attribute];
+
+		return $result;
+	}
+
+	/**
 	 * Quote a literal value for inclusion in a SQL query
 	 *
 	 * @uses Database_PDO::escape()
