@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PostgreSQL extends Database implements Database_iEscape
+class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {
 	/**
 	 * @link http://bugs.php.net/51607
@@ -871,6 +871,37 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		}
 
 		return $this->_schema;
+	}
+
+	public function table_columns($table)
+	{
+		if ($table instanceof Database_Identifier)
+		{
+			$schema = $table->namespace;
+			$table = $table->name;
+		}
+		elseif (is_array($table))
+		{
+			$schema = $table;
+			$table = array_pop($schema);
+		}
+		else
+		{
+			$schema = explode('.', $table);
+			$table = array_pop($schema);
+		}
+
+		if (empty($schema))
+		{
+			$schema = $this->schema();
+		}
+
+		$sql =
+			'SELECT column_name, ordinal_position, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, numeric_scale, datetime_precision'
+			.' FROM information_schema.columns'
+			.' WHERE table_schema = '.$this->quote_literal($schema).' AND table_name = '.$this->quote_literal($this->table_prefix().$table);
+
+		return $this->execute_query($sql)->as_array('column_name');
 	}
 
 	public function table_prefix()
