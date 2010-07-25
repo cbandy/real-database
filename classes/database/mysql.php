@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_MySQL extends Database implements Database_iEscape, Database_iInsert
+class Database_MySQL extends Database implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {
 	/**
 	 * @var boolean Whether or not mysql_set_charset() exists
@@ -367,6 +367,73 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	public function rollback()
 	{
 		$this->_execute('ROLLBACK');
+	}
+
+	/**
+	 * Retrieve the columns of a table in a format almost identical to that of
+	 * the SQL-92 Information Schema. Includes five non-standard fields:
+	 * `column_type`, `column_key`, `extra`, `privileges` and `column_comment`.
+	 *
+	 * ENUM and SET also have their possible values extracted into `options`.
+	 *
+	 * @link http://dev.mysql.com/doc/en/columns-table.html
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @return  array
+	 */
+	public function table_columns($table)
+	{
+		if ($table instanceof Database_Identifier)
+		{
+			$schema = $table->namespace;
+			$table = $table->name;
+		}
+		elseif (is_array($table))
+		{
+			$schema = $table;
+			$table = array_pop($schema);
+		}
+		else
+		{
+			$schema = explode('.', $table);
+			$table = array_pop($schema);
+		}
+
+		if (empty($schema))
+		{
+			$schema = $this->_config['connection']['database'];
+		}
+
+		$result =
+			'SELECT column_name, ordinal_position, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, numeric_scale, collation_name,'
+			.'   column_type, column_key, extra, privileges, column_comment'
+			.' FROM information_schema.columns'
+			.' WHERE table_schema = '.$this->quote_literal($schema).' AND table_name = '.$this->quote_literal($this->table_prefix().$table);
+
+		$result = $this->execute_query($result)->as_array('column_name');
+
+		foreach ($result as & $column)
+		{
+			if ($column['data_type'] === 'enum' OR $column['data_type'] === 'set')
+			{
+				$open = strpos($column['column_type'], '(');
+				$close = strpos($column['column_type'], ')', $open);
+
+				// Text between parentheses without single quotes
+				$column['options'] = explode("','", substr($column['column_type'], $open + 2, $close - 3 - $open));
+			}
+			elseif (strlen($column['column_type']) > 8)
+			{
+				// Test for UNSIGNED or UNSIGNED ZEROFILL
+				if (substr_compare($column['column_type'], 'unsigned', -8) === 0
+					OR substr_compare($column['column_type'], 'unsigned', -17, 8) === 0)
+				{
+					$column['data_type'] .= ' unsigned';
+				}
+			}
+		}
+
+		return $result;
 	}
 
 	public function table_prefix()
