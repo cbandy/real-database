@@ -35,6 +35,30 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->_db->disconnect();
 	}
 
+	public function provider_datatype()
+	{
+		return array
+		(
+			array('blob', 'type', 'binary'),
+			array('float', 'type', 'float'),
+			array('integer', 'type', 'integer'),
+			array('varchar', 'type', 'string'),
+
+			array('varchar', NULL, array('type' => 'string')),
+
+			array('not-a-type', 'type', NULL),
+			array('not-a-type', NULL, array()),
+		);
+	}
+
+	/**
+	 * @dataProvider provider_datatype
+	 */
+	public function test_datatype($type, $attribute, $expected)
+	{
+		$this->assertSame($expected, $this->_db->datatype($type, $attribute));
+	}
+
 	public function test_execute_command()
 	{
 		$this->assertSame(0, $this->_db->execute_command(''));

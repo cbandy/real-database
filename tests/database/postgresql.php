@@ -56,6 +56,23 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "6\t\\N\n"), $this->_db->copy_to('temp_test_table'));
 	}
 
+	public function provider_datatype()
+	{
+		return array
+		(
+			array('money', 'exact', TRUE),
+			array('bytea', NULL, array('type' => 'binary')),
+		);
+	}
+
+	/**
+	 * @dataProvider provider_datatype
+	 */
+	public function test_datatype($type, $attribute, $expected)
+	{
+		$this->assertSame($expected, $this->_db->datatype($type, $attribute));
+	}
+
 	public function test_execute_command_query()
 	{
 		$this->assertSame(5, $this->_db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');

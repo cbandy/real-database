@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PostgreSQL extends Database implements Database_iEscape
+class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {
 	/**
 	 * @link http://bugs.php.net/51607
@@ -617,6 +617,53 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		return $result;
 	}
 
+	/**
+	 * Return information about a PostgresSQL data type
+	 *
+	 * @link http://www.postgresql.org/docs/current/static/datatype.html#DATATYPE-TABLE
+	 *
+	 * @param   string  $type       SQL data type
+	 * @param   string  $attribute  Attribute to return
+	 * @return  array|mixed Array of attributes or an attribute value
+	 */
+	public function datatype($type, $attribute = NULL)
+	{
+		static $types = array
+		(
+			// PostgreSQL >= 7.4
+			'box'       => array('type' => 'string'),
+			'bytea'     => array('type' => 'binary'),
+			'cidr'      => array('type' => 'string'),
+			'circle'    => array('type' => 'string'),
+			'inet'      => array('type' => 'string'),
+			'int2'      => array('type' => 'integer', 'min' => '-32768', 'max' => '32767'),
+			'int4'      => array('type' => 'integer', 'min' => '-2147483648', 'max' => '2147483647'),
+			'int8'      => array('type' => 'integer', 'min' => '-9223372036854775808', 'max' => '9223372036854775807'),
+			'line'      => array('type' => 'string'),
+			'lseg'      => array('type' => 'string'),
+			'macaddr'   => array('type' => 'string'),
+			'money'     => array('type' => 'float', 'exact' => TRUE, 'min' => '-92233720368547758.08', 'max' => '92233720368547758.07'),
+			'path'      => array('type' => 'string'),
+			'point'     => array('type' => 'string'),
+			'polygon'   => array('type' => 'string'),
+			'text'      => array('type' => 'string'),
+
+			// PostgreSQL >= 8.3
+			'tsquery'   => array('type' => 'string'),
+			'tsvector'  => array('type' => 'string'),
+			'uuid'      => array('type' => 'string'),
+			'xml'       => array('type' => 'string'),
+		);
+
+		if ( ! isset($types[$type]))
+			return parent::datatype($type, $attribute);
+
+		if ($attribute !== NULL)
+			return @$types[$type][$attribute];
+
+		return $types[$type];
+	}
+
 	public function disconnect()
 	{
 		if (is_resource($this->_connection))
@@ -824,6 +871,37 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		}
 
 		return $this->_schema;
+	}
+
+	public function table_columns($table)
+	{
+		if ($table instanceof Database_Identifier)
+		{
+			$schema = $table->namespace;
+			$table = $table->name;
+		}
+		elseif (is_array($table))
+		{
+			$schema = $table;
+			$table = array_pop($schema);
+		}
+		else
+		{
+			$schema = explode('.', $table);
+			$table = array_pop($schema);
+		}
+
+		if (empty($schema))
+		{
+			$schema = $this->schema();
+		}
+
+		$sql =
+			'SELECT column_name, ordinal_position, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, numeric_scale, datetime_precision'
+			.' FROM information_schema.columns'
+			.' WHERE table_schema = '.$this->quote_literal($schema).' AND table_name = '.$this->quote_literal($this->table_prefix().$table);
+
+		return $this->execute_query($sql)->as_array('column_name');
 	}
 
 	public function table_prefix()
