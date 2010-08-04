@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
+class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect, Database_iMultiple
 {
 	/**
 	 * @link http://bugs.php.net/51607
@@ -711,6 +711,85 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 
 		return $rows;
+	}
+
+	public function execute_multiple($statement, $as_object = FALSE)
+	{
+		if (empty($statement))
+			return NULL;
+
+		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
+		if ( ! pg_send_query($this->_connection, $statement))
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		}
+
+		if ( ! $result = pg_get_result($this->_connection))
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		}
+
+		do
+		{
+			$status = pg_result_status($result);
+
+			if ($status === PGSQL_TUPLES_OK)
+			{
+				$results[] = new Database_PostgreSQL_Result($result, $as_object);
+			}
+			else
+			{
+				if ($status === PGSQL_COMMAND_OK)
+				{
+					$results[] = pg_affected_rows($result);
+				}
+				else
+				{
+					if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
+					{
+						if (isset($benchmark))
+						{
+							Profiler::delete($benchmark);
+						}
+
+						throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+					}
+
+					if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
+					{
+						pg_end_copy($this->_connection);
+					}
+
+					$results[] = 0;
+				}
+
+				pg_free_result($result);
+			}
+		}
+		while ($result = pg_get_result($this->_connection));
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return new Database_Result_Iterator_Array($results);
 	}
 
 	/**
