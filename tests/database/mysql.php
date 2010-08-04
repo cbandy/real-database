@@ -92,4 +92,9 @@ class Database_MySQL_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame(1, $query->execute($this->_db));
 	}
+
+	public function test_table_columns_no_table()
+	{
+		$this->assertSame(array(), $this->_db->table_columns('table-does-not-exist'));
+	}
 }
