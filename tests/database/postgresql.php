@@ -100,6 +100,16 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertNull($this->_db->execute_query('COPY '.$this->_table.' TO STDOUT'));
 	}
 
+	public function test_execute_multiple_copies()
+	{
+		$results = $this->_db->execute_multiple('COPY '.$this->_table.' TO STDOUT; COPY '.$this->_table.' TO STDOUT');
+
+		foreach ($results as $result)
+		{
+			$this->assertSame(0, $result);
+		}
+	}
+
 	public function test_execute_prepared_command()
 	{
 		$name = $this->_db->prepare(NULL, 'UPDATE '.$this->_table.' SET "value" = 20 WHERE "value" = 65');
