@@ -93,6 +93,38 @@ class Database_Result_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('other', $result->get('non', 'other'), 'Object, non-existent');
 	}
 
+	public function test_get_after_next()
+	{
+		$result = $this->_select_all()->next();
+
+		$this->assertEquals(55, $result->get(), 'Associative, void');
+		$this->assertEquals(55, $result->get('value'), 'Associative, value');
+		$this->assertEquals(55, $result->get('value', 'other'), 'Associative, default');
+		$this->assertEquals('other', $result->get('non', 'other'), 'Associative, non-existent');
+
+		$result = $this->_select_all(TRUE)->next();
+
+		$this->assertEquals(55, $result->get(), 'Object, void');
+		$this->assertEquals(55, $result->get('value'), 'Object, value');
+		$this->assertEquals(55, $result->get('value', 'other'), 'Object, default');
+		$this->assertEquals('other', $result->get('non', 'other'), 'Object, non-existent');
+	}
+
+	public function test_get_null()
+	{
+		$result = $this->_db->execute_query('SELECT NULL AS value FROM '.$this->_db->quote_table('temp_test_table'), FALSE);
+
+		$this->assertNull($result->get(), 'Associative, void');
+		$this->assertNull($result->get('value'), 'Associative, value');
+		$this->assertSame('other', $result->get('value', 'other'), 'Associative, default');
+
+		$result = $this->_db->execute_query('SELECT NULL AS value FROM '.$this->_db->quote_table('temp_test_table'), TRUE);
+
+		$this->assertNull($result->get(), 'Object, void');
+		$this->assertNull($result->get('value'), 'Object, value');
+		$this->assertSame('other', $result->get('value', 'other'), 'Object, default');
+	}
+
 	public function test_next()
 	{
 		$result = $this->_select_all();
