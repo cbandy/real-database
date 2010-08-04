@@ -92,4 +92,90 @@ class Database_PDO_SQLite_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(array(1,6), $query->execute($this->_db));
 	}
+
+	public function provider_table_columns()
+	{
+		return array
+		(
+			array('integer', array(
+				'column_default' => NULL,
+				'is_nullable' => 'YES',
+				'data_type' => 'integer',
+			)),
+			array('numeric', array(
+				'column_default' => NULL,
+				'is_nullable' => 'YES',
+				'data_type' => 'numeric',
+			)),
+			array('numeric(10)', array(
+				'column_default' => NULL,
+				'is_nullable' => 'YES',
+				'data_type' => 'numeric',
+				'numeric_precision' => 10,
+			)),
+			array('numeric(10,5)', array(
+				'column_default' => NULL,
+				'is_nullable' => 'YES',
+				'data_type' => 'numeric',
+				'numeric_precision' => 10,
+				'numeric_scale' => 5,
+			)),
+			array('real', array(
+				'column_default' => NULL,
+				'is_nullable' => 'YES',
+				'data_type' => 'real',
+			)),
+			array('text', array(
+				'column_default' => NULL,
+				'is_nullable' => 'YES',
+				'data_type' => 'text',
+			)),
+			array('varchar(50)', array(
+				'column_default' => NULL,
+				'is_nullable' => 'YES',
+				'data_type' => 'varchar',
+				'character_maximum_length' => 50,
+			)),
+
+			array('int DEFAULT 5', array(
+				'column_default' => 5,
+				'is_nullable' => 'YES',
+				'data_type' => 'int',
+			)),
+			array('int DEFAULT 5 NOT NULL', array(
+				'column_default' => 5,
+				'is_nullable' => 'NO',
+				'data_type' => 'int',
+			)),
+		);
+	}
+
+	/**
+	 * @dataProvider provider_table_columns
+	 */
+	public function test_table_columns($column, $expected)
+	{
+		$expected = array_merge(array(
+			'column_name'       => 'field',
+			'ordinal_position'  => 1,
+			'column_default'    => NULL,
+			'is_nullable'       => NULL,
+			'data_type'         => NULL,
+			'character_maximum_length'  => NULL,
+			'numeric_precision' => NULL,
+			'numeric_scale'     => NULL,
+		), $expected);
+
+		$this->_db->execute_command('DROP TABLE '.$this->_table);
+		$this->_db->execute_command('CREATE TEMPORARY TABLE '.$this->_table."( field $column )");
+
+		$result = $this->_db->table_columns('temp_test_table');
+
+		$this->assertEquals($expected, $result['field']);
+	}
+
+	public function test_table_columns_no_table()
+	{
+		$this->assertSame(array(), $this->_db->table_columns('table-does-not-exist'));
+	}
 }

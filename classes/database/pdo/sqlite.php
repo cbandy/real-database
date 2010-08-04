@@ -9,7 +9,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert
+class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {
 	/**
 	 * Create an INSERT command
@@ -130,5 +130,65 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 			return $this->escape($value);
 
 		return parent::quote_literal($value);
+	}
+
+	public function table_columns($table)
+	{
+		$result = array();
+
+		if ($rows = $this->execute_query('PRAGMA table_info('.$this->quote_table($table).')'))
+		{
+			foreach ($rows as $row)
+			{
+				$type = strtolower($row['type']);
+
+				if ($open = strpos($type, '('))
+				{
+					$close = strpos($type, ')', $open);
+
+					$length = substr($type, $open + 1, $close - 1 - $open);
+					$type = substr($type, 0, $open);
+				}
+				else
+				{
+					$length = NULL;
+				}
+
+				$row = array(
+					'column_name'       => $row['name'],
+					'ordinal_position'  => $row['cid'] + 1,
+					'column_default'    => $row['dflt_value'],
+					'is_nullable'       => empty($row['notnull']) ? 'YES' : 'NO',
+					'data_type'         => $type,
+					'character_maximum_length'  => NULL,
+					'numeric_precision' => NULL,
+					'numeric_scale'     => NULL,
+				);
+
+				if ($length)
+				{
+					if (strpos($type, 'char') !== FALSE
+						OR strpos($type, 'clob') !== FALSE
+						OR strpos($type, 'text') !== FALSE)
+					{
+						$row['character_maximum_length'] = $length;
+					}
+					else
+					{
+						$length = explode(',', $length);
+						$row['numeric_precision'] = reset($length);
+
+						if (next($length))
+						{
+							$row['numeric_scale'] = current($length);
+						}
+					}
+				}
+
+				$result[$row['column_name']] = $row;
+			}
+		}
+
+		return $result;
 	}
 }
