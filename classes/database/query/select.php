@@ -65,14 +65,12 @@ class Database_Query_Select extends Database_Query
 
 		if (isset($this->parameters[':limit']))
 		{
-			// Not allowed in MSSQL
 			$value .= ' LIMIT :limit';
 		}
 
 		if ( ! empty($this->parameters[':offset']))
 		{
 			// LIMIT required by MySQL and SQLite
-			// Not allowed in MSSQL
 			$value .= ' OFFSET :offset';
 		}
 

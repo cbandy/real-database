@@ -27,6 +27,17 @@ class Database_SQLServer extends Database
 	}
 
 	/**
+	 * Create a SELECT query
+	 *
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @return  Database_SQLServer_Select
+	 */
+	public static function select($columns = NULL)
+	{
+		return new Database_SQLServer_Select($columns);
+	}
+
+	/**
 	 * @var resource
 	 */
 	protected $_connection;
