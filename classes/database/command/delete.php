@@ -35,7 +35,6 @@ class Database_Command_Delete extends Database_Command
 		if ( ! empty($this->parameters[':using']))
 		{
 			// Not allowed in SQLite
-			// Should be 'FROM' in MSSQL
 			$value .= ' USING :using';
 		}
 

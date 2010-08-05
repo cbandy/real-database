@@ -15,6 +15,18 @@
 class Database_SQLServer extends Database
 {
 	/**
+	 * Create a DELETE command
+	 *
+	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   string  $alias  Table alias
+	 * @return  Database_SQLServer_Delete
+	 */
+	public static function delete($table = NULL, $alias = NULL)
+	{
+		return new Database_SQLServer_Delete($table, $alias);
+	}
+
+	/**
 	 * @var resource
 	 */
 	protected $_connection;
