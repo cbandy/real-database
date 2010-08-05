@@ -12,7 +12,7 @@
  * @link http://sqlsrvphp.codeplex.com/ Microsoft SQL Server Driver for PHP
  * @link http://msdn.microsoft.com/en-us/library/ee229551.aspx SQL Server Driver for PHP Documentation
  */
-class Database_SQLServer extends Database
+class Database_SQLServer extends Database implements Database_iMultiple
 {
 	/**
 	 * Create a DELETE command
@@ -220,6 +220,27 @@ class Database_SQLServer extends Database
 		sqlsrv_free_stmt($result);
 
 		return $rows;
+	}
+
+	/**
+	 * Execute a SQL statement or compound statement with multiple results.
+	 *
+	 * @throws  Database_SQLServer_Exception
+	 * @param   string  $statement  SQL statement(s)
+	 * @param   mixed   $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @return  Database_SQLServer_Result_Iterator  Forward-only iterator over the results
+	 */
+	public function execute_multiple($statement, $as_object = FALSE)
+	{
+		if (empty($statement))
+			return NULL;
+
+		$this->_connection or $this->connect();
+
+		if ( ! $result = sqlsrv_query($this->_connection, $statement, NULL, array('Scrollable' => SQLSRV_CURSOR_STATIC)))
+			throw new Database_SQLServer_Exception;
+
+		return Database_SQLServer_Result_Iterator($result, $as_object);
 	}
 
 	/**

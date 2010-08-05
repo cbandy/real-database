@@ -41,6 +41,7 @@ abstract class Database_Result_Iterator implements Iterator
 	 *
 	 * @link http://php.net/manual/iterator.next Iterator::next()
 	 *
+	 * @throws  Database_Exception
 	 * @return  $this
 	 */
 	public function next()
