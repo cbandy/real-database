@@ -196,7 +196,7 @@ class Database_SQLServer extends Database implements Database_iMultiple
 		{
 			sqlsrv_close($this->_connection);
 
-			$ths->_connection = NULL;
+			$this->_connection = NULL;
 		}
 	}
 
@@ -240,7 +240,7 @@ class Database_SQLServer extends Database implements Database_iMultiple
 		if ( ! $result = sqlsrv_query($this->_connection, $statement, NULL, array('Scrollable' => SQLSRV_CURSOR_STATIC)))
 			throw new Database_SQLServer_Exception;
 
-		return Database_SQLServer_Result_Iterator($result, $as_object);
+		return new Database_SQLServer_Result_Iterator($result, $as_object);
 	}
 
 	/**
