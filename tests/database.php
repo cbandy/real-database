@@ -61,8 +61,8 @@ class Database_Test extends PHPUnit_Framework_TestCase
 
 	public function test_execute_command()
 	{
-		$this->assertSame(0, $this->_db->execute_command(''));
-		$this->assertSame(0, $this->_db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' (value integer)'));
+		$this->assertSame(0, $this->_db->execute_command(''), 'Empty');
+		$this->assertSame(0, $this->_db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' (value integer)'), 'DDL');
 	}
 
 	/**
