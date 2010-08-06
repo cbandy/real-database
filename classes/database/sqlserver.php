@@ -52,6 +52,7 @@ class Database_SQLServer extends Database implements Database_iMultiple
 	 *  connection.database   | string  |
 	 *  connection.hostname   | string  | Server address or alias
 	 *  connection.info       | array   | [Connection attributes](http://msdn.microsoft.com/en-US/library/ff628167.aspx)
+	 *  connection.instance   | string  | Named server instance
 	 *  connection.password   | string  |
 	 *  connection.port       | integer | Server port
 	 *  connection.username   | string  |
@@ -70,6 +71,11 @@ class Database_SQLServer extends Database implements Database_iMultiple
 		if ( ! empty($this->_config['connection']['port']))
 		{
 			$this->_config['connection']['hostname'] .= ','.$this->_config['connection']['port'];
+		}
+
+		if ( ! empty($this->_config['connection']['instance']))
+		{
+			$this->_config['connection']['hostname'] .= '\\'.$this->_config['connection']['instance'];
 		}
 
 		if (empty($this->_config['connection']['info']))
