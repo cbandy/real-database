@@ -32,6 +32,9 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 
 	public function tearDown()
 	{
+		if ( ! $this->_db)
+			return;
+
 		$this->_db->disconnect();
 	}
 

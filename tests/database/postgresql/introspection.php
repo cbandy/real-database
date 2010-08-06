@@ -38,6 +38,9 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	public function tearDown()
 	{
+		if ( ! $this->_db)
+			return;
+
 		$this->_db->execute_command('DROP TABLE IF EXISTS '.$this->_table);
 
 		$this->_db->disconnect();
