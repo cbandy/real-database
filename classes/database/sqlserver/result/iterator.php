@@ -32,7 +32,7 @@ class Database_SQLServer_Result_Iterator extends Database_Result_Iterator
 	 */
 	public function __construct($statement, $as_object)
 	{
-		$this->_as_object = $as_object;
+		$this->_as_object = ($as_object === TRUE) ? 'stdClass' : $as_object;
 		$this->_statement = $statement;
 
 		$this->_current();
@@ -42,7 +42,24 @@ class Database_SQLServer_Result_Iterator extends Database_Result_Iterator
 	{
 		if (sqlsrv_num_fields($this->_statement))
 		{
-			$this->_current = new Database_SQLServer_Result($this->_statement, $this->_as_object);
+			$rows = array();
+
+			if ($this->_as_object)
+			{
+				while ($row = sqlsrv_fetch_object($this->_statement, $this->_as_object))
+				{
+					$rows[] = $row;
+				}
+			}
+			else
+			{
+				while ($row = sqlsrv_fetch_array($this->_statement, SQLSRV_FETCH_ASSOC))
+				{
+					$rows[] = $row;
+				}
+			}
+
+			$this->_current = new Database_Result_Array($rows, $this->_as_object);
 		}
 		else
 		{
