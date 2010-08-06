@@ -35,9 +35,22 @@ class Database_SQLServer_Result_Iterator extends Database_Result_Iterator
 		$this->_as_object = $as_object;
 		$this->_statement = $statement;
 
-		$this->_current = sqlsrv_num_fields($this->_statement)
-			? new Database_SQLServer_Result($this->_statement, $this->_as_object)
-			: sqlsrv_rows_affected($this->_statement);
+		$this->_current();
+	}
+
+	protected function _current()
+	{
+		if (sqlsrv_num_fields($this->_statement))
+		{
+			$this->_current = new Database_SQLServer_Result($this->_statement, $this->_as_object);
+		}
+		else
+		{
+			$this->_current = sqlsrv_rows_affected($this->_statement);
+
+			if ($this->_current < 0)
+				$this->_current = 0;
+		}
 	}
 
 	public function current()
@@ -54,13 +67,9 @@ class Database_SQLServer_Result_Iterator extends Database_Result_Iterator
 			if ($result === FALSE)
 				throw new Database_SQLServer_Exception;
 		}
-		elseif (sqlsrv_num_fields($this->_statement))
-		{
-			$this->_current = new Database_SQLServer_Result($this->_statement, $this->_as_object);
-		}
 		else
 		{
-			$this->_current = sqlsrv_rows_affected($this->_statement);
+			$this->_current();
 		}
 
 		return parent::next();

@@ -223,6 +223,10 @@ class Database_SQLServer extends Database implements Database_iMultiple
 		if (($rows = sqlsrv_rows_affected($result)) === FALSE)
 			throw new Database_SQLServer_Exception;
 
+		// DDL statement returns -1
+		if ($rows < 0)
+			$rows = 0;
+
 		sqlsrv_free_stmt($result);
 
 		return $rows;
