@@ -22,12 +22,17 @@ class Database_SQLServer_Select extends Database_Query_Select
 			$value .= ' :distinct';
 		}
 
-		if (isset($this->parameters[':limit']))
+		if (isset($this->parameters[':limit']) AND empty($this->parameters[':offset']))
 		{
 			$value .= ' TOP (:limit)';
 		}
 
 		$value .= ' :columns';
+
+		if ( ! empty($this->parameters[':offset']))
+		{
+			$value .= ', ROW_NUMBER() OVER(ORDER BY :orderby) AS kohana_row_number';
+		}
 
 		if ( ! empty($this->parameters[':from']))
 		{
@@ -49,23 +54,23 @@ class Database_SQLServer_Select extends Database_Query_Select
 			$value .= ' HAVING :having';
 		}
 
-		if ( ! empty($this->parameters[':orderby']))
+		if ( ! empty($this->parameters[':offset']))
+		{
+			$table = 'kohana_'.sha1($value);
+
+			// Using a CTE here would prevent this query from being a subquery
+			$value = "SELECT * FROM ($value) AS $table WHERE $table.kohana_row_number > :offset";
+
+			if (isset($this->parameters[':limit']))
+			{
+				$value .= " AND $table.kohana_row_number <= (:offset + :limit)";
+			}
+		}
+		elseif ( ! empty($this->parameters[':orderby']))
 		{
 			$value .= ' ORDER BY :orderby';
 		}
 
 		return $value;
-	}
-
-	/**
-	 * No-op because SQL Server does not support OFFSET
-	 *
-	 * @todo Possible using window functions, but requires unique row identifier
-	 *
-	 * @throws  Kohana_Exception
-	 */
-	public function offset($start)
-	{
-		throw new Kohana_Exception('SQL Server does not support OFFSET');
 	}
 }
