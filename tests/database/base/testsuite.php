@@ -19,7 +19,31 @@ class Database_Base_TestSuite extends PHPUnit_Framework_TestSuite
 
 class Database_Base_TestSuite_Database extends Database
 {
-	public function __construct($name = NULL, $config = NULL) {}
+	public static function testsuite_generate_instance_name()
+	{
+		$config = Kohana::config('database');
+
+		for ($i = 0; $i < 10; ++$i)
+		{
+			$name = sha1(mt_rand());
+
+			if ( ! isset($config[$name]) AND ! isset(Database::$_instances[$name]))
+				return $name;
+		}
+
+		return NULL;
+	}
+
+	public static function testsuite_unset_instance($name)
+	{
+		unset(Database::$_instances[$name]);
+	}
+
+	public function __construct($name = NULL, $config = NULL)
+	{
+		if ($name !== NULL)
+			parent::__construct($name, $config);
+	}
 
 	public function begin() {}
 

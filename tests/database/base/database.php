@@ -406,6 +406,33 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			),
 		);
 	}
+
+	/**
+	 * @expectedException   Kohana_Exception
+	 */
+	public function test_instance_incomplete_config()
+	{
+		if ( ! $name = Database_Base_TestSuite_Database::testsuite_generate_instance_name())
+			$this->markTestSkipped('Unable to find unused instance name');
+
+		Database::instance($name, array());
+	}
+
+	public function test_instance_load_config()
+	{
+		if ( ! $name = Database_Base_TestSuite_Database::testsuite_generate_instance_name())
+			$this->markTestSkipped('Unable to find unused instance name');
+
+		$config = Kohana::config('database');
+		$config[$name] = array('type' => 'Base_TestSuite_Database');
+
+		$result = Database::instance($name);
+
+		$this->assertType('Database_Base_TestSuite_Database', $result);
+		$this->assertSame($name, (string) $result);
+
+		Database_Base_TestSuite_Database::testsuite_unset_instance($name);
+	}
 }
 
 
