@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.mysql
  */
-class Database_MySQL_Test extends PHPUnit_Framework_TestCase
+class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 {
 	protected $_db;
 	protected $_table;
