@@ -175,10 +175,10 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (TRUE)');
 		$this->assertType('stdClass', $result->current(), 'Result type (TRUE)');
 
-		$result = $db->execute_prepared_query($name, array(), 'Database_PostgreSQL_Test_Class');
+		$result = $db->execute_prepared_query($name, array(), 'Database_PostgreSQL_Database_Test_Class');
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (Database_PostgreSQL_Test_Class)');
-		$this->assertType('Database_PostgreSQL_Test_Class', $result->current(), 'Result type (Database_PostgreSQL_Test_Class)');
+		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (Database_PostgreSQL_Database_Test_Class)');
+		$this->assertType('Database_PostgreSQL_Database_Test_Class', $result->current(), 'Result type (Database_PostgreSQL_Database_Test_Class)');
 	}
 
 	public function test_prepare()
@@ -333,4 +333,4 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 }
 
-class Database_PostgreSQL_Test_Class {}
+class Database_PostgreSQL_Database_Test_Class {}
