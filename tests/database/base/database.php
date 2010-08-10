@@ -4,15 +4,14 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.quoting
  */
-class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @test
-	 * @dataProvider    provider_literal
+	 * @dataProvider    provider_quote_literal
 	 */
-	public function test_literal($value, $expected_result)
+	public function test_quote_literal($value, $expected_result)
 	{
 		$db = $this->sharedFixture;
 		$result = $db->quote_literal($value);
@@ -20,7 +19,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected_result, $result);
 	}
 
-	public function provider_literal()
+	public function provider_quote_literal()
 	{
 		return array
 		(
@@ -56,9 +55,9 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
-	 * @dataProvider    provider_identifier
+	 * @dataProvider    provider_quote_identifier
 	 */
-	public function test_identifier($value, $expected_result)
+	public function test_quote_identifier($value, $expected_result)
 	{
 		$db = $this->sharedFixture;
 		$result = $db->quote_identifier($value);
@@ -66,7 +65,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected_result, $result);
 	}
 
-	public function provider_identifier()
+	public function provider_quote_identifier()
 	{
 		$one = new Database_Identifier('one');
 
@@ -114,9 +113,9 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
-	 * @dataProvider    provider_table
+	 * @dataProvider    provider_quote_table
 	 */
-	public function test_table($value, $expected_result)
+	public function test_quote_table($value, $expected_result)
 	{
 		$db = $this->sharedFixture;
 		$result = $db->quote_table($value);
@@ -124,7 +123,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected_result, $result);
 	}
 
-	public function provider_table()
+	public function provider_quote_table()
 	{
 		$one = new Database_Identifier('one');
 
@@ -155,9 +154,9 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
-	 * @dataProvider    provider_column
+	 * @dataProvider    provider_quote_column
 	 */
-	public function test_column($value, $expected_result)
+	public function test_quote_column($value, $expected_result)
 	{
 		$db = $this->sharedFixture;
 		$result = $db->quote_column($value);
@@ -165,7 +164,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected_result, $result);
 	}
 
-	public function provider_column()
+	public function provider_quote_column()
 	{
 		$one = new Database_Identifier('one');
 
