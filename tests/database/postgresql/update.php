@@ -5,7 +5,7 @@
  *
  * @group   database
  * @group   database.postgresql
- * @group   database.postgresql.update
+ * @group   database.postgresql.commands
  */
 class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 {
