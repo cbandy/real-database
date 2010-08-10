@@ -10,7 +10,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_add()
 	{
-		$db = new Database_From_Test_DB;
+		$db = $this->sharedFixture;
 		$from = new Database_From('one');
 
 		$this->assertSame($from, $from->add('two', 'b'));
@@ -19,7 +19,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 
 	public function test_constructor()
 	{
-		$db = new Database_From_Test_DB;
+		$db = $this->sharedFixture;
 
 		$this->assertSame('', $db->quote(new Database_From));
 		$this->assertSame('"pre_one"', $db->quote(new Database_From('one')));
@@ -28,7 +28,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 
 	public function test_join()
 	{
-		$db = new Database_From_Test_DB;
+		$db = $this->sharedFixture;
 		$from = new Database_From('one');
 
 		$this->assertSame($from, $from->join('two', 'b'));
@@ -43,7 +43,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_join_helpers($method, $expected)
 	{
-		$db = new Database_From_Test_DB;
+		$db = $this->sharedFixture;
 		$from = new Database_From('one');
 
 		$this->assertSame($from, $from->$method('two'));
@@ -72,7 +72,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 
 	public function test_on()
 	{
-		$db = new Database_From_Test_DB;
+		$db = $this->sharedFixture;
 		$from = new Database_From('one');
 		$from->join('two');
 
@@ -90,7 +90,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 
 	public function test_parentheses()
 	{
-		$db = new Database_From_Test_DB;
+		$db = $this->sharedFixture;
 		$from = new Database_From;
 
 		$this->assertSame($from, $from->open());
@@ -117,35 +117,11 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 
 	public function test_using()
 	{
-		$db = new Database_From_Test_DB;
+		$db = $this->sharedFixture;
 		$from = new Database_From('one');
 		$from->join('two');
 
 		$this->assertSame($from, $from->using(array('x', 'y')));
 		$this->assertSame('"pre_one" JOIN "pre_two" USING ("x", "y")', $db->quote($from));
-	}
-}
-
-class Database_From_Test_DB extends Database
-{
-	public function __construct($name = NULL, $config = NULL) {}
-
-	public function begin() {}
-
-	public function commit() {}
-
-	public function connect() {}
-
-	public function disconnect() {}
-
-	public function execute_command($statement) {}
-
-	public function execute_query($statement, $as_object = FALSE) {}
-
-	public function rollback() {}
-
-	public function table_prefix()
-	{
-		return 'pre_';
 	}
 }

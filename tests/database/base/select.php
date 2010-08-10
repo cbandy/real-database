@@ -11,7 +11,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_select()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select;
 
 		$this->assertSame($query, $query->select(array('x', 'y' => new Database_Expression('count(*)'))));
@@ -23,7 +23,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_distinct()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select;
 
 		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
@@ -38,7 +38,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_column()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select;
 
 		$this->assertSame($query, $query->column('one.x', 'a'));
@@ -50,7 +50,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_from()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select(array('one.x'));
 
 		$this->assertSame($query, $query->from('one', 'a'), 'Chainable (table)');
@@ -65,7 +65,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_where()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select(new Database_Expression(1));
 
 		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)), 'Chainable (conditions)');
@@ -83,7 +83,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_group_by()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->group_by(array('y', 'one.z', new Database_Expression('expr'))));
@@ -93,7 +93,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_having()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->having(new Database_Conditions(new Database_Column('x'), '=', 1)), 'Chainable (conditions)');
@@ -111,7 +111,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_order_by()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select(array('x', 'y'));
 
 		$this->assertSame($query, $query->order_by('x'));
@@ -126,7 +126,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_limit()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->limit(5));
@@ -138,7 +138,7 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 	public function test_offset()
 	{
-		$db = new Database_Select_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->offset(5));
@@ -146,29 +146,5 @@ class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->offset(0));
 		$this->assertSame('SELECT "x"', $db->quote($query));
-	}
-}
-
-class Database_Select_Test_DB extends Database
-{
-	public function __construct($name = NULL, $config = NULL) {}
-
-	public function begin() {}
-
-	public function commit() {}
-
-	public function connect() {}
-
-	public function disconnect() {}
-
-	public function execute_command($statement) {}
-
-	public function execute_query($statement, $as_object = FALSE) {}
-
-	public function rollback() {}
-
-	public function table_prefix()
-	{
-		return 'pre_';
 	}
 }

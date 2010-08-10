@@ -11,7 +11,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_constructor()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 
 		$this->assertSame('', $db->quote(new Database_Query_Set));
 		$this->assertSame('(asdf)', $db->quote(new Database_Query_Set(new Database_Query('asdf'))));
@@ -19,7 +19,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_except()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->except(new Database_Query('b')), 'Chainable (void)');
@@ -34,7 +34,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_except_open()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->except_open(), 'Chainable (void)');
@@ -69,7 +69,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_intersect()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->intersect(new Database_Query('b')), 'Chainable (void)');
@@ -84,7 +84,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_intersect_open()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->intersect_open(), 'Chainable (void)');
@@ -119,7 +119,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_union()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->union(new Database_Query('b')), 'Chainable (void)');
@@ -134,7 +134,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_union_open()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->union_open(), 'Chainable (void)');
@@ -169,7 +169,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_parentheses()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->open('union'), 'Chainable (1)');
@@ -187,7 +187,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_order_by()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->order_by('x'));
@@ -202,7 +202,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_limit()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->limit(5));
@@ -214,7 +214,7 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 	public function test_offset()
 	{
-		$db = new Database_Set_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->offset(5));
@@ -222,29 +222,5 @@ class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->offset(0));
 		$this->assertSame('(a)', $db->quote($query));
-	}
-}
-
-class Database_Set_Test_DB extends Database
-{
-	public function __construct($name = NULL, $config = NULL) {}
-
-	public function begin() {}
-
-	public function commit() {}
-
-	public function connect() {}
-
-	public function disconnect() {}
-
-	public function execute_command($statement) {}
-
-	public function execute_query($statement, $as_object = FALSE) {}
-
-	public function rollback() {}
-
-	public function table_prefix()
-	{
-		return 'pre_';
 	}
 }

@@ -10,8 +10,7 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_bind()
 	{
-		$db = new Database_Expression_Test_DB;
-
+		$db = $this->sharedFixture;
 		$expr = new Database_Expression('?');
 
 		$this->assertSame($expr, $expr->bind(0, $var));
@@ -27,7 +26,7 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 
 	public function test_constructor()
 	{
-		$db = new Database_Expression_Test_DB;
+		$db = $this->sharedFixture;
 
 		$this->assertSame("'A'", $db->quote(new Database_Expression('?', array('A'))));
 
@@ -38,8 +37,7 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 
 	public function test_param()
 	{
-		$db = new Database_Expression_Test_DB;
-
+		$db = $this->sharedFixture;
 		$expr = new Database_Expression('?');
 
 		$this->assertSame($expr, $expr->param(0, NULL));
@@ -54,8 +52,7 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 
 	public function test_parameters()
 	{
-		$db = new Database_Expression_Test_DB;
-
+		$db = $this->sharedFixture;
 		$expr = new Database_Expression('?');
 
 		$this->assertSame($expr, $expr->parameters(array('A')));
@@ -71,29 +68,5 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($expr, $expr->parameters(array('C')));
 		$this->assertSame("'C' 'B'", $db->quote($expr));
-	}
-}
-
-class Database_Expression_Test_DB extends Database
-{
-	public function __construct($name = NULL, $config = NULL) {}
-
-	public function begin() {}
-
-	public function commit() {}
-
-	public function connect() {}
-
-	public function disconnect() {}
-
-	public function execute_command($statement) {}
-
-	public function execute_query($statement, $as_object = FALSE) {}
-
-	public function rollback() {}
-
-	public function table_prefix()
-	{
-		return 'pre_';
 	}
 }

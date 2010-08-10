@@ -6,7 +6,10 @@
 		</whitelist>
 	</filter>
 	<testsuites>
-		<testsuite name="Database Tests">
+		<testsuite name="Database Default Implementations">
+			<file>tests/database/base/testsuite.php</file>
+		</testsuite>
+		<testsuite name="Remaining Tests">
 			<directory suffix=".php">./tests/</directory>
 		</testsuite>
 	</testsuites>

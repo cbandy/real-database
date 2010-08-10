@@ -11,7 +11,7 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_from()
 	{
-		$db = new Database_Delete_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Command_Delete;
 
 		$this->assertSame($query, $query->from('one', 'a'));
@@ -21,7 +21,7 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 
 	public function test_using()
 	{
-		$db = new Database_Delete_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Command_Delete('one');
 
 		$this->assertSame($query, $query->using('two', 'b'), 'Chainable (table)');
@@ -36,7 +36,7 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 
 	public function test_where()
 	{
-		$db = new Database_Delete_Test_DB;
+		$db = $this->sharedFixture;
 		$query = new Database_Command_Delete('one');
 
 		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('one.x'), '=', 0)), 'Chainable (conditions)');
@@ -50,29 +50,5 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
 		$this->assertSame('DELETE FROM "pre_one" WHERE ("pre_one"."x" = 0) = \'1\'', $db->quote($query));
-	}
-}
-
-class Database_Delete_Test_DB extends Database
-{
-	public function __construct($name = NULL, $config = NULL) {}
-
-	public function begin() {}
-
-	public function commit() {}
-
-	public function connect() {}
-
-	public function disconnect() {}
-
-	public function execute_command($statement) {}
-
-	public function execute_query($statement, $as_object = FALSE) {}
-
-	public function rollback() {}
-
-	public function table_prefix()
-	{
-		return 'pre_';
 	}
 }

@@ -14,7 +14,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_literal($value, $expected_result)
 	{
-		$db = new Database_Quoting_Test_DB;
+		$db = $this->sharedFixture;
 		$result = $db->quote_literal($value);
 
 		$this->assertSame($expected_result, $result);
@@ -60,7 +60,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identifier($value, $expected_result)
 	{
-		$db = new Database_Quoting_Test_DB;
+		$db = $this->sharedFixture;
 		$result = $db->quote_identifier($value);
 
 		$this->assertSame($expected_result, $result);
@@ -118,7 +118,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table($value, $expected_result)
 	{
-		$db = new Database_Quoting_Test_DB;
+		$db = $this->sharedFixture;
 		$result = $db->quote_table($value);
 
 		$this->assertSame($expected_result, $result);
@@ -159,7 +159,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column($value, $expected_result)
 	{
-		$db = new Database_Quoting_Test_DB;
+		$db = $this->sharedFixture;
 		$result = $db->quote_column($value);
 
 		$this->assertSame($expected_result, $result);
@@ -240,7 +240,7 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote($value, $expected_result)
 	{
-		$db = new Database_Quoting_Test_DB;
+		$db = $this->sharedFixture;
 		$result = $db->quote($value);
 
 		$this->assertSame($expected_result, $result);
@@ -290,30 +290,6 @@ class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 	}
 }
 
-
-class Database_Quoting_Test_DB extends Database
-{
-	public function __construct($name = NULL, $config = NULL) {}
-
-	public function begin() {}
-
-	public function commit() {}
-
-	public function connect() {}
-
-	public function disconnect() {}
-
-	public function execute_command($statement) {}
-
-	public function execute_query($statement, $as_object = FALSE) {}
-
-	public function rollback() {}
-
-	public function table_prefix()
-	{
-		return 'pre_';
-	}
-}
 
 class Database_Quoting_Test_String
 {
