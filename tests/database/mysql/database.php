@@ -8,15 +8,14 @@
  */
 class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 {
-	protected $_table;
+	protected $_table = 'temp_test_table';
 
 	public function setUp()
 	{
 		$db = $this->sharedFixture;
-		$this->_table = $db->quote_table('temp_test_table');
 
-		$db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' (id bigint unsigned AUTO_INCREMENT PRIMARY KEY, value integer)');
-		$db->execute_command('INSERT INTO '.$this->_table.' (value) VALUES (50), (55), (60)');
+		$db->execute_command('CREATE TEMPORARY TABLE '.$db->quote_table($this->_table).' (id bigint unsigned AUTO_INCREMENT PRIMARY KEY, value integer)');
+		$db->execute_command('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (50), (55), (60)');
 	}
 
 	public function tearDown()
@@ -49,7 +48,7 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 
-		$this->assertSame(3, $db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');
+		$this->assertSame(3, $db->execute_command('SELECT * FROM '.$db->quote_table($this->_table)), 'Number of returned rows');
 	}
 
 	/**
@@ -59,7 +58,7 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 
-		$db->execute_command('DELETE FROM '.$this->_table.'; DELETE FROM '.$this->_table);
+		$db->execute_command('DELETE FROM '.$db->quote_table($this->_table).'; DELETE FROM '.$db->quote_table($this->_table));
 	}
 
 	/**
@@ -69,7 +68,7 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 
-		$db->execute_query('SELECT * FROM '.$this->_table.'; SELECT * FROM '.$this->_table);
+		$db->execute_query('SELECT * FROM '.$db->quote_table($this->_table).'; SELECT * FROM '.$db->quote_table($this->_table));
 	}
 
 	public function test_execute_insert()
@@ -77,13 +76,13 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 
 		$this->assertSame(array(0,1), $db->execute_insert(''), 'First identity from prior INSERT');
-		$this->assertSame(array(1,4), $db->execute_insert('INSERT INTO '.$this->_table.' (value) VALUES (65)'));
+		$this->assertSame(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)'));
 	}
 
 	public function test_insert()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->insert('temp_test_table', array('value'));
+		$query = $db->insert($this->_table, array('value'));
 
 		$this->assertTrue($query instanceof Database_Command_Insert_Identity);
 

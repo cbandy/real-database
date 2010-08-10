@@ -9,8 +9,6 @@
  */
 class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {
-	protected $_table;
-
 	protected $_information_schema_defaults = array
 	(
 		'column_name'       => NULL,
@@ -29,18 +27,13 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		'column_comment'    => NULL,
 	);
 
-	public function setUp()
-	{
-		$db = $this->sharedFixture;
-
-		$this->_table = $db->quote_table('temp_test_table');
-	}
+	protected $_table = 'temp_test_table';
 
 	public function tearDown()
 	{
 		$db = $this->sharedFixture;
 
-		$db->execute_command('DROP TABLE IF EXISTS '.$this->_table);
+		$db->execute_command('DROP TABLE IF EXISTS '.$db->quote_table($this->_table));
 	}
 
 	/**
@@ -64,9 +57,9 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			$expected['extra'] = 'on update CURRENT_TIMESTAMP';
 		}
 
-		$db->execute_command('CREATE TABLE '.$this->_table.' ( field timestamp )');
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table).' ( field timestamp )');
 
-		$result = $db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
@@ -240,9 +233,9 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			'is_nullable' => 'YES',
 		), $expected);
 
-		$db->execute_command('CREATE TABLE '.$this->_table." ( field $column )");
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
 
-		$result = $db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
@@ -323,9 +316,9 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			'collation_name' => $db->execute_query('SELECT @@collation_database')->get(),
 		), $expected);
 
-		$db->execute_command('CREATE TABLE '.$this->_table." ( field $column )");
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
 
-		$result = $db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
