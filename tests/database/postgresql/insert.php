@@ -9,17 +9,21 @@
  */
 class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 {
+	protected $_table = 'temp_test_table';
+
 	public function setUp()
 	{
 		$db = $this->sharedFixture;
-		$table = $db->quote_table('temp_test_table');
+		$table = $db->quote_table($this->_table);
 
-		$db->execute_command('CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (50)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (55)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (60)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (65)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (65)');
+		$db->execute_command(implode('; ', array(
+			'CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)',
+			'INSERT INTO '.$table.' ("value") VALUES (50)',
+			'INSERT INTO '.$table.' ("value") VALUES (55)',
+			'INSERT INTO '.$table.' ("value") VALUES (60)',
+			'INSERT INTO '.$table.' ("value") VALUES (65)',
+			'INSERT INTO '.$table.' ("value") VALUES (65)',
+		)));
 	}
 
 	public function tearDown()
@@ -40,7 +44,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->insert('temp_test_table', array('value'))
+		$query = $db->insert($this->_table, array('value'))
 			->values(array(75), array(80));
 
 		$this->assertSame($query, $query->identity('id'), 'Chainable (column)');
@@ -70,22 +74,22 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity_assigned()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->insert('temp_test_table', array('id', 'value'))
+		$query = $db->insert($this->_table, array('id', 'value'))
 			->identity('id');
 
 		$query->values(array(20, 75), array(21, 80));
 		$this->assertEquals(array(2,20), $query->execute($db), 'Identity of the first row (literal)');
-		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n"), $db->copy_to('temp_test_table'));
+		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n"), $db->copy_to($this->_table));
 
 		$query->values(NULL)->values(array(new Database_Expression('DEFAULT'), 85), array(30, 90));
 		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the first row (default)');
-		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n", "6\t85\n", "30\t90\n"), $db->copy_to('temp_test_table'));
+		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n", "6\t85\n", "30\t90\n"), $db->copy_to($this->_table));
 	}
 
 	public function test_identity_query()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->insert('temp_test_table', array('value'))
+		$query = $db->insert($this->_table, array('value'))
 			->values($db->query('SELECT 75 as "value" UNION SELECT 80'))
 			->identity('id');
 
@@ -108,7 +112,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 			$this->setExpectedException('Database_Exception');
 		}
 
-		$result = $db->insert(new Database_Expression($db->quote_table('temp_test_table')))
+		$result = $db->insert(new Database_Expression($db->quote_table($this->_table)))
 			->columns(array('id', 'value'))
 			->values(array(20, 75), array(21, 80))
 			->identity('id')
@@ -126,7 +130,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 			$this->setExpectedException('Database_Exception');
 		}
 
-		$result = $db->insert('temp_test_table')
+		$result = $db->insert($this->_table)
 			->values(array(20, 75), array(21, 80))
 			->identity('id')
 			->execute($db);
@@ -141,7 +145,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		if ($db->version() < '8.2')
 			$this->markTestSkipped('Not supported');
 
-		$query = $db->insert('temp_test_table', array('value'))
+		$query = $db->insert($this->_table, array('value'))
 			->values(array(75), array(80));
 
 		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
@@ -168,7 +172,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		if ($db->version() < '8.2')
 			$this->markTestSkipped('Not supported');
 
-		$query = $db->insert('temp_test_table', array('value'))
+		$query = $db->insert($this->_table, array('value'))
 			->values(array(75), array(80))
 			->returning(array('id'));
 
@@ -187,7 +191,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		if ($db->version() < '8.2')
 			$this->markTestSkipped('Not supported');
 
-		$query = $db->insert('temp_test_table', array('value'))
+		$query = $db->insert($this->_table, array('value'))
 			->values(array(75), array(80))
 			->returning(array('id'));
 

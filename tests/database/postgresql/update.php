@@ -9,17 +9,21 @@
  */
 class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 {
+	protected $_table = 'temp_test_table';
+
 	public function setUp()
 	{
 		$db = $this->sharedFixture;
-		$table = $db->quote_table('temp_test_table');
+		$table = $db->quote_table($this->_table);
 
-		$db->execute_command('CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (50)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (55)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (60)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (65)');
-		$db->execute_command('INSERT INTO '.$table.' ("value") VALUES (65)');
+		$db->execute_command(implode('; ', array(
+			'CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)',
+			'INSERT INTO '.$table.' ("value") VALUES (50)',
+			'INSERT INTO '.$table.' ("value") VALUES (55)',
+			'INSERT INTO '.$table.' ("value") VALUES (60)',
+			'INSERT INTO '.$table.' ("value") VALUES (65)',
+			'INSERT INTO '.$table.' ("value") VALUES (65)',
+		)));
 	}
 
 	public function tearDown()
@@ -40,7 +44,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_returning()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->update('temp_test_table', NULL, array('value' => 100))
+		$query = $db->update($this->_table, NULL, array('value' => 100))
 			->where('value', 'between', array(52,62));
 
 		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
@@ -65,7 +69,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_as_assoc()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->update('temp_test_table', NULL, array('value' => 100))
+		$query = $db->update($this->_table, NULL, array('value' => 100))
 			->where('value', 'between', array(52,62))
 			->returning(array('id'));
 
@@ -80,7 +84,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_as_object()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->update('temp_test_table', NULL, array('value' => 100))
+		$query = $db->update($this->_table, NULL, array('value' => 100))
 			->where('value', 'between', array(52,62))
 			->returning(array('id'));
 

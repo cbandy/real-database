@@ -9,8 +9,6 @@
  */
 class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {
-	protected $_table;
-
 	protected $_information_schema_defaults = array
 	(
 		'column_name'       => NULL,
@@ -24,18 +22,13 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		'datetime_precision' => NULL,
 	);
 
-	public function setUp()
-	{
-		$db = $this->sharedFixture;
-
-		$this->_table = $db->quote_table('temp_test_table');
-	}
+	protected $_table = 'temp_test_table';
 
 	public function tearDown()
 	{
 		$db = $this->sharedFixture;
 
-		$db->execute_command('DROP TABLE IF EXISTS '.$this->_table);
+		$db->execute_command('DROP TABLE IF EXISTS '.$db->quote_table($this->_table));
 	}
 
 	public function provider_table_column_type()
@@ -244,9 +237,9 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			'is_nullable' => 'YES',
 		), $expected);
 
-		$db->execute_command('CREATE TABLE '.$this->_table." ( field $column )");
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
 
-		$result = $db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
