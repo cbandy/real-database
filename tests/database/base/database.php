@@ -154,7 +154,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('string', "'string'"),
 			array("multiline\nstring", "'multiline\nstring'"),
 
-			array(new Database_Quoting_Test_String, "'object'"),
+			array(new Database_Base_Database_Test_Object, "'object'"),
 
 			array(array(NULL), '(NULL)'),
 			array(array(FALSE), "('0')"),
@@ -166,9 +166,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array(array('string'), "('string')"),
 			array(array("multiline\nstring"), "('multiline\nstring')"),
 
-			array(array(new Database_Quoting_Test_String), "('object')"),
+			array(array(new Database_Base_Database_Test_Object), "('object')"),
 
-			array(array(NULL, FALSE, TRUE, 51678, 12.345, 'string', "multiline\nstring", new Database_Quoting_Test_String), "(NULL, '0', '1', 51678, 12.345000, 'string', 'multiline\nstring', 'object')"),
+			array(array(NULL, FALSE, TRUE, 51678, 12.345, 'string', "multiline\nstring", new Database_Base_Database_Test_Object), "(NULL, '0', '1', 51678, 12.345000, 'string', 'multiline\nstring', 'object')"),
 		);
 	}
 
@@ -377,7 +377,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 			array(new Database_Expression('expression'), 'expression'),
 
-			array(new Database_Quoting_Test_String, "'object'"),
+			array(new Database_Base_Database_Test_Object, "'object'"),
 
 			array(NULL, 'NULL'),
 			array(FALSE, "'0'"),
@@ -397,7 +397,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 					new Database_Table('one.two.three'),
 					new Database_Identifier('one.two.three'),
 					new Database_Expression('expression'),
-					new Database_Quoting_Test_String,
+					new Database_Base_Database_Test_Object,
 					NULL, FALSE, TRUE,
 					0, -1, 51678, 12.345,
 					'string', "multiline\nstring",
@@ -436,7 +436,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 }
 
 
-class Database_Quoting_Test_String
+class Database_Base_Database_Test_Object
 {
 	public function __toString()
 	{
