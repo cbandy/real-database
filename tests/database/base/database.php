@@ -84,6 +84,50 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @test
+	 * @dataProvider    provider_prepare_command
+	 */
+	public function test_prepare_command($statement, $parameters)
+	{
+		$db = $this->sharedFixture;
+		$result = $db->prepare_command($statement, $parameters);
+
+		$this->assertType('Database_Prepared_Command', $result);
+		$this->assertEquals($statement, (string) $result);
+		$this->assertEquals($parameters, $result->parameters);
+	}
+
+	public function provider_prepare_command()
+	{
+		return array
+		(
+			array('', array()),
+		);
+	}
+
+	/**
+	 * @test
+	 * @dataProvider    provider_prepare_query
+	 */
+	public function test_prepare_query($statement, $parameters)
+	{
+		$db = $this->sharedFixture;
+		$result = $db->prepare_query($statement, $parameters);
+
+		$this->assertType('Database_Prepared_Query', $result);
+		$this->assertEquals($statement, (string) $result);
+		$this->assertEquals($parameters, $result->parameters);
+	}
+
+	public function provider_prepare_query()
+	{
+		return array
+		(
+			array('', array()),
+		);
+	}
+
+	/**
+	 * @test
 	 * @dataProvider    provider_quote_literal
 	 */
 	public function test_quote_literal($value, $expected_result)
