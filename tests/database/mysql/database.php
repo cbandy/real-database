@@ -8,29 +8,22 @@
  */
 class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 {
-	protected $_db;
 	protected $_table;
 
 	public function setUp()
 	{
-		$config = Kohana::config('database')->testing;
+		$db = $this->sharedFixture;
+		$this->_table = $db->quote_table('temp_test_table');
 
-		if ($config['type'] !== 'MySQL')
-			$this->markTestSkipped('Database not configured for MySQL');
-
-		$this->_db = Database::instance('testing');
-		$this->_table = $this->_db->quote_table('temp_test_table');
-
-		$this->_db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' (id bigint unsigned AUTO_INCREMENT PRIMARY KEY, value integer)');
-		$this->_db->execute_command('INSERT INTO '.$this->_table.' (value) VALUES (50), (55), (60)');
+		$db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' (id bigint unsigned AUTO_INCREMENT PRIMARY KEY, value integer)');
+		$db->execute_command('INSERT INTO '.$this->_table.' (value) VALUES (50), (55), (60)');
 	}
 
 	public function tearDown()
 	{
-		if ( ! $this->_db)
-			return;
+		$db = $this->sharedFixture;
 
-		$this->_db->disconnect();
+		$db->disconnect();
 	}
 
 	public function provider_datatype()
@@ -47,12 +40,16 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_datatype($type, $attribute, $expected)
 	{
-		$this->assertSame($expected, $this->_db->datatype($type, $attribute));
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
 
 	public function test_execute_command_query()
 	{
-		$this->assertSame(3, $this->_db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');
+		$db = $this->sharedFixture;
+
+		$this->assertSame(3, $db->execute_command('SELECT * FROM '.$this->_table), 'Number of returned rows');
 	}
 
 	/**
@@ -60,7 +57,9 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_compound_command()
 	{
-		$this->_db->execute_command('DELETE FROM '.$this->_table.'; DELETE FROM '.$this->_table);
+		$db = $this->sharedFixture;
+
+		$db->execute_command('DELETE FROM '.$this->_table.'; DELETE FROM '.$this->_table);
 	}
 
 	/**
@@ -68,36 +67,43 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_compound_query()
 	{
-		$this->_db->execute_query('SELECT * FROM '.$this->_table.'; SELECT * FROM '.$this->_table);
+		$db = $this->sharedFixture;
+
+		$db->execute_query('SELECT * FROM '.$this->_table.'; SELECT * FROM '.$this->_table);
 	}
 
 	public function test_execute_insert()
 	{
-		$this->assertSame(array(0,1), $this->_db->execute_insert(''), 'First identity from prior INSERT');
-		$this->assertSame(array(1,4), $this->_db->execute_insert('INSERT INTO '.$this->_table.' (value) VALUES (65)'));
+		$db = $this->sharedFixture;
+
+		$this->assertSame(array(0,1), $db->execute_insert(''), 'First identity from prior INSERT');
+		$this->assertSame(array(1,4), $db->execute_insert('INSERT INTO '.$this->_table.' (value) VALUES (65)'));
 	}
 
 	public function test_insert()
 	{
-		$query = $this->_db->insert('temp_test_table', array('value'));
+		$db = $this->sharedFixture;
+		$query = $db->insert('temp_test_table', array('value'));
 
 		$this->assertTrue($query instanceof Database_Command_Insert_Identity);
 
 		$query->identity('id')->values(array(65), array(70));
 
-		$this->assertEquals(array(2,4), $query->execute($this->_db), 'AUTO_INCREMENT of the first row');
+		$this->assertEquals(array(2,4), $query->execute($db), 'AUTO_INCREMENT of the first row');
 
 		$query->values(NULL)->values(array(75));
 
-		$this->assertEquals(array(1,6), $query->execute($this->_db));
+		$this->assertEquals(array(1,6), $query->execute($db));
 
 		$query->identity(NULL);
 
-		$this->assertSame(1, $query->execute($this->_db));
+		$this->assertSame(1, $query->execute($db));
 	}
 
 	public function test_table_columns_no_table()
 	{
-		$this->assertSame(array(), $this->_db->table_columns('table-does-not-exist'));
+		$db = $this->sharedFixture;
+
+		$this->assertSame(array(), $db->table_columns('table-does-not-exist'));
 	}
 }

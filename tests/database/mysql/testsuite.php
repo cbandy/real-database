@@ -18,5 +18,13 @@ class Database_MySQL_TestSuite extends PHPUnit_Framework_TestSuite
 	{
 		if ( ! extension_loaded('mysql'))
 			$this->markTestSuiteSkipped('MySQL extension not installed');
+
+		$name = Kohana::config('unittest')->db_connection;
+		$config = Kohana::config('database')->$name;
+
+		if ($config['type'] !== 'MySQL')
+			$this->markTestSuiteSkipped('Database not configured for MySQL');
+
+		$this->sharedFixture = Database::instance($name);
 	}
 }
