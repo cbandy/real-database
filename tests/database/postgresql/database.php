@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 {
 	protected $_db;
 	protected $_table;

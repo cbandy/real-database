@@ -12,6 +12,9 @@
 		<testsuite name="Database MySQL Implementation">
 			<file>tests/database/mysql/testsuite.php</file>
 		</testsuite>
+		<testsuite name="Database PostgreSQL Implementation">
+			<file>tests/database/postgresql/testsuite.php</file>
+		</testsuite>
 		<testsuite name="Remaining Tests">
 			<directory suffix=".php">./tests/</directory>
 		</testsuite>
