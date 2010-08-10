@@ -123,29 +123,6 @@ class Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertTrue($this->_db->from() instanceof Database_From);
 	}
 
-	public function test_factories_static()
-	{
-		$this->assertType('Database_Binary', Database::binary(''));
-		$this->assertType('Database_DateTime', Database::datetime());
-
-		$this->assertType('Database_Command', Database::command(''));
-		$this->assertType('Database_Command_Delete', Database::delete());
-		$this->assertType('Database_Command_Insert', Database::insert());
-		$this->assertType('Database_Command_Update', Database::update());
-
-		$this->assertType('Database_Query', Database::query(''));
-		$this->assertType('Database_Query_Set', Database::query_set());
-		$this->assertType('Database_Query_Select', Database::select());
-
-		$this->assertType('Database_Column', Database::column(''));
-		$this->assertType('Database_Identifier', Database::identifier(''));
-		$this->assertType('Database_Table', Database::table(''));
-
-		$this->assertType('Database_Conditions', Database::conditions());
-		$this->assertType('Database_Expression', Database::expression(''));
-		$this->assertType('Database_From', Database::from());
-	}
-
 	public function test_prepare_command()
 	{
 		$this->assertTrue($this->_db->prepare_command('') instanceof Database_Prepared_Command);

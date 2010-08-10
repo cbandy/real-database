@@ -7,6 +7,54 @@
  */
 class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 {
+	public function test_factories_dynamic()
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertType('Database_Binary', $db->binary(''));
+		$this->assertType('Database_DateTime', $db->datetime());
+
+		$this->assertType('Database_Command', $db->command(''));
+		$this->assertType('Database_Command_Delete', $db->delete());
+		$this->assertType('Database_Command_Insert', $db->insert());
+		$this->assertType('Database_Command_Update', $db->update());
+
+		$this->assertType('Database_Query', $db->query(''));
+		$this->assertType('Database_Query_Set', $db->query_set());
+		$this->assertType('Database_Query_Select', $db->select());
+
+		$this->assertType('Database_Column', $db->column(''));
+		$this->assertType('Database_Identifier', $db->identifier(''));
+		$this->assertType('Database_Table', $db->table(''));
+
+		$this->assertType('Database_Conditions', $db->conditions());
+		$this->assertType('Database_Expression', $db->expression(''));
+		$this->assertType('Database_From', $db->from());
+	}
+
+	public function test_factories_static()
+	{
+		$this->assertType('Database_Binary', Database::binary(''));
+		$this->assertType('Database_DateTime', Database::datetime());
+
+		$this->assertType('Database_Command', Database::command(''));
+		$this->assertType('Database_Command_Delete', Database::delete());
+		$this->assertType('Database_Command_Insert', Database::insert());
+		$this->assertType('Database_Command_Update', Database::update());
+
+		$this->assertType('Database_Query', Database::query(''));
+		$this->assertType('Database_Query_Set', Database::query_set());
+		$this->assertType('Database_Query_Select', Database::select());
+
+		$this->assertType('Database_Column', Database::column(''));
+		$this->assertType('Database_Identifier', Database::identifier(''));
+		$this->assertType('Database_Table', Database::table(''));
+
+		$this->assertType('Database_Conditions', Database::conditions());
+		$this->assertType('Database_Expression', Database::expression(''));
+		$this->assertType('Database_From', Database::from());
+	}
+
 	/**
 	 * @test
 	 * @dataProvider    provider_quote_literal
