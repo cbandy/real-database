@@ -4,9 +4,9 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.from
+ * @group   database.expressions
  */
-class Database_From_Test extends PHPUnit_Framework_TestCase
+class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_add()
 	{

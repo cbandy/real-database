@@ -4,9 +4,10 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.update
+ * @group   database.expressions
+ * @group   database.expressions.commands
  */
-class Database_Update_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Update_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_table()
 	{

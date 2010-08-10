@@ -4,9 +4,9 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.expression
+ * @group   database.expressions
  */
-class Database_Expression_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_bind()
 	{

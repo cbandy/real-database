@@ -4,9 +4,9 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.datetime
+ * @group   database.datatypes
  */
-class Database_DateTime_Test extends PHPUnit_Framework_TestCase
+class Database_Base_DateTime_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_constructor()
 	{

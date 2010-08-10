@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.quoting
  */
-class Database_Quoting_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Quoting_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @test

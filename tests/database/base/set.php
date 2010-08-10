@@ -4,9 +4,10 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.set
+ * @group   database.expressions
+ * @group   database.expressions.queries
  */
-class Database_Set_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_constructor()
 	{

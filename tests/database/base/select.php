@@ -4,9 +4,10 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.select
+ * @group   database.expressions
+ * @group   database.expressions.queries
  */
-class Database_Select_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_select()
 	{

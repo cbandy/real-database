@@ -4,9 +4,9 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.conditions
+ * @group   database.expressions
  */
-class Database_Conditions_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_between()
 	{

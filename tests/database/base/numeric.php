@@ -4,13 +4,12 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.numeric
+ * @group   database.datatypes
  */
-class Database_Numeric_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Numeric_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * Backup of the LC_NUMERIC locale
-	 * @var string
+	 * @var string  Backup of the LC_NUMERIC locale
 	 */
 	protected $_locale_numeric;
 
@@ -23,7 +22,6 @@ class Database_Numeric_Test extends PHPUnit_Framework_TestCase
 	{
 		setlocale(LC_NUMERIC, $this->_locale_numeric);
 	}
-
 
 	public function test_constructor()
 	{
