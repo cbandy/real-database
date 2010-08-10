@@ -15,6 +15,9 @@
 		<testsuite name="Database PostgreSQL Implementation">
 			<file>tests/database/postgresql/testsuite.php</file>
 		</testsuite>
+		<testsuite name="Database SQLite Implementation">
+			<file>tests/database/pdo/sqlite/testsuite.php</file>
+		</testsuite>
 		<testsuite name="Remaining Tests">
 			<directory suffix=".php">./tests/</directory>
 		</testsuite>

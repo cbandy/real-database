@@ -4,10 +4,9 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.pdo
- * @group   database.pdo.sqlite
+ * @group   database.pdo_sqlite
  */
-class Database_PDO_SQLite_Test extends PHPUnit_Framework_TestCase
+class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 {
 	protected $_db;
 	protected $_table;
