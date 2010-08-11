@@ -122,38 +122,4 @@ class Database_Test extends PHPUnit_Framework_TestCase
 			$this->fail($e->getMessage());
 		}
 	}
-
-	public function test_transactions()
-	{
-		$this->_create_table();
-
-		$delete = 'DELETE FROM '.$this->_table.' WHERE value = 100';
-		$insert = 'INSERT INTO '.$this->_table.' (value) VALUES (100)';
-		$select = 'SELECT * FROM '.$this->_table;
-
-		$expected = array
-		(
-			array('value' => 50),
-			array('value' => 55),
-			array('value' => 60),
-		);
-
-		$this->assertNull($this->_db->begin());
-		$this->assertEquals($expected, $this->_db->execute_query($select)->as_array());
-		$this->assertSame(1, $this->_db->execute_command($insert));
-
-		$expected[] = array('value' => 100);
-
-		$this->assertEquals($expected, $this->_db->execute_query($select)->as_array());
-		$this->assertNull($this->_db->commit());
-		$this->assertEquals($expected, $this->_db->execute_query($select)->as_array());
-
-		$this->assertNull($this->_db->begin());
-		$this->assertEquals($expected, $this->_db->execute_query($select)->as_array());
-		$this->assertSame(1, $this->_db->execute_command($delete));
-
-		$this->assertEquals(array_slice($expected, 0, -1), $this->_db->execute_query($select)->as_array());
-		$this->assertNull($this->_db->rollback());
-		$this->assertEquals($expected, $this->_db->execute_query($select)->as_array());
-	}
 }
