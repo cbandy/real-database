@@ -189,11 +189,4 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expected, $result['field']);
 	}
-
-	public function test_table_columns_no_table()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertSame(array(), $db->table_columns('table-does-not-exist'));
-	}
 }
