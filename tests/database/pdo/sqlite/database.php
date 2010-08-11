@@ -28,6 +28,33 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
+	/**
+	 * @test
+	 * @dataProvider    provider_datatype
+	 */
+	public function test_datatype($type, $attribute, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->datatype($type, $attribute));
+	}
+
+	public function provider_datatype()
+	{
+		return array
+		(
+			array('blob', 'type', 'binary'),
+			array('float', 'type', 'float'),
+			array('integer', 'type', 'integer'),
+			array('varchar', 'type', 'string'),
+
+			array('varchar', NULL, array('type' => 'string')),
+
+			array('not-a-type', 'type', NULL),
+			array('not-a-type', NULL, array()),
+		);
+	}
+
 	public function test_execute_command_query()
 	{
 		$db = $this->sharedFixture;
