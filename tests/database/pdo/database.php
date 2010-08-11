@@ -18,9 +18,9 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		$column = $db->quote_column($this->_column);
 
 		$db->execute_command('CREATE TEMPORARY TABLE '.$table.' ('.$column.' integer)');
-		$db->execute_command('INSERT INTO '.$this->_table.' ('.$column.') VALUES (50)');
-		$db->execute_command('INSERT INTO '.$this->_table.' ('.$column.') VALUES (55)');
-		$db->execute_command('INSERT INTO '.$this->_table.' ('.$column.') VALUES (60)');
+		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (50)');
+		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (55)');
+		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (60)');
 	}
 
 	public function tearDown()
