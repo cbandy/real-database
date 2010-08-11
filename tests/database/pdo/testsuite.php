@@ -7,9 +7,10 @@ class Database_PDO_TestSuite extends PHPUnit_Framework_TestSuite
 {
 	public static function suite()
 	{
+		$dir = dirname(__FILE__);
 		$suite = new Database_PDO_TestSuite;
 
-		$suite->addTestFile('tests/database/pdo/database'.EXT);
+		$suite->addTestFile($dir.'/database'.EXT);
 
 		return $suite;
 	}
