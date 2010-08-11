@@ -263,6 +263,14 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		catch (Database_Exception $e) {}
 	}
 
+	public function test_quote_binary()
+	{
+		$db = $this->sharedFixture;
+		$binary = new Database_Binary("\200\0\350");
+
+		$this->assertSame("'\\\\200\\\\000\\\\350'", $db->quote($binary));
+	}
+
 	public function test_quote_expression()
 	{
 		$db = $this->sharedFixture;
