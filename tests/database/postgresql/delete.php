@@ -5,7 +5,6 @@
  *
  * @group   database
  * @group   database.postgresql
- * @group   database.postgresql.commands
  */
 class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 {

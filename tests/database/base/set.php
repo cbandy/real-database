@@ -4,8 +4,7 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.expressions
- * @group   database.expressions.queries
+ * @group   database.queries
  */
 class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
 {

@@ -5,7 +5,6 @@
  *
  * @group   database
  * @group   database.postgresql
- * @group   database.postgresql.introspection
  */
 class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {

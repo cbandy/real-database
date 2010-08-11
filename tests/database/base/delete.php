@@ -4,8 +4,7 @@
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.expressions
- * @group   database.expressions.commands
+ * @group   database.commands
  */
 class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 {

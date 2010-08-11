@@ -7,7 +7,7 @@ require_once dirname(dirname(dirname(__FILE__))).'/abstract/transaction'.EXT;
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.pdo_sqlite
+ * @group   database.pdo.sqlite
  */
 class Database_PDO_SQLite_Transaction_Test extends Database_Abstract_Transaction_Test
 {

@@ -5,7 +5,6 @@
  *
  * @group   database
  * @group   database.mysql
- * @group   database.mysql.introspection
  */
 class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {
