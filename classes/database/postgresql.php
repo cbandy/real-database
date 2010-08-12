@@ -116,7 +116,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	protected $_connection;
 
-	protected $_placeholder = '/(?:\?|(?<=::|[^:]):\w++)/';
+	protected $_placeholder = '/(?:\?|(?<=^|::|[^:]):\w++)/';
 
 	/**
 	 * @var string  Default schema

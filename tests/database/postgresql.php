@@ -246,6 +246,12 @@ class Database_PostgreSQL_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("SELECT '1 week'::interval, 'yes'::boolean", $this->_db->quote_expression($expression));
 	}
 
+	public function test_quote_expression_placeholder_first()
+	{
+		$this->assertSame('1', $this->_db->quote_expression(new Database_Expression('?', array(1))));
+		$this->assertSame('2', $this->_db->quote_expression(new Database_Expression(':param', array(':param' => 2))));
+	}
+
 	public function test_savepoint_transactions()
 	{
 		$select = 'SELECT * FROM '.$this->_table;
