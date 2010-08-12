@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/syntaxdiagrams.html#table-constraint SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms191166.aspx Transact-SQL
  */
-class Database_DDL_Constraint_Unique extends Database_Expression
+class Database_DDL_Constraint_Unique extends Database_DDL_Constraint
 {
 	/**
 	 * @uses Database_DDL_Constraint_Unique::columns()
@@ -29,14 +29,7 @@ class Database_DDL_Constraint_Unique extends Database_Expression
 
 	public function __toString()
 	{
-		$value = '';
-
-		if ( ! empty($this->parameters[':name']))
-		{
-			$value .= 'CONSTRAINT :name ';
-		}
-
-		$value .= $this->_value;
+		$value = parent::__toString().$this->_value;
 
 		if ( ! empty($this->parameters[':columns']))
 		{
@@ -64,25 +57,6 @@ class Database_DDL_Constraint_Unique extends Database_Expression
 		}
 
 		$this->parameters[':columns'] = $columns;
-
-		return $this;
-	}
-
-	/**
-	 * Set the name of the constraint
-	 *
-	 * @param   mixed   $value  Converted to Database_Identifier
-	 * @return  $this
-	 */
-	public function name($value)
-	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
-		{
-			$value = new Database_Identifier($value);
-		}
-
-		$this->parameters[':name'] = $value;
 
 		return $this;
 	}

@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/foreignkeys.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms175464.aspx Transact-SQL
  */
-class Database_DDL_Constraint_Foreign extends Database_Expression
+class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 {
 	/**
 	 * @var boolean|string  The time at which a deferred constraint should be checked
@@ -46,12 +46,7 @@ class Database_DDL_Constraint_Foreign extends Database_Expression
 
 	public function __toString()
 	{
-		$value = '';
-
-		if ( ! empty($this->parameters[':name']))
-		{
-			$value .= 'CONSTRAINT :name ';
-		}
+		$value = parent::__toString();
 
 		if ( ! empty($this->parameters[':referencing']))
 		{
@@ -148,25 +143,6 @@ class Database_DDL_Constraint_Foreign extends Database_Expression
 	public function match($value)
 	{
 		$this->_match = strtoupper($value);
-
-		return $this;
-	}
-
-	/**
-	 * Set the name of the constraint
-	 *
-	 * @param   mixed   $value  Converted to Database_Identifier
-	 * @return  $this
-	 */
-	public function name($value)
-	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
-		{
-			$value = new Database_Identifier($value);
-		}
-
-		$this->parameters[':name'] = $value;
 
 		return $this;
 	}
