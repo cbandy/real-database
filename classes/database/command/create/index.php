@@ -129,7 +129,7 @@ class Database_Command_Create_Index extends Database_Command
 	 */
 	public function columns($columns)
 	{
-		foreach ($columns as &$column)
+		foreach ($columns as & $column)
 		{
 			if ( ! $column instanceof Database_Expression
 				AND ! $column instanceof Database_Identifier)
@@ -138,7 +138,7 @@ class Database_Command_Create_Index extends Database_Command
 			}
 		}
 
-		$this->parameters[':columns'] = $column;
+		$this->parameters[':columns'] = $columns;
 
 		return $this;
 	}
