@@ -46,6 +46,18 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Create a column expression
+	 *
+	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $type   Converted to Database_Expression
+	 * @return  Database_PostgreSQL_DDL_Column
+	 */
+	public static function ddl_column($name = NULL, $type = NULL)
+	{
+		return new Database_PostgreSQL_DDL_Column($name, $type);
+	}
+
+	/**
 	 * Create a DELETE command
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
