@@ -82,12 +82,13 @@ class Database_Command_Alter_Table extends Database_Command
 	/**
 	 * Remove a constraint from the table.
 	 *
-	 * [!!] Not supported by MySQL or SQLite
+	 * [!!] Not supported by SQLite
 	 *
+	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
 	 * @param   mixed   $name   Converted to Database_Identifier
 	 * @return  $this
 	 */
-	public function drop_constraint($name)
+	public function drop_constraint($type, $name)
 	{
 		if ( ! $name instanceof Database_Expression
 			AND ! $name instanceof Database_Identifier)
