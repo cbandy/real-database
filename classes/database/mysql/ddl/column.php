@@ -12,7 +12,7 @@
  * @link http://dev.mysql.com/doc/en/create-table.html
  * @link http://dev.mysql.com/doc/en/example-auto-increment.html
  */
-class Database_MySQL_DDL_Column extends Database_DDL_Column
+class Database_MySQL_DDL_Column extends Database_DDL_Column_Identity
 {
 	/**
 	 * @var boolean
@@ -102,6 +102,14 @@ class Database_MySQL_DDL_Column extends Database_DDL_Column
 		{
 			$this->parameters[':unique'] = $constraint;
 		}
+
+		return $this;
+	}
+
+	public function identity()
+	{
+		$this->_auto_increment = TRUE;
+		$this->parameters[':unique'] = new Database_DDL_Constraint_Primary;
 
 		return $this;
 	}
