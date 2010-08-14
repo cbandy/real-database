@@ -23,6 +23,42 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	 */
 	protected static $_databases;
 
+	public static function alter($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'TABLE')
+			return new Database_MySQL_Alter_Table($name);
+
+		return parent::alter($type, $name);
+	}
+
+	public static function create($type, $name = NULL)
+	{
+		$type = strtoupper($type);
+
+		if ($type === 'INDEX')
+			return new Database_MySQL_Create_Index($name);
+
+		if ($type === 'TABLE')
+			return new Database_MySQL_Create_Table($name);
+
+		if ($type === 'VIEW')
+			return new Database_MySQL_Create_View($name);
+
+		return parent::create($type, $name);
+	}
+
+	/**
+	 * Create a column expression
+	 *
+	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $type   Converted to Database_Expression
+	 * @return  Database_MySQL_DDL_Column
+	 */
+	public static function ddl_column($name = NULL, $type = NULL)
+	{
+		return new Database_MySQL_DDL_Column($name, $type);
+	}
+
 	/**
 	 * Initialize runtime constants
 	 *
