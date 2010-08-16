@@ -16,11 +16,11 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
 	 * @param   array   $columns    Each element converted to Database_Column
-	 * @return  Database_Command_Insert_Multiple
+	 * @return  Database_SQLite_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_Command_Insert_Multiple($table, $columns);
+		return new Database_SQLite_Insert($table, $columns);
 	}
 
 	/**

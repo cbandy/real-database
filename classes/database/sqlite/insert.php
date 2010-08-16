@@ -2,15 +2,14 @@
 
 /**
  * @package     RealDatabase
+ * @subpackage  SQLite
  * @category    Commands
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * An INSERT command for databases which do not support multiple rows
  */
-class Database_Command_Insert_Multiple extends Database_Command_Insert_Identity
+class Database_SQLite_Insert extends Database_Command_Insert_Identity
 {
 	/**
 	 * @var integer Number of rows to be inserted
