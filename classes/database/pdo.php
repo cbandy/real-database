@@ -268,6 +268,50 @@ class Database_PDO extends Database
 		return array($this->execute_command($statement), $this->_connection->lastInsertId());
 	}
 
+	/**
+	 * Execute a SQL statement or compound statement with multiple results.
+	 *
+	 * Not all drivers support this method.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL statement(s)
+	 * @param   mixed   $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @return  Database_PDO_Result_Iterator    Forward-only iterator over the results
+	 */
+	public function execute_multiple($statement, $as_object = FALSE)
+	{
+		if (empty($statement))
+			return NULL;
+
+		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+		}
+
+		try
+		{
+			$statement = $this->_connection->query($statement);
+		}
+		catch (PDOException $e)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return new Database_PDO_Result_Iterator($statement, $as_object);
+	}
+
 	public function execute_query($statement, $as_object = FALSE)
 	{
 		if (empty($statement))
