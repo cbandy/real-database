@@ -31,7 +31,7 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *  charset               | string  | Character set
 	 *  pragmas               | array   | [PRAGMA][] settings as "key => value" pairs
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Table prefix
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
 	 *  connection.options    | array   | PDO options
 	 *  connection.persistent | boolean | Use the PHP connection pool
