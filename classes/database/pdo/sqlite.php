@@ -16,11 +16,11 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
 	 * @param   array   $columns    Each element converted to Database_Column
-	 * @return  Database_Command_Insert_Multiple
+	 * @return  Database_SQLite_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_Command_Insert_Multiple($table, $columns);
+		return new Database_SQLite_Insert($table, $columns);
 	}
 
 	/**
@@ -31,7 +31,7 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *  charset               | string  | Character set
 	 *  pragmas               | array   | [PRAGMA][] settings as "key => value" pairs
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Table prefix
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
 	 *  connection.options    | array   | PDO options
 	 *  connection.persistent | boolean | Use the PHP connection pool

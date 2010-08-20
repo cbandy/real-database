@@ -122,7 +122,7 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 		$query = $db->insert($this->_table, array('value'));
 
-		$this->assertTrue($query instanceof Database_Command_Insert_Multiple);
+		$this->assertType('Database_SQLite_Insert', $query);
 
 		$query->identity('id')->values(array('65'), array('70'));
 

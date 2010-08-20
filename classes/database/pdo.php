@@ -148,6 +148,11 @@ class Database_PDO extends Database
 		}
 	}
 
+	public function charset($charset)
+	{
+		$this->execute_command("SET NAMES '$charset'");
+	}
+
 	public function commit()
 	{
 		$this->_connection or $this->connect();

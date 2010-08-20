@@ -93,7 +93,7 @@ class Database_SQLite2_Database_Test extends PHPUnit_Framework_TestCase
 
 		$query = $db->insert('temp_test_table', array('value'));
 
-		$this->assertType('Database_Command_Insert_Multiple', $query);
+		$this->assertType('Database_SQLite_Insert', $query);
 
 		$query->identity('id')->values(array('65'), array('70'));
 

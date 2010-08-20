@@ -286,16 +286,13 @@ abstract class Database
 	abstract public function begin();
 
 	/**
-	 * Set the connection character set
+	 * Set the connection character set. May disconnect the session for some drivers.
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $charset    Character set
 	 * @return  void
 	 */
-	public function charset($charset)
-	{
-		$this->execute_command("SET NAMES '$charset'");
-	}
+	abstract public function charset($charset);
 
 	/**
 	 * Commit the current transaction

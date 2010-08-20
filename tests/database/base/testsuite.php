@@ -47,6 +47,8 @@ class Database_Base_TestSuite_Database extends Database
 
 	public function begin() {}
 
+	public function charset($charset) {}
+
 	public function commit() {}
 
 	public function connect() {}
