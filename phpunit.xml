@@ -6,8 +6,26 @@
 		</whitelist>
 	</filter>
 	<testsuites>
-		<testsuite name="Database Tests">
-			<directory suffix=".php">./tests/</directory>
+		<testsuite name="Database Default Implementations">
+			<file>tests/database/base/testsuite.php</file>
+		</testsuite>
+		<testsuite name="Database MySQL Implementations">
+			<file>tests/database/mysql/testsuite.php</file>
+		</testsuite>
+		<testsuite name="Database PostgreSQL Implementations">
+			<file>tests/database/postgresql/testsuite.php</file>
+		</testsuite>
+		<testsuite name="Database PDO Implementations">
+			<file>tests/database/pdo/testsuite.php</file>
+		</testsuite>
+		<testsuite name="Database SQLite Implementations">
+			<file>tests/database/pdo/sqlite/testsuite.php</file>
+		</testsuite>
+		<testsuite name="Database SQLite2 Implementations">
+			<file>tests/database/sqlite2/testsuite.php</file>
+		</testsuite>
+		<testsuite name="Database Driver Tests">
+			<file>tests/database/driver/testsuite.php</file>
 		</testsuite>
 	</testsuites>
 </phpunit>

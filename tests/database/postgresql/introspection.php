@@ -5,13 +5,9 @@
  *
  * @group   database
  * @group   database.postgresql
- * @group   database.postgresql.introspection
  */
 class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {
-	protected $_db;
-	protected $_table;
-
 	protected $_information_schema_defaults = array
 	(
 		'column_name'       => NULL,
@@ -25,25 +21,13 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		'datetime_precision' => NULL,
 	);
 
-	public function setUp()
-	{
-		$config = Kohana::config('database')->testing;
-
-		if ($config['type'] !== 'PostgreSQL')
-			$this->markTestSkipped('Database not configured for PostgreSQL');
-
-		$this->_db = Database::instance('testing');
-		$this->_table = $this->_db->quote_table('temp_test_table');
-	}
+	protected $_table = 'temp_test_table';
 
 	public function tearDown()
 	{
-		if ( ! $this->_db)
-			return;
+		$db = $this->sharedFixture;
 
-		$this->_db->execute_command('DROP TABLE IF EXISTS '.$this->_table);
-
-		$this->_db->disconnect();
+		$db->execute_command('DROP TABLE IF EXISTS '.$db->quote_table($this->_table));
 	}
 
 	public function provider_table_column_type()
@@ -245,15 +229,16 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_type($column, $expected)
 	{
+		$db = $this->sharedFixture;
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
 			'is_nullable' => 'YES',
 		), $expected);
 
-		$this->_db->execute_command('CREATE TABLE '.$this->_table." ( field $column )");
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
 
-		$result = $this->_db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}

@@ -5,13 +5,9 @@
  *
  * @group   database
  * @group   database.mysql
- * @group   database.mysql.introspection
  */
 class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {
-	protected $_db;
-	protected $_table;
-
 	protected $_information_schema_defaults = array
 	(
 		'column_name'       => NULL,
@@ -30,25 +26,13 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		'column_comment'    => NULL,
 	);
 
-	public function setUp()
-	{
-		$config = Kohana::config('database')->testing;
-
-		if ($config['type'] !== 'MySQL')
-			$this->markTestSkipped('Database not configured for MySQL');
-
-		$this->_db = Database::instance('testing');
-		$this->_table = $this->_db->quote_table('temp_test_table');
-	}
+	protected $_table = 'temp_test_table';
 
 	public function tearDown()
 	{
-		if ( ! $this->_db)
-			return;
+		$db = $this->sharedFixture;
 
-		$this->_db->execute_command('DROP TABLE IF EXISTS '.$this->_table);
-
-		$this->_db->disconnect();
+		$db->execute_command('DROP TABLE IF EXISTS '.$db->quote_table($this->_table));
 	}
 
 	/**
@@ -56,6 +40,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_timestamp()
 	{
+		$db = $this->sharedFixture;
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
@@ -66,14 +51,14 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			'column_type' => 'timestamp',
 		));
 
-		if (version_compare($this->_db->execute_query('SELECT VERSION()')->get(), '5.1', '>'))
+		if (version_compare($db->execute_query('SELECT VERSION()')->get(), '5.1', '>'))
 		{
 			$expected['extra'] = 'on update CURRENT_TIMESTAMP';
 		}
 
-		$this->_db->execute_command('CREATE TABLE '.$this->_table.' ( field timestamp )');
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table).' ( field timestamp )');
 
-		$result = $this->_db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
@@ -240,15 +225,16 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_type($column, $expected)
 	{
+		$db = $this->sharedFixture;
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
 			'is_nullable' => 'YES',
 		), $expected);
 
-		$this->_db->execute_command('CREATE TABLE '.$this->_table." ( field $column )");
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
 
-		$result = $this->_db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
@@ -321,16 +307,17 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_type_collation($column, $expected)
 	{
+		$db = $this->sharedFixture;
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
 			'is_nullable' => 'YES',
-			'collation_name' => $this->_db->execute_query('SELECT @@collation_database')->get(),
+			'collation_name' => $db->execute_query('SELECT @@collation_database')->get(),
 		), $expected);
 
-		$this->_db->execute_command('CREATE TABLE '.$this->_table." ( field $column )");
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
 
-		$result = $this->_db->table_columns('temp_test_table');
+		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
