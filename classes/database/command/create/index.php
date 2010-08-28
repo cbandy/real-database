@@ -24,11 +24,21 @@ class Database_Command_Create_Index extends Database_Command
 	 * @param   mixed   $table      Converted to Database_Table
 	 * @param   array   $columns    Each element converted to Database_Column
 	 */
-	public function __construct($name, $table, $columns = array())
+	public function __construct($name = NULL, $table = NULL, $columns = array())
 	{
 		parent::__construct('');
 
-		$this->name($name)->on($table)->columns($columns);
+		if ($name !== NULL)
+		{
+			$this->name($name);
+		}
+
+		if ($table !== NULL)
+		{
+			$this->on($table);
+		}
+
+		$this->columns($columns);
 	}
 
 	public function __toString()
