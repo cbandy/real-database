@@ -57,6 +57,13 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_Conditions', $db->conditions());
 		$this->assertType('Database_Expression', $db->expression(''));
 		$this->assertType('Database_From', $db->from());
+
+		$this->assertType('Database_Command_Alter_Table', $db->alter('table'));
+		$this->assertType('Database_Command_Create_Index', $db->create('index'));
+		$this->assertType('Database_Command_Create_Table', $db->create('table'));
+		$this->assertType('Database_Command_Create_View', $db->create('view'));
+		$this->assertType('Database_Command_Drop', $db->drop('index'));
+		$this->assertType('Database_Command_Drop_Table', $db->drop('table'));
 	}
 
 	public function test_factories_static()
@@ -80,6 +87,13 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_Conditions', Database::conditions());
 		$this->assertType('Database_Expression', Database::expression(''));
 		$this->assertType('Database_From', Database::from());
+
+		$this->assertType('Database_Command_Alter_Table', Database::alter('table'));
+		$this->assertType('Database_Command_Create_Index', Database::create('index'));
+		$this->assertType('Database_Command_Create_Table', Database::create('table'));
+		$this->assertType('Database_Command_Create_View', Database::create('view'));
+		$this->assertType('Database_Command_Drop', Database::drop('index'));
+		$this->assertType('Database_Command_Drop_Table', Database::drop('table'));
 	}
 
 	/**
