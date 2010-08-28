@@ -19,11 +19,14 @@ class Database_DDL_Constraint_Check extends Database_DDL_Constraint
 	 *
 	 * @param   Database_Conditions $conditions
 	 */
-	public function __construct($condtions)
+	public function __construct($conditions = NULL)
 	{
 		parent::__construct('CHECK (:conditions)');
 
-		$this->conditions($conditions);
+		if ($conditions !== NULL)
+		{
+			$this->conditions($conditions);
+		}
 	}
 
 	public function __toString()

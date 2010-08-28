@@ -37,11 +37,16 @@ class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 	 * @param   mixed   $table      Converted to Database_Table
 	 * @param   array   $columns    Each element converted to Database_Column
 	 */
-	public function __construct($table, $columns = array())
+	public function __construct($table = NULL, $columns = array())
 	{
 		parent::__construct('REFERENCES :table');
 
-		$this->table($table)->columns($columns);
+		if ($table !== NULL)
+		{
+			$this->table($table);
+		}
+
+		$this->columns($columns);
 	}
 
 	public function __toString()

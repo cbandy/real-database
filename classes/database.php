@@ -124,9 +124,15 @@ abstract class Database
 	 */
 	public static function ddl_constraint($type, $name = NULL)
 	{
-		$class = "Database_DDL_Constraint_$type";
+		$result = "Database_DDL_Constraint_$type";
+		$result = new $result;
 
-		return new $class($name);
+		if ($name !== NULL)
+		{
+			$result->name($name);
+		}
+
+		return $result;
 	}
 
 	/**
