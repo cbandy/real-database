@@ -161,7 +161,7 @@ class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 	 */
 	public function on($event, $action)
 	{
-		$this->_on[strtotupper($event)] = strtoupper($action);
+		$this->_on[strtoupper($event)] = strtoupper($action);
 
 		return $this;
 	}
