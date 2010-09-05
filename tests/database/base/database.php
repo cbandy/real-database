@@ -64,6 +64,12 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_Command_Create_View', $db->create('view'));
 		$this->assertType('Database_Command_Drop', $db->drop('index'));
 		$this->assertType('Database_Command_Drop_Table', $db->drop('table'));
+
+		$this->assertType('Database_DDL_Column', $db->ddl_column());
+		$this->assertType('Database_DDL_Constraint_Check', $db->ddl_constraint('check'));
+		$this->assertType('Database_DDL_Constraint_Foreign', $db->ddl_constraint('foreign'));
+		$this->assertType('Database_DDL_Constraint_Primary', $db->ddl_constraint('primary'));
+		$this->assertType('Database_DDL_Constraint_Unique', $db->ddl_constraint('unique'));
 	}
 
 	public function test_factories_static()
@@ -94,6 +100,12 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_Command_Create_View', Database::create('view'));
 		$this->assertType('Database_Command_Drop', Database::drop('index'));
 		$this->assertType('Database_Command_Drop_Table', Database::drop('table'));
+
+		$this->assertType('Database_DDL_Column', Database::ddl_column());
+		$this->assertType('Database_DDL_Constraint_Check', Database::ddl_constraint('check'));
+		$this->assertType('Database_DDL_Constraint_Foreign', Database::ddl_constraint('foreign'));
+		$this->assertType('Database_DDL_Constraint_Primary', Database::ddl_constraint('primary'));
+		$this->assertType('Database_DDL_Constraint_Unique', Database::ddl_constraint('unique'));
 	}
 
 	/**
