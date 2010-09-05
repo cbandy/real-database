@@ -84,55 +84,115 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_test_factories()
 	{
-		return array
+		$result = array
 		(
 			// Datatypes
 
-			array('binary', array(''), new Database_Binary('')),
+			array('binary', array('a'), new Database_Binary('a')),
+
 			array('datetime', array(), new Database_DateTime),
+			array('datetime', array(1258461296), new Database_DateTime(1258461296)),
+			array('datetime', array(1258461296, 'UTC'), new Database_DateTime(1258461296, 'UTC')),
+			array('datetime', array(1258461296, 'UTC', 'Y-m-d'), new Database_DateTime(1258461296, 'UTC', 'Y-m-d')),
 
 			// Expressions
 
 			array('conditions', array(), new Database_Conditions),
-			array('expression', array(''), new Database_Expression('')),
+			array('conditions', array('a'), new Database_Conditions('a')),
+			array('conditions', array('a', '='), new Database_Conditions('a', '=')),
+			array('conditions', array('a', '=', 'b'), new Database_Conditions('a', '=', 'b')),
+
+			array('expression', array('a'), new Database_Expression('a')),
+			array('expression', array('a', array('b')), new Database_Expression('a', array('b'))),
+
 			array('from', array(), new Database_From),
+			array('from', array('a'), new Database_From('a')),
+			array('from', array('a', 'b'), new Database_From('a', 'b')),
 
 			// Identifiers
 
-			array('column', array(''), new Database_Column('')),
-			array('identifier', array(''), new Database_Identifier('')),
-			array('table', array(''), new Database_Table('')),
+			array('column', array('a'), new Database_Column('a')),
+			array('identifier', array('a'), new Database_Identifier('a')),
+			array('table', array('a'), new Database_Table('a')),
 
 			// Commands
 
-			array('command', array(''), new Database_Command('')),
+			array('command', array('a'), new Database_Command('a')),
+			array('command', array('a', array('b')), new Database_Command('a', array('b'))),
+
 			array('delete', array(), new Database_Command_Delete),
+			array('delete', array('a'), new Database_Command_Delete('a')),
+			array('delete', array('a', 'b'), new Database_Command_Delete('a', 'b')),
+
 			array('insert', array(), new Database_Command_Insert),
+			array('insert', array('a'), new Database_Command_Insert('a')),
+			array('insert', array('a', array('b')), new Database_Command_Insert('a', array('b'))),
+
 			array('update', array(), new Database_Command_Update),
+			array('update', array('a'), new Database_Command_Update('a')),
+			array('update', array('a', 'b'), new Database_Command_Update('a', 'b')),
+			array('update', array('a', 'b', array('c' => 'd')), new Database_Command_Update('a', 'b', array('c' => 'd'))),
 
 			// Queries
 
-			array('query', array(''), new Database_Query('')),
+			array('query', array('a'), new Database_Query('a')),
+			array('query', array('a', array('b')), new Database_Query('a', array('b'))),
+
 			array('query_set', array(), new Database_Query_Set),
+			array('query_set', array(new Database_Query('a')), new Database_Query_Set(new Database_Query('a'))),
+
 			array('select', array(), new Database_Query_Select),
+			array('select', array(array('a' => 'b')), new Database_Query_Select(array('a' => 'b'))),
 
 			// DDL Commands
 
 			array('alter', array('table'), new Database_Command_Alter_Table),
+			array('alter', array('table', 'a'), new Database_Command_Alter_Table('a')),
+
 			array('create', array('index'), new Database_Command_Create_Index),
+			array('create', array('index', 'a'), new Database_Command_Create_Index('a')),
+
 			array('create', array('table'), new Database_Command_Create_Table),
+			array('create', array('table', 'a'), new Database_Command_Create_Table('a')),
+
 			array('create', array('view'), new Database_Command_Create_View),
+			array('create', array('view', 'a'), new Database_Command_Create_View('a')),
+
 			array('drop', array('index'), new Database_Command_Drop('index')),
+			array('drop', array('index', 'a'), new Database_Command_Drop('index', 'a')),
+
 			array('drop', array('table'), new Database_Command_Drop_Table),
+			array('drop', array('table', 'a'), new Database_Command_Drop_Table('a')),
 
 			// DDL Expressions
 
 			array('ddl_column', array(), new Database_DDL_Column),
+			array('ddl_column', array('a'), new Database_DDL_Column('a')),
+			array('ddl_column', array('a', 'b'), new Database_DDL_Column('a', 'b')),
+
 			array('ddl_constraint', array('check'), new Database_DDL_Constraint_Check),
 			array('ddl_constraint', array('foreign'), new Database_DDL_Constraint_Foreign),
 			array('ddl_constraint', array('primary'), new Database_DDL_Constraint_Primary),
 			array('ddl_constraint', array('unique'), new Database_DDL_Constraint_Unique),
 		);
+
+		$constraint = new Database_DDL_Constraint_Check;
+		$constraint->name('a');
+		$result[] = array('ddl_constraint', array('check', 'a'), $constraint);
+
+		$constraint = new Database_DDL_Constraint_Foreign;
+		$constraint->name('a');
+		$result[] = array('ddl_constraint', array('foreign', 'a'), $constraint);
+
+		$constraint = new Database_DDL_Constraint_Primary;
+		$constraint->name('a');
+		$result[] = array('ddl_constraint', array('primary', 'a'), $constraint);
+
+		$constraint = new Database_DDL_Constraint_Unique;
+		$constraint->name('a');
+		$result[] = array('ddl_constraint', array('unique', 'a'), $constraint);
+
+		return $result;
 	}
 
 	/**
