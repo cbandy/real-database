@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.queries
  */
-class Database_Base_Select_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_select()
 	{

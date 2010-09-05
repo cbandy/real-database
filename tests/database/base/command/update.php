@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.commands
  */
-class Database_Base_Update_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_table()
 	{

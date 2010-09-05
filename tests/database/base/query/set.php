@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.queries
  */
-class Database_Base_Set_Test extends PHPUnit_Framework_TestCase
+class Database_Base_Query_Set_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_constructor()
 	{
