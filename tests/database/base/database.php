@@ -72,40 +72,67 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_DDL_Constraint_Unique', $db->ddl_constraint('unique'));
 	}
 
-	public function test_factories_static()
+	/**
+	 * @test
+	 * @dataProvider    provider_test_factories
+	 */
+	public function test_factories($method, $arguments, $expected)
 	{
-		$this->assertType('Database_Binary', Database::binary(''));
-		$this->assertType('Database_DateTime', Database::datetime());
+		$result = call_user_func_array("Database::$method", $arguments);
+		$this->assertEquals($expected, $result);
+	}
 
-		$this->assertType('Database_Command', Database::command(''));
-		$this->assertType('Database_Command_Delete', Database::delete());
-		$this->assertType('Database_Command_Insert', Database::insert());
-		$this->assertType('Database_Command_Update', Database::update());
+	public function provider_test_factories()
+	{
+		return array
+		(
+			// Datatypes
 
-		$this->assertType('Database_Query', Database::query(''));
-		$this->assertType('Database_Query_Set', Database::query_set());
-		$this->assertType('Database_Query_Select', Database::select());
+			array('binary', array(''), new Database_Binary('')),
+			array('datetime', array(), new Database_DateTime),
 
-		$this->assertType('Database_Column', Database::column(''));
-		$this->assertType('Database_Identifier', Database::identifier(''));
-		$this->assertType('Database_Table', Database::table(''));
+			// Expressions
 
-		$this->assertType('Database_Conditions', Database::conditions());
-		$this->assertType('Database_Expression', Database::expression(''));
-		$this->assertType('Database_From', Database::from());
+			array('conditions', array(), new Database_Conditions),
+			array('expression', array(''), new Database_Expression('')),
+			array('from', array(), new Database_From),
 
-		$this->assertType('Database_Command_Alter_Table', Database::alter('table'));
-		$this->assertType('Database_Command_Create_Index', Database::create('index'));
-		$this->assertType('Database_Command_Create_Table', Database::create('table'));
-		$this->assertType('Database_Command_Create_View', Database::create('view'));
-		$this->assertType('Database_Command_Drop', Database::drop('index'));
-		$this->assertType('Database_Command_Drop_Table', Database::drop('table'));
+			// Identifiers
 
-		$this->assertType('Database_DDL_Column', Database::ddl_column());
-		$this->assertType('Database_DDL_Constraint_Check', Database::ddl_constraint('check'));
-		$this->assertType('Database_DDL_Constraint_Foreign', Database::ddl_constraint('foreign'));
-		$this->assertType('Database_DDL_Constraint_Primary', Database::ddl_constraint('primary'));
-		$this->assertType('Database_DDL_Constraint_Unique', Database::ddl_constraint('unique'));
+			array('column', array(''), new Database_Column('')),
+			array('identifier', array(''), new Database_Identifier('')),
+			array('table', array(''), new Database_Table('')),
+
+			// Commands
+
+			array('command', array(''), new Database_Command('')),
+			array('delete', array(), new Database_Command_Delete),
+			array('insert', array(), new Database_Command_Insert),
+			array('update', array(), new Database_Command_Update),
+
+			// Queries
+
+			array('query', array(''), new Database_Query('')),
+			array('query_set', array(), new Database_Query_Set),
+			array('select', array(), new Database_Query_Select),
+
+			// DDL Commands
+
+			array('alter', array('table'), new Database_Command_Alter_Table),
+			array('create', array('index'), new Database_Command_Create_Index),
+			array('create', array('table'), new Database_Command_Create_Table),
+			array('create', array('view'), new Database_Command_Create_View),
+			array('drop', array('index'), new Database_Command_Drop('index')),
+			array('drop', array('table'), new Database_Command_Drop_Table),
+
+			// DDL Expressions
+
+			array('ddl_column', array(), new Database_DDL_Column),
+			array('ddl_constraint', array('check'), new Database_DDL_Constraint_Check),
+			array('ddl_constraint', array('foreign'), new Database_DDL_Constraint_Foreign),
+			array('ddl_constraint', array('primary'), new Database_DDL_Constraint_Primary),
+			array('ddl_constraint', array('unique'), new Database_DDL_Constraint_Unique),
+		);
 	}
 
 	/**
