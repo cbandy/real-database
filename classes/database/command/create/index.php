@@ -95,8 +95,8 @@ class Database_Command_Create_Index extends Database_Command
 	 */
 	public function on($table)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $table instanceof Database_Expression
+			AND ! $table instanceof Database_Identifier)
 		{
 			$table = new Database_Table($table);
 		}
