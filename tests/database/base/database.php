@@ -34,47 +34,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	public function test_factories_dynamic()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertType('Database_Binary', $db->binary(''));
-		$this->assertType('Database_DateTime', $db->datetime());
-
-		$this->assertType('Database_Command', $db->command(''));
-		$this->assertType('Database_Command_Delete', $db->delete());
-		$this->assertType('Database_Command_Insert', $db->insert());
-		$this->assertType('Database_Command_Update', $db->update());
-
-		$this->assertType('Database_Query', $db->query(''));
-		$this->assertType('Database_Query_Set', $db->query_set());
-		$this->assertType('Database_Query_Select', $db->select());
-
-		$this->assertType('Database_Column', $db->column(''));
-		$this->assertType('Database_Identifier', $db->identifier(''));
-		$this->assertType('Database_Table', $db->table(''));
-
-		$this->assertType('Database_Conditions', $db->conditions());
-		$this->assertType('Database_Expression', $db->expression(''));
-		$this->assertType('Database_From', $db->from());
-
-		$this->assertType('Database_Command_Alter_Table', $db->alter('table'));
-		$this->assertType('Database_Command_Create_Index', $db->create('index'));
-		$this->assertType('Database_Command_Create_Table', $db->create('table'));
-		$this->assertType('Database_Command_Create_View', $db->create('view'));
-		$this->assertType('Database_Command_Drop', $db->drop('index'));
-		$this->assertType('Database_Command_Drop_Table', $db->drop('table'));
-
-		$this->assertType('Database_DDL_Column', $db->ddl_column());
-		$this->assertType('Database_DDL_Constraint_Check', $db->ddl_constraint('check'));
-		$this->assertType('Database_DDL_Constraint_Foreign', $db->ddl_constraint('foreign'));
-		$this->assertType('Database_DDL_Constraint_Primary', $db->ddl_constraint('primary'));
-		$this->assertType('Database_DDL_Constraint_Unique', $db->ddl_constraint('unique'));
-	}
-
 	/**
 	 * @test
-	 * @dataProvider    provider_test_factories
+	 * @dataProvider    provider_factories
 	 */
 	public function test_factories($method, $arguments, $expected)
 	{
@@ -82,7 +44,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $result);
 	}
 
-	public function provider_test_factories()
+	public function provider_factories()
 	{
 		$result = array
 		(
