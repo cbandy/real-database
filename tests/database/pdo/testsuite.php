@@ -20,11 +20,12 @@ class Database_PDO_TestSuite extends PHPUnit_Framework_TestSuite
 		if ( ! extension_loaded('pdo'))
 			$this->markTestSuiteSkipped('PDO extension not installed');
 
-		$name = Kohana::config('unittest')->db_connection;
-		$config = Kohana::config('database')->$name;
-
-		if (strncmp($config['type'], 'PDO', 3))
+		if ( ! $name = Kohana::config('unittest')->db_connection
+			OR ! $config = Kohana::config('database')->get($name)
+			OR strncmp($config['type'], 'PDO', 3) !== 0)
+		{
 			$this->markTestSuiteSkipped('Database not configured for PDO');
+		}
 
 		$this->sharedFixture = Database::instance($name);
 	}
