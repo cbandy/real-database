@@ -12,6 +12,7 @@ class Database_PDO_SQLite_TestSuite extends PHPUnit_Framework_TestSuite
 		$suite->addTestFile(dirname(dirname(__FILE__)).'/testsuite'.EXT);
 
 		Kohana_Tests::addTests($suite, Kohana::list_files('tests/database/pdo/sqlite'));
+		Kohana_Tests::addTests($suite, Kohana::list_files('tests/database/sqlite'));
 
 		return $suite;
 	}
