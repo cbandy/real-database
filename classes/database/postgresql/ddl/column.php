@@ -16,7 +16,7 @@ class Database_PostgreSQL_DDL_Column extends Database_DDL_Column_Identity
 {
 	public function identity()
 	{
-		if (isset($this->parameters[':type']) AND ($this->parameters[':type']->_value === 'bigint' OR $this->parameters[':type']->_value === 'int8'))
+		if (isset($this->parameters[':type']) AND in_array(strtolower($this->parameters[':type']->_value), array('bigint', 'bigserial', 'int8'), TRUE))
 		{
 			$this->parameters[':type'] = new Database_Expression('BIGSERIAL');
 		}
