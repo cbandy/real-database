@@ -37,7 +37,6 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 
 		$this->assertType('Database_PostgreSQL_Insert', Database_PostgreSQL::insert());
-		$this->assertTrue($db->insert() instanceof Database_PostgreSQL_Insert);
 	}
 
 	public function test_identity()
@@ -151,7 +150,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('more' => 6), array('more' => 7)), $result->as_array(), 'Each aliased column');
 
 		$this->assertSame($query, $query->returning(new Database_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
@@ -179,7 +178,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('id' => 6), array('id' => 7)), $result->as_array(), 'Each column');
 	}
 
@@ -198,7 +197,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array( (object) array('id' => 6), (object) array('id' => 7)), $result->as_array(), 'Each column');
 	}
 }

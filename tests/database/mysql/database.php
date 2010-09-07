@@ -84,7 +84,7 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 		$query = $db->insert($this->_table, array('value'));
 
-		$this->assertTrue($query instanceof Database_Command_Insert_Identity);
+		$this->assertType('Database_Command_Insert_Identity', $query);
 
 		$query->identity('id')->values(array(65), array(70));
 

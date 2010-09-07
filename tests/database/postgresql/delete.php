@@ -37,7 +37,6 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 
 		$this->assertType('Database_PostgreSQL_Delete', Database_PostgreSQL::delete());
-		$this->assertTrue($db->delete() instanceof Database_PostgreSQL_Delete);
 	}
 
 	public function test_returning()
@@ -50,7 +49,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('more' => 2), array('more' => 3)), $result->as_array(), 'Each aliased column');
 
 		$query->where('id', '=', 4);
@@ -59,7 +58,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('rawr' => 'asdf')), $result->as_array());
 
 		$query->where(NULL);
@@ -79,7 +78,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
 	}
 
@@ -94,7 +93,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
 	}
 }

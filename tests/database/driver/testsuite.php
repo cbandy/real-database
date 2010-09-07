@@ -25,7 +25,7 @@ class Database_Driver_TestSuite extends PHPUnit_Framework_TestSuite
 	{
 		$name = Kohana::config('unittest')->db_connection;
 
-		if ( ! Kohana::config('database')->$name)
+		if ( ! Kohana::config('database')->get($name))
 			$this->markTestSuiteSkipped('No test connection configured');
 
 		$this->sharedFixture = Database::instance($name);

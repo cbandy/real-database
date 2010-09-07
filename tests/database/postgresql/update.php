@@ -37,7 +37,6 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 
 		$this->assertType('Database_PostgreSQL_Update', Database_PostgreSQL::update());
-		$this->assertTrue($db->update() instanceof Database_PostgreSQL_Update);
 	}
 
 	public function test_returning()
@@ -50,7 +49,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('more' => 2), array('more' => 3)), $result->as_array(), 'Each aliased column');
 
 		$query->where('value', '=', 100);
@@ -76,7 +75,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
 	}
 
@@ -91,7 +90,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 
 		$result = $query->execute($db);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result);
+		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
 	}
 }

@@ -19,11 +19,12 @@ class Database_SQLite2_TestSuite extends PHPUnit_Framework_TestSuite
 		if ( ! extension_loaded('SQLite'))
 			$this->markTestSuiteSkipped('SQLite extension not installed');
 
-		$name = Kohana::config('unittest')->db_connection;
-		$config = Kohana::config('database')->$name;
-
-		if ($config['type'] !== 'SQLite2')
+		if ( ! $name = Kohana::config('unittest')->db_connection
+			OR ! $config = Kohana::config('database')->get($name)
+			OR $config['type'] !== 'SQLite2')
+		{
 			$this->markTestSuiteSkipped('Database not configured for SQLite2');
+		}
 
 		$this->sharedFixture = Database::instance($name);
 	}

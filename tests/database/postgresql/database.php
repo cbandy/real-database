@@ -141,13 +141,13 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 
 		$result = $db->execute_prepared_query($name, array(60));
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Parameters (1)');
+		$this->assertType('Database_PostgreSQL_Result', $result, 'Parameters (1)');
 		$this->assertSame(1, $result->count(), 'Parameters (1)');
 		$this->assertEquals(60, $result->get('value'));
 
 		$result = $db->execute_prepared_query($name, array(50));
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Parameters (2)');
+		$this->assertType('Database_PostgreSQL_Result', $result, 'Parameters (2)');
 		$this->assertSame(1, $result->count(), 'Parameters (2)');
 		$this->assertEquals(50, $result->get('value'));
 
@@ -162,22 +162,22 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 
 		$result = $db->execute_prepared_query($name);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'No parameters');
+		$this->assertType('Database_PostgreSQL_Result', $result, 'No parameters');
 		$this->assertType('array', $result->current(), 'No parameters');
 
 		$result = $db->execute_prepared_query($name, array(), FALSE);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (FALSE)');
+		$this->assertType('Database_PostgreSQL_Result', $result, 'Result type (FALSE)');
 		$this->assertType('array', $result->current(), 'Result type (FALSE)');
 
 		$result = $db->execute_prepared_query($name, array(), TRUE);
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (TRUE)');
+		$this->assertType('Database_PostgreSQL_Result', $result, 'Result type (TRUE)');
 		$this->assertType('stdClass', $result->current(), 'Result type (TRUE)');
 
 		$result = $db->execute_prepared_query($name, array(), 'Database_PostgreSQL_Database_Test_Class');
 
-		$this->assertTrue($result instanceof Database_PostgreSQL_Result, 'Result type (Database_PostgreSQL_Database_Test_Class)');
+		$this->assertType('Database_PostgreSQL_Result', $result, 'Result type (Database_PostgreSQL_Database_Test_Class)');
 		$this->assertType('Database_PostgreSQL_Database_Test_Class', $result->current(), 'Result type (Database_PostgreSQL_Database_Test_Class)');
 	}
 
@@ -204,13 +204,13 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 
 		$query = $db->prepare_command('DELETE FROM '.$table);
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Command, 'No parameters');
+		$this->assertType('Database_PostgreSQL_Command', $query, 'No parameters');
 		$this->assertSame('DELETE FROM '.$table, (string) $query, 'No parameters');
 		$this->assertSame(array(), $query->parameters, 'No parameters');
 
 		$query = $db->prepare_command('DELETE FROM ? WHERE :cond', array(new Database_Table($this->_table), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Command, 'Parameters');
+		$this->assertType('Database_PostgreSQL_Command', $query, 'Parameters');
 		$this->assertSame('DELETE FROM '.$table.' WHERE "value" = $1', (string) $query, 'Parameters');
 		$this->assertSame(array(60), $query->parameters, 'Parameters');
 	}
@@ -222,13 +222,13 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 
 		$query = $db->prepare_query('SELECT * FROM '.$table);
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Query, 'No parameters');
+		$this->assertType('Database_PostgreSQL_Query', $query, 'No parameters');
 		$this->assertSame('SELECT * FROM '.$table, (string) $query, 'No parameters');
 		$this->assertSame(array(), $query->parameters, 'No parameters');
 
 		$query = $db->prepare_query('SELECT * FROM ? WHERE :cond', array(new Database_Table($this->_table), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Query, 'Parameters');
+		$this->assertType('Database_PostgreSQL_Query', $query, 'Parameters');
 		$this->assertSame('SELECT * FROM '.$table.' WHERE "value" = $1', (string) $query, 'Parameters');
 		$this->assertSame(array(60), $query->parameters, 'Parameters');
 	}
@@ -322,7 +322,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 		$query = $db->select(array('value'));
 
-		$this->assertTrue($query instanceof Database_PostgreSQL_Select);
+		$this->assertType('Database_PostgreSQL_Select', $query);
 
 		$query->from(new Database_From($this->_table));
 
