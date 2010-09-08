@@ -16,6 +16,20 @@ abstract class Database
 	protected static $_instances;
 
 	/**
+	 * Create an ALTER command
+	 *
+	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_Command
+	 */
+	public static function alter($type, $name = NULL)
+	{
+		$class = "Database_Command_Alter_$type";
+
+		return new $class($name);
+	}
+
+	/**
 	 * Create a binary value
 	 *
 	 * @param   mixed   $value
@@ -63,6 +77,20 @@ abstract class Database
 	}
 
 	/**
+	 * Create a CREATE command
+	 *
+	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_Command
+	 */
+	public static function create($type, $name = NULL)
+	{
+		$class = "Database_Command_Create_$type";
+
+		return new $class($name);
+	}
+
+	/**
 	 * Create a timestamp value
 	 *
 	 * @param   integer|string  $time       Unix timestamp or time in a format accepted by strtotime()
@@ -76,6 +104,38 @@ abstract class Database
 	}
 
 	/**
+	 * Create a column expression
+	 *
+	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $type   Converted to Database_Expression
+	 * @return  Database_DDL_Column
+	 */
+	public static function ddl_column($name = NULL, $type = NULL)
+	{
+		return new Database_DDL_Column($name, $type);
+	}
+
+	/**
+	 * Create a constraint expression
+	 *
+	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_DDL_Constraint
+	 */
+	public static function ddl_constraint($type, $name = NULL)
+	{
+		$result = "Database_DDL_Constraint_$type";
+		$result = new $result;
+
+		if ($name !== NULL)
+		{
+			$result->name($name);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Create a DELETE command
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
@@ -85,6 +145,21 @@ abstract class Database
 	public static function delete($table = NULL, $alias = NULL)
 	{
 		return new Database_Command_Delete($table, $alias);
+	}
+
+	/**
+	 * Create a DROP command
+	 *
+	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_Command
+	 */
+	public static function drop($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'TABLE')
+			return new Database_Command_Drop_Table($name);
+
+		return new Database_Command_Drop($type, $name);
 	}
 
 	/**

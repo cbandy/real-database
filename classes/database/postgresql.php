@@ -29,6 +29,34 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	protected static $_BUG_COPY_TO_SCHEMA;
 
+	public static function alter($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'TABLE')
+			return new Database_PostgreSQL_Alter_Table($name);
+
+		return parent::alter($type, $name);
+	}
+
+	public static function create($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'INDEX')
+			return new Database_PostgreSQL_Create_Index($name);
+
+		return parent::create($type, $name);
+	}
+
+	/**
+	 * Create a column expression
+	 *
+	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $type   Converted to Database_Expression
+	 * @return  Database_PostgreSQL_DDL_Column
+	 */
+	public static function ddl_column($name = NULL, $type = NULL)
+	{
+		return new Database_PostgreSQL_DDL_Column($name, $type);
+	}
+
 	/**
 	 * Create a DELETE command
 	 *
