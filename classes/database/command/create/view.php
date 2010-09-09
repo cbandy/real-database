@@ -29,7 +29,7 @@ class Database_Command_Create_View extends Database_Command
 	 * @uses Database_Command_Create_View::name()
 	 * @uses Database_Command_Create_View::query()
 	 *
-	 * @param   mixed           $name   Converted to Database_Identifier
+	 * @param   mixed           $name   Converted to Database_Table
 	 * @param   Database_Query  $query
 	 */
 	public function __construct($name = NULL, $query = NULL)
@@ -122,7 +122,7 @@ class Database_Command_Create_View extends Database_Command
 	/**
 	 * Set the name of the view
 	 *
-	 * @param   mixed   $value  Converted to Database_Identifier
+	 * @param   mixed   $value  Converted to Database_Table
 	 * @return  $this
 	 */
 	public function name($value)
@@ -130,7 +130,7 @@ class Database_Command_Create_View extends Database_Command
 		if ( ! $value instanceof Database_Expression
 			AND ! $value instanceof Database_Identifier)
 		{
-			$value = new Database_Identifier($value);
+			$value = new Database_Table($value);
 		}
 
 		$this->parameters[':name'] = $value;
