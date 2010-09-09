@@ -255,6 +255,22 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 				'DELETE FROM $table WHERE "value" = :value AND "value" = :value', array(':value' => 60),
 				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
 			),
+			array(
+				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, 70, 80)),
+				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, 70, array(80))),
+				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE "value" IN (?)', array(array(new Database_Identifier('value'), 70, 80)),
+				'DELETE FROM $table WHERE "value" IN ("value", $1, $2)', array(70, 80),
+			),
 		);
 	}
 
@@ -315,6 +331,22 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 			array(
 				'SELECT * FROM $table WHERE "value" = :value AND "value" = :value', array(':value' => 60),
 				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
+			),
+			array(
+				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, 70, 80)),
+				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
+			array(
+				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, 70, array(80))),
+				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
+			array(
+				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
+			array(
+				'SELECT * FROM $table WHERE "value" IN (?)', array(array(new Database_Identifier('value'), 70, 80)),
+				'SELECT * FROM $table WHERE "value" IN ("value", $1, $2)', array(70, 80),
 			),
 		);
 	}

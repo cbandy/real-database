@@ -403,8 +403,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Recursively replace Expression and Identifier parameters until all
-	 * parameters are unquoted literals
+	 * Recursively replace array, Expression and Identifier parameters until all
+	 * parameters are unquoted literals.
 	 *
 	 * @param   string  $statement          SQL statement with (or without) placeholders
 	 * @param   array   $parameters         Unquoted parameters
@@ -415,13 +415,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$chunks = preg_split($this->_placeholder, $statement, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
-		$max = count($chunks);
 		$names = NULL;
 		$position = 0;
 		$prev = $chunks[0];
 		$result = $prev[0];
 
-		for ($i = 1; $i < $max; ++$i)
+		for ($i = 1, $max = count($chunks); $i < $max; ++$i)
 		{
 			if ($statement[$chunks[$i][1] - 1] === '?')
 			{
@@ -438,7 +437,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 			$value = $parameters[$placeholder];
 
-			if ($value instanceof Database_Expression)
+			if (is_array($value))
+			{
+				$result .= $this->_parse_array($value, $result_parameters);
+			}
+			elseif ($value instanceof Database_Expression)
 			{
 				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
 			}
@@ -467,6 +470,48 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Recursively convert an array to a SQL fragment with parameters consisting only of unquoted
+	 * literals.
+	 *
+	 * @param   array   $array              Unquoted parameters
+	 * @param   array   $result_parameters  Parameters for the resulting fragment
+	 * @return  string  SQL fragment
+	 */
+	protected function _parse_array($array, & $result_parameters)
+	{
+		if (empty($array))
+			return '';
+
+		$result = '';
+
+		foreach ($array as $value)
+		{
+			if (is_array($value))
+			{
+				$result .= $this->_parse_array($value, $result_parameters);
+			}
+			elseif ($value instanceof Database_Expression)
+			{
+				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+			}
+			elseif ($value instanceof Database_Identifier)
+			{
+				$result .= $this->quote($value);
+			}
+			else
+			{
+				$result_parameters[] = $value;
+				$result .= '$'.count($result_parameters);
+			}
+
+			$result .= ', ';
+		}
+
+		// Strip trailing comma
+		return substr($result, 0, -2);
 	}
 
 	/**
