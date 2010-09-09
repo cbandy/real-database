@@ -197,40 +197,126 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('asdf', $db->prepare('asdf', 'SELECT * FROM '.$table));
 	}
 
-	public function test_prepare_command()
+	/**
+	 * @dataProvider    provider_prepare_command
+	 */
+	public function test_prepare_command($input_sql, $input_params, $expected_sql, $expected_params)
 	{
 		$db = $this->sharedFixture;
 		$table = $db->quote_table($this->_table);
 
-		$query = $db->prepare_command('DELETE FROM '.$table);
+		$input_sql = str_replace('$table', $table, $input_sql);
+		$expected_sql = str_replace('$table', $table, $expected_sql);
 
-		$this->assertType('Database_PostgreSQL_Command', $query, 'No parameters');
-		$this->assertSame('DELETE FROM '.$table, (string) $query, 'No parameters');
-		$this->assertSame(array(), $query->parameters, 'No parameters');
+		$command = $db->prepare_command($input_sql, $input_params);
 
-		$query = $db->prepare_command('DELETE FROM ? WHERE :cond', array(new Database_Table($this->_table), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
-
-		$this->assertType('Database_PostgreSQL_Command', $query, 'Parameters');
-		$this->assertSame('DELETE FROM '.$table.' WHERE "value" = $1', (string) $query, 'Parameters');
-		$this->assertSame(array(60), $query->parameters, 'Parameters');
+		$this->assertType('Database_PostgreSQL_Command', $command);
+		$this->assertSame($expected_sql, (string) $command);
+		$this->assertSame($expected_params, $command->parameters);
 	}
 
-	public function test_prepare_query()
+	public function provider_prepare_command()
+	{
+		return array
+		(
+			array(
+				'DELETE FROM $table', array(),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM ?', array(new Database_Table($this->_table)),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM :table', array(':table' => new Database_Table($this->_table)),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM $table WHERE ?', array(new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE "value" = $1 AND "value" = $2', array(60, 60),
+			),
+			array(
+				'DELETE FROM $table WHERE "value" = ?', array(60),
+				'DELETE FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE "value" = :value', array(':value' => 60),
+				'DELETE FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE "value" = :value AND "value" = :value', array(':value' => 60),
+				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider    provider_prepare_query
+	 */
+	public function test_prepare_query($input_sql, $input_params, $expected_sql, $expected_params)
 	{
 		$db = $this->sharedFixture;
 		$table = $db->quote_table($this->_table);
 
-		$query = $db->prepare_query('SELECT * FROM '.$table);
+		$input_sql = str_replace('$table', $table, $input_sql);
+		$expected_sql = str_replace('$table', $table, $expected_sql);
 
-		$this->assertType('Database_PostgreSQL_Query', $query, 'No parameters');
-		$this->assertSame('SELECT * FROM '.$table, (string) $query, 'No parameters');
-		$this->assertSame(array(), $query->parameters, 'No parameters');
+		$query = $db->prepare_query($input_sql, $input_params);
 
-		$query = $db->prepare_query('SELECT * FROM ? WHERE :cond', array(new Database_Table($this->_table), ':cond' => new Database_Conditions(new Database_Column('value'), '=', 60)));
+		$this->assertType('Database_PostgreSQL_Query', $query);
+		$this->assertSame($expected_sql, (string) $query);
+		$this->assertSame($expected_params, $query->parameters);
+	}
 
-		$this->assertType('Database_PostgreSQL_Query', $query, 'Parameters');
-		$this->assertSame('SELECT * FROM '.$table.' WHERE "value" = $1', (string) $query, 'Parameters');
-		$this->assertSame(array(60), $query->parameters, 'Parameters');
+	public function provider_prepare_query()
+	{
+		return array
+		(
+			array(
+				'SELECT * FROM $table', array(),
+				'SELECT * FROM $table', array(),
+			),
+			array(
+				'SELECT * FROM ?', array(new Database_Table($this->_table)),
+				'SELECT * FROM $table', array(),
+			),
+			array(
+				'SELECT * FROM :table', array(':table' => new Database_Table($this->_table)),
+				'SELECT * FROM $table', array(),
+			),
+			array(
+				'SELECT * FROM $table WHERE ?', array(new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'SELECT * FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'SELECT * FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'SELECT * FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $2', array(60, 60),
+			),
+			array(
+				'SELECT * FROM $table WHERE "value" = ?', array(60),
+				'SELECT * FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'SELECT * FROM $table WHERE "value" = :value', array(':value' => 60),
+				'SELECT * FROM $table WHERE "value" = $1', array(60),
+			),
+			array(
+				'SELECT * FROM $table WHERE "value" = :value AND "value" = :value', array(':value' => 60),
+				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
+			),
+		);
 	}
 
 	public function test_prepared_command_deallocate()
