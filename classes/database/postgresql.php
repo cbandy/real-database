@@ -8,6 +8,8 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * Requires PostgreSQL >= 8.2
  */
 class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {

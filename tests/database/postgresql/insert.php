@@ -42,6 +42,10 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity()
 	{
 		$db = $this->sharedFixture;
+
+		if ($db->version() < '8.2')
+			$this->markTestSkipped('Not supported');
+
 		$query = $db->insert($this->_table, array('value'))
 			->values(array(75), array(80));
 
@@ -50,20 +54,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->identity(new Database_Expression("'asdf'")), 'Chainable (expression)');
 
-		if ($db->version() < '8.2')
-		{
-			try
-			{
-				$query->execute($db);
-
-				$this->setExpectedException('Database_Exception');
-			}
-			catch (Database_Exception $e) {}
-		}
-		else
-		{
-			$this->assertEquals(array(2,'asdf'), $query->execute($db), 'Expression result');
-		}
+		$this->assertEquals(array(2,'asdf'), $query->execute($db), 'Expression result');
 
 		$this->assertSame($query, $query->identity(NULL), 'Chainable (reset)');
 		$this->assertSame(2, $query->execute($db), 'No identity');
@@ -72,6 +63,10 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity_assigned()
 	{
 		$db = $this->sharedFixture;
+
+		if ($db->version() < '8.2')
+			$this->markTestSkipped('Not supported');
+
 		$query = $db->insert($this->_table, array('id', 'value'))
 			->identity('id');
 
@@ -87,18 +82,15 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity_query()
 	{
 		$db = $this->sharedFixture;
+
+		if ($db->version() < '8.2')
+			$this->markTestSkipped('Not supported');
+
 		$query = $db->insert($this->_table, array('value'))
 			->values($db->query('SELECT 75 as "value" UNION SELECT 80'))
 			->identity('id');
 
-		if ($db->version() < '8.2')
-		{
-			$this->assertEquals(array(2,7), $query->execute($db), 'Identity of the _last_ row');
-		}
-		else
-		{
-			$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the _first_ row');
-		}
+		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the _first_ row');
 	}
 
 	public function test_identity_table_expression()
@@ -106,9 +98,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 
 		if ($db->version() < '8.2')
-		{
-			$this->setExpectedException('Database_Exception');
-		}
+			$this->markTestSkipped('Not supported');
 
 		$result = $db->insert(new Database_Expression($db->quote_table($this->_table)))
 			->columns(array('id', 'value'))
@@ -124,9 +114,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 
 		if ($db->version() < '8.2')
-		{
-			$this->setExpectedException('Database_Exception');
-		}
+			$this->markTestSkipped('Not supported');
 
 		$result = $db->insert($this->_table)
 			->values(array(20, 75), array(21, 80))
