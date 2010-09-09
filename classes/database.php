@@ -16,6 +16,20 @@ abstract class Database
 	protected static $_instances;
 
 	/**
+	 * Create an ALTER command
+	 *
+	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_Command
+	 */
+	public static function alter($type, $name = NULL)
+	{
+		$class = "Database_Command_Alter_$type";
+
+		return new $class($name);
+	}
+
+	/**
 	 * Create a binary value
 	 *
 	 * @param   mixed   $value
@@ -63,6 +77,20 @@ abstract class Database
 	}
 
 	/**
+	 * Create a CREATE command
+	 *
+	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_Command
+	 */
+	public static function create($type, $name = NULL)
+	{
+		$class = "Database_Command_Create_$type";
+
+		return new $class($name);
+	}
+
+	/**
 	 * Create a timestamp value
 	 *
 	 * @param   integer|string  $time       Unix timestamp or time in a format accepted by strtotime()
@@ -76,6 +104,38 @@ abstract class Database
 	}
 
 	/**
+	 * Create a column expression
+	 *
+	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $type   Converted to Database_Expression
+	 * @return  Database_DDL_Column
+	 */
+	public static function ddl_column($name = NULL, $type = NULL)
+	{
+		return new Database_DDL_Column($name, $type);
+	}
+
+	/**
+	 * Create a constraint expression
+	 *
+	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_DDL_Constraint
+	 */
+	public static function ddl_constraint($type, $name = NULL)
+	{
+		$result = "Database_DDL_Constraint_$type";
+		$result = new $result;
+
+		if ($name !== NULL)
+		{
+			$result->name($name);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Create a DELETE command
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
@@ -85,6 +145,21 @@ abstract class Database
 	public static function delete($table = NULL, $alias = NULL)
 	{
 		return new Database_Command_Delete($table, $alias);
+	}
+
+	/**
+	 * Create a DROP command
+	 *
+	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
+	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @return  Database_Command
+	 */
+	public static function drop($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'TABLE')
+			return new Database_Command_Drop_Table($name);
+
+		return new Database_Command_Drop($type, $name);
 	}
 
 	/**
@@ -286,16 +361,13 @@ abstract class Database
 	abstract public function begin();
 
 	/**
-	 * Set the connection character set
+	 * Set the connection character set. May disconnect the session for some drivers.
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $charset    Character set
 	 * @return  void
 	 */
-	public function charset($charset)
-	{
-		$this->execute_command("SET NAMES '$charset'");
-	}
+	abstract public function charset($charset);
 
 	/**
 	 * Commit the current transaction
@@ -312,6 +384,78 @@ abstract class Database
 	 * @return  void
 	 */
 	abstract public function connect();
+
+	/**
+	 * Return information about a SQL data type
+	 *
+	 * @param   string  $type       SQL data type
+	 * @param   string  $attribute  Attribute to return
+	 * @return  array|mixed Array of attributes or an attribute value
+	 */
+	public function datatype($type, $attribute = NULL)
+	{
+		static $types = array
+		(
+			// SQL-92
+			'bit'                           => array('type' => 'string', 'exact' => TRUE),
+			'bit varying'                   => array('type' => 'string'),
+			'char'                          => array('type' => 'string', 'exact' => TRUE),
+			'char varying'                  => array('type' => 'string'),
+			'character'                     => array('type' => 'string', 'exact' => TRUE),
+			'character varying'             => array('type' => 'string'),
+			'date'                          => array('type' => 'string'),
+			'dec'                           => array('type' => 'float', 'exact' => TRUE),
+			'decimal'                       => array('type' => 'float', 'exact' => TRUE),
+			'double precision'              => array('type' => 'float'),
+			'float'                         => array('type' => 'float'),
+			'int'                           => array('type' => 'integer', 'min' => '-2147483648', 'max' => '2147483647'),
+			'integer'                       => array('type' => 'integer', 'min' => '-2147483648', 'max' => '2147483647'),
+			'interval'                      => array('type' => 'string'),
+			'national char'                 => array('type' => 'string', 'exact' => TRUE),
+			'national char varying'         => array('type' => 'string'),
+			'national character'            => array('type' => 'string', 'exact' => TRUE),
+			'national character varying'    => array('type' => 'string'),
+			'nchar'                         => array('type' => 'string', 'exact' => TRUE),
+			'nchar varying'                 => array('type' => 'string'),
+			'numeric'                       => array('type' => 'float', 'exact' => TRUE),
+			'real'                          => array('type' => 'float'),
+			'smallint'                      => array('type' => 'integer', 'min' => '-32768', 'max' => '32767'),
+			'time'                          => array('type' => 'string'),
+			'time with time zone'           => array('type' => 'string'),
+			'timestamp'                     => array('type' => 'datetime'),
+			'timestamp with time zone'      => array('type' => 'datetime'),
+			'varchar'                       => array('type' => 'string'),
+
+			// SQL:1999
+			'binary large object'               => array('type' => 'binary'),
+			'blob'                              => array('type' => 'binary'),
+			'boolean'                           => array('type' => 'boolean'),
+			'char large object'                 => array('type' => 'string'),
+			'character large object'            => array('type' => 'string'),
+			'clob'                              => array('type' => 'string'),
+			'national character large object'   => array('type' => 'string'),
+			'nchar large object'                => array('type' => 'string'),
+			'nclob'                             => array('type' => 'string'),
+			'time without time zone'            => array('type' => 'string'),
+			'timestamp without time zone'       => array('type' => 'datetime'),
+
+			// SQL:2003
+			'bigint'    => array('type' => 'integer', 'min' => '-9223372036854775808', 'max' => '9223372036854775807'),
+
+			// SQL:2008
+			'binary'            => array('type' => 'binary', 'exact' => TRUE),
+			'binary varying'    => array('type' => 'binary'),
+			'varbinary'         => array('type' => 'binary'),
+		);
+
+		if ($attribute !== NULL)
+			return @$types[$type][$attribute];
+
+		if (isset($types[$type]))
+			return $types[$type];
+
+		return array();
+	}
 
 	/**
 	 * Disconnect
@@ -487,22 +631,27 @@ abstract class Database
 		$parameters = $value->parameters;
 		$value = (string) $value;
 
+		// Trying to maintain context between calls (and recurse) using preg_replace_callback is too complicated.
+		// Capturing the placeholder offsets allows us to iterate over a single expression and recurse using the call stack.
 		$chunks = preg_split($this->_placeholder, $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
-		$max = count($chunks);
 		$position = 0;
 		$prev = $chunks[0];
 		$result = $prev[0];
 
-		for ($i = 1; $i < $max; ++$i)
+		for ($i = 1, $max = count($chunks); $i < $max; ++$i)
 		{
 			if ($value[$chunks[$i][1] - 1] === '?')
 			{
+				// Character before the current chunk is a question mark
 				$placeholder = $position++;
 			}
 			else
 			{
+				// End of the previous chunk
 				$offset = $prev[1] + strlen($prev[0]);
+
+				// Text between the current chunk and the previous one
 				$placeholder = substr($value, $offset, $chunks[$i][1] - $offset);
 			}
 

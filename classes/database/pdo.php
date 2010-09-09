@@ -23,7 +23,7 @@ class Database_PDO extends Database
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Table prefix
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
 	 *  connection.options    | array   | Driver-specific options
 	 *  connection.password   | string  |
@@ -57,15 +57,15 @@ class Database_PDO extends Database
 			$this->_config['connection']['dsn'] = 'uri:'.$this->_config['connection']['uri'];
 		}
 
-		if (empty($this->_config['schema']))
+		if (empty($this->_config['table_prefix']))
 		{
-			$this->_config['schema'] = '';
+			$this->_config['table_prefix'] = '';
 		}
 	}
 
 	/**
-	 * Recursively replace Expression and Identifier parameters until all
-	 * parameters are positional literals
+	 * Recursively replace array, Expression and Identifier parameters until all parameters are
+	 * positional literals.
 	 *
 	 * @param   string  $statement          SQL statement with (or without) placeholders
 	 * @param   array   $parameters         Unquoted parameters
@@ -96,27 +96,46 @@ class Database_PDO extends Database
 			//if ( ! array_key_exists($placeholder, $parameters))
 			//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
-			$value = $parameters[$placeholder];
-
-			if ($value instanceof Database_Expression)
-			{
-				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
-			}
-			elseif ($value instanceof Database_Identifier)
-			{
-				$result .= $this->quote($value);
-			}
-			else
-			{
-				$result_parameters[] = $value;
-				$result .= '?';
-			}
-
 			$prev = $chunks[$i];
-			$result .= $prev[0];
+			$result .= $this->_parse_value($parameters[$placeholder], $result_parameters).$prev[0];
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Recursively expand a value to a SQL fragment consisting only of positional placeholders.
+	 *
+	 * @param   mixed   $value              Unquoted parameter
+	 * @param   array   $result_parameters  Parameters for the resulting fragment
+	 * @return  string  SQL fragment
+	 */
+	protected function _parse_value($value, & $result_parameters)
+	{
+		if (is_array($value))
+		{
+			if (empty($value))
+				return '';
+
+			$result = array();
+
+			foreach ($value as $v)
+			{
+				$result[] = $this->_parse_value($v, $result_parameters);
+			}
+
+			return implode(', ', $result);
+		}
+
+		if ($value instanceof Database_Expression)
+			return $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+
+		if ($value instanceof Database_Identifier)
+			return $this->quote($value);
+
+		$result_parameters[] = $value;
+
+		return '?';
 	}
 
 	public function begin()
@@ -146,6 +165,11 @@ class Database_PDO extends Database
 		{
 			Profiler::stop($benchmark);
 		}
+	}
+
+	public function charset($charset)
+	{
+		$this->execute_command("SET NAMES '$charset'");
 	}
 
 	public function commit()
@@ -410,6 +434,6 @@ class Database_PDO extends Database
 
 	public function table_prefix()
 	{
-		return $this->_config['schema'];
+		return $this->_config['table_prefix'];
 	}
 }

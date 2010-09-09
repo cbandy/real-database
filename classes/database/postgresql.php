@@ -8,8 +8,10 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * Requires PostgreSQL >= 8.2
  */
-class Database_PostgreSQL extends Database implements Database_iEscape
+class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {
 	/**
 	 * @link http://bugs.php.net/51607
@@ -28,6 +30,34 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 * @var boolean
 	 */
 	protected static $_BUG_COPY_TO_SCHEMA;
+
+	public static function alter($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'TABLE')
+			return new Database_PostgreSQL_Alter_Table($name);
+
+		return parent::alter($type, $name);
+	}
+
+	public static function create($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'INDEX')
+			return new Database_PostgreSQL_Create_Index($name);
+
+		return parent::create($type, $name);
+	}
+
+	/**
+	 * Create a column expression
+	 *
+	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $type   Converted to Database_Expression
+	 * @return  Database_PostgreSQL_DDL_Column
+	 */
+	public static function ddl_column($name = NULL, $type = NULL)
+	{
+		return new Database_PostgreSQL_DDL_Column($name, $type);
+	}
 
 	/**
 	 * Create a DELETE command
@@ -116,12 +146,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 */
 	protected $_connection;
 
-	protected $_placeholder = '/(?:\?|(?<=::|[^:]):\w++)/';
-
-	/**
-	 * @var string  Table prefix
-	 */
-	protected $_prefix;
+	protected $_placeholder = '/(?:\?|(?<=^|::|[^:]):\w++)/';
 
 	/**
 	 * @var string  Default schema
@@ -140,7 +165,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Default schema and table prefix separated by a period, e.g. 'schema.prefix'
+	 *  search_path           | string  | Initial search_path
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.database   | string  |
 	 *  connection.hostname   | string  | Server address or path to a local socket
 	 *  connection.password   | string  |
@@ -153,6 +179,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	 * configured in `connection.info` to be passed directly to `pg_connect()`.
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
+	 * @link http://www.postgresql.org/docs/current/static/ddl-schemas.html#DDL-SCHEMAS-PATH Schema search path
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
@@ -162,16 +189,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	{
 		parent::__construct($name, $config);
 
-		if (empty($this->_config['schema']))
+		if (empty($this->_config['table_prefix']))
 		{
-			$this->_prefix = $this->_schema = '';
-		}
-		else
-		{
-			// Separate table prefix from schema
-			$schema = explode('.', $this->_config['schema'], 2);
-			$this->_schema = reset($schema);
-			$this->_prefix = (string) next($schema);
+			$this->_config['table_prefix'] = '';
 		}
 
 		if (empty($this->_config['connection']['info']))
@@ -385,8 +405,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	}
 
 	/**
-	 * Recursively replace Expression and Identifier parameters until all
-	 * parameters are unquoted literals
+	 * Recursively replace array, Expression and Identifier parameters until all
+	 * parameters are unquoted literals.
 	 *
 	 * @param   string  $statement          SQL statement with (or without) placeholders
 	 * @param   array   $parameters         Unquoted parameters
@@ -397,13 +417,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 	{
 		$chunks = preg_split($this->_placeholder, $statement, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
-		$max = count($chunks);
 		$names = NULL;
 		$position = 0;
 		$prev = $chunks[0];
 		$result = $prev[0];
 
-		for ($i = 1; $i < $max; ++$i)
+		for ($i = 1, $max = count($chunks); $i < $max; ++$i)
 		{
 			if ($statement[$chunks[$i][1] - 1] === '?')
 			{
@@ -420,7 +439,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 
 			$value = $parameters[$placeholder];
 
-			if ($value instanceof Database_Expression)
+			if (is_array($value))
+			{
+				$result .= $this->_parse_array($value, $result_parameters);
+			}
+			elseif ($value instanceof Database_Expression)
 			{
 				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
 			}
@@ -449,6 +472,48 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Recursively convert an array to a SQL fragment with parameters consisting only of unquoted
+	 * literals.
+	 *
+	 * @param   array   $array              Unquoted parameters
+	 * @param   array   $result_parameters  Parameters for the resulting fragment
+	 * @return  string  SQL fragment
+	 */
+	protected function _parse_array($array, & $result_parameters)
+	{
+		if (empty($array))
+			return '';
+
+		$result = '';
+
+		foreach ($array as $value)
+		{
+			if (is_array($value))
+			{
+				$result .= $this->_parse_array($value, $result_parameters);
+			}
+			elseif ($value instanceof Database_Expression)
+			{
+				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+			}
+			elseif ($value instanceof Database_Identifier)
+			{
+				$result .= $this->quote($value);
+			}
+			else
+			{
+				$result_parameters[] = $value;
+				$result .= '$'.count($result_parameters);
+			}
+
+			$result .= ', ';
+		}
+
+		// Strip trailing comma
+		return substr($result, 0, -2);
 	}
 
 	/**
@@ -512,9 +577,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 			$this->charset($this->_config['charset']);
 		}
 
-		if ($this->_schema)
+		if ( ! empty($this->_config['search_path']))
 		{
-			$result = $this->_execute('SET search_path = '.$this->_schema.', pg_catalog');
+			$result = $this->_execute('SET search_path = '.$this->_config['search_path']);
 
 			if (pg_result_status($result) !== PGSQL_COMMAND_OK)
 				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
@@ -625,6 +690,53 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
 
 		return $result;
+	}
+
+	/**
+	 * Return information about a PostgresSQL data type
+	 *
+	 * @link http://www.postgresql.org/docs/current/static/datatype.html#DATATYPE-TABLE
+	 *
+	 * @param   string  $type       SQL data type
+	 * @param   string  $attribute  Attribute to return
+	 * @return  array|mixed Array of attributes or an attribute value
+	 */
+	public function datatype($type, $attribute = NULL)
+	{
+		static $types = array
+		(
+			// PostgreSQL >= 7.4
+			'box'       => array('type' => 'string'),
+			'bytea'     => array('type' => 'binary'),
+			'cidr'      => array('type' => 'string'),
+			'circle'    => array('type' => 'string'),
+			'inet'      => array('type' => 'string'),
+			'int2'      => array('type' => 'integer', 'min' => '-32768', 'max' => '32767'),
+			'int4'      => array('type' => 'integer', 'min' => '-2147483648', 'max' => '2147483647'),
+			'int8'      => array('type' => 'integer', 'min' => '-9223372036854775808', 'max' => '9223372036854775807'),
+			'line'      => array('type' => 'string'),
+			'lseg'      => array('type' => 'string'),
+			'macaddr'   => array('type' => 'string'),
+			'money'     => array('type' => 'float', 'exact' => TRUE, 'min' => '-92233720368547758.08', 'max' => '92233720368547758.07'),
+			'path'      => array('type' => 'string'),
+			'point'     => array('type' => 'string'),
+			'polygon'   => array('type' => 'string'),
+			'text'      => array('type' => 'string'),
+
+			// PostgreSQL >= 8.3
+			'tsquery'   => array('type' => 'string'),
+			'tsvector'  => array('type' => 'string'),
+			'uuid'      => array('type' => 'string'),
+			'xml'       => array('type' => 'string'),
+		);
+
+		if ( ! isset($types[$type]))
+			return parent::datatype($type, $attribute);
+
+		if ($attribute !== NULL)
+			return @$types[$type][$attribute];
+
+		return $types[$type];
 	}
 
 	public function disconnect()
@@ -812,9 +924,64 @@ class Database_PostgreSQL extends Database implements Database_iEscape
 		pg_free_result($result);
 	}
 
+	/**
+	 * Return the default schema
+	 *
+	 * @return  string
+	 */
+	public function schema()
+	{
+		if (empty($this->_schema))
+		{
+			// Retrieve explicit search_path
+			$result = $this->_execute('SELECT current_schemas(FALSE)');
+
+			if (pg_result_status($result) !== PGSQL_TUPLES_OK)
+				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+
+			// Default schema is first in the array
+			list($this->_schema) = explode(',', trim(pg_fetch_result($result, 0), '{}'), 2);
+
+			pg_free_result($result);
+		}
+
+		return $this->_schema;
+	}
+
+	public function table_columns($table)
+	{
+		if ($table instanceof Database_Identifier)
+		{
+			$schema = $table->namespace;
+			$table = $table->name;
+		}
+		elseif (is_array($table))
+		{
+			$schema = $table;
+			$table = array_pop($schema);
+		}
+		else
+		{
+			$schema = explode('.', $table);
+			$table = array_pop($schema);
+		}
+
+		if (empty($schema))
+		{
+			$schema = $this->schema();
+		}
+
+		$sql =
+			'SELECT column_name, ordinal_position, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, numeric_scale, datetime_precision'
+			.' FROM information_schema.columns'
+			.' WHERE table_schema = '.$this->quote_literal($schema).' AND table_name = '.$this->quote_literal($this->table_prefix().$table);
+
+		return $this->execute_query($sql)->as_array('column_name');
+	}
+
 	public function table_prefix()
 	{
-		return $this->_prefix;
+		return $this->_config['table_prefix'];
 	}
 
 	/**

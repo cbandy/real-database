@@ -9,18 +9,38 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert
+class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {
+	public static function create($type, $name = NULL)
+	{
+		if (strtoupper($type) === 'TABLE')
+			return new Database_SQLite_Create_Table($name);
+
+		return parent::create($type, $name);
+	}
+
+	/**
+	 * Create a column expression
+	 *
+	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $type   Converted to Database_Expression
+	 * @return  Database_SQLite_DDL_Column
+	 */
+	public static function ddl_column($name = NULL, $type = NULL)
+	{
+		return new Database_SQLite_DDL_Column($name, $type);
+	}
+
 	/**
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to Database_Table
 	 * @param   array   $columns    Each element converted to Database_Column
-	 * @return  Database_Command_Insert_Multiple
+	 * @return  Database_SQLite_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_Command_Insert_Multiple($table, $columns);
+		return new Database_SQLite_Insert($table, $columns);
 	}
 
 	/**
@@ -31,7 +51,7 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *  charset               | string  | Character set
 	 *  pragmas               | array   | [PRAGMA][] settings as "key => value" pairs
 	 *  profiling             | boolean | Enable execution profiling
-	 *  schema                | string  | Table prefix
+	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
 	 *  connection.options    | array   | PDO options
 	 *  connection.persistent | boolean | Use the PHP connection pool
@@ -74,6 +94,49 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	}
 
 	/**
+	 * Return information about a SQLite data type
+	 *
+	 * @link http://www.sqlite.org/datatype3.html
+	 *
+	 * @param   string  $type       SQL data type
+	 * @param   string  $attribute  Attribute to return
+	 * @return  array|mixed Array of attributes or an attribute value
+	 */
+	public function datatype($type, $attribute = NULL)
+	{
+		if (strpos($type, 'int') !== FALSE)
+		{
+			$result = array('type' => 'integer');
+		}
+		elseif (strpos($type, 'char') !== FALSE
+			OR strpos($type, 'clob') !== FALSE
+			OR strpos($type, 'text') !== FALSE)
+		{
+			$result = array('type' => 'string');
+		}
+		elseif (strpos($type, 'blob') !== FALSE)
+		{
+			$result = array('type' => 'binary');
+		}
+		elseif (strpos($type, 'real') !== FALSE
+			OR strpos($type, 'floa') !== FALSE
+			OR strpos($type, 'doub') !== FALSE)
+		{
+			$result = array('type' => 'float');
+		}
+		else
+		{
+			// Anything else is probably being used as intended by the standard
+			return parent::datatype($type, $attribute);
+		}
+
+		if ($attribute !== NULL)
+			return @$result[$attribute];
+
+		return $result;
+	}
+
+	/**
 	 * Quote a literal value for inclusion in a SQL query
 	 *
 	 * @uses Database_PDO::escape()
@@ -87,5 +150,65 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 			return $this->escape($value);
 
 		return parent::quote_literal($value);
+	}
+
+	public function table_columns($table)
+	{
+		$result = array();
+
+		if ($rows = $this->execute_query('PRAGMA table_info('.$this->quote_table($table).')'))
+		{
+			foreach ($rows as $row)
+			{
+				$type = strtolower($row['type']);
+
+				if ($open = strpos($type, '('))
+				{
+					$close = strpos($type, ')', $open);
+
+					$length = substr($type, $open + 1, $close - 1 - $open);
+					$type = substr($type, 0, $open);
+				}
+				else
+				{
+					$length = NULL;
+				}
+
+				$row = array(
+					'column_name'       => $row['name'],
+					'ordinal_position'  => $row['cid'] + 1,
+					'column_default'    => $row['dflt_value'],
+					'is_nullable'       => empty($row['notnull']) ? 'YES' : 'NO',
+					'data_type'         => $type,
+					'character_maximum_length'  => NULL,
+					'numeric_precision' => NULL,
+					'numeric_scale'     => NULL,
+				);
+
+				if ($length)
+				{
+					if (strpos($type, 'char') !== FALSE
+						OR strpos($type, 'clob') !== FALSE
+						OR strpos($type, 'text') !== FALSE)
+					{
+						$row['character_maximum_length'] = $length;
+					}
+					else
+					{
+						$length = explode(',', $length);
+						$row['numeric_precision'] = reset($length);
+
+						if (next($length))
+						{
+							$row['numeric_scale'] = current($length);
+						}
+					}
+				}
+
+				$result[$row['column_name']] = $row;
+			}
+		}
+
+		return $result;
 	}
 }

@@ -1,11 +1,12 @@
 
 # Introduction
 
-Library tries to make building SQL for one or more database systems as painless as possible for the
-developer while still offering the flexibility to do very complex and powerful things.
+The Database library tries to make building SQL for one or more database systems as painless as
+possible for the developer while still offering the flexibility to do very complex and powerful
+things.
 
-Everything in PHP is a string and library uses context to interpret these strings as literal data,
-identifiers and SQL. Developer can set this context explicitly by using objects.
+The library uses context to conveniently interpret strings as either identifiers, raw SQL or
+literal data, though the developer can be explicit by using objects.
 
 Easy and contextual:
 
@@ -25,12 +26,12 @@ Four common systems targeted: MySQL, PostgreSQL, Microsoft SQL Server and SQLite
 builders](realdb.building) and driver interface support features implemented by two or more of
 these systems.
 
-Library intends to support any system for which PHP has a driver.
+The Database library intends to support any SQL system for which PHP has a driver.
 
 
 ## Identifiers
 
-Identifiers are the unique names which refer to tables, columns, indexes, aliases, etc. They can be
+Identifiers are the unique names which refer to tables, columns, indexes, aliases, etc. Each can be
 specified as a dot-delimited string or an array of parts.
 
     Database_Identifier('x.y.z') == Database_Identifier(array('x','y','z'))
@@ -70,9 +71,9 @@ objects. These have the added convenience of consistent caching and system-agnos
 
     // SQL with parameters
     $db->query('SELECT ? FROM ? WHERE ? = ?', array(
-        new Database_Column('value'),
-        new Database_Table('things'),
-        new Database_Column('name'),
+        $db->column('value'),
+        $db->table('things'),
+        $db->column('name'),
         'find',
     ))->execute($db);
 
@@ -84,7 +85,7 @@ The simplest and most typical use is in a `foreach`:
 
     foreach ($query->execute($db) as $row)
     {
-        echo '<tr><td>'.$row->id.'</td><td>'.$row->name.'</td></tr>';
+        $library->do_something($row['id'], $row['name']);
     }
 
 The `get()` method provides an optimized way to fetch a single column.
