@@ -38,41 +38,159 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('PDOStatement', $statement);
 	}
 
-	public function test_prepare_command()
+	/**
+	 * @dataProvider    provider_prepare_command
+	 */
+	public function test_prepare_command($input_sql, $input_params, $expected_sql, $expected_params)
 	{
 		$db = $this->sharedFixture;
 		$table = $db->quote_table($this->_table);
 		$column = $db->quote_column($this->_column);
 
-		$command = $db->prepare_command('DELETE FROM '.$table);
+		$input_sql = strtr($input_sql, array('$table' => $table, '$column' => $column));
+		$expected_sql = strtr($expected_sql, array('$table' => $table, '$column' => $column));
 
-		$this->assertType('Database_PDO_Command', $command, 'No parameters');
-		$this->assertSame('DELETE FROM '.$table, (string) $command, 'No parameters');
-		$this->assertSame(array(), $command->parameters, 'No parameters');
+		$command = $db->prepare_command($input_sql, $input_params);
 
-		$command = $db->prepare_command('DELETE FROM ? WHERE :cond', array(new Database_Table($this->_table), ':cond' => new Database_Conditions(new Database_Column($this->_column), '=', 60)));
-
-		$this->assertType('Database_PDO_Command', $command, 'Parameters');
-		$this->assertSame('DELETE FROM '.$table.' WHERE '.$column.' = ?', (string) $command, 'Parameters');
-		$this->assertSame(array(1 => 60), $command->parameters, 'Parameters');
+		$this->assertType('Database_PDO_Command', $command);
+		$this->assertSame($expected_sql, (string) $command);
+		$this->assertSame($expected_params, $command->parameters);
 	}
 
-	public function test_prepare_query()
+	public function provider_prepare_command()
+	{
+		return array
+		(
+			array(
+				'DELETE FROM $table', array(),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM ?', array(new Database_Table($this->_table)),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM :table', array(':table' => new Database_Table($this->_table)),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM $table WHERE ?', array(new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'DELETE FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
+			),
+			array(
+				'DELETE FROM $table WHERE $column = ?', array(60),
+				'DELETE FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'DELETE FROM $table WHERE $column = :value', array(':value' => 60),
+				'DELETE FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'DELETE FROM $table WHERE $column = :value AND $column = :value', array(':value' => 60),
+				'DELETE FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
+			),
+			array(
+				'DELETE FROM $table WHERE $column IN (?)', array(array(60, 70, 80)),
+				'DELETE FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE $column IN (?)', array(array(60, 70, array(80))),
+				'DELETE FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE $column IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'DELETE FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE $column IN (?)', array(array(new Database_Identifier($this->_column), 70, 80)),
+				'DELETE FROM $table WHERE $column IN ($column, ?, ?)', array(1 => 70, 80),
+			),
+		);
+	}
+
+	/**
+	 * @dataProvider    provider_prepare_query
+	 */
+	public function test_prepare_query($input_sql, $input_params, $expected_sql, $expected_params)
 	{
 		$db = $this->sharedFixture;
 		$table = $db->quote_table($this->_table);
 		$column = $db->quote_column($this->_column);
 
-		$query = $db->prepare_query('SELECT * FROM '.$table);
+		$input_sql = strtr($input_sql, array('$table' => $table, '$column' => $column));
+		$expected_sql = strtr($expected_sql, array('$table' => $table, '$column' => $column));
 
-		$this->assertType('Database_PDO_Query', $query, 'No parameters');
-		$this->assertSame('SELECT * FROM '.$table, (string) $query, 'No parameters');
-		$this->assertSame(array(), $query->parameters, 'No parameters');
+		$query = $db->prepare_query($input_sql, $input_params);
 
-		$query = $db->prepare_query('SELECT * FROM ? WHERE :cond', array(new Database_Table($this->_table), ':cond' => new Database_Conditions(new Database_Column($this->_column), '=', 60)));
+		$this->assertType('Database_PDO_Query', $query);
+		$this->assertSame($expected_sql, (string) $query);
+		$this->assertSame($expected_params, $query->parameters);
+	}
 
-		$this->assertType('Database_PDO_Query', $query, 'Parameters');
-		$this->assertSame('SELECT * FROM '.$table.' WHERE '.$column.' = ?', (string) $query, 'Parameters');
-		$this->assertSame(array(1 => 60), $query->parameters, 'Parameters');
+	public function provider_prepare_query()
+	{
+		return array
+		(
+			array(
+				'SELECT * FROM $table', array(),
+				'SELECT * FROM $table', array(),
+			),
+			array(
+				'SELECT * FROM ?', array(new Database_Table($this->_table)),
+				'SELECT * FROM $table', array(),
+			),
+			array(
+				'SELECT * FROM :table', array(':table' => new Database_Table($this->_table)),
+				'SELECT * FROM $table', array(),
+			),
+			array(
+				'SELECT * FROM $table WHERE ?', array(new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'SELECT * FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'SELECT * FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'SELECT * FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'SELECT * FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
+			),
+			array(
+				'SELECT * FROM $table WHERE $column = ?', array(60),
+				'SELECT * FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'SELECT * FROM $table WHERE $column = :value', array(':value' => 60),
+				'SELECT * FROM $table WHERE $column = ?', array(1 => 60),
+			),
+			array(
+				'SELECT * FROM $table WHERE $column = :value AND $column = :value', array(':value' => 60),
+				'SELECT * FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
+			),
+			array(
+				'SELECT * FROM $table WHERE $column IN (?)', array(array(60, 70, 80)),
+				'SELECT * FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
+			),
+			array(
+				'SELECT * FROM $table WHERE $column IN (?)', array(array(60, 70, array(80))),
+				'SELECT * FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
+			),
+			array(
+				'SELECT * FROM $table WHERE $column IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'SELECT * FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
+			),
+			array(
+				'SELECT * FROM $table WHERE $column IN (?)', array(array(new Database_Identifier($this->_column), 70, 80)),
+				'SELECT * FROM $table WHERE $column IN ($column, ?, ?)', array(1 => 70, 80),
+			),
+		);
 	}
 }
