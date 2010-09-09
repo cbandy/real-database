@@ -242,4 +242,35 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expected, $result['field']);
 	}
+
+	public function provider_table_columns_argument()
+	{
+		return array
+		(
+			array(array($this->_table)),
+			array(new Database_Identifier($this->_table)),
+		);
+	}
+
+	/**
+	 * Test different arguments to table_columns()
+	 *
+	 * @dataProvider    provider_table_columns_argument
+	 */
+	public function test_table_columns_argument($input)
+	{
+		$db = $this->sharedFixture;
+		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table).' ( field boolean )');
+
+		$expected = array_merge($this->_information_schema_defaults, array(
+			'column_name' => 'field',
+			'data_type' => 'boolean',
+			'ordinal_position' => 1,
+			'is_nullable' => 'YES',
+		));
+
+		$result = $db->table_columns($input);
+
+		$this->assertEquals($expected, $result['field']);
+	}
 }
