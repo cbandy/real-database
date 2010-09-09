@@ -11,6 +11,8 @@ class Database_PDO_TestSuite extends PHPUnit_Framework_TestSuite
 		$suite = new Database_PDO_TestSuite;
 
 		$suite->addTestFile($dir.'/database'.EXT);
+		$suite->addTestFile($dir.'/command'.EXT);
+		$suite->addTestFile($dir.'/query'.EXT);
 
 		return $suite;
 	}
