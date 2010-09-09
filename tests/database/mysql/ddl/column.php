@@ -90,7 +90,7 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('`a` b UNIQUE', $db->quote($column));
 
 		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Foreign('c', array('d'))), 'Chainable (foreign)');
-		$this->assertSame('`a` b UNIQUE REFERENCES `c` (`d`)', $db->quote($column));
+		$this->assertSame('`a` b UNIQUE REFERENCES '.$db->quote_table('c').' (`d`)', $db->quote($column));
 
 		$this->assertSame($column, $column->constraint(NULL), 'Chainable (NULL)');
 		$this->assertSame('`a` b', $db->quote($column));
