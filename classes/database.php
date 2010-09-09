@@ -631,22 +631,27 @@ abstract class Database
 		$parameters = $value->parameters;
 		$value = (string) $value;
 
+		// Trying to maintain context between calls (and recurse) using preg_replace_callback is too complicated.
+		// Capturing the placeholder offsets allows us to iterate over a single expression and recurse using the call stack.
 		$chunks = preg_split($this->_placeholder, $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
-		$max = count($chunks);
 		$position = 0;
 		$prev = $chunks[0];
 		$result = $prev[0];
 
-		for ($i = 1; $i < $max; ++$i)
+		for ($i = 1, $max = count($chunks); $i < $max; ++$i)
 		{
 			if ($value[$chunks[$i][1] - 1] === '?')
 			{
+				// Character before the current chunk is a question mark
 				$placeholder = $position++;
 			}
 			else
 			{
+				// End of the previous chunk
 				$offset = $prev[1] + strlen($prev[0]);
+
+				// Text between the current chunk and the previous one
 				$placeholder = substr($value, $offset, $chunks[$i][1] - $offset);
 			}
 
