@@ -44,3 +44,39 @@ To get information about a column's corresponding PHP type or system limits, use
         // Identical to Kohana 3.0.x
         $column = array_merge($db->datatype($column['data_type']), $column);
     }
+
+
+## Counting
+
+The `Database::count_records` and `Database::count_last_query` methods have been removed.
+
+Here are two simple ways to retrieve the number of rows in a table:
+
+    // Execute directly
+    $rows = $db->execute_query('SELECT COUNT(*) FROM '.$db->quote_table($table))->get();
+
+    // Build a SELECT query
+    $rows = $db
+        ->select($db->expression('COUNT(*)'))
+        ->from($table)
+        ->execute($db)
+        ->get();
+
+To retrieve the number of rows a query would return without paging applied, reset the `limit` and
+`offset` parameters of a SELECT query:
+
+    $query = $db
+        ->select(array('*'))
+        ->from($table)
+        ->where($conditions)
+        ->limit($number)
+        ->offset($number * $page);
+
+    $results = $query->execute($db);
+
+    $total_rows = $query
+        ->select($db->expression('COUNT(*)'))
+        ->limit(NULL)
+        ->offset(NULL)
+        ->execute($db)
+        ->get();
