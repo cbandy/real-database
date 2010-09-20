@@ -406,6 +406,59 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	}
 
 	/**
+	 * Retrieve the tables of a schema in a format almost identical to that of the Tables table of
+	 * the SQL-92 Information Schema. Includes four non-standard fields: `engine`, `auto_increment`,
+	 * `table_collation` and `table_comment`.
+	 *
+	 * @link http://dev.mysql.com/doc/en/tables-table.html
+	 *
+	 * @param   mixed   $schema Converted to Database_Identifier
+	 * @return  array
+	 */
+	public function schema_tables($schema = NULL)
+	{
+		if ($schema instanceof Database_Identifier)
+		{
+			$schema = $schema->name;
+		}
+		elseif (is_array($schema))
+		{
+			$schema = array_pop($schema);
+		}
+
+		if (empty($schema))
+		{
+			$schema = $this->_config['connection']['database'];
+		}
+
+		$sql =
+			'SELECT table_name, table_type,'
+			.'   engine, auto_increment, table_collation, table_comment'
+			.' FROM information_schema.tables WHERE table_schema = '.$this->quote_literal($schema);
+
+		if ( ! $prefix = $this->table_prefix())
+		{
+			// No table prefix
+			return $this->execute_query($sql)->as_array('table_name');
+		}
+
+		// Filter on table prefix
+		$sql .= " AND table_name LIKE '".strtr($prefix, array('_' => '\_', '%' => '\%'))."%'";
+
+		$prefix = strlen($prefix);
+		$result = array();
+
+		foreach ($this->execute_query($sql) as $table)
+		{
+			// Strip table prefix from table name
+			$table['table_name'] = substr($table['table_name'], $prefix);
+			$result[$table['table_name']] = $table;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Retrieve the columns of a table in a format almost identical to that of
 	 * the SQL-92 Information Schema. Includes five non-standard fields:
 	 * `column_type`, `column_key`, `extra`, `privileges` and `column_comment`.
