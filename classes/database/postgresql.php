@@ -948,6 +948,46 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		return $this->_schema;
 	}
 
+	public function schema_tables($schema = NULL)
+	{
+		if ($schema instanceof Database_Identifier)
+		{
+			$schema = $schema->name;
+		}
+		elseif (is_array($schema))
+		{
+			$schema = array_pop($schema);
+		}
+
+		if (empty($schema))
+		{
+			$schema = $this->schema();
+		}
+
+		$sql = 'SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = '.$this->quote_literal($schema);
+
+		if ( ! $prefix = $this->table_prefix())
+		{
+			// No table prefix
+			return $this->execute_query($sql)->as_array('table_name');
+		}
+
+		// Filter on table prefix
+		$sql .= " AND table_name LIKE '".strtr($prefix, array('_' => '\_', '%' => '\%'))."%'";
+
+		$prefix = strlen($prefix);
+		$result = array();
+
+		foreach ($this->execute_query($sql) as $table)
+		{
+			// Strip table prefix from table name
+			$table['table_name'] = substr($table['table_name'], $prefix);
+			$result[$table['table_name']] = $table;
+		}
+
+		return $result;
+	}
+
 	public function table_columns($table)
 	{
 		if ($table instanceof Database_Identifier)
