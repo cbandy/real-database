@@ -30,9 +30,9 @@ containing the ID:
 
 ## Introspection
 
-The `Database::list_columns()` method has become an optional method (of [Database_iIntrospect])
-named `table_columns()`. It now returns data closely resembling that of the standardized
-INFORMATION_SCHEMA.
+The `Database::list_columns()` and `Database::list_tables()` methods have become methods of
+[Database_iIntrospect] named `table_columns()` and `schema_tables()`, respectively. They now return
+data closely resembling that of the standardized INFORMATION_SCHEMA.
 
 To get information about a column's corresponding PHP type or system limits, use
 [Database::datatype]:
