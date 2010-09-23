@@ -31,7 +31,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Append an operator and process its right operand
+	 * Append an operator and process its right operand.
 	 *
 	 * @param   string  $operator   Comparison operator
 	 * @param   mixed   $right      Right operand
@@ -66,7 +66,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a condition using a logical operator when necessary
+	 * Add a condition using a logical operator when necessary.
 	 *
 	 * @param   string  $logic      Logical operator
 	 * @param   mixed   $left       Left operand
@@ -95,7 +95,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a condition while converting the LHS to a column
+	 * Add a condition while converting the LHS to a column.
 	 *
 	 * @param   string  $logic          Logical operator
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -115,7 +115,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a condition while converting both operands to columns
+	 * Add a condition while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -135,7 +135,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition using a logical operator when necessary
+	 * Add a negated condition using a logical operator when necessary.
 	 *
 	 * @param   string  $logic      Logical operator
 	 * @param   mixed   $left       Left operand
@@ -164,7 +164,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition while converting the LHS to a column
+	 * Add a negated condition while converting the LHS to a column.
 	 *
 	 * @param   string  $logic          Logical operator
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -184,7 +184,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition while converting both operands to columns
+	 * Add a negated condition while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -253,7 +253,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open a negated parenthesis while converting both operands to columns
+	 * Open a negated parenthesis while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -273,8 +273,8 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis using a logical operator when necessary, optionally
-	 * adding another condition.
+	 * Open a parenthesis using a logical operator when necessary, optionally adding another
+	 * condition.
 	 *
 	 * @param   string  $logic      Logical operator
 	 * @param   mixed   $left       Left operand
@@ -302,7 +302,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis while converting the LHS to a column
+	 * Open a parenthesis while converting the LHS to a column.
 	 *
 	 * @param   string  $logic          Logical operator
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -322,7 +322,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis while converting both operands to columns
+	 * Open a parenthesis while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
@@ -355,7 +355,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a condition using AND while converting the LHS to a column
+	 * Add a condition using AND while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -368,7 +368,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a condition using AND while converting both operands to columns
+	 * Add a condition using AND while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -381,7 +381,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition using AND
+	 * Add a negated condition using AND.
 	 *
 	 * @param   mixed   $left       Left operand
 	 * @param   string  $operator   Comparison operator
@@ -394,7 +394,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition using AND while converting the LHS to a column
+	 * Add a negated condition using AND while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -407,7 +407,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition using AND while converting both operands to columns
+	 * Add a negated condition using AND while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -433,7 +433,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open a negated parenthesis using AND while converting the LHS to a column
+	 * Open a negated parenthesis using AND while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -446,7 +446,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open a negated parenthesis using AND while converting both operands to columns
+	 * Open a negated parenthesis using AND while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -472,7 +472,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis using AND while converting the LHS to a column
+	 * Open a parenthesis using AND while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -485,7 +485,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis using AND while converting both operands to columns
+	 * Open a parenthesis using AND while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -498,7 +498,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a condition using OR while converting the LHS to a column
+	 * Add a condition using OR while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -511,7 +511,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a condition using OR while converting both operands to columns
+	 * Add a condition using OR while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -524,7 +524,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition using OR
+	 * Add a negated condition using OR.
 	 *
 	 * @param   mixed   $left       Left operand
 	 * @param   string  $operator   Comparison operator
@@ -537,7 +537,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition using OR while converting the LHS to a column
+	 * Add a negated condition using OR while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -550,7 +550,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Add a negated condition using OR while converting both operands to columns
+	 * Add a negated condition using OR while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -576,7 +576,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open a negated parenthesis using OR while converting the LHS to a column
+	 * Open a negated parenthesis using OR while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -589,7 +589,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open a negated parenthesis using OR while converting both operands to columns
+	 * Open a negated parenthesis using OR while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -615,7 +615,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis using OR while converting the LHS to a column
+	 * Open a parenthesis using OR while converting the LHS to a column.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
@@ -628,7 +628,7 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
-	 * Open parenthesis using OR while converting both operands to columns
+	 * Open a parenthesis using OR while converting both operands to columns.
 	 *
 	 * @param   mixed   $left_column    Left operand, converted to Database_Column
 	 * @param   string  $operator       Comparison operator
