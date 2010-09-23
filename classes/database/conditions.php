@@ -381,6 +381,84 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
+	 * Add a negated condition using AND
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
+	 * @return  $this
+	 */
+	public function and_not($left, $operator = NULL, $right = NULL)
+	{
+		return $this->not('AND', $left, $operator, $right);
+	}
+
+	/**
+	 * Add a negated condition using AND while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
+	 * @return  $this
+	 */
+	public function and_not_column($left_column, $operator, $right)
+	{
+		return $this->not_column('AND', $left_column, $operator, $right);
+	}
+
+	/**
+	 * Add a negated condition using AND while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @return  $this
+	 */
+	public function and_not_columns($left_column, $operator, $right_column)
+	{
+		return $this->not_columns('AND', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Open a negated parenthesis using AND, optionally adding another condition.
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
+	 * @return  $this
+	 */
+	public function and_not_open($left = NULL, $operator = NULL, $right = NULL)
+	{
+		return $this->not_open('AND', $left, $operator, $right);
+	}
+
+	/**
+	 * Open a negated parenthesis using AND while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
+	 * @return  $this
+	 */
+	public function and_not_open_column($left_column, $operator, $right)
+	{
+		return $this->not_open_column('AND', $left_column, $operator, $right);
+	}
+
+	/**
+	 * Open a negated parenthesis using AND while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @return  $this
+	 */
+	public function and_not_open_columns($left_column, $operator, $right_column)
+	{
+		return $this->not_open_columns('AND', $left_column, $operator, $right_column);
+	}
+
+	/**
 	 * Open a parenthesis using AND, optionally adding another condition.
 	 *
 	 * @param   mixed   $left       Left operand
@@ -443,6 +521,84 @@ class Database_Conditions extends Database_Expression
 	public function or_columns($left_column, $operator, $right_column)
 	{
 		return $this->columns('OR', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Add a negated condition using OR
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
+	 * @return  $this
+	 */
+	public function or_not($left, $operator = NULL, $right = NULL)
+	{
+		return $this->not('OR', $left, $operator, $right);
+	}
+
+	/**
+	 * Add a negated condition using OR while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
+	 * @return  $this
+	 */
+	public function or_not_column($left_column, $operator, $right)
+	{
+		return $this->not_column('OR', $left_column, $operator, $right);
+	}
+
+	/**
+	 * Add a negated condition using OR while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @return  $this
+	 */
+	public function or_not_columns($left_column, $operator, $right_column)
+	{
+		return $this->not_columns('OR', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Open a negated parenthesis using OR, optionally adding another condition.
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
+	 * @return  $this
+	 */
+	public function or_not_open($left = NULL, $operator = NULL, $right = NULL)
+	{
+		return $this->not_open('OR', $left, $operator, $right);
+	}
+
+	/**
+	 * Open a negated parenthesis using OR while converting the LHS to a column
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right          Right operand
+	 * @return  $this
+	 */
+	public function or_not_open_column($left_column, $operator, $right)
+	{
+		return $this->not_open_column('OR', $left_column, $operator, $right);
+	}
+
+	/**
+	 * Open a negated parenthesis using OR while converting both operands to columns
+	 *
+	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   string  $operator       Comparison operator
+	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @return  $this
+	 */
+	public function or_not_open_columns($left_column, $operator, $right_column)
+	{
+		return $this->not_open_columns('OR', $left_column, $operator, $right_column);
 	}
 
 	/**
