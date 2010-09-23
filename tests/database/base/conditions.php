@@ -38,7 +38,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Conditions::add
+	 * @covers  Database_Conditions::_add_rhs
 	 */
 	public function test_add_between()
 	{
@@ -49,7 +49,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Conditions::add
+	 * @covers  Database_Conditions::_add_rhs
 	 */
 	public function test_add_in()
 	{

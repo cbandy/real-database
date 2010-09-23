@@ -31,6 +31,41 @@ class Database_Conditions extends Database_Expression
 	}
 
 	/**
+	 * Append an operator and process its right operand
+	 *
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
+	 * @return  void
+	 */
+	protected function _add_rhs($operator, $right)
+	{
+		// SQL operators are always uppercase
+		$operator = strtoupper($operator);
+
+		$this->_value .= " $operator ";
+
+		if ($operator === 'IN')
+		{
+			$this->parameters[] = $right;
+			$this->_value .= '(?)';
+		}
+		elseif ($operator === 'BETWEEN' AND is_array($right))
+		{
+			// BETWEEN always has exactly two arguments
+			list($min, $max) = $right;
+
+			$this->parameters[] = $min;
+			$this->parameters[] = $max;
+			$this->_value .= "? AND ?";
+		}
+		else
+		{
+			$this->parameters[] = $right;
+			$this->_value .= '?';
+		}
+	}
+
+	/**
 	 * Add a condition using a logical operator when necessary
 	 *
 	 * @param   string  $logic      Logical operator
@@ -53,30 +88,7 @@ class Database_Conditions extends Database_Expression
 
 		if ( ! empty($operator))
 		{
-			// SQL operators are always uppercase
-			$operator = strtoupper($operator);
-
-			$this->_value .= " $operator ";
-
-			if ($operator === 'IN')
-			{
-				$this->parameters[] = $right;
-				$this->_value .= '(?)';
-			}
-			elseif ($operator === 'BETWEEN' AND is_array($right))
-			{
-				// BETWEEN always has exactly two arguments
-				list($min, $max) = $right;
-
-				$this->parameters[] = $min;
-				$this->parameters[] = $max;
-				$this->_value .= "? AND ?";
-			}
-			else
-			{
-				$this->parameters[] = $right;
-				$this->_value .= '?';
-			}
+			$this->_add_rhs($operator, $right);
 		}
 
 		return $this;
