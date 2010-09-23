@@ -22,7 +22,7 @@ class Database_SQLite2_Result extends Database_Result
 	 */
 	public function __construct($result, $as_object)
 	{
-		parent::__construct($result, $as_object);
+		parent::__construct($as_object);
 
 		if ($as_object === TRUE)
 		{
