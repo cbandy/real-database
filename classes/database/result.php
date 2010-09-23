@@ -186,6 +186,7 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	 *
 	 * @link http://php.net/manual/arrayaccess.offsetexists ArrayAccess::offsetExists()
 	 *
+	 * @param   integer $offset
 	 * @return  boolean
 	 */
 	public function offsetExists($offset)
@@ -198,6 +199,8 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	 *
 	 * @link http://php.net/manual/arrayaccess.offsetget ArrayAccess::offsetGet()
 	 *
+	 * @throws  OutOfBoundsException
+	 * @param   integer $offset
 	 * @return  mixed
 	 */
 	public function offsetGet($offset)
@@ -258,6 +261,8 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	 *
 	 * @link http://php.net/manual/seekableiterator.seek SeekableIterator::seek()
 	 *
+	 * @throws  OutOfBoundsException
+	 * @param   integer $position
 	 * @return  $this
 	 */
 	public function seek($position)
