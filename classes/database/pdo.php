@@ -334,9 +334,10 @@ class Database_PDO extends Database
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $statement  SQL statement
+	 * @param   array   $options    Hash of (option => value) pairs
 	 * @return  PDOStatement    Prepared statement
 	 */
-	public function prepare($statement)
+	public function prepare($statement, $options = array())
 	{
 		$this->_connection or $this->connect();
 
@@ -347,7 +348,7 @@ class Database_PDO extends Database
 
 		try
 		{
-			$result = $this->_connection->prepare($statement);
+			$result = $this->_connection->prepare($statement, $options);
 		}
 		catch (PDOException $e)
 		{
