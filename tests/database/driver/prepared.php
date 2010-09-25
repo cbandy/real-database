@@ -12,8 +12,6 @@ class Database_Driver_Prepared_Test extends PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		$db = $this->sharedFixture;
-
-		$db = Database::instance('testing');
 		$table = $db->quote_table($this->_table);
 
 		$db->execute_command('CREATE TEMPORARY TABLE '.$table.' (value integer)');
