@@ -30,6 +30,13 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
+	public function test_execute_query_command()
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertNull($db->execute_query('DELETE FROM '.$db->quote_table($this->_table)));
+	}
+
 	public function test_prepare()
 	{
 		$db = $this->sharedFixture;
