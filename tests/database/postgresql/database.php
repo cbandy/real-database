@@ -261,7 +261,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 			),
 			array(
 				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE "value" = $1 AND "value" = $2', array(60, 60),
+				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
 			),
 			array(
 				'DELETE FROM $table WHERE "value" = ?', array(60),
@@ -338,7 +338,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 			),
 			array(
 				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
-				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $2', array(60, 60),
+				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
 			),
 			array(
 				'SELECT * FROM $table WHERE "value" = ?', array(60),

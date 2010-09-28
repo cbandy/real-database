@@ -417,7 +417,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$chunks = preg_split($this->_placeholder, $statement, NULL, PREG_SPLIT_OFFSET_CAPTURE);
 
-		$names = NULL;
+		$fragments = NULL;
 		$position = 0;
 		$prev = $chunks[0];
 		$result = $prev[0];
@@ -426,45 +426,65 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		{
 			if ($statement[$chunks[$i][1] - 1] === '?')
 			{
+				// Positional parameter
 				$placeholder = $position++;
-			}
-			else
-			{
-				$offset = $prev[1] + strlen($prev[0]);
-				$placeholder = substr($statement, $offset, $chunks[$i][1] - $offset);
-			}
 
-			//if ( ! array_key_exists($placeholder, $parameters))
-			//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+				//if ( ! array_key_exists($placeholder, $parameters))
+				//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
-			$value = $parameters[$placeholder];
+				$value = $parameters[$placeholder];
 
-			if (is_array($value))
-			{
-				$result .= $this->_parse_array($value, $result_parameters);
-			}
-			elseif ($value instanceof Database_Expression)
-			{
-				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
-			}
-			elseif ($value instanceof Database_Identifier)
-			{
-				$result .= $this->quote($value);
-			}
-			elseif (is_int($placeholder))
-			{
-				$result_parameters[] = $value;
-				$result .= '$'.count($result_parameters);
-			}
-			else
-			{
-				if ( ! isset($names[$placeholder]))
+				if (is_array($value))
+				{
+					$result .= $this->_parse_array($value, $result_parameters);
+				}
+				elseif ($value instanceof Database_Expression)
+				{
+					$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+				}
+				elseif ($value instanceof Database_Identifier)
+				{
+					$result .= $this->quote($value);
+				}
+				else
 				{
 					$result_parameters[] = $value;
-					$names[$placeholder] = '$'.count($result_parameters);
+					$result .= '$'.count($result_parameters);
+				}
+			}
+			else
+			{
+				// Named parameter
+				$offset = $prev[1] + strlen($prev[0]);
+				$placeholder = substr($statement, $offset, $chunks[$i][1] - $offset);
+
+				if ( ! isset($fragments[$placeholder]))
+				{
+					//if ( ! array_key_exists($placeholder, $parameters))
+					//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+
+					$value = $parameters[$placeholder];
+
+					if (is_array($value))
+					{
+						$fragments[$placeholder] = $this->_parse_array($value, $result_parameters);
+					}
+					elseif ($value instanceof Database_Expression)
+					{
+						$fragments[$placeholder] = $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+					}
+					elseif ($value instanceof Database_Identifier)
+					{
+						$fragments[$placeholder] = $this->quote($value);
+					}
+					else
+					{
+						$result_parameters[] = $value;
+						$fragments[$placeholder] = '$'.count($result_parameters);
+					}
 				}
 
-				$result .= $names[$placeholder];
+				$result .= $fragments[$placeholder];
 			}
 
 			$prev = $chunks[$i];
