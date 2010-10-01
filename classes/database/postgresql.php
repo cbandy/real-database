@@ -430,7 +430,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				$placeholder = $position++;
 
 				//if ( ! array_key_exists($placeholder, $parameters))
-				//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+				//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
 				$value = $parameters[$placeholder];
 
@@ -461,7 +461,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				if ( ! isset($fragments[$placeholder]))
 				{
 					//if ( ! array_key_exists($placeholder, $parameters))
-					//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+					//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
 					$value = $parameters[$placeholder];
 

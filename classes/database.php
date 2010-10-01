@@ -656,7 +656,7 @@ abstract class Database
 			}
 
 			//if ( ! array_key_exists($placeholder, $parameters))
-			//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+			//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
 			$prev = $chunks[$i];
 			$result .= $this->quote($parameters[$placeholder]).$prev[0];

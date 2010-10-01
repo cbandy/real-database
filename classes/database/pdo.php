@@ -94,7 +94,7 @@ class Database_PDO extends Database
 			}
 
 			//if ( ! array_key_exists($placeholder, $parameters))
-			//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+			//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
 			$prev = $chunks[$i];
 			$result .= $this->_parse_value($parameters[$placeholder], $result_parameters).$prev[0];
