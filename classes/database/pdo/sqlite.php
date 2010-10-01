@@ -8,6 +8,13 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://php.net/manual/ref.pdo-sqlite
+ * @link http://www.sqlite.org/
+ *
+ * SQLite connection using PDO and SQLite expression factory
+ *
+ * *[PDO]: PHP Data Objects
  */
 class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {

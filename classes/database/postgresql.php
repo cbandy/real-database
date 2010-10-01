@@ -9,7 +9,12 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
- * Requires PostgreSQL >= 8.2
+ * @link http://php.net/manual/book.pgsql
+ * @link http://www.postgresql.org/
+ *
+ * PostgreSQL connection and expression factory
+ *
+ * [!!] Requires PostgreSQL >= 8.2
  */
 class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {

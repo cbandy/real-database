@@ -7,6 +7,22 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * Interface for a database connection and factory for SQL expressions and identifiers.
+ *
+ * Though it is possible (and correct) to call factory methods statically, it is better to call the
+ * methods dynamically when building statements for a particular connection. This allows the driver
+ * to return a statement builder which generates SQL in its particular dialect/syntax.
+ *
+ *     // SELECT statement using a syntax that works on most systems
+ *     $query = Database::select();
+ *
+ *     // SELECT statement using MySQL syntax
+ *     $query = Database_MySQL::select();
+ *
+ *     // SELECT statement using whichever syntax this connection needs
+ *     $query = Database::instance()->select();
+ *
  */
 abstract class Database
 {
