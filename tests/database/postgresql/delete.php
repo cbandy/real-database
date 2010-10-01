@@ -32,13 +32,6 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
-	public function test_factory()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertType('Database_PostgreSQL_Delete', Database_PostgreSQL::delete());
-	}
-
 	public function test_returning()
 	{
 		$db = $this->sharedFixture;

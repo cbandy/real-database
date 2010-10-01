@@ -32,13 +32,6 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
-	public function test_factory()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertType('Database_PostgreSQL_Update', Database_PostgreSQL::update());
-	}
-
 	public function test_returning()
 	{
 		$db = $this->sharedFixture;

@@ -8,6 +8,13 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://php.net/manual/ref.pdo-sqlite
+ * @link http://www.sqlite.org/
+ *
+ * SQLite connection using PDO and SQLite expression factory
+ *
+ * *[PDO]: PHP Data Objects
  */
 class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {
@@ -150,6 +157,42 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 			return $this->escape($value);
 
 		return parent::quote_literal($value);
+	}
+
+	/**
+	 * Retrieve the tables of a schema in a format almost identical to that of the Tables table of
+	 * the SQL-92 Information Schema. Includes one non-standard field, `sql`, which contains the
+	 * text of the original CREATE command.
+	 *
+	 * @param   mixed   $schema Converted to Database_Identifier
+	 * @return  array
+	 */
+	public function schema_tables($schema = NULL)
+	{
+		$sql =
+			"SELECT tbl_name AS table_name, CASE type WHEN 'table' THEN 'BASE TABLE' ELSE 'VIEW' END AS table_type, sql"
+			." FROM sqlite_master WHERE type IN ('table', 'view')";
+
+		if ( ! $prefix = $this->table_prefix())
+		{
+			// No table prefix
+			return $this->execute_query($sql)->as_array('table_name');
+		}
+
+		// Filter on table prefix
+		$sql .= " AND tbl_name LIKE '".strtr($prefix, array('_' => '\_', '%' => '\%'))."%' ESCAPE '\'";
+
+		$prefix = strlen($prefix);
+		$result = array();
+
+		foreach ($this->execute_query($sql) as $table)
+		{
+			// Strip table prefix from table name
+			$table['table_name'] = substr($table['table_name'], $prefix);
+			$result[$table['table_name']] = $table;
+		}
+
+		return $result;
 	}
 
 	public function table_columns($table)

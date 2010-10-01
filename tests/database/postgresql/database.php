@@ -48,12 +48,32 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		), $db->execute_query('SELECT * FROM '.$db->quote_table($this->_table).' ORDER BY "id"')->as_array());
 	}
 
+	/**
+	 * @expectedException   Database_Exception
+	 */
+	public function test_copy_from_error()
+	{
+		$db = $this->sharedFixture;
+
+		$db->copy_from('kohana-nonexistent-table', array("8\t70"));
+	}
+
 	public function test_copy_to()
 	{
 		$db = $this->sharedFixture;
 		$db->execute_command('INSERT INTO '.$db->quote_table($this->_table).' ("value") VALUES (NULL)');
 
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "6\t\\N\n"), $db->copy_to($this->_table));
+	}
+
+	/**
+	 * @expectedException   Database_Exception
+	 */
+	public function test_copy_to_error()
+	{
+		$db = $this->sharedFixture;
+
+		$db->copy_to('kohana-nonexistent-table');
 	}
 
 	public function provider_datatype()
@@ -241,7 +261,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 			),
 			array(
 				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE "value" = $1 AND "value" = $2', array(60, 60),
+				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
 			),
 			array(
 				'DELETE FROM $table WHERE "value" = ?', array(60),
@@ -318,7 +338,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 			),
 			array(
 				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
-				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $2', array(60, 60),
+				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
 			),
 			array(
 				'SELECT * FROM $table WHERE "value" = ?', array(60),

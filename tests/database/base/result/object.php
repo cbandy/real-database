@@ -34,7 +34,7 @@ class Database_Base_Result_Object_Test_Result extends Database_Result
 
 	public function __construct($data)
 	{
-		parent::__construct(NULL, TRUE);
+		parent::__construct(TRUE);
 
 		$this->_count = count($data);
 		$this->_data = $data;

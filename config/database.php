@@ -4,9 +4,9 @@ return array
 (
 	'default' => array
 	(
-		'type'  => 'MySQL',
-		'charset'   => 'utf8',
-		'schema'    => NULL,
+		/** @see Database_MySQL::__construct() */
+		'type' => 'MySQL',
+		'charset' => 'utf8',
 		'connection' => array
 		(
 			'hostname' => 'localhost',

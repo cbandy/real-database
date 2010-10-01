@@ -8,6 +8,12 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://php.net/manual/book.pdo
+ *
+ * PDO connection
+ *
+ * *[PDO]: PHP Data Objects
  */
 class Database_PDO extends Database
 {
@@ -94,7 +100,7 @@ class Database_PDO extends Database
 			}
 
 			//if ( ! array_key_exists($placeholder, $parameters))
-			//	throw new Database_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
+			//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
 			$prev = $chunks[$i];
 			$result .= $this->_parse_value($parameters[$placeholder], $result_parameters).$prev[0];
@@ -334,9 +340,10 @@ class Database_PDO extends Database
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $statement  SQL statement
+	 * @param   array   $options    Hash of (option => value) pairs
 	 * @return  PDOStatement    Prepared statement
 	 */
-	public function prepare($statement)
+	public function prepare($statement, $options = array())
 	{
 		$this->_connection or $this->connect();
 
@@ -347,7 +354,7 @@ class Database_PDO extends Database
 
 		try
 		{
-			$result = $this->_connection->prepare($statement);
+			$result = $this->_connection->prepare($statement, $options);
 		}
 		catch (PDOException $e)
 		{

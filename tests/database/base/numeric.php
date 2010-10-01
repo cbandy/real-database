@@ -37,7 +37,7 @@ class Database_Base_Numeric_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_locale()
 	{
-		if ( ! setlocale(LC_NUMERIC, array('de_DE', 'fr_FR', 'nl_NL')))
+		if ( ! setlocale(LC_NUMERIC, array('de_DE', 'deu', 'fr_FR', 'fra', 'nl_NL', 'nld')))
 			return $this->markTestSkipped('Lacking necessary locale');
 
 		$this->assertSame('12.3450', (string) new Database_Numeric(12.345, 4), 'Fraction separator is period');

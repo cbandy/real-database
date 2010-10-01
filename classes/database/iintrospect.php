@@ -11,6 +11,29 @@
 interface Database_iIntrospect
 {
 	/**
+	 * Retrieve the tables of a schema in a format almost identical to that of
+	 * the Tables table of the SQL-92 Information Schema. Only returns tables
+	 * having the `table_prefix` and removes `table_prefix` from the table names.
+	 *
+	 * For example, this schema has one table and one view:
+	 *
+	 *     array(
+	 *       'customers' => array(
+	 *         'table_name' => 'customers',
+	 *         'table_type' => 'BASE TABLE',
+	 *       ),
+	 *       'accounts' => array(
+	 *         'table_name' => 'accounts',
+	 *         'table_type' => 'VIEW',
+	 *       ),
+	 *     );
+	 *
+	 * @param   mixed   $schema Converted to Database_Identifier
+	 * @return  array
+	 */
+	public function schema_tables($schema = NULL);
+
+	/**
 	 * Retrieve the columns of a table in a format almost identical to that of
 	 * the Columns table of the SQL-92 Information Schema.
 	 *

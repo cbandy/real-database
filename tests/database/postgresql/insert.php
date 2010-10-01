@@ -32,13 +32,6 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
-	public function test_factory()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertType('Database_PostgreSQL_Insert', Database_PostgreSQL::insert());
-	}
-
 	public function test_identity()
 	{
 		$db = $this->sharedFixture;
