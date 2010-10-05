@@ -351,7 +351,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	{
 		$this->_connection or $this->connect();
 
-		$value = mysql_real_escape_string((string) $value, $this->_connection);
+		$value = mysql_real_escape_string( (string) $value, $this->_connection);
 
 		return "'$value'";
 	}

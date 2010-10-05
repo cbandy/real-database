@@ -54,7 +54,7 @@ class Database_Command_Drop_Table extends Database_Command_Drop
 		if (is_array($tables))
 		{
 			// SQLite allows only one
-			foreach ($tables as &$table)
+			foreach ($tables as & $table)
 			{
 				if ( ! $table instanceof Database_Expression
 					AND ! $table instanceof Database_Identifier)

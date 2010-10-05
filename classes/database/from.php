@@ -166,7 +166,7 @@ class Database_From extends Database_Expression
 	 */
 	public function using(array $columns)
 	{
-		foreach ($columns as &$column)
+		foreach ($columns as & $column)
 		{
 			if ( ! $column instanceof Database_Expression
 				AND ! $column instanceof Database_Identifier)

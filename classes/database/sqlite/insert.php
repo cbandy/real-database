@@ -49,7 +49,7 @@ class Database_SQLite_Insert extends Database_Command_Insert_Identity
 		{
 			unset($this->parameters[':values']);
 
-			for ( ; $this->_values; )
+			while ($this->_values)
 			{
 				unset($this->parameters[--$this->_values]);
 			}

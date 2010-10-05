@@ -76,7 +76,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 			return $result;
 
 		$rows = $result->count();
-		$result = $result->get($this->_return instanceof Database_Identifier ? $this->_return->name : NULL);
+		$result = $result->get(($this->_return instanceof Database_Identifier) ? $this->_return->name : NULL);
 
 		return array($rows, $result);
 	}

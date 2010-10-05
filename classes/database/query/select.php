@@ -144,7 +144,7 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function group_by($columns)
 	{
-		foreach ($columns as &$column)
+		foreach ($columns as & $column)
 		{
 			if ( ! $column instanceof Database_Expression
 				AND ! $column instanceof Database_Identifier)

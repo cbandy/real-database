@@ -128,7 +128,7 @@ class Database_Command_Drop extends Database_Command
 		if (is_array($values))
 		{
 			// SQLite allows only one
-			foreach ($values as &$value)
+			foreach ($values as & $value)
 			{
 				if ( ! $value instanceof Database_Expression
 					AND ! $value instanceof Database_Identifier)

@@ -246,7 +246,7 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
-		return $this->_connection->quote((string) $value);
+		return $this->_connection->quote( (string) $value);
 	}
 
 	public function execute_command($statement)
