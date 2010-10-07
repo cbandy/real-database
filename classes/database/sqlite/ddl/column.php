@@ -3,7 +3,7 @@
 /**
  * @package     RealDatabase
  * @subpackage  SQLite
- * @category    Expressions
+ * @category    Data Definition Expressions
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
