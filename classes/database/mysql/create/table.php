@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * CREATE TABLE statement for MySQL.
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Data Definition Commands

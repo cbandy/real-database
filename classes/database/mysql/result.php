@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Result set for a MySQL resource.
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Result Sets
@@ -8,6 +10,8 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://php.net/manual/mysql.resources
  */
 class Database_MySQL_Result extends Database_Result
 {

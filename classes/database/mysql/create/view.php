@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * CREATE VIEW statement for MySQL. Allows the ALGORITHM and CHECK OPTION to be specified.
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Data Definition Commands

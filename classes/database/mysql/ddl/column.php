@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Column definition for MySQL. Identity columns have AUTO_INCREMENT PRIMARY KEY.
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Data Definition Expressions

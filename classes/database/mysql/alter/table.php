@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * ALTER TABLE statement for MySQL. Allows the name, type and position of columns to be changed.
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Data Definition Commands

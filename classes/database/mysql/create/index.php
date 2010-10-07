@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * CREATE INDEX statement for MySQL.
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Data Definition Commands
@@ -9,7 +11,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
- * @link http://dev.mysql.com/doc/en/create-index.html MySQL
+ * @link http://dev.mysql.com/doc/en/create-index.html
  */
 class Database_MySQL_Create_Index extends Database_Command_Create_Index
 {
