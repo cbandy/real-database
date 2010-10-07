@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Thrown when a PHP driver method fails or the connection raises an error condition.
+ *
  * @package     RealDatabase
  * @category    Exceptions
  *
