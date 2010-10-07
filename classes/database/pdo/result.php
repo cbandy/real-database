@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Result set for a PDOStatement.
+ *
  * Prefetches all data since scrollable cursors do not work for most drivers and even
  * PDOStatement->rowCount() should not be relied upon.
  *

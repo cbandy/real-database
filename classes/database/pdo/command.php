@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Prepared command for [Database_PDO].
+ *
  * @package     RealDatabase
  * @subpackage  PDO
  * @category    Prepared Statements
