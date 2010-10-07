@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * MySQL connection and expression factory.
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Drivers
@@ -11,8 +13,6 @@
  *
  * @link http://php.net/manual/book.mysql
  * @link http://www.mysql.com/
- *
- * MySQL connection and expression factory
  */
 class Database_MySQL extends Database implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {

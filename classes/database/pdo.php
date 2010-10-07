@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * PDO connection.
+ *
+ * *[PDO]: PHP Data Objects
+ *
  * @package     RealDatabase
  * @subpackage  PDO
  * @category    Drivers
@@ -10,10 +14,6 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
  * @link http://php.net/manual/book.pdo
- *
- * PDO connection
- *
- * *[PDO]: PHP Data Objects
  */
 class Database_PDO extends Database
 {

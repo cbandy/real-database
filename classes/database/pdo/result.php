@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * Prefetches all data since scrollable cursors do not work for most drivers and even
+ * PDOStatement->rowCount() should not be relied upon.
+ *
  * @package     RealDatabase
  * @subpackage  PDO
  * @category    Result Sets
@@ -8,9 +11,6 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * Prefetches all data since scrollable cursors do not work for most drivers
- * and even PDOStatement->rowCount() should not be relied upon.
  *
  * @link http://bugs.php.net/44475  No MySQL cursor
  * @link http://bugs.php.net/44861  No PostgreSQL cursor

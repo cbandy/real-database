@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * SQLite connection using PDO and SQLite expression factory.
+ *
+ * *[PDO]: PHP Data Objects
+ *
  * @package     RealDatabase
  * @subpackage  SQLite
  * @category    Drivers
@@ -11,10 +15,6 @@
  *
  * @link http://php.net/manual/ref.pdo-sqlite
  * @link http://www.sqlite.org/
- *
- * SQLite connection using PDO and SQLite expression factory
- *
- * *[PDO]: PHP Data Objects
  */
 class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {

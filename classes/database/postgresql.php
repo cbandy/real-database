@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * PostgreSQL connection and expression factory.
+ *
+ * [!!] Requires PostgreSQL >= 8.2
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Drivers
@@ -11,10 +15,6 @@
  *
  * @link http://php.net/manual/book.pgsql
  * @link http://www.postgresql.org/
- *
- * PostgreSQL connection and expression factory
- *
- * [!!] Requires PostgreSQL >= 8.2
  */
 class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {

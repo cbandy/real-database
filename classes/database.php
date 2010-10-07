@@ -1,12 +1,6 @@
 <?php
 
 /**
- * @package     RealDatabase
- *
- * @author      Chris Bandy
- * @copyright   (c) 2010 Chris Bandy
- * @license     http://www.opensource.org/licenses/isc-license.txt
- *
  * Interface for a database connection and factory for SQL expressions and identifiers.
  *
  * Though it is possible (and correct) to call factory methods statically, it is better to call the
@@ -22,6 +16,11 @@
  *     // SELECT statement using whichever syntax this connection needs
  *     $query = Database::instance()->select();
  *
+ * @package     RealDatabase
+ *
+ * @author      Chris Bandy
+ * @copyright   (c) 2010 Chris Bandy
+ * @license     http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Database
 {
