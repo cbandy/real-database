@@ -4,7 +4,6 @@
  * Thrown when a PHP driver method fails or the connection raises an error condition.
  *
  * @package     RealDatabase
- * @category    Exceptions
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

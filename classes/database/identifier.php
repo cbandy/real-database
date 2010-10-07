@@ -2,7 +2,6 @@
 
 /**
  * @package     RealDatabase
- * @category    Identifiers
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
