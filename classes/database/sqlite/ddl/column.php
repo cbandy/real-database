@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Column definition for SQLite. Identity columns must be INTEGER PRIMARY KEY.
+ *
  * @package     RealDatabase
  * @subpackage  SQLite
  * @category    Data Definition Expressions

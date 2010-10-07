@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * CREATE TABLE statement for SQLite.
+ *
  * @package     RealDatabase
  * @subpackage  SQLite
  * @category    Data Definition Commands

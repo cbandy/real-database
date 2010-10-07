@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * INSERT statement for SQLite. Each row is a separate statement.
+ *
  * @package     RealDatabase
  * @subpackage  SQLite
  * @category    Commands
@@ -8,6 +10,8 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://www.sqlite.org/lang_insert.html
  */
 class Database_SQLite_Insert extends Database_Command_Insert_Identity
 {
