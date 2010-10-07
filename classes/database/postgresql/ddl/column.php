@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Column definition for PostgreSQL. Identity columns are SERIAL PRIMARY KEY.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Data Definition Expressions

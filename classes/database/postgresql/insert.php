@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * INSERT statement for PostgreSQL. Allows a result set from the inserted rows to be returned.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Commands

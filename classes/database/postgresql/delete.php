@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * DELETE statement for PostgreSQL. Allows a result set from the deleted rows to be returned.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Commands

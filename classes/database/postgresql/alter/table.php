@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * ALTER TABLE statement for PostgreSQL. Allows the name and type of columns to be changed.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Data Definition Commands

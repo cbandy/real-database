@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * CREATE INDEX statement for PostgreSQL.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Data Definition Commands

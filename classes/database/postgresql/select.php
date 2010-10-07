@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * SELECT statement for PostgreSQL. Allows the criteria for DISTINCT rows to be set.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Queries

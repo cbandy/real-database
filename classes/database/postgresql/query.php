@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Prepared query for [Database_PostgreSQL].
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Prepared Statements

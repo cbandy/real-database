@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * UPDATE statement for PostgreSQL. Allows a result set from the updated rows to be returned.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Commands

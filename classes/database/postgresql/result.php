@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Result set for a PostgreSQL resource.
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Result Sets
@@ -8,6 +10,8 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://php.net/manual/pgsql.resources
  */
 class Database_PostgreSQL_Result extends Database_Result
 {
