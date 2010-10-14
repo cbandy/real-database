@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Expression for building and combining predicates.
+ *
  * @package     RealDatabase
  * @category    Expressions
  *

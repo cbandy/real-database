@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Expression for building a table reference.
+ *
  * @package     RealDatabase
  * @category    Expressions
  *
