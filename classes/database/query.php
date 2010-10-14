@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * A statement that returns a result set when executed.
+ *
  * @package     RealDatabase
  * @category    Queries
  *

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Builder for combining queries using the UNION, INTERSECT and EXCEPT operators.
+ *
  * @package     RealDatabase
  * @category    Queries
  *

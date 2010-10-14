@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Query for building SELECT statements.
+ *
  * @package     RealDatabase
  * @category    Queries
  *
