@@ -1,8 +1,22 @@
 <?php
 
 /**
+ * Read-only, seekable result set iterator. Individual rows can be accessed using brackets, while
+ * [Database_Result::as_array] retrieves one or more columns from multiple rows at once. A single
+ * column can be retrieved with [Database_Result::get].
+ *
+ *     $result = $query->execute($db);
+ *
+ *     // iteration
+ *     foreach ($result as $row)
+ *     {
+ *         $library->do_something($row['id'], $row['name']);
+ *     }
+ *
+ *     // 5th row
+ *     $row = $result[4];
+ *
  * @package     RealDatabase
- * @category    Result Sets
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
@@ -23,7 +37,19 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	}
 
 	/**
-	 * Return all of the rows as an array without moving the pointer
+	 * Return all of the rows as an array without moving the pointer.
+	 *
+	 *     // indexed array of rows
+	 *     $rows = $result->as_array();
+	 *
+	 *     // indexed array of "name" values
+	 *     $names = $result->as_array(NULL, 'name');
+	 *
+	 *     // associative array of rows by "id"
+	 *     $rows = $result->as_array('id');
+	 *
+	 *     // associative array of "name" values by "id"
+	 *     $names = $result->as_array('id', 'name');
 	 *
 	 * @param   string  $key    Column for associative keys
 	 * @param   string  $value  Column for values
@@ -123,7 +149,13 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	//abstract public function current();
 
 	/**
-	 * Return a column from the current row
+	 * Return a column from the current row.
+	 *
+	 *     // single column
+	 *     $name = $result->get('name');
+	 *
+	 *     // first column
+	 *     $count = $db->execute_query('SELECT COUNT(*) FROM '.$db->quote_table('things'))->get();
 	 *
 	 * @param   string  $name       Column name or NULL to return the first
 	 * @param   mixed   $default    Default value if the column is NULL
