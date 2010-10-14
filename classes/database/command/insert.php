@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Command for building INSERT statements.
+ *
  * @package     RealDatabase
  * @category    Commands
  *

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Command for building DELETE statements.
+ *
  * @package     RealDatabase
  * @category    Commands
  *

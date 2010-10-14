@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * A statement that returns the number of affected rows when executed.
+ *
  * @package     RealDatabase
  * @category    Commands
  *

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * An INSERT command which can return the identity of an inserted row when executed.
+ *
  * @package     RealDatabase
  * @category    Commands
  *

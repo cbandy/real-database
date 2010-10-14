@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Command for building UPDATE statements.
+ *
  * @package     RealDatabase
  * @category    Commands
  *
