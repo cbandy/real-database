@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * A DateTime literal that is converted to the appropriate format when escaped.
+ *
  * @package     RealDatabase
  * @category    Data Types
  *

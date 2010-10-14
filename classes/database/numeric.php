@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * A fixed precision literal that has the appropriate number of fractional places when escaped.
+ *
  * @package     RealDatabase
  * @category    Data Types
  *

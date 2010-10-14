@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * A literal that is treated as binary when escaped.
+ *
  * @package     RealDatabase
  * @category    Data Types
  *
