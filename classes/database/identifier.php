@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * The name of an object in the database, such as a column, constraint, index or table.
+ *
+ * Use the more specific [Database_Table] and [Database_Column] for tables and columns,
+ * respectively.
+ *
  * @package     RealDatabase
  *
  * @author      Chris Bandy

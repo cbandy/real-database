@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * Column identifier. When quoted, the namespace is treated as a [Database_Table] unless it is a
+ * [Database_Identifier].
+ *
  * @package     RealDatabase
  * @category    Identifiers
  *

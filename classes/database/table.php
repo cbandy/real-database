@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Table identifier. When quoted, the configured table prefix is added.
+ *
  * @package     RealDatabase
  * @category    Identifiers
  *
