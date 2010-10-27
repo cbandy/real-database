@@ -61,7 +61,7 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$table = $db->quote_table($this->_table);
 
 		$this->assertSame(1, $db->execute_command('SELECT * FROM '.$table), 'Always one');
-		$this->assertSame(1, $db->execute_command('DELETE FROM '.$table.' WHERE "id" = 1; SELECT * FROM '.$table), 'Compound, always one');
+		$this->assertSame(2, $db->execute_command('DELETE FROM '.$table.' WHERE value < 60; SELECT * FROM '.$table), 'Count of first statement');
 	}
 
 	public function test_execute_compound_command()
