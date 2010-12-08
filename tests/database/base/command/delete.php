@@ -18,6 +18,21 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('DELETE FROM "pre_one" AS "a"', $db->quote($query));
 	}
 
+	public function test_limit()
+	{
+		$db = $this->sharedFixture;
+		$query = new Database_Command_Delete('one');
+
+		$this->assertSame($query, $query->limit(5));
+		$this->assertSame('DELETE FROM "pre_one" LIMIT 5', $db->quote($query));
+
+		$this->assertSame($query, $query->limit(NULL));
+		$this->assertSame('DELETE FROM "pre_one"', $db->quote($query));
+
+		$this->assertSame($query, $query->limit(0));
+		$this->assertSame('DELETE FROM "pre_one" LIMIT 0', $db->quote($query));
+	}
+
 	public function test_using()
 	{
 		$db = $this->sharedFixture;

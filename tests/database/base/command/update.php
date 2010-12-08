@@ -74,4 +74,19 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
 		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE ("y" = 0) = \'1\'', $db->quote($query));
 	}
+
+	public function test_limit()
+	{
+		$db = $this->sharedFixture;
+		$query = new Database_Command_Update('one');
+
+		$this->assertSame($query, $query->limit(5));
+		$this->assertSame('UPDATE "pre_one" SET  LIMIT 5', $db->quote($query));
+
+		$this->assertSame($query, $query->limit(NULL));
+		$this->assertSame('UPDATE "pre_one" SET ', $db->quote($query));
+
+		$this->assertSame($query, $query->limit(0));
+		$this->assertSame('UPDATE "pre_one" SET  LIMIT 0', $db->quote($query));
+	}
 }

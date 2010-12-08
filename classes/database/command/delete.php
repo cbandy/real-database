@@ -46,6 +46,13 @@ class Database_Command_Delete extends Database_Command
 			$value .= ' WHERE :where';
 		}
 
+		if (isset($this->parameters[':limit']))
+		{
+			// Not allowed in MSSQL
+			// Not allowed in PostgreSQL
+			$value .= ' LIMIT :limit';
+		}
+
 		return $value;
 	}
 
@@ -67,6 +74,21 @@ class Database_Command_Delete extends Database_Command
 		$this->parameters[':table'] = empty($alias)
 			? $table
 			: new Database_Expression('? AS ?', array($table, new Database_Identifier($alias)));
+
+		return $this;
+	}
+
+	/**
+	 * Set the maximum number of rows to be deleted.
+	 *
+	 * [!!] Not supported by PostgreSQL
+	 *
+	 * @param   integer $count  Number of rows
+	 * @return  $this
+	 */
+	public function limit($count)
+	{
+		$this->parameters[':limit'] = $count;
 
 		return $this;
 	}

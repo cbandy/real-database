@@ -48,6 +48,13 @@ class Database_Command_Update extends Database_Command
 			$value .= ' WHERE :where';
 		}
 
+		if (isset($this->parameters[':limit']))
+		{
+			// Not allowed in MSSQL
+			// Not allowed in PostgreSQL
+			$value .= ' LIMIT :limit';
+		}
+
 		return $value;
 	}
 
@@ -164,6 +171,21 @@ class Database_Command_Update extends Database_Command
 		}
 
 		$this->parameters[':where'] = $left_column;
+
+		return $this;
+	}
+
+	/**
+	 * Set the maximum number of rows to be updated.
+	 *
+	 * [!!] Not supported by PostgreSQL
+	 *
+	 * @param   integer $count  Number of rows
+	 * @return  $this
+	 */
+	public function limit($count)
+	{
+		$this->parameters[':limit'] = $count;
 
 		return $this;
 	}
