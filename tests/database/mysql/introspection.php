@@ -211,7 +211,8 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			)),
 			array('bigint unsigned', array(
 				'data_type' => 'bigint unsigned',
-				'numeric_precision' => 19,
+				// MySQL 5.1.51
+				'numeric_precision' => 20,
 				'numeric_scale' => 0,
 				'column_type' => 'bigint(20) unsigned',
 			)),
@@ -297,11 +298,6 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * Test collated data types. The default collation is expected.
-	 *
-	 * [!!] The dataProvider is called before the test is setup (or skipped!)
-	 *
-	 * @link http://www.phpunit.de/ticket/1049
-	 * @link http://www.phpunit.de/ticket/656
 	 *
 	 * @dataProvider provider_table_column_type_collation
 	 */
