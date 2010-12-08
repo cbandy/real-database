@@ -15,7 +15,8 @@ class Database_Driver_TestSuite extends PHPUnit_Framework_TestSuite
 		{
 			Kohana_Tests::addTests($suite, Kohana::list_files('tests/database/driver'));
 
-			$suite->addTestFile('tests/database/'.str_replace('_', '/', strtolower($config['type'])).'/testsuite.php');
+			// Include the TestSuite of the configured driver
+			$suite->addTestFile(dirname(dirname(__FILE__)).'/'.str_replace('_', '/', strtolower($config['type'])).'/testsuite'.EXT);
 		}
 
 		return $suite;
