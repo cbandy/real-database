@@ -52,7 +52,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 			array('binary', array('a'), new Database_Binary('a')),
 
-			array('datetime', array(), new Database_DateTime),
 			array('datetime', array(1258461296), new Database_DateTime(1258461296)),
 			array('datetime', array(1258461296, 'UTC'), new Database_DateTime(1258461296, 'UTC')),
 			array('datetime', array(1258461296, 'UTC', 'Y-m-d'), new Database_DateTime(1258461296, 'UTC', 'Y-m-d')),
