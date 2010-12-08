@@ -92,7 +92,9 @@ class Database_Command_Delete extends Database_Command
 	}
 
 	/**
-	 * Set the table(s) referenced in the search conditions
+	 * Set the table(s) referenced in the search conditions.
+	 *
+	 * [!!] Not supported by SQLite
 	 *
 	 * @param   mixed   $reference      Database_From or converted to Database_Table
 	 * @param   string  $table_alias    Table alias when converting to Database_Table
