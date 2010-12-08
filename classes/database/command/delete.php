@@ -81,8 +81,6 @@ class Database_Command_Delete extends Database_Command
 	/**
 	 * Set the maximum number of rows to be deleted.
 	 *
-	 * [!!] Not supported by PostgreSQL
-	 *
 	 * @param   integer $count  Number of rows
 	 * @return  $this
 	 */

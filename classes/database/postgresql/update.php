@@ -22,7 +22,21 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 
 	public function __toString()
 	{
-		$value = parent::__toString();
+		if (isset($this->parameters[':limit']))
+		{
+			$value = 'UPDATE :table SET :values WHERE ctid IN (SELECT ctid FROM :table';
+
+			if ( ! empty($this->parameters[':where']))
+			{
+				$value .= ' WHERE :where';
+			}
+
+			$value .= ' LIMIT :limit)';
+		}
+		else
+		{
+			$value = parent::__toString();
+		}
 
 		if ( ! empty($this->parameters[':returning']))
 		{
@@ -71,6 +85,22 @@ class Database_PostgreSQL_Update extends Database_Command_Update
 			return parent::execute($db);
 
 		return $db->execute_query($db->quote($this), $this->_as_object);
+	}
+
+	public function from($reference, $table_alias = NULL)
+	{
+		if ( ! empty($reference) AND ! empty($this->parameters[':limit']))
+			throw new Kohana_Exception('PostgreSQL UPDATE does not support LIMIT with FROM');
+
+		return parent::from($reference, $table_alias);
+	}
+
+	public function limit($count)
+	{
+		if ($count !== NULL AND ! empty($this->parameters[':from']))
+			throw new Kohana_Exception('PostgreSQL UPDATE does not support LIMIT with FROM');
+
+		return parent::limit($count);
 	}
 
 	/**

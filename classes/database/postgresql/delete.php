@@ -22,7 +22,21 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 
 	public function __toString()
 	{
-		$value = parent::__toString();
+		if (isset($this->parameters[':limit']))
+		{
+			$value = 'DELETE FROM :table WHERE ctid IN (SELECT ctid FROM :table';
+
+			if ( ! empty($this->parameters[':where']))
+			{
+				$value .= ' WHERE :where';
+			}
+
+			$value .= ' LIMIT :limit)';
+		}
+		else
+		{
+			$value = parent::__toString();
+		}
 
 		if ( ! empty($this->parameters[':returning']))
 		{
@@ -73,6 +87,14 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 		return $db->execute_query($db->quote($this), $this->_as_object);
 	}
 
+	public function limit($count)
+	{
+		if ($count !== NULL and ! empty($this->parameters[':using']))
+			throw new Kohana_Exception('PostgreSQL DELETE does not support LIMIT with USING');
+
+		return parent::limit($count);
+	}
+
 	/**
 	 * Append values to return when executed
 	 *
@@ -109,5 +131,13 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 		}
 
 		return $this;
+	}
+
+	public function using($reference, $table_alias = NULL)
+	{
+		if ( ! empty($reference) AND ! empty($this->parameters[':limit']))
+			throw new Kohana_Exception('PostgreSQL DELETE does not support LIMIT with USING');
+
+		return parent::using($reference, $table_alias);
 	}
 }

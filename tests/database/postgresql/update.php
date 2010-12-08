@@ -32,6 +32,51 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
+	public function test_from_limit()
+	{
+		$db = $this->sharedFixture;
+		$command = $db->update($this->_table)->limit(5);
+
+		try
+		{
+			$command->from($this->_table);
+			$this->setExpectedException('Kohana_Exception');
+		}
+		catch (Kohana_Exception $e) {}
+
+		$this->assertSame($command, $command->from(NULL), 'Chainable (reset)');
+	}
+
+	public function test_limit()
+	{
+		$db = $this->sharedFixture;
+		$command = $db->update($this->_table, NULL, array('value' => 100))
+			->where('value', 'between', array(42,62));
+
+		$this->assertSame($command, $command->limit(2), 'Chainable (int)');
+		$this->assertSame(2, $command->execute($db));
+
+		$this->assertSame(0, $command->limit(0)->execute($db), 'Zero');
+
+		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
+		$this->assertSame(1, $command->execute($db));
+	}
+
+	public function test_limit_from()
+	{
+		$db = $this->sharedFixture;
+		$command = $db->update($this->_table)->from($this->_table);
+
+		try
+		{
+			$command->limit(5);
+			$this->setExpectedException('Kohana_Exception');
+		}
+		catch (Kohana_Exception $e) {}
+
+		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
+	}
+
 	public function test_returning()
 	{
 		$db = $this->sharedFixture;
