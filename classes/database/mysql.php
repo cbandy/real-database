@@ -3,6 +3,8 @@
 /**
  * MySQL connection and expression factory.
  *
+ * [!!] Requires MySQL >= 5.0.7
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Drivers
@@ -16,11 +18,6 @@
  */
 class Database_MySQL extends Database implements Database_iEscape, Database_iInsert, Database_iIntrospect
 {
-	/**
-	 * @var boolean Whether or not mysql_set_charset() exists
-	 */
-	protected static $_SET_CHARSET;
-
 	/**
 	 * @see Database_MySQL::_select_database()
 	 *
@@ -62,19 +59,6 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	public static function ddl_column($name = NULL, $type = NULL)
 	{
 		return new Database_MySQL_DDL_Column($name, $type);
-	}
-
-	/**
-	 * Initialize runtime constants
-	 *
-	 * @link http://php.net/manual/function.mysql-set-charset
-	 *
-	 * @return  void
-	 */
-	public static function initialize()
-	{
-		// Only available in PHP >= 5.2.3 when compiled against MySQL >= 5.0.7
-		Database_MySQL::$_SET_CHARSET = function_exists('mysql_set_charset');
 	}
 
 	/**
@@ -224,9 +208,6 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 
 	public function charset($charset)
 	{
-		if ( ! Database_MySQL::$_SET_CHARSET)
-			return parent::charset($charset);
-
 		$this->_connection or $this->connect();
 
 		if ( ! mysql_set_charset($charset, $this->_connection))
@@ -535,6 +516,3 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		return $this->_config['table_prefix'];
 	}
 }
-
-// Static initialization
-Database_MySQL::initialize();
