@@ -93,15 +93,17 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
 	 *  table_prefix          | string  | Table prefix
+	 *  variables             | array   | [System variables][] as "key => value" pairs
 	 *  connection.database   | string  |
-	 *  connection.flags      | integer | Combination of client constants, e.g. MYSQL_CLIENT_SSL
+	 *  connection.flags      | integer | Combination of [client constants][], e.g. MYSQL_CLIENT_SSL
 	 *  connection.hostname   | string  | Server address or path to a local socket
 	 *  connection.password   | string  |
 	 *  connection.persistent | boolean | Use the PHP connection pool
 	 *  connection.port       | integer | Server port
 	 *  connection.username   | string  |
 	 *
-	 * @link http://php.net/manual/mysql.constants Client constants
+	 * [Client constants]: http://php.net/manual/mysql.constants
+	 * [System variables]: http://dev.mysql.com/doc/en/dynamic-system-variables.html
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
@@ -255,6 +257,14 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		if ( ! empty($this->_config['charset']))
 		{
 			$this->charset($this->_config['charset']);
+		}
+
+		if ( ! empty($this->_config['variables']))
+		{
+			foreach ($this->_config['variables'] as $variable => $value)
+			{
+				$this->_execute('SET SESSION '.$variable.' = '.$this->quote_literal($value));
+			}
 		}
 	}
 
