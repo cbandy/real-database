@@ -67,7 +67,7 @@ class Database_Command_Insert extends Database_Command
 	{
 		if ($columns !== NULL)
 		{
-			foreach ($columns as &$column)
+			foreach ($columns as & $column)
 			{
 				if ( ! $column instanceof Database_Expression
 					AND ! $column instanceof Database_Identifier)
