@@ -200,18 +200,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
-	/**
-	 * @test
-	 * @dataProvider    provider_quote_literal
-	 */
-	public function test_quote_literal($value, $expected_result)
-	{
-		$db = $this->sharedFixture;
-		$result = $db->quote_literal($value);
-
-		$this->assertSame($expected_result, $result);
-	}
-
 	public function provider_quote_literal()
 	{
 		return array
@@ -228,8 +216,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('string', "'string'"),
 			array("multiline\nstring", "'multiline\nstring'"),
 
-			array(new Database_Base_Database_Test_Object, "'object'"),
-
 			array(array(NULL), '(NULL)'),
 			array(array(FALSE), "('0')"),
 			array(array(TRUE), "('1')"),
@@ -239,11 +225,36 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 			array(array('string'), "('string')"),
 			array(array("multiline\nstring"), "('multiline\nstring')"),
-
-			array(array(new Database_Base_Database_Test_Object), "('object')"),
-
-			array(array(NULL, FALSE, TRUE, 51678, 12.345, 'string', "multiline\nstring", new Database_Base_Database_Test_Object), "(NULL, '0', '1', 51678, 12.345000, 'string', 'multiline\nstring', 'object')"),
 		);
+	}
+
+	/**
+	 * @covers  Database::quote_literal
+	 * @dataProvider    provider_quote_literal
+	 */
+	public function test_quote_literal($value, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->quote_literal($value));
+	}
+
+	/**
+	 * Build the MockObject outside of a dataProvider.
+	 *
+	 * @covers  Database::quote_literal
+	 */
+	public function test_quote_literal_object()
+	{
+		$db = $this->sharedFixture;
+
+		$object = $this->getMock('stdClass', array('__toString'));
+		$object->expects($this->exactly(2))
+			->method('__toString')
+			->will($this->returnValue('object__toString'));
+
+		$this->assertSame("'object__toString'", $db->quote_literal($object));
+		$this->assertSame("('object__toString')", $db->quote_literal(array($object)));
 	}
 
 	/**
