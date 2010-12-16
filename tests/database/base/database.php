@@ -257,18 +257,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("('object__toString')", $db->quote_literal(array($object)));
 	}
 
-	/**
-	 * @test
-	 * @dataProvider    provider_quote_identifier
-	 */
-	public function test_quote_identifier($value, $expected_result)
-	{
-		$db = $this->sharedFixture;
-		$result = $db->quote_identifier($value);
-
-		$this->assertSame($expected_result, $result);
-	}
-
 	public function provider_quote_identifier()
 	{
 		$one = new Database_Identifier('one');
@@ -276,8 +264,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$two_array = new Database_Identifier('two');
 		$two_array->namespace = array('one');
 
-		$two_ident = new Database_Identifier('two');
-		$two_ident->namespace = $one;
+		$two_identifier = new Database_Identifier('two');
+		$two_identifier->namespace = $one;
 
 		$two_string = new Database_Identifier('two');
 		$two_string->namespace = 'one';
@@ -285,34 +273,50 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$three_array = new Database_Identifier('three');
 		$three_array->namespace = array('one','two');
 
-		$three_ident = new Database_Identifier('three');
-		$three_ident->namespace = $two_ident;
+		$three_identifier = new Database_Identifier('three');
+		$three_identifier->namespace = $two_identifier;
 
 		$three_string = new Database_Identifier('three');
 		$three_string->namespace = 'one.two';
 
 		return array
 		(
-			array('one', '"one"'),
-			array('one.two', '"one"."two"'),
-			array('one.two.three', '"one"."two"."three"'),
+			// Strings
+			array('one',                '"one"'),
+			array('one.two',            '"one"."two"'),
+			array('one.two.three',      '"one"."two"."three"'),
 			array('one.two.three.four', '"one"."two"."three"."four"'),
 
-			array(array('one'), '"one"'),
-			array(array('one','two'), '"one"."two"'),
-			array(array('one','two','three'), '"one"."two"."three"'),
+			// Arrays of strings
+			array(array('one'),                      '"one"'),
+			array(array('one','two'),                '"one"."two"'),
+			array(array('one','two','three'),        '"one"."two"."three"'),
 			array(array('one','two','three','four'), '"one"."two"."three"."four"'),
 
+			// Identifier, no namespace
 			array($one, '"one"'),
 
-			array($two_array, '"one"."two"'),
-			array($two_ident, '"one"."two"'),
-			array($two_string, '"one"."two"'),
+			// Identifier, one namespace
+			array($two_array,      '"one"."two"'),
+			array($two_identifier, '"one"."two"'),
+			array($two_string,     '"one"."two"'),
 
-			array($three_array, '"one"."two"."three"'),
-			array($three_ident, '"one"."two"."three"'),
-			array($three_string, '"one"."two"."three"'),
+			// Identifier, two namespaces
+			array($three_array,      '"one"."two"."three"'),
+			array($three_identifier, '"one"."two"."three"'),
+			array($three_string,     '"one"."two"."three"'),
 		);
+	}
+
+	/**
+	 * @covers  Database::quote_identifier
+	 * @dataProvider    provider_quote_identifier
+	 */
+	public function test_quote_identifier($value, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->quote_identifier($value));
 	}
 
 	/**
