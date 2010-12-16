@@ -319,18 +319,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->quote_identifier($value));
 	}
 
-	/**
-	 * @test
-	 * @dataProvider    provider_quote_table
-	 */
-	public function test_quote_table($value, $expected_result)
-	{
-		$db = $this->sharedFixture;
-		$result = $db->quote_table($value);
-
-		$this->assertSame($expected_result, $result);
-	}
-
 	public function provider_quote_table()
 	{
 		$one = new Database_Identifier('one');
@@ -338,26 +326,41 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$two_array = new Database_Identifier('two');
 		$two_array->namespace = array('one');
 
-		$two_ident = new Database_Identifier('two');
-		$two_ident->namespace = $one;
+		$two_identifier = new Database_Identifier('two');
+		$two_identifier->namespace = $one;
 
 		$two_string = new Database_Identifier('two');
 		$two_string->namespace = 'one';
 
 		return array
 		(
-			array('one', '"pre_one"'),
+			// Strings
+			array('one',     '"pre_one"'),
 			array('one.two', '"one"."pre_two"'),
 
-			array(array('one'), '"pre_one"'),
+			// Array of strings
+			array(array('one'),       '"pre_one"'),
 			array(array('one','two'), '"one"."pre_two"'),
 
+			// Identifier, no namespace
 			array($one, '"pre_one"'),
 
-			array($two_array, '"one"."pre_two"'),
-			array($two_ident, '"one"."pre_two"'),
-			array($two_string, '"one"."pre_two"'),
+			// Identifier, one namespace
+			array($two_array,      '"one"."pre_two"'),
+			array($two_identifier, '"one"."pre_two"'),
+			array($two_string,     '"one"."pre_two"'),
 		);
+	}
+
+	/**
+	 * @covers  Database::quote_table
+	 * @dataProvider    provider_quote_table
+	 */
+	public function test_quote_table($value, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->quote_table($value));
 	}
 
 	/**
