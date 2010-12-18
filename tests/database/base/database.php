@@ -363,18 +363,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->quote_table($value));
 	}
 
-	/**
-	 * @test
-	 * @dataProvider    provider_quote_column
-	 */
-	public function test_quote_column($value, $expected_result)
-	{
-		$db = $this->sharedFixture;
-		$result = $db->quote_column($value);
-
-		$this->assertSame($expected_result, $result);
-	}
-
 	public function provider_quote_column()
 	{
 		$one = new Database_Identifier('one');
@@ -382,8 +370,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$two_array = new Database_Identifier('two');
 		$two_array->namespace = array('one');
 
-		$two_ident = new Database_Identifier('two');
-		$two_ident->namespace = $one;
+		$two_identifier = new Database_Identifier('two');
+		$two_identifier->namespace = $one;
 
 		$two_string = new Database_Identifier('two');
 		$two_string->namespace = 'one';
@@ -394,15 +382,14 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$three_array = new Database_Identifier('three');
 		$three_array->namespace = array('one','two');
 
-		$three_ident = new Database_Identifier('three');
-		$three_ident->namespace = $two_ident;
+		$three_identifier = new Database_Identifier('three');
+		$three_identifier->namespace = $two_identifier;
 
 		$three_string = new Database_Identifier('three');
 		$three_string->namespace = 'one.two';
 
 		$three_table = new Database_Identifier('three');
-		$three_table->namespace = new Database_Table('two');
-		$three_table->namespace->namespace = 'one';
+		$three_table->namespace = new Database_Table('one.two');
 
 		$one_star = new Database_Identifier('*');
 		$two_star = new Database_Identifier('one.*');
@@ -410,38 +397,57 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 		return array
 		(
-			array('one', '"one"'),
-			array('one.two', '"pre_one"."two"'),
-			array('one.two.three', '"one"."pre_two"."three"'),
+			// Strings
+			array('one',            '"one"'),
+			array('one.two',        '"pre_one"."two"'),
+			array('one.two.three',  '"one"."pre_two"."three"'),
 
-			array(array('one'), '"one"'),
-			array(array('one','two'), '"pre_one"."two"'),
-			array(array('one','two','three'), '"one"."pre_two"."three"'),
+			// Array of strings
+			array(array('one'),                 '"one"'),
+			array(array('one','two'),           '"pre_one"."two"'),
+			array(array('one','two','three'),   '"one"."pre_two"."three"'),
 
+			// Identifiers, no namespace
 			array($one, '"one"'),
 
-			array($two_array, '"pre_one"."two"'),
-			array($two_ident, '"one"."two"'),
-			array($two_string, '"pre_one"."two"'),
-			array($two_table, '"pre_one"."two"'),
+			// Identifiers, one namespace
+			array($two_array,       '"pre_one"."two"'),
+			array($two_identifier,  '"one"."two"'),
+			array($two_string,      '"pre_one"."two"'),
+			array($two_table,       '"pre_one"."two"'),
 
-			array($three_array, '"one"."pre_two"."three"'),
-			array($three_ident, '"one"."two"."three"'),
-			array($three_string, '"one"."pre_two"."three"'),
-			array($three_table, '"one"."pre_two"."three"'),
+			// Identifiers, two namespaces
+			array($three_array,         '"one"."pre_two"."three"'),
+			array($three_identifier,    '"one"."two"."three"'),
+			array($three_string,        '"one"."pre_two"."three"'),
+			array($three_table,         '"one"."pre_two"."three"'),
 
-			array('*', '*'),
-			array('one.*', '"pre_one".*'),
-			array('one.two.*', '"one"."pre_two".*'),
+			// Strings with asterisks
+			array('*',          '*'),
+			array('one.*',      '"pre_one".*'),
+			array('one.two.*',  '"one"."pre_two".*'),
 
-			array(array('*'), '*'),
-			array(array('one','*'), '"pre_one".*'),
-			array(array('one','two','*'), '"one"."pre_two".*'),
+			// Arrays of strings with asterisks
+			array(array('*'),               '*'),
+			array(array('one','*'),         '"pre_one".*'),
+			array(array('one','two','*'),   '"one"."pre_two".*'),
 
-			array($one_star, '*'),
-			array($two_star, '"pre_one".*'),
-			array($three_star, '"one"."pre_two".*'),
+			// Identifiers with asterisks
+			array($one_star,    '*'),
+			array($two_star,    '"pre_one".*'),
+			array($three_star,  '"one"."pre_two".*'),
 		);
+	}
+
+	/**
+	 * @covers  Database::quote_column
+	 * @dataProvider    provider_quote_column
+	 */
+	public function test_quote_column($value, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->quote_column($value));
 	}
 
 	/**
