@@ -454,14 +454,18 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
+			// No arguments
+			array(new Database_Expression(''),          ''),
+			array(new Database_Expression('expr'),      'expr'),
+			array(new Database_Expression('?'),         '?'),
+			array(new Database_Expression(':param'),    ':param'),
+
 			// Empty
-			array(new Database_Expression(''),              ''),
 			array(new Database_Expression('', array(NULL)), ''),
 			array(new Database_Expression('', array(1)),    ''),
 			array(new Database_Expression('', array('a')),  ''),
 
 			// No parameters
-			array(new Database_Expression('expr'),              'expr'),
 			array(new Database_Expression('expr', array(NULL)), 'expr'),
 			array(new Database_Expression('expr', array(1)),    'expr'),
 			array(new Database_Expression('expr', array('a')),  'expr'),
@@ -513,12 +517,10 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(new Database_Expression('?')),
 			array(new Database_Expression('?', array(1 => NULL))),
 			array(new Database_Expression('?', array(1 => 2))),
 			array(new Database_Expression('?', array(1 => 'a'))),
 
-			array(new Database_Expression(':param')),
 			array(new Database_Expression(':param', array(NULL))),
 			array(new Database_Expression(':param', array(1))),
 			array(new Database_Expression(':param', array('a'))),

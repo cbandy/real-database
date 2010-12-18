@@ -645,6 +645,9 @@ abstract class Database
 		$parameters = $value->parameters;
 		$value = (string) $value;
 
+		if (empty($parameters))
+			return $value;
+
 		// Trying to maintain context between calls (and recurse) using preg_replace_callback is too complicated.
 		// Capturing the placeholder offsets allows us to iterate over a single expression and recurse using the call stack.
 		$chunks = preg_split($this->_placeholder, $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
