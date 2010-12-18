@@ -450,6 +450,93 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->quote_column($value));
 	}
 
+	public function provider_quote_expression()
+	{
+		return array
+		(
+			// Empty
+			array(new Database_Expression(''),              ''),
+			array(new Database_Expression('', array(NULL)), ''),
+			array(new Database_Expression('', array(1)),    ''),
+			array(new Database_Expression('', array('a')),  ''),
+
+			// No parameters
+			array(new Database_Expression('expr'),              'expr'),
+			array(new Database_Expression('expr', array(NULL)), 'expr'),
+			array(new Database_Expression('expr', array(1)),    'expr'),
+			array(new Database_Expression('expr', array('a')),  'expr'),
+
+			// Positional parameter
+			array(new Database_Expression('?', array(NULL)),    'NULL'),
+			array(new Database_Expression('?', array(1)),       '1'),
+			array(new Database_Expression('?', array('a')),     "'a'"),
+
+			array(new Database_Expression('before ?', array(1)),        'before 1'),
+			array(new Database_Expression('? after', array(1)),         '1 after'),
+			array(new Database_Expression('before ? after', array(1)),  'before 1 after'),
+
+			// Positional Parameters
+			array(new Database_Expression('? split ?', array(1, 2)),                '1 split 2'),
+			array(new Database_Expression('before ? split ?', array(1, 2)),         'before 1 split 2'),
+			array(new Database_Expression('? split ? after', array(1, 2)),          '1 split 2 after'),
+			array(new Database_Expression('before ? split ? after', array(1, 2)),   'before 1 split 2 after'),
+
+			// Named parameter
+			array(new Database_Expression(':param', array(':param' => NULL)),   'NULL'),
+			array(new Database_Expression(':param', array(':param' => 1)),      '1'),
+			array(new Database_Expression(':param', array(':param' => 'a')),    "'a'"),
+
+			array(new Database_Expression('before :param', array(':param' => 1)),       'before 1'),
+			array(new Database_Expression(':param after', array(':param' => 1)),        '1 after'),
+			array(new Database_Expression('before :param after', array(':param' => 1)), 'before 1 after'),
+
+			// Named parameters
+			array(new Database_Expression(':a split :b', array(':a' => 1, ':b' => 2)),              '1 split 2'),
+			array(new Database_Expression('before :a split :b', array(':a' => 1, ':b' => 2)),       'before 1 split 2'),
+			array(new Database_Expression(':a split :b after', array(':a' => 1, ':b' => 2)),        '1 split 2 after'),
+			array(new Database_Expression('before :a split :b after', array(':a' => 1, ':b' => 2)), 'before 1 split 2 after'),
+		);
+	}
+
+	/**
+	 * @covers  Database::quote_expression
+	 * @dataProvider    provider_quote_expression
+	 */
+	public function test_quote_expression($value, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->quote_expression($value));
+	}
+
+	public function provider_quote_expression_lacking_parameter()
+	{
+		return array
+		(
+			array(new Database_Expression('?')),
+			array(new Database_Expression('?', array(1 => NULL))),
+			array(new Database_Expression('?', array(1 => 2))),
+			array(new Database_Expression('?', array(1 => 'a'))),
+
+			array(new Database_Expression(':param')),
+			array(new Database_Expression(':param', array(NULL))),
+			array(new Database_Expression(':param', array(1))),
+			array(new Database_Expression(':param', array('a'))),
+		);
+	}
+
+	/**
+	 * @covers  Database::quote_expression
+	 * @dataProvider    provider_quote_expression_lacking_parameter
+	 * @expectedException   PHPUnit_Framework_Error
+	 */
+	public function test_quote_expression_lacking_parameter($value)
+	{
+		$db = $this->sharedFixture;
+
+		$db->quote_expression($value);
+	}
+
 	/**
 	 * @test
 	 * @dataProvider    provider_quote
