@@ -641,12 +641,3 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		Database_Base_TestSuite_Database::testsuite_unset_instance($name);
 	}
 }
-
-
-class Database_Base_Database_Test_Object
-{
-	public function __toString()
-	{
-		return 'object';
-	}
-}
