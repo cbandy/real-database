@@ -539,59 +539,79 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$db->quote_expression($value);
 	}
 
-	/**
-	 * @test
-	 * @dataProvider    provider_quote
-	 */
-	public function test_quote($value, $expected_result)
-	{
-		$db = $this->sharedFixture;
-		$result = $db->quote($value);
-
-		$this->assertSame($expected_result, $result);
-	}
-
 	public function provider_quote()
 	{
 		return array
 		(
-			array(new Database_Column('one.two.*'), '"one"."pre_two".*'),
-			array(new Database_Column('one.two.three'), '"one"."pre_two"."three"'),
+			// Literals
+			array(array(NULL), 'NULL'),
+			array(array(1),    '1'),
+			array(array('a'),  "'a'"),
 
-			array(new Database_Table('one.two.three'), '"one"."two"."pre_three"'),
+			// Literals with aliases
+			array(array(NULL, 'alias'), 'NULL AS "alias"'),
+			array(array(1, 'alias'),    '1 AS "alias"'),
+			array(array('a', 'alias'),  "'a'".' AS "alias"'),
 
-			array(new Database_Identifier('one.two.three'), '"one"."two"."three"'),
+			// Expression
+			array(array(new Database_Expression('expr')),           'expr'),
+			array(array(new Database_Expression('expr'), 'alias'),  'expr AS "alias"'),
 
-			array(new Database_Expression('expression'), 'expression'),
+			// Identifiers
+			array(array(new Database_Identifier('one.two')),    '"one"."two"'),
+			array(array(new Database_Column('one.two')),        '"pre_one"."two"'),
+			array(array(new Database_Table('one.two')),         '"one"."pre_two"'),
 
-			array(new Database_Base_Database_Test_Object, "'object'"),
+			// Identifiers with aliases
+			array(array(new Database_Identifier('one.two'), 'alias'),   '"one"."two" AS "alias"'),
+			array(array(new Database_Column('one.two'), 'alias'),       '"pre_one"."two" AS "alias"'),
+			array(array(new Database_Table('one.two'), 'alias'),        '"one"."pre_two" AS "alias"'),
 
-			array(NULL, 'NULL'),
-			array(FALSE, "'0'"),
-			array(TRUE, "'1'"),
-
-			array(0, '0'),
-			array(-1, '-1'),
-			array(51678, '51678'),
-
-			array('string', "'string'"),
-			array("multiline\nstring", "'multiline\nstring'"),
-
-			array(
-				array(
-					new Database_Column('one.two.*'),
-					new Database_Column('one.two.three'),
-					new Database_Table('one.two.three'),
-					new Database_Identifier('one.two.three'),
-					new Database_Expression('expression'),
-					new Database_Base_Database_Test_Object,
-					NULL, FALSE, TRUE,
-					0, -1, 51678, 12.345,
-					'string', "multiline\nstring",
-				),
-				'"one"."pre_two".*, "one"."pre_two"."three", "one"."two"."pre_three", "one"."two"."three", expression, '."'object', NULL, '0', '1', 0, -1, 51678, 12.345000, 'string', 'multiline\nstring'"
-			),
+			// Array
+			array(array(array(NULL, 1 ,'a')), "NULL, 1, 'a'"),
 		);
+	}
+
+	/**
+	 * @covers  Database::quote
+	 * @dataProvider    provider_quote
+	 *
+	 * @param   array   $arguments  Arguments to the method
+	 * @param   string  $expected   Expected result
+	 */
+	public function test_quote($arguments, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		if (count($arguments) === 1)
+		{
+			$result = $db->quote(reset($arguments));
+		}
+		elseif (count($arguments) === 2)
+		{
+			$result = $db->quote(reset($arguments), next($arguments));
+		}
+
+		$this->assertSame($expected, $result);
+	}
+
+	/**
+	 * Build the MockObject outside of a dataProvider.
+	 *
+	 * @covers  Database::quote
+	 */
+	public function test_quote_object()
+	{
+		$db = $this->sharedFixture;
+
+		$object = $this->getMock('stdClass', array('__toString'));
+		$object->expects($this->exactly(4))
+			->method('__toString')
+			->will($this->returnValue('object__toString'));
+
+		$this->assertSame("'object__toString'", $db->quote($object));
+		$this->assertSame("'object__toString'".' AS "alias"', $db->quote($object, 'alias'));
+		$this->assertSame("'object__toString', 'object__toString'", $db->quote(array($object, $object)));
 	}
 
 	/**
