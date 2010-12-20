@@ -27,7 +27,7 @@ class Database_Query_Set extends Database_Query
 	 */
 	public function __construct($query = NULL)
 	{
-		parent::__construct('', array(':queries' => new Database_Expression('')));
+		parent::__construct('');
 
 		if ($query !== NULL)
 		{
@@ -37,7 +37,7 @@ class Database_Query_Set extends Database_Query
 
 	public function __toString()
 	{
-		$value = ':queries';
+		$value = $this->_value;
 
 		if ( ! empty($this->parameters[':orderby']))
 		{
@@ -72,11 +72,11 @@ class Database_Query_Set extends Database_Query
 	{
 		if ( ! $this->_empty)
 		{
-			$this->parameters[':queries']->_value .= ' '.strtoupper($operator).' ';
+			$this->_value .= ' '.strtoupper($operator).' ';
 		}
 
 		$this->_empty = TRUE;
-		$this->parameters[':queries']->_value .= '(';
+		$this->_value .= '(';
 
 		if ($query !== NULL)
 		{
@@ -94,7 +94,7 @@ class Database_Query_Set extends Database_Query
 	public function close()
 	{
 		$this->_empty = FALSE;
-		$this->parameters[':queries']->_value .= ')';
+		$this->_value .= ')';
 
 		return $this;
 	}
@@ -110,12 +110,12 @@ class Database_Query_Set extends Database_Query
 	{
 		if ( ! $this->_empty)
 		{
-			$this->parameters[':queries']->_value .= ' '.strtoupper($operator).' ';
+			$this->_value .= ' '.strtoupper($operator).' ';
 		}
 
 		$this->_empty = FALSE;
-		$this->parameters[':queries']->parameters[] = $query;
-		$this->parameters[':queries']->_value .= '(?)';
+		$this->parameters[] = $query;
+		$this->_value .= '(?)';
 
 		return $this;
 	}
