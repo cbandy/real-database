@@ -11,15 +11,53 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers  Database_Conditions::__construct
 	 */
-	public function test_constructor()
+	public function test_constructor_empty()
 	{
 		$db = $this->sharedFixture;
-		$conditions = new Database_Conditions;
 
-		$this->assertSame('', $db->quote($conditions));
+		$this->assertSame('', $db->quote(new Database_Conditions));
+	}
+
+	public function provider_constuctor()
+	{
+		return array
+		(
+			array(array('a'),           "'a'"),
+			array(array('b', 'c'),      "'b' C NULL"),
+			array(array('d', 'e', 'f'), "'d' E 'f'"),
+
+			array(array(NULL),              ''),
+			array(array(NULL, 'g'),         'NULL G NULL'),
+			array(array(NULL, 'h', 'i'),    "NULL H 'i'"),
+		);
 	}
 
 	/**
+	 * @covers  Database_Conditions::__construct
+	 * @dataProvider    provider_constuctor
+	 */
+	public function test_constructor($arguments, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		if (count($arguments) === 1)
+		{
+			$conditions = new Database_Conditions(reset($arguments));
+		}
+		elseif (count($arguments) === 2)
+		{
+			$conditions = new Database_Conditions(reset($arguments), next($arguments));
+		}
+		elseif (count($arguments) === 3)
+		{
+			$conditions = new Database_Conditions(reset($arguments), next($arguments), next($arguments));
+		}
+
+		$this->assertSame($expected, $db->quote($conditions));
+	}
+
+	/**
+	 * @covers  Database_Conditions::_add_rhs
 	 * @covers  Database_Conditions::add
 	 */
 	public function test_add()
