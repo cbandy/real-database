@@ -11,13 +11,15 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	public function provider_constructor()
 	{
 		return array(
-			array(array(''), '', array()),
-			array(array('', array()), '', array()),
-			array(array('a'), 'a', array()),
-			array(array('b', array('c')), 'b', array('c')),
-			array(array('d', array(1 => 'e')), 'd', array(1 => 'e')),
-			array(array('f', array('g' => 2)), 'f', array('g' => 2)),
-			array(array('h', array('i' => 'j')), 'h', array('i' => 'j')),
+			array(array(''),    '', array()),
+			array(array('a'),   'a', array()),
+
+			array(array('', array()),               '', array()),
+			array(array('', array('b')),            '', array('b')),
+			array(array('c', array('d')),           'c', array('d')),
+			array(array('e', array(1 => 'f')),      'e', array(1 => 'f')),
+			array(array('g', array('h' => 2)),      'g', array('h' => 2)),
+			array(array('i', array('j' => 'k')),    'i', array('j' => 'k')),
 		);
 	}
 
@@ -47,13 +49,13 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	public function provider_toString()
 	{
 		return array(
-			array('', ''),
-			array('a', 'a'),
+			array('',   ''),
+			array('a',  'a'),
 			array(NULL, ''),
 			array(FALSE, ''),
 			array(TRUE, '1'),
-			array(0, '0'),
-			array(1, '1'),
+			array(0,    '0'),
+			array(1,    '1'),
 			array(array(), 'Array'),
 		);
 	}
@@ -73,8 +75,8 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * The __toString method of the internal object is called once for each
-	 * call to Database_Expression::__toString.
+	 * The __toString method of the value object is called once for each call
+	 * to Database_Expression::__toString.
 	 *
 	 * Build the MockObject outside of a dataProvider.
 	 *
@@ -83,7 +85,8 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	public function test_toString_object()
 	{
 		$object = $this->getMock('stdClass', array('__toString'));
-		$object->expects($this->exactly(2))
+		$object
+			->expects($this->exactly(2))
 			->method('__toString')
 			->will($this->returnValue('object__toString'));
 
