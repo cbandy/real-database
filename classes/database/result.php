@@ -29,7 +29,7 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	protected $_position = 0;
 
 	/**
-	 * @param   mixed   $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 */
 	public function __construct($as_object)
 	{

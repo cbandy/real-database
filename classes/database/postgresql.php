@@ -296,8 +296,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * Frees the resource.
 	 *
 	 * @throws  Database_Exception
-	 * @param   resource    $result     Result resource
-	 * @param   mixed       $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @param   resource        $result     Result resource
+	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 * @return  Database_Result Result set or NULL
 	 */
 	protected function _evaluate_query($result, $as_object)
@@ -831,8 +831,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * statement is not a query (e.g., a DELETE statement)
 	 *
 	 * @throws  Database_Exception
-	 * @param   string  $name       Statement name
-	 * @param   array   $parameters Unquoted parameters
+	 * @param   string          $name       Statement name
+	 * @param   array           $parameters Unquoted parameters
+	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 * @return  Database_Result Result set or NULL
 	 */
 	public function execute_prepared_query($name, $parameters = array(), $as_object = FALSE)

@@ -16,8 +16,8 @@ class Database_Result_Array extends Database_Result
 	protected $_data;
 
 	/**
-	 * @param   array   $data       Rows
-	 * @param   mixed   $as_object  Class of each row, TRUE for stdClass, FALSE for associative array
+	 * @param   array           $data       Rows
+	 * @param   string|boolean  $as_object  Class of each row, TRUE for stdClass or FALSE for associative array
 	 */
 	public function __construct($data, $as_object)
 	{

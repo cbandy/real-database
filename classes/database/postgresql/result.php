@@ -21,8 +21,8 @@ class Database_PostgreSQL_Result extends Database_Result
 	protected $_result;
 
 	/**
-	 * @param   resource    $result     From pg_query() or pg_get_result()
-	 * @param   mixed       $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @param   resource        $result     From pg_query() or pg_get_result()
+	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 */
 	public function __construct($result, $as_object)
 	{

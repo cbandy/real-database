@@ -496,8 +496,8 @@ abstract class Database
 	 * statement is not a query (e.g., a DELETE statement)
 	 *
 	 * @throws  Database_Exception
-	 * @param   string  $statement  SQL query
-	 * @param   mixed   $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @param   string          $statement  SQL query
+	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 * @return  Database_Result Result set or NULL
 	 */
 	abstract public function execute_query($statement, $as_object = FALSE);

@@ -26,8 +26,8 @@ class Database_MySQL_Result extends Database_Result
 	protected $_result;
 
 	/**
-	 * @param   resource    $result     From mysql_query()
-	 * @param   mixed       $as_object  Result object class, TRUE for stdClass, FALSE for associative array
+	 * @param   resource        $result     From mysql_query()
+	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 */
 	public function __construct($result, $as_object)
 	{
