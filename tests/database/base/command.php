@@ -8,23 +8,6 @@
  */
 class Database_Base_Command_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @test
-	 * @dataProvider    provider_execute
-	 */
-	public function test_execute($sql)
-	{
-		$db = $this->getMock('Database_Base_TestSuite_Database', array('execute_command'));
-
-		$db->expects($this->once())
-			->method('execute_command')
-			->with($this->equalTo($sql));
-
-		$query = new Database_Command($sql);
-
-		$query->execute($db);
-	}
-
 	public function provider_execute()
 	{
 		return array
@@ -32,5 +15,50 @@ class Database_Base_Command_Test extends PHPUnit_Framework_TestCase
 			array(''),
 			array('DELETE FROM t1'),
 		);
+	}
+
+	/**
+	 * @covers  Database_Command::execute
+	 * @dataProvider    provider_execute
+	 *
+	 * @param   string  $sql    Expected SQL
+	 */
+	public function test_execute($sql)
+	{
+		$db = $this->getMock('Database_Base_TestSuite_Database', array('execute_command'));
+		$db->expects($this->once())
+			->method('execute_command')
+			->with($this->equalTo($sql));
+
+		$command = new Database_Command($sql);
+		$command->execute($db);
+	}
+
+	public function provider_prepare()
+	{
+		return array
+		(
+			array('a', array()),
+			array('b', array('c')),
+			array('d ?', array('e')),
+		);
+	}
+
+	/**
+	 * @covers  Database_Command::prepare
+	 * @dataProvider    provider_prepare
+	 *
+	 * @param   string  $sql        Expected SQL
+	 * @param   array   $parameters Expected parameters
+	 */
+	public function test_prepare($sql, $parameters)
+	{
+		$db = $this->getMock('Database_Base_TestSuite_Database', array('prepare_command'));
+		$db->expects($this->once())
+			->method('prepare_command')
+			->with($this->equalTo($sql), $parameters);
+
+		$command = new Database_Command($sql, $parameters);
+		$command->prepare($db);
 	}
 }
