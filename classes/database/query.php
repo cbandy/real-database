@@ -13,31 +13,29 @@
 class Database_Query extends Database_Command
 {
 	/**
-	 * @var mixed   Type as which to return results
+	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 */
-	protected $_as_object = FALSE;
+	public $as_object = FALSE;
 
 	/**
-	 * Return results as associative arrays when executed
+	 * Return rows as associative arrays when executed.
 	 *
 	 * @return  $this
 	 */
 	public function as_assoc()
 	{
-		$this->_as_object = FALSE;
-
-		return $this;
+		return $this->as_object(FALSE);
 	}
 
 	/**
-	 * Return results as objects when executed
+	 * Set the class as which to return rows when executed.
 	 *
-	 * @param   mixed   $class  Class to return or TRUE for stdClass
+	 * @param   string|boolean  $class  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 * @return  $this
 	 */
 	public function as_object($class = TRUE)
 	{
-		$this->_as_object = $class;
+		$this->as_object = $class;
 
 		return $this;
 	}
@@ -51,9 +49,9 @@ class Database_Query extends Database_Command
 	public function execute($db)
 	{
 		if ($db instanceof Database_iEscape)
-			return $db->execute_query($db->quote($this), $this->_as_object);
+			return $db->execute_query($db->quote($this), $this->as_object);
 
-		return $this->prepare($db)->as_object($this->_as_object)->execute();
+		return $this->prepare($db)->as_object($this->as_object)->execute();
 	}
 
 	/**

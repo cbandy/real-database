@@ -47,6 +47,6 @@ class Database_PostgreSQL_Query extends Database_Prepared_Query
 
 	public function execute()
 	{
-		return $this->_db->execute_prepared_query($this->_name, $this->parameters, $this->_as_object);
+		return $this->_db->execute_prepared_query($this->_name, $this->parameters, $this->as_object);
 	}
 }

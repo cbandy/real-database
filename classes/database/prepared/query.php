@@ -11,31 +11,29 @@
 class Database_Prepared_Query extends Database_Prepared_Command
 {
 	/**
-	 * @var mixed   Type as which to return results
+	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 */
-	protected $_as_object = FALSE;
+	public $as_object = FALSE;
 
 	/**
-	 * Return results as associative arrays when executed
+	 * Return rows as associative arrays when executed.
 	 *
 	 * @return  $this
 	 */
 	public function as_assoc()
 	{
-		$this->_as_object = FALSE;
-
-		return $this;
+		return $this->as_object(FALSE);
 	}
 
 	/**
-	 * Return results as objects when executed
+	 * Set the class as which to return rows when executed.
 	 *
-	 * @param   mixed   $class  Class to return or TRUE for stdClass
+	 * @param   string|boolean  $class  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 * @return  $this
 	 */
 	public function as_object($class = TRUE)
 	{
-		$this->_as_object = $class;
+		$this->as_object = $class;
 
 		return $this;
 	}
@@ -49,6 +47,6 @@ class Database_Prepared_Query extends Database_Prepared_Command
 	 */
 	public function execute()
 	{
-		return $this->_db->execute_query($this->_db->quote($this), $this->_as_object);
+		return $this->_db->execute_query($this->_db->quote($this), $this->as_object);
 	}
 }

@@ -16,9 +16,9 @@
 class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 {
 	/**
-	 * @var mixed   Type as which to return results
+	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 */
-	protected $_as_object = FALSE;
+	public $as_object = FALSE;
 
 	public function __toString()
 	{
@@ -33,26 +33,24 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	}
 
 	/**
-	 * Return results as associative arrays when executed
+	 * Return rows as associative arrays when executed.
 	 *
 	 * @return  $this
 	 */
 	public function as_assoc()
 	{
-		$this->_as_object = FALSE;
-
-		return $this;
+		return $this->as_object(FALSE);
 	}
 
 	/**
-	 * Return results as objects when executed
+	 * Set the class as which to return rows when executed.
 	 *
-	 * @param   mixed   $class  Class to return or TRUE for stdClass
+	 * @param   string|boolean  $class  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 * @return  $this
 	 */
 	public function as_object($class = TRUE)
 	{
-		$this->_as_object = $class;
+		$this->as_object = $class;
 
 		return $this;
 	}
@@ -72,7 +70,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 		if (empty($this->parameters[':returning']))
 			return parent::execute($db);
 
-		$result = $db->execute_query($db->quote($this), $this->_as_object);
+		$result = $db->execute_query($db->quote($this), $this->as_object);
 
 		if (empty($this->_return))
 			return $result;

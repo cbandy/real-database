@@ -86,7 +86,7 @@ class Database_PDO_Query extends Database_Prepared_Query
 		if ($this->_value->columnCount() === 0)
 			return NULL;
 
-		return new Database_PDO_Result($this->_value, $this->_as_object);
+		return new Database_PDO_Result($this->_value, $this->as_object);
 	}
 
 	public function param($param, $value)
