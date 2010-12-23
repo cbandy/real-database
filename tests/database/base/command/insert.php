@@ -8,38 +8,93 @@
  */
 class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_Command_Insert::__construct
+	 */
+	public function test_constructor()
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame('INSERT INTO "pre_" DEFAULT VALUES',          $db->quote(new Database_Command_Insert));
+		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES',         $db->quote(new Database_Command_Insert('a')));
+		$this->assertSame('INSERT INTO "pre_a" ("b") DEFAULT VALUES',   $db->quote(new Database_Command_Insert('a', array('b'))));
+	}
+
+	/**
+	 * @covers  Database_Command_Insert::into
+	 */
 	public function test_into()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Insert;
+		$command = new Database_Command_Insert;
 
-		$this->assertSame($query, $query->into('one'));
-
-		$this->assertSame('INSERT INTO "pre_one" DEFAULT VALUES', $db->quote($query));
+		$this->assertSame($command, $command->into('a'), 'Chainable (string)');
+		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Insert::columns
+	 */
 	public function test_columns()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Insert('one');
+		$command = new Database_Command_Insert('a');
 
-		$this->assertSame($query, $query->columns(array('a', new Database_Expression('b'), new Database_Column('c'))));
-
-		$this->assertSame('INSERT INTO "pre_one" ("a", b, "c") DEFAULT VALUES', $db->quote($query));
+		$this->assertSame($command, $command->columns(array('b', new Database_Expression('c'), new Database_Column('d'))), 'Chainable (array)');
+		$this->assertSame('INSERT INTO "pre_a" ("b", c, "d") DEFAULT VALUES', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Insert::values
+	 */
 	public function test_values()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Insert('one', array('a','b'));
+		$command = new Database_Command_Insert('a', array('b','c'));
 
-		$this->assertSame($query, $query->values(array(0,1), array(2,3)));
-		$this->assertSame('INSERT INTO "pre_one" ("a", "b") VALUES (0, 1), (2, 3)', $db->quote($query));
+		$this->assertSame($command, $command->values(array(0,1)), 'Chainable (array)');
+		$this->assertSame('INSERT INTO "pre_a" ("b", "c") VALUES (0, 1)', $db->quote($command));
 
-		$this->assertSame($query, $query->values(new Database_Expression('SELECT query')));
-		$this->assertSame('INSERT INTO "pre_one" ("a", "b") SELECT query', $db->quote($query));
+		$this->assertSame($command, $command->values(new Database_Expression('d')), 'Chainable (Database_Expression)');
+		$this->assertSame('INSERT INTO "pre_a" ("b", "c") d', $db->quote($command));
 
-		$this->assertSame($query, $query->values(NULL));
-		$this->assertSame('INSERT INTO "pre_one" ("a", "b") DEFAULT VALUES', $db->quote($query));
+		$this->assertSame($command, $command->values(NULL), 'Chainable (NULL)');
+		$this->assertSame('INSERT INTO "pre_a" ("b", "c") DEFAULT VALUES', $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_Command_Insert::values
+	 */
+	public function test_values_arrays()
+	{
+		$db = $this->sharedFixture;
+		$command = new Database_Command_Insert('a', array('b','c'));
+
+		$command->values(array(0,1));
+
+		$this->assertSame($command, $command->values(array(2,3), array(4,5)), 'Chainable (array, array)');
+		$this->assertSame('INSERT INTO "pre_a" ("b", "c") VALUES (0, 1), (2, 3), (4, 5)', $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_Command_Insert::__toString
+	 */
+	public function test_toString()
+	{
+		$db = $this->sharedFixture;
+		$command = new Database_Command_Insert;
+		$command
+			->into('a')
+			->columns(array('b'));
+
+		$this->assertSame('INSERT INTO :table (:columns) DEFAULT VALUES', (string) $command);
+
+		$command->values(array('c'));
+
+		$this->assertSame('INSERT INTO :table (:columns) VALUES :values', (string) $command);
+
+		$command->values(new Database_Expression('d'));
+
+		$this->assertSame('INSERT INTO :table (:columns) :values', (string) $command);
 	}
 }
