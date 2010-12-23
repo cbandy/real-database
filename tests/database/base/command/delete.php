@@ -8,61 +8,106 @@
  */
 class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_Command_Delete::__construct
+	 */
+	public function test_constructor()
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame('DELETE FROM "pre_"',         $db->quote(new Database_Command_Delete));
+		$this->assertSame('DELETE FROM "pre_a"',        $db->quote(new Database_Command_Delete('a')));
+		$this->assertSame('DELETE FROM "pre_a" AS "b"', $db->quote(new Database_Command_Delete('a', 'b')));
+	}
+
+	/**
+	 * @covers  Database_Command_Delete::from
+	 */
 	public function test_from()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Delete;
+		$command = new Database_Command_Delete;
 
-		$this->assertSame($query, $query->from('one', 'a'));
+		$this->assertSame($command, $command->from('a'), 'Chainable (string)');
+		$this->assertSame('DELETE FROM "pre_a"', $db->quote($command));
 
-		$this->assertSame('DELETE FROM "pre_one" AS "a"', $db->quote($query));
+		$this->assertSame($command, $command->from('b', 'c'), 'Chainable (string, string)');
+		$this->assertSame('DELETE FROM "pre_b" AS "c"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Delete::limit
+	 */
 	public function test_limit()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Delete('one');
+		$command = new Database_Command_Delete('a');
 
-		$this->assertSame($query, $query->limit(5));
-		$this->assertSame('DELETE FROM "pre_one" LIMIT 5', $db->quote($query));
+		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
+		$this->assertSame('DELETE FROM "pre_a" LIMIT 5', $db->quote($command));
 
-		$this->assertSame($query, $query->limit(NULL));
-		$this->assertSame('DELETE FROM "pre_one"', $db->quote($query));
+		$this->assertSame($command, $command->limit(NULL), 'Chainable (NULL)');
+		$this->assertSame('DELETE FROM "pre_a"', $db->quote($command));
 
-		$this->assertSame($query, $query->limit(0));
-		$this->assertSame('DELETE FROM "pre_one" LIMIT 0', $db->quote($query));
+		$this->assertSame($command, $command->limit(0), 'Chainable (zero)');
+		$this->assertSame('DELETE FROM "pre_a" LIMIT 0', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Delete::using
+	 */
 	public function test_using()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Delete('one');
+		$command = new Database_Command_Delete('a');
 
-		$this->assertSame($query, $query->using('two', 'b'), 'Chainable (table)');
-		$this->assertSame('DELETE FROM "pre_one" USING "pre_two" AS "b"', $db->quote($query));
+		$this->assertSame($command, $command->using('b'), 'Chainable (string)');
+		$this->assertSame('DELETE FROM "pre_a" USING "pre_b"', $db->quote($command));
 
-		$from = new Database_From('two', 'b');
-		$from->add('three')->join('four');
+		$this->assertSame($command, $command->using('c', 'd'), 'Chainable (string, string)');
+		$this->assertSame('DELETE FROM "pre_a" USING "pre_c" AS "d"', $db->quote($command));
 
-		$this->assertSame($query, $query->using($from), 'Chainable (from)');
-		$this->assertSame('DELETE FROM "pre_one" USING "pre_two" AS "b", "pre_three" JOIN "pre_four"', $db->quote($query));
+		$from = new Database_From('e', 'f');
+		$from->join('g');
+
+		$this->assertSame($command, $command->using($from), 'Chainable (Database_From)');
+		$this->assertSame('DELETE FROM "pre_a" USING "pre_e" AS "f" JOIN "pre_g"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Delete::where
+	 */
 	public function test_where()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Delete('one');
+		$command = new Database_Command_Delete('a');
 
-		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('one.x'), '=', 0)), 'Chainable (conditions)');
-		$this->assertSame('DELETE FROM "pre_one" WHERE "pre_one"."x" = 0', $db->quote($query));
+		$this->assertSame($command, $command->where(new Database_Conditions(new Database_Column('b.c'), '=', 0)), 'Chainable (Database_Conditions)');
+		$this->assertSame('DELETE FROM "pre_a" WHERE "pre_b"."c" = 0', $db->quote($command));
 
-		$this->assertSame($query, $query->where('one.x', '=', 1), 'Chainable (operands)');
-		$this->assertSame('DELETE FROM "pre_one" WHERE "pre_one"."x" = 1', $db->quote($query));
+		$this->assertSame($command, $command->where('d.e', '=', 1), 'Chainable (string, string, integer)');
+		$this->assertSame('DELETE FROM "pre_a" WHERE "pre_d"."e" = 1', $db->quote($command));
 
 		$conditions = new Database_Conditions;
-		$conditions->open(NULL)->add(NULL, new Database_Column('one.x'), '=', 0)->close();
+		$conditions->open(NULL)->add(NULL, new Database_Column('f.g'), '=', 2)->close();
 
-		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
-		$this->assertSame('DELETE FROM "pre_one" WHERE ("pre_one"."x" = 0) = \'1\'', $db->quote($query));
+		$this->assertSame($command, $command->where($conditions, '=', TRUE), 'Chainable (Database_Conditions, string, boolean)');
+		$this->assertSame('DELETE FROM "pre_a" WHERE ("pre_f"."g" = 2) = \'1\'', $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_Command_Delete::__toString
+	 */
+	public function test_toString()
+	{
+		$db = $this->sharedFixture;
+		$command = new Database_Command_Delete;
+		$command
+			->from('a')
+			->using('b')
+			->where('c', '=', 'd')
+			->limit(1);
+
+		$this->assertSame('DELETE FROM :table USING :using WHERE :where LIMIT :limit', (string) $command);
 	}
 }
