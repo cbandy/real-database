@@ -11,11 +11,6 @@
 class Database_Query_Cached
 {
 	/**
-	 * @var mixed   Type as which to return results
-	 */
-	protected $_as_object = FALSE;
-
-	/**
 	 * @var Database    Database on which to execute
 	 */
 	protected $_db;
@@ -31,8 +26,6 @@ class Database_Query_Cached
 	protected $_query;
 
 	/**
-	 * Resets the Query to return array results
-	 *
 	 * @param   integer         $lifetime   Cache lifetime
 	 * @param   Database        $db         Database on which to execute
 	 * @param   Database_Query  $query      Query to execute
@@ -42,37 +35,6 @@ class Database_Query_Cached
 		$this->_db = $db;
 		$this->_lifetime = $lifetime;
 		$this->_query = $query;
-
-		$this->_query->as_object($this->_as_object);
-	}
-
-	/**
-	 * Return results as associative arrays when executed
-	 *
-	 * @return  $this
-	 */
-	public function as_assoc()
-	{
-		$this->_as_object = FALSE;
-
-		$this->_query->as_assoc();
-
-		return $this;
-	}
-
-	/**
-	 * Return results as objects when executed
-	 *
-	 * @param   mixed   $class  Class to return or TRUE for stdClass
-	 * @return  $this
-	 */
-	public function as_object($class = TRUE)
-	{
-		$this->_as_object = $class;
-
-		$this->_query->as_object($this->_as_object);
-
-		return $this;
 	}
 
 	/**
@@ -100,7 +62,7 @@ class Database_Query_Cached
 		$key = $this->key();
 
 		if ($result = Kohana::cache($key, NULL, $this->_lifetime))
-			return new Database_Result_Array($result, $this->_as_object);
+			return new Database_Result_Array($result, $this->_query->as_object);
 
 		$result = $this->_query->execute($this->_db);
 
@@ -116,6 +78,6 @@ class Database_Query_Cached
 	 */
 	public function key()
 	{
-		return 'Database_Query_Cached('.$this->_db.','.$this->_query.','.serialize($this->_query->parameters).','.$this->_as_object.')';
+		return 'Database_Query_Cached('.$this->_db.','.$this->_query.','.serialize($this->_query->parameters).','.$this->_query->as_object.')';
 	}
 }
