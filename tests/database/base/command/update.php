@@ -8,85 +8,143 @@
  */
 class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_Command_Update::__construct
+	 */
+	public function test_constructor()
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame('UPDATE "pre_" SET ',                 $db->quote(new Database_Command_Update));
+		$this->assertSame('UPDATE "pre_a" SET ',                $db->quote(new Database_Command_Update('a')));
+		$this->assertSame('UPDATE "pre_b" AS "c" SET ',         $db->quote(new Database_Command_Update('b', 'c')));
+		$this->assertSame('UPDATE "pre_d" AS "e" SET "f" = 0',  $db->quote(new Database_Command_Update('d', 'e', array('f' => 0))));
+		$this->assertSame('UPDATE "pre_g" SET "h" = 1',         $db->quote(new Database_Command_Update('g', NULL, array('h' => 1))));
+		$this->assertSame('UPDATE "pre_" SET "i" = 2',          $db->quote(new Database_Command_Update(NULL, NULL, array('i' => 2))));
+	}
+
+	/**
+	 * @covers  Database_Command_Update::table
+	 */
 	public function test_table()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Update;
+		$command = new Database_Command_Update;
 
-		$this->assertSame($query, $query->table('one', 'a'));
+		$this->assertSame($command, $command->table('a'), 'Chainable (string)');
+		$this->assertSame('UPDATE "pre_a" SET ', $db->quote($command));
 
-		$this->assertSame('UPDATE "pre_one" AS "a" SET ', $db->quote($query));
+		$this->assertSame($command, $command->table('b', 'c'), 'Chainable (string, string)');
+		$this->assertSame('UPDATE "pre_b" AS "c" SET ', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Update::set
+	 */
 	public function test_set()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Update('one');
+		$command = new Database_Command_Update('a');
 
-		$this->assertSame($query, $query->set(array('x' => 0, 'y' => 1)));
-		$this->assertSame('UPDATE "pre_one" SET "x" = 0, "y" = 1', $db->quote($query));
+		$this->assertSame($command, $command->set(array('b' => 0, 'c' => 1)), 'Chainable (array)');
+		$this->assertSame('UPDATE "pre_a" SET "b" = 0, "c" = 1', $db->quote($command));
 
-		$this->assertSame($query, $query->set(new Database_Expression('arbitrary')));
-		$this->assertSame('UPDATE "pre_one" SET arbitrary', $db->quote($query));
+		$this->assertSame($command, $command->set(new Database_Expression('d')), 'Chainable (Database_Expression)');
+		$this->assertSame('UPDATE "pre_a" SET d', $db->quote($command));
+
+		$this->assertSame($command, $command->set(NULL), 'Chainable (NULL)');
+		$this->assertSame('UPDATE "pre_a" SET ', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Update::value
+	 */
 	public function test_value()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Update('one');
+		$command = new Database_Command_Update('a');
 
-		$this->assertSame($query, $query->value('x', 0));
-		$this->assertSame('UPDATE "pre_one" SET "x" = 0', $db->quote($query));
+		$this->assertSame($command, $command->value('b', 0));
+		$this->assertSame('UPDATE "pre_a" SET "b" = 0', $db->quote($command));
 
-		$this->assertSame($query, $query->value('y', 1));
-		$this->assertSame('UPDATE "pre_one" SET "x" = 0, "y" = 1', $db->quote($query));
+		$this->assertSame($command, $command->value('c', 1));
+		$this->assertSame('UPDATE "pre_a" SET "b" = 0, "c" = 1', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Update::from
+	 */
 	public function test_from()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Update('one', 'a', array('x' => 0));
+		$command = new Database_Command_Update('a', 'b', array('c' => 0));
 
-		$this->assertSame($query, $query->from('two', 'b'), 'Chainable (table)');
-		$this->assertSame('UPDATE "pre_one" AS "a" SET "x" = 0 FROM "pre_two" AS "b"', $db->quote($query));
+		$this->assertSame($command, $command->from('d'), 'Chainable (string)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_d"', $db->quote($command));
 
-		$from = new Database_From('two', 'b');
-		$from->join('three', 'c');
+		$this->assertSame($command, $command->from('e', 'f'), 'Chainable (string, string)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_e" AS "f"', $db->quote($command));
 
-		$this->assertSame($query, $query->from($from), 'Chainable (from)');
-		$this->assertSame('UPDATE "pre_one" AS "a" SET "x" = 0 FROM "pre_two" AS "b" JOIN "pre_three" AS "c"', $db->quote($query));
+		$from = new Database_From('g', 'h');
+		$from->join('i');
+
+		$this->assertSame($command, $command->from($from), 'Chainable (Database_From)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_g" AS "h" JOIN "pre_i"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Update::where
+	 */
 	public function test_where()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Update('one', NULL, array('x' => 0));
+		$command = new Database_Command_Update('a', 'b', array('c' => 0));
 
-		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)), 'Chainable (conditions)');
-		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE "y" = 1', $db->quote($query));
+		$this->assertSame($command, $command->where(new Database_Conditions(new Database_Column('d'), '=', 1)), 'Chainable (Database_Conditions)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 WHERE "d" = 1', $db->quote($command));
 
-		$this->assertSame($query, $query->where('y', '=', 0), 'Chainable (operands)');
-		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE "y" = 0', $db->quote($query));
+		$this->assertSame($command, $command->where('e', '=', 2), 'Chainable (string, string, integer)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 WHERE "e" = 2', $db->quote($command));
 
 		$conditions = new Database_Conditions;
-		$conditions->open(NULL)->add(NULL, new Database_Column('y'), '=', 0)->close();
+		$conditions->open(NULL)->add(NULL, new Database_Column('f'), '=', 3)->close();
 
-		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
-		$this->assertSame('UPDATE "pre_one" SET "x" = 0 WHERE ("y" = 0) = \'1\'', $db->quote($query));
+		$this->assertSame($command, $command->where($conditions, '=', TRUE), 'Chainable (Database_Conditions, string, boolean)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 WHERE ("f" = 3) = \'1\'', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Update::limit
+	 */
 	public function test_limit()
 	{
 		$db = $this->sharedFixture;
-		$query = new Database_Command_Update('one');
+		$command = new Database_Command_Update('a', 'b', array('c' => 0));
 
-		$this->assertSame($query, $query->limit(5));
-		$this->assertSame('UPDATE "pre_one" SET  LIMIT 5', $db->quote($query));
+		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 LIMIT 5', $db->quote($command));
 
-		$this->assertSame($query, $query->limit(NULL));
-		$this->assertSame('UPDATE "pre_one" SET ', $db->quote($query));
+		$this->assertSame($command, $command->limit(NULL), 'Chainable (NULL)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0', $db->quote($command));
 
-		$this->assertSame($query, $query->limit(0));
-		$this->assertSame('UPDATE "pre_one" SET  LIMIT 0', $db->quote($query));
+		$this->assertSame($command, $command->limit(0), 'Chainable (zero)');
+		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 LIMIT 0', $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_Command_Update::__toString
+	 */
+	public function test_toString()
+	{
+		$db = $this->sharedFixture;
+		$command = new Database_Command_Update;
+		$command
+			->table('a')
+			->set(array('b' => 0))
+			->from('c')
+			->where('d', '=', 1)
+			->limit(2);
+
+		$this->assertSame('UPDATE :table SET :values FROM :from WHERE :where LIMIT :limit', (string) $command);
 	}
 }
