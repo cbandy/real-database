@@ -16,15 +16,6 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 		$this->assertSame('REFERENCES "pre_a" ("b")', $db->quote(new Database_DDL_Constraint_Foreign('a', array('b'))));
 	}
 
-	public function test_name()
-	{
-		$db = $this->sharedFixture;
-		$constraint = new Database_DDL_Constraint_Foreign('a');
-
-		$this->assertSame($constraint, $constraint->name('b'));
-		$this->assertSame('CONSTRAINT "b" REFERENCES "pre_a"', $db->quote($constraint));
-	}
-
 	public function test_referencing()
 	{
 		$db = $this->sharedFixture;
