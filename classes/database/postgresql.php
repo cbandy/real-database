@@ -332,7 +332,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+			$benchmark = Profiler::start("Database ($this->_name)", $statement);
 		}
 
 		if ( ! pg_send_query($this->_connection, $statement))
@@ -377,7 +377,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", "Prepared: $name");
+			$benchmark = Profiler::start("Database ($this->_name)", "Prepared: $name");
 		}
 
 		if ( ! pg_send_execute($this->_connection, $name, $parameters))
@@ -592,7 +592,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 
 		if ( ! is_resource($this->_connection))
-			throw new Database_Exception('Unable to connect to PostgreSQL ":name"', array(':name' => $this->_instance));
+			throw new Database_Exception('Unable to connect to PostgreSQL ":name"', array(':name' => $this->_name));
 
 		$this->_version = pg_parameter_status($this->_connection, 'server_version');
 

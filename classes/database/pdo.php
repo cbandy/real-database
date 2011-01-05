@@ -149,7 +149,7 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", 'begin()');
+			$benchmark = Profiler::start("Database ($this->_name)", 'begin()');
 		}
 
 		try
@@ -183,7 +183,7 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", 'commit()');
+			$benchmark = Profiler::start("Database ($this->_name)", 'commit()');
 		}
 
 		try
@@ -257,7 +257,7 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+			$benchmark = Profiler::start("Database ($this->_name)", $statement);
 		}
 
 		try
@@ -306,7 +306,7 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+			$benchmark = Profiler::start("Database ($this->_name)", $statement);
 		}
 
 		try
@@ -348,7 +348,7 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", "prepare($statement)");
+			$benchmark = Profiler::start("Database ($this->_name)", "prepare($statement)");
 		}
 
 		try
@@ -415,7 +415,7 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", 'rollback()');
+			$benchmark = Profiler::start("Database ($this->_name)", 'rollback()');
 		}
 
 		try

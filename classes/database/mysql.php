@@ -151,7 +151,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_instance)", $statement);
+			$benchmark = Profiler::start("Database ($this->_name)", $statement);
 		}
 
 		try
@@ -249,7 +249,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		}
 
 		if ( ! is_resource($this->_connection))
-			throw new Database_Exception('Unable to connect to MySQL ":name"', array(':name' => $this->_instance));
+			throw new Database_Exception('Unable to connect to MySQL ":name"', array(':name' => $this->_name));
 
 		$this->_select_database($database);
 

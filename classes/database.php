@@ -337,7 +337,7 @@ abstract class Database
 	/**
 	 * @var string  Connection name
 	 */
-	protected $_instance;
+	protected $_name;
 
 	/**
 	 * @var string  Regular expression which matches expression placeholders
@@ -358,7 +358,7 @@ abstract class Database
 	public function __construct($name, $config)
 	{
 		$this->_config = $config;
-		$this->_instance = $name;
+		$this->_name = $name;
 	}
 
 	public function __destruct()
@@ -368,7 +368,7 @@ abstract class Database
 
 	public function __toString()
 	{
-		return $this->_instance;
+		return $this->_name;
 	}
 
 	/**
