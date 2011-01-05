@@ -8,6 +8,9 @@
  */
 class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_Command_Create_Index::__construct
+	 */
 	public function test_constructor()
 	{
 		$db = $this->sharedFixture;
@@ -16,6 +19,9 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c")', $db->quote(new Database_Command_Create_Index('a', 'b', array('c'))));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Index::name
+	 */
 	public function test_name()
 	{
 		$db = $this->sharedFixture;
@@ -25,6 +31,9 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE INDEX "c" ON "pre_b" ()', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Index::unique
+	 */
 	public function test_unique()
 	{
 		$db = $this->sharedFixture;
@@ -40,6 +49,9 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE UNIQUE INDEX "a" ON "pre_b" ()', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Index::on
+	 */
 	public function test_on()
 	{
 		$db = $this->sharedFixture;
@@ -49,6 +61,9 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE INDEX "a" ON "pre_c" ()', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Index::column
+	 */
 	public function test_column()
 	{
 		$db = $this->sharedFixture;
@@ -61,6 +76,9 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c", "d" ASC)', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Index::columns
+	 */
 	public function test_columns()
 	{
 		$db = $this->sharedFixture;
@@ -68,5 +86,16 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($command, $command->columns(array('c')));
 		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c")', $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_Command_Create_Index::__toString
+	 */
+	public function test_toString()
+	{
+		$command = new Database_Command_Create_Index;
+		$command->unique();
+
+		$this->assertSame('CREATE :type INDEX :name ON :table (:columns)', (string) $command);
 	}
 }

@@ -8,6 +8,9 @@
  */
 class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_DDL_Column::__construct
+	 */
 	public function test_constructor()
 	{
 		$db = $this->sharedFixture;
@@ -15,6 +18,9 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"a" b', $db->quote(new Database_DDL_Column('a', 'b')));
 	}
 
+	/**
+	 * @covers  Database_DDL_Column::name
+	 */
 	public function test_name()
 	{
 		$db = $this->sharedFixture;
@@ -24,6 +30,9 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"c" b', $db->quote($column));
 	}
 
+	/**
+	 * @covers  Database_DDL_Column::type
+	 */
 	public function test_type()
 	{
 		$db = $this->sharedFixture;
@@ -33,6 +42,9 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"a" c', $db->quote($column));
 	}
 
+	/**
+	 * @covers  Database_DDL_Column::set_default
+	 */
 	public function test_set_default()
 	{
 		$db = $this->sharedFixture;
@@ -42,6 +54,9 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"a" b DEFAULT 1', $db->quote($column));
 	}
 
+	/**
+	 * @covers  Database_DDL_Column::no_default
+	 */
 	public function test_no_default()
 	{
 		$db = $this->sharedFixture;
@@ -57,6 +72,9 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"a" b', $db->quote($column));
 	}
 
+	/**
+	 * @covers  Database_DDL_Column::not_null
+	 */
 	public function test_not_null()
 	{
 		$db = $this->sharedFixture;
@@ -72,6 +90,9 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"a" b NOT NULL', $db->quote($column));
 	}
 
+	/**
+	 * @covers  Database_DDL_Column::constraint
+	 */
 	public function test_constraint()
 	{
 		$db = $this->sharedFixture;
@@ -80,10 +101,26 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Unique), 'Chainable (unique)');
 		$this->assertSame('"a" b UNIQUE', $db->quote($column));
 
-		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_check(1)), 'Chainable (check)');
+		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Check(1)), 'Chainable (check)');
 		$this->assertSame('"a" b UNIQUE CHECK (1)', $db->quote($column));
 
 		$this->assertSame($column, $column->constraint(NULL), 'Chainable (NULL)');
 		$this->assertSame('"a" b', $db->quote($column));
+	}
+
+	/**
+	 * @covers  Database_DDL_Column::__toString
+	 */
+	public function test_toString()
+	{
+		$column = new Database_DDL_Column;
+		$column
+			->name('a')
+			->type('b')
+			->set_default('c')
+			->not_null()
+			->constraint(new Database_DDL_Constraint_Unique);
+
+		$this->assertSame(':name :type DEFAULT :default NOT NULL :constraints', (string) $column);
 	}
 }

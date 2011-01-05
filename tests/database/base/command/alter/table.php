@@ -8,9 +8,14 @@
  */
 class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_Command_Alter_Table::__construct
+	 */
 	public function test_constructor()
 	{
 		$db = $this->sharedFixture;
+
+		$this->assertSame('ALTER TABLE :name :actions', $db->quote(new Database_Command_Alter_Table));
 
 		$command = new Database_Command_Alter_Table('a');
 		$command->parameters[':actions'] = array();
@@ -18,6 +23,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_a" ', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::name
+	 */
 	public function test_name()
 	{
 		$db = $this->sharedFixture;
@@ -28,6 +36,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_b" ', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::add_column
+	 */
 	public function test_add_column()
 	{
 		$db = $this->sharedFixture;
@@ -37,6 +48,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_a" ADD "b" c', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::add_constraint
+	 */
 	public function test_add_constraint()
 	{
 		$db = $this->sharedFixture;
@@ -46,6 +60,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_a" ADD PRIMARY KEY ("b")', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::drop_column
+	 */
 	public function test_drop_column()
 	{
 		$db = $this->sharedFixture;
@@ -55,6 +72,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_a" DROP COLUMN "b"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::drop_constraint
+	 */
 	public function test_drop_constraint()
 	{
 		$db = $this->sharedFixture;
@@ -64,6 +84,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_a" DROP CONSTRAINT "b"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::drop_default
+	 */
 	public function test_drop_default()
 	{
 		$db = $this->sharedFixture;
@@ -73,6 +96,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_a" ALTER "b" DROP DEFAULT', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::rename
+	 */
 	public function test_rename()
 	{
 		$db = $this->sharedFixture;
@@ -82,6 +108,9 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE "pre_a" RENAME TO "pre_b"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Alter_Table::set_default
+	 */
 	public function test_set_default()
 	{
 		$db = $this->sharedFixture;

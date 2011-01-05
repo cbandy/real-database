@@ -8,6 +8,9 @@
  */
 class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_Command_Create_View::__construct
+	 */
 	public function test_constructor()
 	{
 		$db = $this->sharedFixture;
@@ -15,6 +18,9 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE VIEW "pre_a" AS b', $db->quote(new Database_Command_Create_View('a', new Database_Query('b'))));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_View::name
+	 */
 	public function test_name()
 	{
 		$db = $this->sharedFixture;
@@ -24,6 +30,9 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE VIEW "pre_c" AS b', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_View::query
+	 */
 	public function test_query()
 	{
 		$db = $this->sharedFixture;
@@ -33,6 +42,9 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE VIEW "pre_a" AS c', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_View::column
+	 */
 	public function test_column()
 	{
 		$db = $this->sharedFixture;
@@ -45,6 +57,9 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE VIEW "pre_a" ("c", "d") AS b', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_View::columns
+	 */
 	public function test_columns()
 	{
 		$db = $this->sharedFixture;
@@ -54,6 +69,9 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE VIEW "pre_a" ("c") AS b', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_View::replace
+	 */
 	public function test_replace()
 	{
 		$db = $this->sharedFixture;
@@ -69,6 +87,9 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE OR REPLACE VIEW "pre_a" AS b', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_View::temporary
+	 */
 	public function test_temporary()
 	{
 		$db = $this->sharedFixture;
@@ -82,5 +103,21 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($command, $command->temporary(TRUE), 'Chainable (TRUE)');
 		$this->assertSame('CREATE TEMPORARY VIEW "pre_a" AS b', $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_Command_Create_View::__toString
+	 */
+	public function test_toString()
+	{
+		$command = new Database_Command_Create_View;
+		$command
+			->replace()
+			->temporary()
+			->name('a')
+			->columns(array('b'))
+			->query(new Database_Query('c'));
+
+		$this->assertSame('CREATE OR REPLACE TEMPORARY VIEW :name (:columns) AS :query', (string) $command);
 	}
 }
