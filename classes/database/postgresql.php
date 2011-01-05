@@ -186,11 +186,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
 	 * @link http://www.postgresql.org/docs/current/static/ddl-schemas.html#DDL-SCHEMAS-PATH Schema search path
 	 *
-	 * @throws  Kohana_Exception
-	 * @param   string  $name   Instance name
+	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
 	 */
-	protected function __construct($name, $config)
+	public function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
 

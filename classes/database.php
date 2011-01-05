@@ -189,6 +189,34 @@ abstract class Database
 	}
 
 	/**
+	 * Create a database connection. The configuration group will be loaded
+	 * from the database configuration file based on the connection name unless
+	 * it is passed directly.
+	 *
+	 * @throws  Kohana_Exception
+	 * @param   string  $name   Connection name
+	 * @param   array   $config Configuration
+	 * @return  Database
+	 */
+	public static function factory($name = 'default', $config = NULL)
+	{
+		if ($config === NULL)
+		{
+			// Load the configuration
+			$config = Kohana::config('database')->$name;
+		}
+
+		if (empty($config['type']))
+			throw new Kohana_Exception('Database type not defined in ":name" configuration', array(':name' => $name));
+
+		// Set the driver class name
+		$driver = 'Database_'.$config['type'];
+
+		// Create the database connection
+		return new $driver($name, $config);
+	}
+
+	/**
 	 * Create a table reference accumulator
 	 *
 	 * @param   mixed   $table  Converted to Database_Table
@@ -224,10 +252,9 @@ abstract class Database
 	}
 
 	/**
-	 * Get a singleton Database instance
-	 *
-	 * The configuration group will be loaded from the database configuration
-	 * file based on the instance name unless it is passed directly.
+	 * Get a singleton Database instance. The configuration group will be
+	 * loaded from the database configuration file based on the instance name
+	 * unless it is passed directly.
 	 *
 	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
@@ -238,20 +265,7 @@ abstract class Database
 	{
 		if ( ! isset(Database::$_instances[$name]))
 		{
-			if ($config === NULL)
-			{
-				// Load the configuration
-				$config = Kohana::config('database')->$name;
-			}
-
-			if ( ! isset($config['type']))
-				throw new Kohana_Exception('Database type not defined in ":name" configuration', array(':name' => $name));
-
-			// Set the driver class name
-			$driver = 'Database_'.$config['type'];
-
-			// Create the database connection instance
-			new $driver($name, $config);
+			Database::$_instances[$name] = Database::factory($name, $config);
 		}
 
 		return Database::$_instances[$name];
@@ -321,7 +335,7 @@ abstract class Database
 	protected $_config;
 
 	/**
-	 * @var string  Instance name
+	 * @var string  Connection name
 	 */
 	protected $_instance;
 
@@ -336,24 +350,15 @@ abstract class Database
 	protected $_quote = '"';
 
 	/**
-	 * Create a singleton database instance
+	 * Create a database connection. The database type is not verified.
 	 *
-	 * The database type is not verified.
-	 *
-	 * @throws  Kohana_Exception
-	 * @param   string  $name   Instance name
+	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
 	 */
-	protected function __construct($name, $config)
+	public function __construct($name, $config)
 	{
-		if (isset(Database::$_instances[$name]))
-			throw new Kohana_Exception('Database instance ":name" already exists', array(':name' => $name));
-
 		$this->_config = $config;
 		$this->_instance = $name;
-
-		// Store the database instance
-		Database::$_instances[$name] = $this;
 	}
 
 	public function __destruct()

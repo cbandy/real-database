@@ -42,11 +42,10 @@ class Database_PDO extends Database
 	 *
 	 * @link http://php.net/manual/pdo.construct PDO connection parameters
 	 *
-	 * @throws  Kohana_Exception
-	 * @param   string  $name   Instance name
+	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
 	 */
-	protected function __construct($name, $config)
+	public function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
 

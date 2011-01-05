@@ -105,11 +105,10 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	 * [Client constants]: http://php.net/manual/mysql.constants
 	 * [System variables]: http://dev.mysql.com/doc/en/dynamic-system-variables.html
 	 *
-	 * @throws  Kohana_Exception
-	 * @param   string  $name   Instance name
+	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
 	 */
-	protected function __construct($name, $config)
+	public function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
 

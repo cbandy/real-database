@@ -70,11 +70,10 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 *
 	 * @link http://php.net/manual/ref.pdo-sqlite.connection PDO SQLite DSN
 	 *
-	 * @throws  Kohana_Exception
-	 * @param   string  $name   Instance name
+	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
 	 */
-	protected function __construct($name, $config)
+	public function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
 
