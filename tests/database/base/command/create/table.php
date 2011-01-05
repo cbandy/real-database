@@ -8,9 +8,14 @@
  */
 class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_Command_Create_Table::__construct
+	 */
 	public function test_constructor()
 	{
 		$db = $this->sharedFixture;
+
+		$this->assertSame('CREATE TABLE :name (:columns)', $db->quote(new Database_Command_Create_Table));
 
 		$command = new Database_Command_Create_Table('a');
 		$command->parameters[':columns'] = array();
@@ -18,16 +23,22 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE TABLE "pre_a" ()', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Table::name
+	 */
 	public function test_name()
 	{
 		$db = $this->sharedFixture;
-		$command = new Database_Command_Create_Table('a');
+		$command = new Database_Command_Create_Table;
 		$command->parameters[':columns'] = array();
 
-		$this->assertSame($command, $command->name('b'));
-		$this->assertSame('CREATE TABLE "pre_b" ()', $db->quote($command));
+		$this->assertSame($command, $command->name('a'), 'Chainable');
+		$this->assertSame('CREATE TABLE "pre_a" ()', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Table::column
+	 */
 	public function test_column()
 	{
 		$db = $this->sharedFixture;
@@ -43,6 +54,9 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE TABLE "pre_a" ()', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Table::constraint
+	 */
 	public function test_constraint()
 	{
 		$db = $this->sharedFixture;
@@ -59,6 +73,9 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE TABLE "pre_a" ()', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_Command_Create_Table::query
+	 */
 	public function test_query()
 	{
 		$db = $this->sharedFixture;
@@ -68,16 +85,9 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE TABLE "pre_a" AS (b)', $db->quote($command));
 	}
 
-	public function test_query_columns()
-	{
-		$db = $this->sharedFixture;
-		$command = new Database_Command_Create_Table('a');
-		$command->column(new Database_DDL_Column('b', 'c'));
-		$command->query(new Database_Query('d'));
-
-		$this->assertSame('CREATE TABLE "pre_a" ("b" c) AS (d)', $db->quote($command));
-	}
-
+	/**
+	 * @covers  Database_Command_Create_Table::temporary
+	 */
 	public function test_temporary()
 	{
 		$db = $this->sharedFixture;
@@ -92,5 +102,26 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($command, $command->temporary(TRUE), 'Chainable (TRUE)');
 		$this->assertSame('CREATE TEMPORARY TABLE "pre_a" ()', $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_Command_Create_Table::__toString
+	 */
+	public function test_toString()
+	{
+		$command = new Database_Command_Create_Table;
+		$command
+			->temporary()
+			->column(new Database_DDL_Column('a', 'b'));
+
+		$this->assertSame('CREATE TEMPORARY TABLE :name (:columns)', (string) $command);
+
+		$command->constraint(new Database_DDL_Constraint_Primary(array('c')));
+
+		$this->assertSame('CREATE TEMPORARY TABLE :name (:columns, :constraints)', (string) $command);
+
+		$command->query(new Database_Query('d'));
+
+		$this->assertSame('CREATE TEMPORARY TABLE :name (:columns) AS (:query)', (string) $command);
 	}
 }
