@@ -8,6 +8,92 @@
 class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 {
 	/**
+	 * @covers  Database::__construct
+	 * @covers  Database::__toString
+	 */
+	public function test_constructor()
+	{
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+
+		$this->assertSame('name', (string) $mock);
+	}
+
+	/**
+	 * @covers  Database::__destruct
+	 */
+	public function test_destructor()
+	{
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('disconnect');
+
+		$mock->__destruct();
+	}
+
+	/**
+	 * @covers  Database::factory
+	 * @expectedException   Kohana_Exception
+	 */
+	public function test_factory_incomplete_config()
+	{
+		Database::factory('any', array());
+	}
+
+	/**
+	 * @covers  Database::factory
+	 */
+	public function test_factory_load_config()
+	{
+		$config = Kohana::config('database');
+
+		// Find an unused config group
+		for ($i = 0; $i < 10; ++$i)
+		{
+			$name = sha1(mt_rand());
+
+			if ( ! isset($config[$name]))
+				break;
+		}
+
+		if (isset($config[$name]))
+			$this->markTestSkipped('Unable to find unused config group');
+
+		$class = 'Database_Mock_'.$name;
+		$driver = 'Mock_'.$name;
+
+		// Generate a mock class
+		$this->getMockForAbstractClass('Database', array('name', array()), $class);
+
+		// Set the config group
+		$config[$name] = array('type' => $driver);
+
+		$result = Database::factory($name);
+
+		$this->assertType($class, $result);
+		$this->assertSame($name, (string) $result);
+	}
+
+	/**
+	 * @covers  Database::instance
+	 */
+	public function test_instance()
+	{
+		$name = sha1(mt_rand());
+		$class = 'Database_Mock_'.$name;
+		$driver = 'Mock_'.$name;
+
+		// Generate a mock class
+		$this->getMockForAbstractClass('Database', array('name', array()), $class);
+
+		$result = Database::instance($name, array('type' => $driver));
+
+		$this->assertType($class, $result);
+		$this->assertSame($name, (string) $result);
+
+		$this->assertSame($result, Database::instance($name));
+	}
+
+	/**
 	 * @test
 	 * @dataProvider    provider_datatype
 	 */
@@ -612,32 +698,5 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("'object__toString'", $db->quote($object));
 		$this->assertSame("'object__toString'".' AS "alias"', $db->quote($object, 'alias'));
 		$this->assertSame("'object__toString', 'object__toString'", $db->quote(array($object, $object)));
-	}
-
-	/**
-	 * @expectedException   Kohana_Exception
-	 */
-	public function test_instance_incomplete_config()
-	{
-		if ( ! $name = Database_Base_TestSuite_Database::testsuite_generate_instance_name())
-			$this->markTestSkipped('Unable to find unused instance name');
-
-		Database::instance($name, array());
-	}
-
-	public function test_instance_load_config()
-	{
-		if ( ! $name = Database_Base_TestSuite_Database::testsuite_generate_instance_name())
-			$this->markTestSkipped('Unable to find unused instance name');
-
-		$config = Kohana::config('database');
-		$config[$name] = array('type' => 'Base_TestSuite_Database');
-
-		$result = Database::instance($name);
-
-		$this->assertType('Database_Base_TestSuite_Database', $result);
-		$this->assertSame($name, (string) $result);
-
-		Database_Base_TestSuite_Database::testsuite_unset_instance($name);
 	}
 }
