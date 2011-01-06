@@ -25,7 +25,7 @@ class Database_Base_Command_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute($sql)
 	{
-		$db = $this->getMock('Database_Base_TestSuite_Database', array('execute_command'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->once())
 			->method('execute_command')
 			->with($this->equalTo($sql));

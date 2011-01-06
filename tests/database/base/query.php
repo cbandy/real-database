@@ -48,7 +48,7 @@ class Database_Base_Query_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute()
 	{
-		$db = $this->getMock('Database_Base_TestSuite_Database', array('execute_query'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->once())
 			->method('execute_query')
 			->with($this->equalTo('a'), FALSE);
