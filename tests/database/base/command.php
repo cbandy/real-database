@@ -53,12 +53,13 @@ class Database_Base_Command_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_prepare($sql, $parameters)
 	{
-		$db = $this->getMock('Database_Base_TestSuite_Database', array('prepare_command'));
-		$db->expects($this->once())
-			->method('prepare_command')
-			->with($this->equalTo($sql), $parameters);
+		$db = $this->sharedFixture;
 
 		$command = new Database_Command($sql, $parameters);
-		$command->prepare($db);
+		$result = $command->prepare($db);
+
+		$this->assertType('Database_Prepared_Command', $result);
+		$this->assertSame($parameters, $result->parameters);
+		$this->assertSame($sql, (string) $result);
 	}
 }

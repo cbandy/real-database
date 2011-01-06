@@ -76,12 +76,13 @@ class Database_Base_Query_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_prepare($sql, $parameters)
 	{
-		$db = $this->getMock('Database_Base_TestSuite_Database', array('prepare_query'));
-		$db->expects($this->once())
-			->method('prepare_query')
-			->with($this->equalTo($sql), $parameters);
+		$db = $this->sharedFixture;
 
 		$query = new Database_Query($sql, $parameters);
-		$query->prepare($db);
+		$result = $query->prepare($db);
+
+		$this->assertType('Database_Prepared_Query', $result);
+		$this->assertSame($parameters, $result->parameters);
+		$this->assertSame($sql, (string) $result);
 	}
 }
