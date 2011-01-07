@@ -13,7 +13,10 @@ class Database_Base_Command_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('DROP TABLE "pre_a"', $db->quote(new Database_Command_Drop_Table('a')));
 		$this->assertSame('DROP TABLE "pre_a" CASCADE', $db->quote(new Database_Command_Drop_Table('a', TRUE)));
@@ -25,7 +28,11 @@ class Database_Base_Command_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Drop_Table('a');
 
 		$this->assertSame($command, $command->name('b'));
@@ -37,7 +44,11 @@ class Database_Base_Command_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_names()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Drop_Table;
 
 		$this->assertSame($command, $command->names(array('a', 'b')));

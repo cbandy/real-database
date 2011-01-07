@@ -13,7 +13,10 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('CREATE VIEW "pre_a" AS b', $db->quote(new Database_Command_Create_View('a', new Database_Query('b'))));
 	}
@@ -23,7 +26,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->name('c'));
@@ -35,7 +42,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_query()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->query(new Database_Query('c')));
@@ -47,7 +58,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->column('c'));
@@ -62,7 +77,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->columns(array('c')));
@@ -74,7 +93,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_replace()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->replace(), 'Chainable (void)');
@@ -92,7 +115,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_temporary()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->temporary(), 'Chainable (void)');

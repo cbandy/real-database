@@ -13,7 +13,7 @@ class Database_Base_DDL_Constraint_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$constraint = $this->getMockForAbstractClass('Database_DDL_Constraint', array(''));
 
 		$this->assertSame($constraint, $constraint->name('a'), 'Chainable');

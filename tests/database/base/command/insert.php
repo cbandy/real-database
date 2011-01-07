@@ -13,7 +13,10 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('INSERT INTO "pre_" DEFAULT VALUES',          $db->quote(new Database_Command_Insert));
 		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES',         $db->quote(new Database_Command_Insert('a')));
@@ -25,7 +28,11 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_into()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Insert;
 
 		$this->assertSame($command, $command->into('a'), 'Chainable (string)');
@@ -37,7 +44,11 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Insert('a');
 
 		$this->assertSame($command, $command->columns(array('b', new Database_Expression('c'), new Database_Column('d'))), 'Chainable (array)');
@@ -49,7 +60,11 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_values()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Insert('a', array('b','c'));
 
 		$this->assertSame($command, $command->values(array(0,1)), 'Chainable (array)');
@@ -67,7 +82,11 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_values_arrays()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Insert('a', array('b','c'));
 
 		$command->values(array(0,1));
@@ -81,7 +100,6 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_toString()
 	{
-		$db = $this->sharedFixture;
 		$command = new Database_Command_Insert;
 		$command
 			->into('a')

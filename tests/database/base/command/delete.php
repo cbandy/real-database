@@ -13,7 +13,10 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('DELETE FROM "pre_"',         $db->quote(new Database_Command_Delete));
 		$this->assertSame('DELETE FROM "pre_a"',        $db->quote(new Database_Command_Delete('a')));
@@ -25,7 +28,11 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Delete;
 
 		$this->assertSame($command, $command->from('a'), 'Chainable (string)');
@@ -40,7 +47,11 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Delete('a');
 
 		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
@@ -58,7 +69,11 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Delete('a');
 
 		$this->assertSame($command, $command->using('b'), 'Chainable (string)');
@@ -79,7 +94,11 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_where()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Delete('a');
 
 		$this->assertSame($command, $command->where(new Database_Conditions(new Database_Column('b.c'), '=', 0)), 'Chainable (Database_Conditions)');
@@ -100,7 +119,6 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_toString()
 	{
-		$db = $this->sharedFixture;
 		$command = new Database_Command_Delete;
 		$command
 			->from('a')

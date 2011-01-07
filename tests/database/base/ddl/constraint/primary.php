@@ -13,7 +13,7 @@ class Database_Base_DDL_Constraint_Primary_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame('PRIMARY KEY', $db->quote(new Database_DDL_Constraint_Primary));
 		$this->assertSame('PRIMARY KEY', $db->quote(new Database_DDL_Constraint_Primary(array())));
@@ -25,7 +25,7 @@ class Database_Base_DDL_Constraint_Primary_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$constraint = new Database_DDL_Constraint_Primary;
 
 		$this->assertSame($constraint, $constraint->columns(array('a')), 'Chainable');

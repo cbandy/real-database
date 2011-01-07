@@ -13,7 +13,10 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('CREATE INDEX "a" ON "pre_b" ()', $db->quote(new Database_Command_Create_Index('a', 'b')));
 		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c")', $db->quote(new Database_Command_Create_Index('a', 'b', array('c'))));
@@ -24,7 +27,11 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->name('c'));
@@ -36,7 +43,11 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_unique()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->unique(), 'Chainable (void)');
@@ -54,7 +65,11 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_on()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->on('c'));
@@ -66,7 +81,11 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->column('c'), 'Chainable (column)');
@@ -81,7 +100,11 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->columns(array('c')));

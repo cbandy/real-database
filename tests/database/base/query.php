@@ -76,7 +76,7 @@ class Database_Base_Query_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_prepare($sql, $parameters)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$query = new Database_Query($sql, $parameters);
 		$result = $query->prepare($db);

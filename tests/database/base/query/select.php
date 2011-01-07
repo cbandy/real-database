@@ -13,7 +13,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame('SELECT ',            $db->quote(new Database_Query_Select));
 		$this->assertSame('SELECT :columns',    $db->quote(new Database_Query_Select(array())));
@@ -25,7 +25,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_select()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select;
 
 		$this->assertSame($query, $query->select(array('x')));
@@ -43,7 +43,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_distinct()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select;
 
 		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
@@ -61,7 +61,11 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$query = new Database_Query_Select;
 
 		$this->assertSame($query, $query->column('one.x', 'a'));
@@ -76,7 +80,11 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$query = new Database_Query_Select(array('one.x'));
 
 		$this->assertSame($query, $query->from('one', 'a'), 'Chainable (table)');
@@ -94,7 +102,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_where()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select(new Database_Expression(1));
 
 		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)), 'Chainable (conditions)');
@@ -115,7 +123,11 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_group_by()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->group_by(array('y', 'one.z', new Database_Expression('expr'))));
@@ -128,7 +140,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_having()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->having(new Database_Conditions(new Database_Column('x'), '=', 1)), 'Chainable (conditions)');
@@ -149,7 +161,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_order_by()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select(array('x', 'y'));
 
 		$this->assertSame($query, $query->order_by('x'));
@@ -167,7 +179,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->limit(5));
@@ -182,7 +194,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_offset()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select(array('x'));
 
 		$this->assertSame($query, $query->offset(5));
@@ -197,7 +209,6 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_toString()
 	{
-		$db = $this->sharedFixture;
 		$query = new Database_Query_Select;
 		$query
 			->distinct()

@@ -53,7 +53,7 @@ class Database_Base_Command_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_prepare($sql, $parameters)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$command = new Database_Command($sql, $parameters);
 		$result = $command->prepare($db);

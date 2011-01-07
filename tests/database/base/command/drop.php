@@ -13,7 +13,7 @@ class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame('DROP A "b"', $db->quote(new Database_Command_Drop('a', 'b')));
 		$this->assertSame('DROP A "b" CASCADE', $db->quote(new Database_Command_Drop('a', 'b', TRUE)));
@@ -25,7 +25,7 @@ class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_cascade()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_Command_Drop('a', 'b');
 
 		$this->assertSame($command, $command->cascade(), 'Chainable (void)');
@@ -46,7 +46,7 @@ class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_if_exists()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_Command_Drop('a', 'b');
 
 		$this->assertSame($command, $command->if_exists(), 'Chainable (void)');
@@ -64,7 +64,7 @@ class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_Command_Drop('a', 'b');
 
 		$this->assertSame($command, $command->name('c'));
@@ -76,7 +76,7 @@ class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_names()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_Command_Drop('a');
 
 		$this->assertSame($command, $command->names(array('b', 'c')));

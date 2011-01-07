@@ -13,7 +13,10 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('UPDATE "pre_" SET ',                 $db->quote(new Database_Command_Update));
 		$this->assertSame('UPDATE "pre_a" SET ',                $db->quote(new Database_Command_Update('a')));
@@ -28,7 +31,11 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Update;
 
 		$this->assertSame($command, $command->table('a'), 'Chainable (string)');
@@ -43,7 +50,11 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_set()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Update('a');
 
 		$this->assertSame($command, $command->set(array('b' => 0, 'c' => 1)), 'Chainable (array)');
@@ -61,7 +72,11 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_value()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Update('a');
 
 		$this->assertSame($command, $command->value('b', 0));
@@ -76,7 +91,11 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->from('d'), 'Chainable (string)');
@@ -97,7 +116,11 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_where()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->where(new Database_Conditions(new Database_Column('d'), '=', 1)), 'Chainable (Database_Conditions)');
@@ -118,7 +141,11 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
@@ -136,7 +163,6 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_toString()
 	{
-		$db = $this->sharedFixture;
 		$command = new Database_Command_Update;
 		$command
 			->table('a')

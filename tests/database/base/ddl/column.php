@@ -13,7 +13,7 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame('"a" b', $db->quote(new Database_DDL_Column('a', 'b')));
 	}
@@ -23,7 +23,7 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->name('c'));
@@ -35,7 +35,7 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_type()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->type('c'));
@@ -47,7 +47,7 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_set_default()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->set_default(1));
@@ -59,7 +59,7 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_no_default()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->no_default());
@@ -77,7 +77,7 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_not_null()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->not_null(), 'Chainable (void)');
@@ -95,7 +95,7 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constraint()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Unique), 'Chainable (unique)');

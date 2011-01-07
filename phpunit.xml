@@ -7,7 +7,7 @@
 	</filter>
 	<testsuites>
 		<testsuite name="Database Default Implementations">
-			<file>tests/database/base/testsuite.php</file>
+			<directory suffix=".php">tests/database/base</directory>
 		</testsuite>
 		<testsuite name="Database MySQL Implementations">
 			<file>tests/database/mysql/testsuite.php</file>

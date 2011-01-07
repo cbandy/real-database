@@ -13,7 +13,10 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('ALTER TABLE :name :actions', $db->quote(new Database_Command_Alter_Table));
 
@@ -28,7 +31,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 		$command->parameters[':actions'] = array();
 
@@ -41,7 +48,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 
 		$this->assertSame($command, $command->add_column(new Database_DDL_Column('b', 'c')));
@@ -53,7 +64,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add_constraint()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 
 		$this->assertSame($command, $command->add_constraint(new Database_DDL_Constraint_Primary(array('b'))));
@@ -65,7 +80,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_drop_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 
 		$this->assertSame($command, $command->drop_column('b'));
@@ -77,7 +96,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_drop_constraint()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 
 		$this->assertSame($command, $command->drop_constraint('primary', 'b'));
@@ -89,7 +112,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_drop_default()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 
 		$this->assertSame($command, $command->drop_default('b'));
@@ -101,7 +128,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_rename()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 
 		$this->assertSame($command, $command->rename('b'));
@@ -113,7 +144,11 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_set_default()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Alter_Table('a');
 
 		$this->assertSame($command, $command->set_default('b', 1));

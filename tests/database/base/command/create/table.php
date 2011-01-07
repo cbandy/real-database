@@ -13,7 +13,10 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('CREATE TABLE :name (:columns)', $db->quote(new Database_Command_Create_Table));
 
@@ -28,7 +31,11 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Table;
 		$command->parameters[':columns'] = array();
 
@@ -41,7 +48,11 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Table('a');
 
 		$this->assertSame($command, $command->column(new Database_DDL_Column('b', 'c')));
@@ -59,7 +70,11 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constraint()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Table('a');
 		$command->parameters[':columns'] = array();
 
@@ -78,7 +93,11 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_query()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Table('a');
 
 		$this->assertSame($command, $command->query(new Database_Query('b')));
@@ -90,7 +109,11 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_temporary()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$command = new Database_Command_Create_Table('a');
 		$command->parameters[':columns'] = array();
 

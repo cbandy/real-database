@@ -115,7 +115,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_datatype($type, $attribute, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
@@ -283,7 +283,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_literal($value, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame($expected, $db->quote_literal($value));
 	}
@@ -295,7 +295,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_literal_object()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$object = $this->getMock('stdClass', array('__toString'));
 		$object->expects($this->exactly(2))
@@ -363,7 +363,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_identifier($value, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame($expected, $db->quote_identifier($value));
 	}
@@ -407,7 +407,10 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_table($value, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame($expected, $db->quote_table($value));
 	}
@@ -494,7 +497,10 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_column($value, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame($expected, $db->quote_column($value));
 	}
@@ -557,7 +563,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_expression($value, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame($expected, $db->quote_expression($value));
 	}
@@ -583,7 +589,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_expression_lacking_parameter($value)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$db->quote_expression($value);
 	}
@@ -630,7 +636,10 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote($arguments, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		if (count($arguments) === 1)
 		{
@@ -651,7 +660,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_object()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$object = $this->getMock('stdClass', array('__toString'));
 		$object->expects($this->exactly(4))

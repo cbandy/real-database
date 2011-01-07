@@ -14,7 +14,11 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	protected function _test_join_helper($method, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$from = new Database_From('one');
 
 		$this->assertSame($from, $from->$method('two'), 'Chainable (string)');
@@ -29,7 +33,10 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('', $db->quote(new Database_From));
 		$this->assertSame('"pre_one"', $db->quote(new Database_From('one')));
@@ -42,7 +49,11 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$from = new Database_From('one');
 
 		$this->assertSame($from, $from->add('two', 'b'));
@@ -54,7 +65,11 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_join()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$from = new Database_From('one');
 
 		$this->assertSame($from, $from->join('two', 'b'));
@@ -141,7 +156,11 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_on()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$from = new Database_From('one');
 		$from->join('two');
 
@@ -163,7 +182,11 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_parentheses()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$from = new Database_From;
 
 		$this->assertSame($from, $from->open());
@@ -193,7 +216,11 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$from = new Database_From('one');
 		$from->join('two');
 

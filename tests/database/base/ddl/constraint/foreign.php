@@ -13,7 +13,10 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
 
 		$this->assertSame('REFERENCES "pre_a"', $db->quote(new Database_DDL_Constraint_Foreign('a')));
 		$this->assertSame('REFERENCES "pre_a" ("b")', $db->quote(new Database_DDL_Constraint_Foreign('a', array('b'))));
@@ -24,7 +27,11 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$constraint = new Database_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->columns(array('b')), 'Chainable');
@@ -36,7 +43,11 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_deferrable()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$constraint = new Database_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->deferrable(TRUE), 'Chainable (TRUE)');
@@ -60,7 +71,11 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_match()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$constraint = new Database_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->match('simple'));
@@ -72,7 +87,11 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_on()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$constraint = new Database_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->on('delete', 'cascade'), 'Chainable (delete, cascade)');
@@ -87,7 +106,11 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_referencing()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$constraint = new Database_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->referencing(array('b')));
@@ -99,7 +122,11 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	 */
 	public function test_table()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->once())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
 		$constraint = new Database_DDL_Constraint_Foreign;
 
 		$this->assertSame($constraint, $constraint->table('a'), 'Chainable');

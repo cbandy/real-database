@@ -13,7 +13,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor_empty()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame('', $db->quote(new Database_Conditions));
 	}
@@ -38,7 +38,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		if (count($arguments) === 1)
 		{
@@ -62,7 +62,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->add('and', 'a', '=', 0));
@@ -80,7 +80,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add_between()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions('2009-11-19', 'between', array('2009-11-1', '2009-12-1'));
 
 		$this->assertSame("'2009-11-19' BETWEEN '2009-11-1' AND '2009-12-1'", $db->quote($conditions));
@@ -91,7 +91,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add_in()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions(new Database_Identifier('a'), 'in', array('x', 5, new Database_Identifier('z')));
 
 		$this->assertSame('"a" IN (\'x\', 5, "z")', $db->quote($conditions));
@@ -102,7 +102,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_column('a', '=', 0));
@@ -117,7 +117,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_columns('a', '=', 'b'));
@@ -132,7 +132,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_not()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_not('a', '=', 0));
@@ -147,7 +147,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_not_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_not_column('a', '=', 0));
@@ -162,7 +162,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_not_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_not_columns('a', '=', 'b'));
@@ -177,7 +177,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_not_open()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_not_open());
@@ -195,7 +195,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_not_open_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_not_open_column('a', '=', 0));
@@ -210,7 +210,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_not_open_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_not_open_columns('a', '=', 'b'));
@@ -225,7 +225,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_open()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_open());
@@ -243,7 +243,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_open_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_open_column('a', '=', 0));
@@ -258,7 +258,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_and_open_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->and_open_columns('a', '=', 'b'));
@@ -273,7 +273,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_close()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->close());
@@ -288,7 +288,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->column('and', 'a', '=', 0));
@@ -306,7 +306,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->columns('and', 'a', '=', 'b'));
@@ -324,7 +324,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_not()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->not('and', 'a', '=', 0));
@@ -342,7 +342,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_not_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->not_column('and', 'a', '=', 0));
@@ -360,7 +360,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_not_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->not_columns('and', 'a', '=', 'b'));
@@ -378,7 +378,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_not_open()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->not_open('and'));
@@ -399,7 +399,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_not_open_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->not_open_column('and', 'a', '=', 0));
@@ -417,7 +417,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_not_open_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->not_open_columns('and', 'a', '=', 'b'));
@@ -435,7 +435,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_open()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->open('and'));
@@ -456,7 +456,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_open_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->open_column('and', 'a', '=', 0));
@@ -474,7 +474,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_open_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->open_columns('and', 'a', '=', 'b'));
@@ -492,7 +492,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_column('a', '=', 0));
@@ -507,7 +507,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_columns('a', '=', 'b'));
@@ -522,7 +522,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_not()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_not('a', '=', 0));
@@ -537,7 +537,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_not_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_not_column('a', '=', 0));
@@ -552,7 +552,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_not_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_not_columns('a', '=', 'b'));
@@ -567,7 +567,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_not_open()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_not_open());
@@ -585,7 +585,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_not_open_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_not_open_column('a', '=', 0));
@@ -600,7 +600,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_not_open_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_not_open_columns('a', '=', 'b'));
@@ -615,7 +615,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_open()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_open());
@@ -633,7 +633,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_open_column()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_open_column('a', '=', 0));
@@ -648,7 +648,7 @@ class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_or_open_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$conditions = new Database_Conditions;
 
 		$this->assertSame($conditions, $conditions->or_open_columns('a', '=', 'b'));

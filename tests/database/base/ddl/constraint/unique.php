@@ -13,7 +13,7 @@ class Database_Base_DDL_Constraint_Unique_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame('UNIQUE', $db->quote(new Database_DDL_Constraint_Unique));
 		$this->assertSame('UNIQUE', $db->quote(new Database_DDL_Constraint_Unique(array())));
@@ -25,7 +25,7 @@ class Database_Base_DDL_Constraint_Unique_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_columns()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$constraint = new Database_DDL_Constraint_Unique;
 
 		$this->assertSame($constraint, $constraint->columns(array('a')), 'Chainable');
