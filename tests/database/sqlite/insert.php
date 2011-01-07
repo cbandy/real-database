@@ -8,6 +8,9 @@
  */
 class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_SQLite_Insert::__construct
+	 */
 	public function test_constructor()
 	{
 		$db = $this->sharedFixture;
@@ -17,6 +20,9 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('INSERT INTO '.$table.' ("b") DEFAULT VALUES', $db->quote(new Database_SQLite_Insert('a', array('b'))));
 	}
 
+	/**
+	 * @covers  Database_SQLite_Insert::values
+	 */
 	public function test_values()
 	{
 		$db = $this->sharedFixture;

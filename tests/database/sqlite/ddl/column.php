@@ -8,13 +8,9 @@
  */
 class Database_SQLite_DDL_Column_Test extends PHPUnit_Framework_TestCase
 {
-	public function test_constructor()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertSame('"a" b', $db->quote(new Database_SQLite_DDL_Column('a', 'b')));
-	}
-
+	/**
+	 * @covers  Database_SQLite_DDL_Column::identity
+	 */
 	public function test_identity()
 	{
 		$db = $this->sharedFixture;
@@ -24,6 +20,9 @@ class Database_SQLite_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"a" INTEGER NOT NULL PRIMARY KEY', $db->quote($column));
 	}
 
+	/**
+	 * @covers  Database_SQLite_DDL_Column::identity
+	 */
 	public function test_identity_prior_constraint()
 	{
 		$db = $this->sharedFixture;
@@ -34,6 +33,9 @@ class Database_SQLite_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('"a" INTEGER NOT NULL UNIQUE PRIMARY KEY', $db->quote($column));
 	}
 
+	/**
+	 * @covers  Database_SQLite_DDL_Column::identity
+	 */
 	public function test_identity_prior_primary_key()
 	{
 		$db = $this->sharedFixture;
