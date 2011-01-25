@@ -122,11 +122,11 @@ abstract class Database
 	 *
 	 * @param   mixed   $name   Converted to SQL_Column
 	 * @param   mixed   $type   Converted to SQL_Expression
-	 * @return  Database_DDL_Column
+	 * @return  SQL_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
 	{
-		return new Database_DDL_Column($name, $type);
+		return new SQL_DDL_Column($name, $type);
 	}
 
 	/**
@@ -134,11 +134,11 @@ abstract class Database
 	 *
 	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
 	 * @param   mixed   $name   Converted to SQL_Identifier
-	 * @return  Database_DDL_Constraint
+	 * @return  SQL_DDL_Constraint
 	 */
 	public static function ddl_constraint($type, $name = NULL)
 	{
-		$result = "Database_DDL_Constraint_$type";
+		$result = "SQL_DDL_Constraint_$type";
 		$result = new $result;
 
 		if ($name !== NULL)

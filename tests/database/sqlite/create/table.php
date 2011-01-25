@@ -41,7 +41,7 @@ class Database_SQLite_Create_Table_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame('CREATE TEMPORARY TABLE IF NOT EXISTS :name (:columns)', (string) $command);
 
-		$command->constraint(new Database_DDL_Constraint_Primary(array('b')));
+		$command->constraint(new SQL_DDL_Constraint_Primary(array('b')));
 		$this->assertSame('CREATE TEMPORARY TABLE IF NOT EXISTS :name (:columns, :constraints)', (string) $command);
 
 		$command->query(new Database_Query('c'));

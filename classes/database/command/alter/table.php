@@ -33,7 +33,7 @@ class Database_Command_Alter_Table extends Database_Command
 	/**
 	 * Add a column to the table.
 	 *
-	 * @param   Database_DDL_Column $column
+	 * @param   SQL_DDL_Column  $column
 	 * @return  $this
 	 */
 	public function add_column($column)
@@ -48,7 +48,7 @@ class Database_Command_Alter_Table extends Database_Command
 	 *
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   Database_DDL_Constraint $constraint
+	 * @param   SQL_DDL_Constraint  $constraint
 	 * @return  $this
 	 */
 	public function add_constraint($constraint)

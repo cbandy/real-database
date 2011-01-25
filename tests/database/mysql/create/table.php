@@ -67,7 +67,7 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 		$command = new Database_MySQL_Create_Table('a');
-		$command->column(new Database_DDL_Column('b', 'c'));
+		$command->column(new SQL_DDL_Column('b', 'c'));
 		$command->query(new Database_Query('d'));
 		$table = $db->quote_table('a');
 
@@ -78,8 +78,8 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 		$command = new Database_MySQL_Create_Table('a');
-		$command->column(new Database_DDL_Column('b', 'c'));
-		$command->constraint(new Database_DDL_Constraint_Unique(array('d')));
+		$command->column(new SQL_DDL_Column('b', 'c'));
+		$command->constraint(new SQL_DDL_Constraint_Unique(array('d')));
 		$command->query(new Database_Query('e'));
 		$table = $db->quote_table('a');
 

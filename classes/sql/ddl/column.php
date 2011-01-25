@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/syntaxdiagrams.html#column-def SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms174979.aspx Transact-SQL
  */
-class Database_DDL_Column extends SQL_Expression
+class SQL_DDL_Column extends SQL_Expression
 {
 	/**
 	 * @var boolean
@@ -21,8 +21,8 @@ class Database_DDL_Column extends SQL_Expression
 	protected $_not_null;
 
 	/**
-	 * @uses Database_DDL_Column::name()
-	 * @uses Database_DDL_Column::type()
+	 * @uses SQL_DDL_Column::name()
+	 * @uses SQL_DDL_Column::type()
 	 *
 	 * @param   mixed   $name   Converted to SQL_Column
 	 * @param   mixed   $type   Converted to SQL_Expression
@@ -142,7 +142,7 @@ class Database_DDL_Column extends SQL_Expression
 	/**
 	 * Append a constraint to the column
 	 *
-	 * @param   Database_DDL_Constraint $constraint
+	 * @param   SQL_DDL_Constraint  $constraint
 	 * @return  $this
 	 */
 	public function constraint($constraint)

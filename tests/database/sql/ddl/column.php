@@ -9,58 +9,58 @@
 class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_DDL_Column::__construct
+	 * @covers  SQL_DDL_Column::__construct
 	 */
 	public function test_constructor()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
-		$this->assertSame('"a" b', $db->quote(new Database_DDL_Column('a', 'b')));
+		$this->assertSame('"a" b', $db->quote(new SQL_DDL_Column('a', 'b')));
 	}
 
 	/**
-	 * @covers  Database_DDL_Column::name
+	 * @covers  SQL_DDL_Column::name
 	 */
 	public function test_name()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$column = new Database_DDL_Column('a', 'b');
+		$column = new SQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->name('c'));
 		$this->assertSame('"c" b', $db->quote($column));
 	}
 
 	/**
-	 * @covers  Database_DDL_Column::type
+	 * @covers  SQL_DDL_Column::type
 	 */
 	public function test_type()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$column = new Database_DDL_Column('a', 'b');
+		$column = new SQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->type('c'));
 		$this->assertSame('"a" c', $db->quote($column));
 	}
 
 	/**
-	 * @covers  Database_DDL_Column::set_default
+	 * @covers  SQL_DDL_Column::set_default
 	 */
 	public function test_set_default()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$column = new Database_DDL_Column('a', 'b');
+		$column = new SQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->set_default(1));
 		$this->assertSame('"a" b DEFAULT 1', $db->quote($column));
 	}
 
 	/**
-	 * @covers  Database_DDL_Column::no_default
+	 * @covers  SQL_DDL_Column::no_default
 	 */
 	public function test_no_default()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$column = new Database_DDL_Column('a', 'b');
+		$column = new SQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->no_default());
 		$this->assertSame('"a" b', $db->quote($column));
@@ -73,12 +73,12 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_DDL_Column::not_null
+	 * @covers  SQL_DDL_Column::not_null
 	 */
 	public function test_not_null()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$column = new Database_DDL_Column('a', 'b');
+		$column = new SQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->not_null(), 'Chainable (void)');
 		$this->assertSame('"a" b NOT NULL', $db->quote($column));
@@ -91,17 +91,17 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_DDL_Column::constraint
+	 * @covers  SQL_DDL_Column::constraint
 	 */
 	public function test_constraint()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$column = new Database_DDL_Column('a', 'b');
+		$column = new SQL_DDL_Column('a', 'b');
 
-		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Unique), 'Chainable (unique)');
+		$this->assertSame($column, $column->constraint(new SQL_DDL_Constraint_Unique), 'Chainable (unique)');
 		$this->assertSame('"a" b UNIQUE', $db->quote($column));
 
-		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Check(1)), 'Chainable (check)');
+		$this->assertSame($column, $column->constraint(new SQL_DDL_Constraint_Check(1)), 'Chainable (check)');
 		$this->assertSame('"a" b UNIQUE CHECK (1)', $db->quote($column));
 
 		$this->assertSame($column, $column->constraint(NULL), 'Chainable (NULL)');
@@ -109,17 +109,17 @@ class Database_Base_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_DDL_Column::__toString
+	 * @covers  SQL_DDL_Column::__toString
 	 */
 	public function test_toString()
 	{
-		$column = new Database_DDL_Column;
+		$column = new SQL_DDL_Column;
 		$column
 			->name('a')
 			->type('b')
 			->set_default('c')
 			->not_null()
-			->constraint(new Database_DDL_Constraint_Unique);
+			->constraint(new SQL_DDL_Constraint_Unique);
 
 		$this->assertSame(':name :type DEFAULT :default NOT NULL :constraints', (string) $column);
 	}

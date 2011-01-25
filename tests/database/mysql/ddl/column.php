@@ -83,13 +83,13 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
-		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Unique), 'Chainable (unique)');
+		$this->assertSame($column, $column->constraint(new SQL_DDL_Constraint_Unique), 'Chainable (unique)');
 		$this->assertSame('`a` b UNIQUE', $db->quote($column));
 
-		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Check(1)), 'Chainable (check)');
+		$this->assertSame($column, $column->constraint(new SQL_DDL_Constraint_Check(1)), 'Chainable (check)');
 		$this->assertSame('`a` b UNIQUE', $db->quote($column));
 
-		$this->assertSame($column, $column->constraint(new Database_DDL_Constraint_Foreign('c', array('d'))), 'Chainable (foreign)');
+		$this->assertSame($column, $column->constraint(new SQL_DDL_Constraint_Foreign('c', array('d'))), 'Chainable (foreign)');
 		$this->assertSame('`a` b UNIQUE REFERENCES '.$db->quote_table('c').' (`d`)', $db->quote($column));
 
 		$this->assertSame($column, $column->constraint(NULL), 'Chainable (NULL)');

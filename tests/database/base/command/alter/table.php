@@ -55,7 +55,7 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 
 		$command = new Database_Command_Alter_Table('a');
 
-		$this->assertSame($command, $command->add_column(new Database_DDL_Column('b', 'c')));
+		$this->assertSame($command, $command->add_column(new SQL_DDL_Column('b', 'c')));
 		$this->assertSame('ALTER TABLE "pre_a" ADD "b" c', $db->quote($command));
 	}
 
@@ -71,7 +71,7 @@ class Database_Base_Command_Alter_Table_Test extends PHPUnit_Framework_TestCase
 
 		$command = new Database_Command_Alter_Table('a');
 
-		$this->assertSame($command, $command->add_constraint(new Database_DDL_Constraint_Primary(array('b'))));
+		$this->assertSame($command, $command->add_constraint(new SQL_DDL_Constraint_Primary(array('b'))));
 		$this->assertSame('ALTER TABLE "pre_a" ADD PRIMARY KEY ("b")', $db->quote($command));
 	}
 

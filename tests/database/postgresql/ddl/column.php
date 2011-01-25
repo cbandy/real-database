@@ -41,7 +41,7 @@ class Database_PostgreSQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 		$column = new Database_PostgreSQL_DDL_Column('a');
-		$column->constraint(new Database_DDL_Constraint_Unique);
+		$column->constraint(new SQL_DDL_Constraint_Unique);
 
 		$this->assertSame($column, $column->identity());
 		$this->assertSame('"a" SERIAL UNIQUE PRIMARY KEY', $db->quote($column));
@@ -51,7 +51,7 @@ class Database_PostgreSQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 		$column = new Database_PostgreSQL_DDL_Column('a');
-		$column->constraint(new Database_DDL_Constraint_Primary);
+		$column->constraint(new SQL_DDL_Constraint_Primary);
 
 		$this->assertSame($column, $column->identity());
 		$this->assertSame('"a" SERIAL PRIMARY KEY', $db->quote($column));

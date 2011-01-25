@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/foreignkeys.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms175464.aspx Transact-SQL
  */
-class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
+class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 {
 	/**
 	 * @var boolean|string  The time at which a deferred constraint should be checked
@@ -31,8 +31,8 @@ class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 	protected $_on;
 
 	/**
-	 * @uses Database_DDL_Constraint_Foreign::table()
-	 * @uses Database_DDL_Constraint_Foreign::columns()
+	 * @uses SQL_DDL_Constraint_Foreign::table()
+	 * @uses SQL_DDL_Constraint_Foreign::columns()
 	 *
 	 * @param   mixed   $table      Converted to SQL_Table
 	 * @param   array   $columns    Each element converted to SQL_Column

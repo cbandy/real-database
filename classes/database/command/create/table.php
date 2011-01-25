@@ -76,7 +76,7 @@ class Database_Command_Create_Table extends Database_Command
 	/**
 	 * Append a column definition
 	 *
-	 * @param   Database_DDL_Column $column
+	 * @param   SQL_DDL_Column  $column
 	 * @return  $this
 	 */
 	public function column($column)
@@ -96,7 +96,7 @@ class Database_Command_Create_Table extends Database_Command
 	/**
 	 * Append a table constraint
 	 *
-	 * @param   Database_DDL_Constraint $constraint
+	 * @param   SQL_DDL_Constraint  $constraint
 	 * @return  $this
 	 */
 	public function constraint($constraint)

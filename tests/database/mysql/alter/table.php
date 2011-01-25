@@ -14,13 +14,13 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$command = new Database_MySQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
-		$this->assertSame($command, $command->add_column(new Database_DDL_Column('b', 'c')), 'Chainable (column)');
+		$this->assertSame($command, $command->add_column(new SQL_DDL_Column('b', 'c')), 'Chainable (column)');
 		$this->assertSame("ALTER TABLE $table ADD `b` c", $db->quote($command));
 
-		$this->assertSame($command, $command->add_column(new Database_DDL_Column('e', 'f'), TRUE), 'Chainable (column, TRUE)');
+		$this->assertSame($command, $command->add_column(new SQL_DDL_Column('e', 'f'), TRUE), 'Chainable (column, TRUE)');
 		$this->assertSame("ALTER TABLE $table ADD `b` c, ADD `e` f FIRST", $db->quote($command));
 
-		$this->assertSame($command, $command->add_column(new Database_DDL_Column('g', 'h'), 'i'), 'Chainable (column, string)');
+		$this->assertSame($command, $command->add_column(new SQL_DDL_Column('g', 'h'), 'i'), 'Chainable (column, string)');
 		$this->assertSame("ALTER TABLE $table ADD `b` c, ADD `e` f FIRST, ADD `g` h AFTER `i`", $db->quote($command));
 	}
 
@@ -30,13 +30,13 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$command = new Database_MySQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
-		$this->assertSame($command, $command->change_column('b', new Database_DDL_Column('c', 'd')), 'Chainable (string, column)');
+		$this->assertSame($command, $command->change_column('b', new SQL_DDL_Column('c', 'd')), 'Chainable (string, column)');
 		$this->assertSame("ALTER TABLE $table CHANGE `b` `c` d", $db->quote($command));
 
-		$this->assertSame($command, $command->change_column('e', new Database_DDL_Column('f', 'g'), TRUE), 'Chainable (string, column, TRUE)');
+		$this->assertSame($command, $command->change_column('e', new SQL_DDL_Column('f', 'g'), TRUE), 'Chainable (string, column, TRUE)');
 		$this->assertSame("ALTER TABLE $table CHANGE `b` `c` d, CHANGE `e` `f` g FIRST", $db->quote($command));
 
-		$this->assertSame($command, $command->change_column('h', new Database_DDL_Column('i', 'j'), 'k'), 'Chainable (string, column, string)');
+		$this->assertSame($command, $command->change_column('h', new SQL_DDL_Column('i', 'j'), 'k'), 'Chainable (string, column, string)');
 		$this->assertSame("ALTER TABLE $table CHANGE `b` `c` d, CHANGE `e` `f` g FIRST, CHANGE `h` `i` j AFTER `k`", $db->quote($command));
 	}
 

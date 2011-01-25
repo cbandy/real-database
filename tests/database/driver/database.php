@@ -136,14 +136,14 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 
 			// DDL Expressions
 
-			array('ddl_column', array(), 'Database_DDL_Column'),
-			array('ddl_column', array('a'), 'Database_DDL_Column'),
-			array('ddl_column', array('a', 'b'), 'Database_DDL_Column'),
+			array('ddl_column', array(), 'SQL_DDL_Column'),
+			array('ddl_column', array('a'), 'SQL_DDL_Column'),
+			array('ddl_column', array('a', 'b'), 'SQL_DDL_Column'),
 
-			array('ddl_constraint', array('check'), 'Database_DDL_Constraint_Check'),
-			array('ddl_constraint', array('foreign'), 'Database_DDL_Constraint_Foreign'),
-			array('ddl_constraint', array('primary'), 'Database_DDL_Constraint_Primary'),
-			array('ddl_constraint', array('unique'), 'Database_DDL_Constraint_Unique'),
+			array('ddl_constraint', array('check'), 'SQL_DDL_Constraint_Check'),
+			array('ddl_constraint', array('foreign'), 'SQL_DDL_Constraint_Foreign'),
+			array('ddl_constraint', array('primary'), 'SQL_DDL_Constraint_Primary'),
+			array('ddl_constraint', array('unique'), 'SQL_DDL_Constraint_Unique'),
 		);
 	}
 

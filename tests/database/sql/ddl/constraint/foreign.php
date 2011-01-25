@@ -9,7 +9,7 @@
 class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::__construct
+	 * @covers  SQL_DDL_Constraint_Foreign::__construct
 	 */
 	public function test_constructor()
 	{
@@ -18,12 +18,12 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('REFERENCES "pre_a"', $db->quote(new Database_DDL_Constraint_Foreign('a')));
-		$this->assertSame('REFERENCES "pre_a" ("b")', $db->quote(new Database_DDL_Constraint_Foreign('a', array('b'))));
+		$this->assertSame('REFERENCES "pre_a"', $db->quote(new SQL_DDL_Constraint_Foreign('a')));
+		$this->assertSame('REFERENCES "pre_a" ("b")', $db->quote(new SQL_DDL_Constraint_Foreign('a', array('b'))));
 	}
 
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::columns
+	 * @covers  SQL_DDL_Constraint_Foreign::columns
 	 */
 	public function test_columns()
 	{
@@ -32,14 +32,14 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$constraint = new Database_DDL_Constraint_Foreign('a');
+		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->columns(array('b')), 'Chainable');
 		$this->assertSame('REFERENCES "pre_a" ("b")', $db->quote($constraint));
 	}
 
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::deferrable
+	 * @covers  SQL_DDL_Constraint_Foreign::deferrable
 	 */
 	public function test_deferrable()
 	{
@@ -48,7 +48,7 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$constraint = new Database_DDL_Constraint_Foreign('a');
+		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->deferrable(TRUE), 'Chainable (TRUE)');
 		$this->assertSame('REFERENCES "pre_a" DEFERRABLE', $db->quote($constraint));
@@ -67,7 +67,7 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	}
 
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::match
+	 * @covers  SQL_DDL_Constraint_Foreign::match
 	 */
 	public function test_match()
 	{
@@ -76,14 +76,14 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$constraint = new Database_DDL_Constraint_Foreign('a');
+		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->match('simple'));
 		$this->assertSame('REFERENCES "pre_a" MATCH SIMPLE', $db->quote($constraint));
 	}
 
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::on
+	 * @covers  SQL_DDL_Constraint_Foreign::on
 	 */
 	public function test_on()
 	{
@@ -92,7 +92,7 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$constraint = new Database_DDL_Constraint_Foreign('a');
+		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->on('delete', 'cascade'), 'Chainable (delete, cascade)');
 		$this->assertSame('REFERENCES "pre_a" ON DELETE CASCADE', $db->quote($constraint));
@@ -102,7 +102,7 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 	}
 
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::referencing
+	 * @covers  SQL_DDL_Constraint_Foreign::referencing
 	 */
 	public function test_referencing()
 	{
@@ -111,14 +111,14 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$constraint = new Database_DDL_Constraint_Foreign('a');
+		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->referencing(array('b')));
 		$this->assertSame('FOREIGN KEY ("b") REFERENCES "pre_a"', $db->quote($constraint));
 	}
 
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::table
+	 * @covers  SQL_DDL_Constraint_Foreign::table
 	 */
 	public function test_table()
 	{
@@ -127,18 +127,18 @@ class Database_Base_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCa
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$constraint = new Database_DDL_Constraint_Foreign;
+		$constraint = new SQL_DDL_Constraint_Foreign;
 
 		$this->assertSame($constraint, $constraint->table('a'), 'Chainable');
 		$this->assertSame('REFERENCES "pre_a"', $db->quote($constraint));
 	}
 
 	/**
-	 * @covers  Database_DDL_Constraint_Foreign::__toString
+	 * @covers  SQL_DDL_Constraint_Foreign::__toString
 	 */
 	public function test_toString()
 	{
-		$constraint = new Database_DDL_Constraint_Foreign;
+		$constraint = new SQL_DDL_Constraint_Foreign;
 		$constraint
 			->name('a')
 			->referencing(array('b'))

@@ -87,7 +87,7 @@ class Database_MySQL_DDL_Column extends Database_DDL_Column_Identity
 	/**
 	 * Append a constraint to the column.
 	 *
-	 * @param   Database_DDL_Constraint $constraint
+	 * @param   SQL_DDL_Constraint  $constraint
 	 * @return  $this
 	 */
 	public function constraint($constraint)
@@ -96,11 +96,11 @@ class Database_MySQL_DDL_Column extends Database_DDL_Column_Identity
 		{
 			$this->parameters[':foreign'] = $this->parameters[':unique'] = NULL;
 		}
-		elseif ($constraint instanceof Database_DDL_Constraint_Foreign)
+		elseif ($constraint instanceof SQL_DDL_Constraint_Foreign)
 		{
 			$this->parameters[':foreign'] = $constraint;
 		}
-		elseif ( ! $constraint instanceof Database_DDL_Constraint_Check)
+		elseif ( ! $constraint instanceof SQL_DDL_Constraint_Check)
 		{
 			$this->parameters[':unique'] = $constraint;
 		}
@@ -111,7 +111,7 @@ class Database_MySQL_DDL_Column extends Database_DDL_Column_Identity
 	public function identity()
 	{
 		$this->_auto_increment = TRUE;
-		$this->parameters[':unique'] = new Database_DDL_Constraint_Primary;
+		$this->parameters[':unique'] = new SQL_DDL_Constraint_Primary;
 
 		return $this;
 	}

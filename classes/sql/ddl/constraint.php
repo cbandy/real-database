@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/syntaxdiagrams.html#table-constraint SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms189862.aspx Transact-SQL
  */
-abstract class Database_DDL_Constraint extends SQL_Expression
+abstract class SQL_DDL_Constraint extends SQL_Expression
 {
 	public function __toString()
 	{

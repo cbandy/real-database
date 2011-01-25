@@ -193,14 +193,14 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('datetime', array(1258461296, 'UTC'), new Database_DateTime(1258461296, 'UTC')),
 			array('datetime', array(1258461296, 'UTC', 'Y-m-d'), new Database_DateTime(1258461296, 'UTC', 'Y-m-d')),
 
-			array('ddl_column', array(), new Database_DDL_Column),
-			array('ddl_column', array('a'), new Database_DDL_Column('a')),
-			array('ddl_column', array('a', 'b'), new Database_DDL_Column('a', 'b')),
+			array('ddl_column', array(), new SQL_DDL_Column),
+			array('ddl_column', array('a'), new SQL_DDL_Column('a')),
+			array('ddl_column', array('a', 'b'), new SQL_DDL_Column('a', 'b')),
 
-			array('ddl_constraint', array('check'), new Database_DDL_Constraint_Check),
-			array('ddl_constraint', array('foreign'), new Database_DDL_Constraint_Foreign),
-			array('ddl_constraint', array('primary'), new Database_DDL_Constraint_Primary),
-			array('ddl_constraint', array('unique'), new Database_DDL_Constraint_Unique),
+			array('ddl_constraint', array('check'), new SQL_DDL_Constraint_Check),
+			array('ddl_constraint', array('foreign'), new SQL_DDL_Constraint_Foreign),
+			array('ddl_constraint', array('primary'), new SQL_DDL_Constraint_Primary),
+			array('ddl_constraint', array('unique'), new SQL_DDL_Constraint_Unique),
 
 			array('delete', array(), new Database_Command_Delete),
 			array('delete', array('a'), new Database_Command_Delete('a')),
@@ -242,19 +242,19 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('update', array('a', 'b', array('c' => 'd')), new Database_Command_Update('a', 'b', array('c' => 'd'))),
 		);
 
-		$constraint = new Database_DDL_Constraint_Check;
+		$constraint = new SQL_DDL_Constraint_Check;
 		$constraint->name('a');
 		$result[] = array('ddl_constraint', array('check', 'a'), $constraint);
 
-		$constraint = new Database_DDL_Constraint_Foreign;
+		$constraint = new SQL_DDL_Constraint_Foreign;
 		$constraint->name('a');
 		$result[] = array('ddl_constraint', array('foreign', 'a'), $constraint);
 
-		$constraint = new Database_DDL_Constraint_Primary;
+		$constraint = new SQL_DDL_Constraint_Primary;
 		$constraint->name('a');
 		$result[] = array('ddl_constraint', array('primary', 'a'), $constraint);
 
-		$constraint = new Database_DDL_Constraint_Unique;
+		$constraint = new SQL_DDL_Constraint_Unique;
 		$constraint->name('a');
 		$result[] = array('ddl_constraint', array('unique', 'a'), $constraint);
 

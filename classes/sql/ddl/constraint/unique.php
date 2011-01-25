@@ -11,18 +11,18 @@
  * @link http://dev.mysql.com/doc/en/create-table.html MySQL
  * @link http://www.postgresql.org/docs/current/static/ddl-constraints.html PostgreSQL
  * @link http://www.sqlite.org/syntaxdiagrams.html#table-constraint SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms191236.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/en-us/library/ms191166.aspx Transact-SQL
  */
-class Database_DDL_Constraint_Primary extends Database_DDL_Constraint
+class SQL_DDL_Constraint_Unique extends SQL_DDL_Constraint
 {
 	/**
-	 * @uses Database_DDL_Constraint_Primary::columns()
+	 * @uses SQL_DDL_Constraint_Unique::columns()
 	 *
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 */
 	public function __construct($columns = array())
 	{
-		parent::__construct('PRIMARY KEY');
+		parent::__construct('UNIQUE');
 
 		$this->columns($columns);
 	}
@@ -40,7 +40,7 @@ class Database_DDL_Constraint_Primary extends Database_DDL_Constraint
 	}
 
 	/**
-	 * Set the group of columns that must contain unique values and no nulls
+	 * Set the group of columns that must contain unique values
 	 *
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this

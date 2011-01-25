@@ -12,10 +12,10 @@
  * @link http://www.sqlite.org/syntaxdiagrams.html#table-constraint SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms188258.aspx Transact-SQL
  */
-class Database_DDL_Constraint_Check extends Database_DDL_Constraint
+class SQL_DDL_Constraint_Check extends SQL_DDL_Constraint
 {
 	/**
-	 * @uses Database_DDL_Constraint_Check::conditions()
+	 * @uses SQL_DDL_Constraint_Check::conditions()
 	 *
 	 * @param   SQL_Conditions  $conditions
 	 */

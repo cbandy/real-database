@@ -31,7 +31,7 @@ class Database_PostgreSQL_DDL_Column extends Database_DDL_Column_Identity
 		{
 			foreach ($this->parameters[':constraints']->parameters as $constraint)
 			{
-				if ($constraint instanceof Database_DDL_Constraint_Primary)
+				if ($constraint instanceof SQL_DDL_Constraint_Primary)
 				{
 					// Already has a PRIMARY KEY constraint
 					return $this;
@@ -40,6 +40,6 @@ class Database_PostgreSQL_DDL_Column extends Database_DDL_Column_Identity
 		}
 
 		// Add a PRIMARY KEY constraint
-		return $this->constraint(new Database_DDL_Constraint_Primary);
+		return $this->constraint(new SQL_DDL_Constraint_Primary);
 	}
 }

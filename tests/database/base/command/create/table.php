@@ -55,10 +55,10 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 
 		$command = new Database_Command_Create_Table('a');
 
-		$this->assertSame($command, $command->column(new Database_DDL_Column('b', 'c')));
+		$this->assertSame($command, $command->column(new SQL_DDL_Column('b', 'c')));
 		$this->assertSame('CREATE TABLE "pre_a" ("b" c)', $db->quote($command));
 
-		$this->assertSame($command, $command->column(new Database_DDL_Column('d', 'e')));
+		$this->assertSame($command, $command->column(new SQL_DDL_Column('d', 'e')));
 		$this->assertSame('CREATE TABLE "pre_a" ("b" c, "d" e)', $db->quote($command));
 
 		$this->assertSame($command, $command->column(NULL));
@@ -78,10 +78,10 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$command = new Database_Command_Create_Table('a');
 		$command->parameters[':columns'] = array();
 
-		$this->assertSame($command, $command->constraint(new Database_DDL_Constraint_Primary(array('b'))));
+		$this->assertSame($command, $command->constraint(new SQL_DDL_Constraint_Primary(array('b'))));
 		$this->assertSame('CREATE TABLE "pre_a" (, PRIMARY KEY ("b"))', $db->quote($command));
 
-		$this->assertSame($command, $command->constraint(new Database_DDL_Constraint_Unique(array('c'))));
+		$this->assertSame($command, $command->constraint(new SQL_DDL_Constraint_Unique(array('c'))));
 		$this->assertSame('CREATE TABLE "pre_a" (, PRIMARY KEY ("b"), UNIQUE ("c"))', $db->quote($command));
 
 		$this->assertSame($command, $command->constraint(NULL));
@@ -135,11 +135,11 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$command = new Database_Command_Create_Table;
 		$command
 			->temporary()
-			->column(new Database_DDL_Column('a', 'b'));
+			->column(new SQL_DDL_Column('a', 'b'));
 
 		$this->assertSame('CREATE TEMPORARY TABLE :name (:columns)', (string) $command);
 
-		$command->constraint(new Database_DDL_Constraint_Primary(array('c')));
+		$command->constraint(new SQL_DDL_Constraint_Primary(array('c')));
 
 		$this->assertSame('CREATE TEMPORARY TABLE :name (:columns, :constraints)', (string) $command);
 

@@ -46,8 +46,8 @@ class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
 	/**
 	 * Add a column to the table, optionally specifying the position.
 	 *
-	 * @param   Database_DDL_Column $column
-	 * @param   boolean|mixed       $after  TRUE for FIRST or Converted to SQL_Column
+	 * @param   SQL_DDL_Column  $column
+	 * @param   boolean|mixed   $after  TRUE for FIRST or Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function add_column($column, $after = FALSE)
@@ -60,9 +60,9 @@ class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
 	/**
 	 * Change a column in the table, optionally specifying the position.
 	 *
-	 * @param   mixed               $name   Converted to SQL_Column
-	 * @param   Database_DDL_Column $column
-	 * @param   boolean|mixed       $after  TRUE for FIRST or Converted to SQL_Column
+	 * @param   mixed           $name   Converted to SQL_Column
+	 * @param   SQL_DDL_Column  $column
+	 * @param   boolean|mixed   $after  TRUE for FIRST or Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function change_column($name, $column, $after = FALSE)
