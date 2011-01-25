@@ -66,18 +66,6 @@ abstract class Database
 	}
 
 	/**
-	 * Create a command
-	 *
-	 * @param   string  $statement  SQL command
-	 * @param   array   $parameters Unquoted parameters
-	 * @return  Database_Command
-	 */
-	public static function command($statement, $parameters = array())
-	{
-		return new Database_Command($statement, $parameters);
-	}
-
-	/**
 	 * Create a conditions accumulator
 	 *
 	 * @param   mixed   $left       Left operand

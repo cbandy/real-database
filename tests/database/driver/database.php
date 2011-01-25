@@ -87,9 +87,6 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 
 			// Commands
 
-			array('command', array('a'), 'Database_Command'),
-			array('command', array('a', array('b')), 'Database_Command'),
-
 			array('delete', array(), 'SQL_DML_Delete'),
 			array('delete', array('a'), 'SQL_DML_Delete'),
 			array('delete', array('a', 'b'), 'SQL_DML_Delete'),

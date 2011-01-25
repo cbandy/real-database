@@ -136,7 +136,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 * @covers  Database::alter
 	 * @covers  Database::binary
 	 * @covers  Database::column
-	 * @covers  Database::command
 	 * @covers  Database::conditions
 	 * @covers  Database::create
 	 * @covers  Database::datetime
@@ -171,9 +170,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('binary', array('a'), new Database_Binary('a')),
 
 			array('column', array('a'), new SQL_Column('a')),
-
-			array('command', array('a'), new Database_Command('a')),
-			array('command', array('a', array('b')), new Database_Command('a', array('b'))),
 
 			array('conditions', array(), new SQL_Conditions),
 			array('conditions', array('a'), new SQL_Conditions('a')),
