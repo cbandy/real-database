@@ -62,18 +62,6 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	}
 
 	/**
-	 * Create an INSERT command
-	 *
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
-	 * @return  Database_Insert
-	 */
-	public static function insert($table = NULL, $columns = NULL)
-	{
-		return new Database_Insert($table, $columns);
-	}
-
-	/**
 	 * @var resource    Link identifier
 	 */
 	protected $_connection;

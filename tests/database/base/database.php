@@ -221,9 +221,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 			array('identifier', array('a'), new SQL_Identifier('a')),
 
-			array('insert', array(), new SQL_DML_Insert),
-			array('insert', array('a'), new SQL_DML_Insert('a')),
-			array('insert', array('a', array('b')), new SQL_DML_Insert('a', array('b'))),
+			array('insert', array(), new Database_Insert),
+			array('insert', array('a'), new Database_Insert('a')),
+			array('insert', array('a', array('b')), new Database_Insert('a', array('b'))),
 
 			array('query', array('a'), new Database_Query('a')),
 			array('query', array('a', array('b')), new Database_Query('a', array('b'))),

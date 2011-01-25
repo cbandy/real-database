@@ -244,11 +244,11 @@ abstract class Database
 	 *
 	 * @param   mixed   $table      Converted to SQL_Table
 	 * @param   array   $columns    Each element converted to SQL_Column
-	 * @return  SQL_DML_Insert
+	 * @return  Database_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new SQL_DML_Insert($table, $columns);
+		return new Database_Insert($table, $columns);
 	}
 
 	/**
