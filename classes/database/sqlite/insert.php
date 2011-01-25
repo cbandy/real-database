@@ -13,7 +13,7 @@
  *
  * @link http://www.sqlite.org/lang_insert.html
  */
-class Database_SQLite_Insert extends Database_Command_Insert_Identity
+class Database_SQLite_Insert extends Database_Insert
 {
 	/**
 	 * @var integer Number of rows to be inserted

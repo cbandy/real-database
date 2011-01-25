@@ -66,11 +66,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	 *
 	 * @param   mixed   $table      Converted to SQL_Table
 	 * @param   array   $columns    Each element converted to SQL_Column
-	 * @return  Database_Command_Insert_Identity
+	 * @return  Database_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_Command_Insert_Identity($table, $columns);
+		return new Database_Insert($table, $columns);
 	}
 
 	/**

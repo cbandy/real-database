@@ -13,7 +13,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-insert.html
  */
-class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
+class Database_PostgreSQL_Insert extends Database_Insert
 {
 	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array

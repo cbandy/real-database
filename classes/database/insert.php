@@ -1,7 +1,8 @@
 <?php
 
 /**
- * An INSERT command which can return the identity of an inserted row when executed.
+ * An INSERT command which can return the identity of an inserted row when
+ * executed.
  *
  * @package     RealDatabase
  * @category    Commands
@@ -10,7 +11,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Command_Insert_Identity extends SQL_DML_Insert
+class Database_Insert extends SQL_DML_Insert
 	implements Database_iExecutable
 {
 	/**
