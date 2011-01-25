@@ -135,15 +135,15 @@ class SQL_DML_Update extends SQL_Expression
 	 * [!!] Not supported by MySQL
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   mixed   $reference      SQL_From or converted to SQL_Table
+	 * @param   mixed   $reference      SQL_Table_Reference or converted to SQL_Table
 	 * @param   string  $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
 	public function from($reference, $table_alias = NULL)
 	{
-		if ( ! $reference instanceof SQL_From)
+		if ( ! $reference instanceof SQL_Table_Reference)
 		{
-			$reference = new SQL_From($reference, $table_alias);
+			$reference = new SQL_Table_Reference($reference, $table_alias);
 		}
 
 		$this->parameters[':from'] = $reference;

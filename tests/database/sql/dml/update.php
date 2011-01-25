@@ -104,10 +104,10 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->from('e', 'f'), 'Chainable (string, string)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_e" AS "f"', $db->quote($command));
 
-		$from = new SQL_From('g', 'h');
+		$from = new SQL_Table_Reference('g', 'h');
 		$from->join('i');
 
-		$this->assertSame($command, $command->from($from), 'Chainable (SQL_From)');
+		$this->assertSame($command, $command->from($from), 'Chainable (SQL_Table_Reference)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_g" AS "h" JOIN "pre_i"', $db->quote($command));
 	}
 

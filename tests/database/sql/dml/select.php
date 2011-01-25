@@ -90,7 +90,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->from('one', 'a'), 'Chainable (table)');
 		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" AS "a"', $db->quote($query));
 
-		$from = new SQL_From('one');
+		$from = new SQL_Table_Reference('one');
 		$from->add('two')->join('three');
 
 		$this->assertSame($query, $query->from($from), 'Chainable (from)');

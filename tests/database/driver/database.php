@@ -75,9 +75,9 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 			array('expression', array('a'), 'SQL_Expression'),
 			array('expression', array('a', array('b')), 'SQL_Expression'),
 
-			array('from', array(), 'SQL_From'),
-			array('from', array('a'),'SQL_From'),
-			array('from', array('a', 'b'), 'SQL_From'),
+			array('reference', array(), 'SQL_Table_Reference'),
+			array('reference', array('a'),'SQL_Table_Reference'),
+			array('reference', array('a', 'b'), 'SQL_Table_Reference'),
 
 			// Identifiers
 

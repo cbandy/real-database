@@ -473,7 +473,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertType('Database_PostgreSQL_Select', $query);
 
-		$query->from(new SQL_From($this->_table));
+		$query->from(new SQL_Table_Reference($this->_table));
 
 		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
 		$this->assertSame(4, $query->execute($db)->count(), 'Distinct (void)');

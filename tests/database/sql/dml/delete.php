@@ -82,10 +82,10 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->using('c', 'd'), 'Chainable (string, string)');
 		$this->assertSame('DELETE FROM "pre_a" USING "pre_c" AS "d"', $db->quote($command));
 
-		$from = new SQL_From('e', 'f');
+		$from = new SQL_Table_Reference('e', 'f');
 		$from->join('g');
 
-		$this->assertSame($command, $command->using($from), 'Chainable (SQL_From)');
+		$this->assertSame($command, $command->using($from), 'Chainable (SQL_Table_Reference)');
 		$this->assertSame('DELETE FROM "pre_a" USING "pre_e" AS "f" JOIN "pre_g"', $db->quote($command));
 	}
 

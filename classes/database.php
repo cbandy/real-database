@@ -217,18 +217,6 @@ abstract class Database
 	}
 
 	/**
-	 * Create a table reference accumulator
-	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
-	 * @return  SQL_From
-	 */
-	public static function from($table = NULL, $alias = NULL)
-	{
-		return new SQL_From($table, $alias);
-	}
-
-	/**
 	 * Create an identifier
 	 *
 	 * @param   array|string    $value
@@ -292,6 +280,18 @@ abstract class Database
 	public static function query_set($query = NULL)
 	{
 		return new Database_Query_Set($query);
+	}
+
+	/**
+	 * Create a table reference accumulator.
+	 *
+	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   string  $alias  Table alias
+	 * @return  SQL_Table_Reference
+	 */
+	public static function reference($table = NULL, $alias = NULL)
+	{
+		return new SQL_Table_Reference($table, $alias);
 	}
 
 	/**

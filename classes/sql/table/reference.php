@@ -10,7 +10,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class SQL_From extends SQL_Expression
+class SQL_Table_Reference extends SQL_Expression
 {
 	/**
 	 * @var bool    Whether or not the (sub-)expression has just begun

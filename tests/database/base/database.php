@@ -145,11 +145,11 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 * @covers  Database::delete
 	 * @covers  Database::drop
 	 * @covers  Database::expression
-	 * @covers  Database::from
 	 * @covers  Database::identifier
 	 * @covers  Database::insert
 	 * @covers  Database::query
 	 * @covers  Database::query_set
+	 * @covers  Database::reference
 	 * @covers  Database::select
 	 * @covers  Database::table
 	 * @covers  Database::update
@@ -215,10 +215,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('expression', array('a'), new SQL_Expression('a')),
 			array('expression', array('a', array('b')), new SQL_Expression('a', array('b'))),
 
-			array('from', array(), new SQL_From),
-			array('from', array('a'), new SQL_From('a')),
-			array('from', array('a', 'b'), new SQL_From('a', 'b')),
-
 			array('identifier', array('a'), new SQL_Identifier('a')),
 
 			array('insert', array(), new Database_Insert),
@@ -230,6 +226,10 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 			array('query_set', array(), new Database_Query_Set),
 			array('query_set', array(new Database_Query('a')), new Database_Query_Set(new Database_Query('a'))),
+
+			array('reference', array(), new SQL_Table_Reference),
+			array('reference', array('a'), new SQL_Table_Reference('a')),
+			array('reference', array('a', 'b'), new SQL_Table_Reference('a', 'b')),
 
 			array('select', array(), new Database_Select),
 			array('select', array(array('a' => 'b')), new Database_Select(array('a' => 'b'))),
