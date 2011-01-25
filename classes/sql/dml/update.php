@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Command for building DELETE statements.
+ * Command for building UPDATE statements.
  *
  * @package     RealDatabase
  * @category    Commands
@@ -10,35 +10,37 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
- * @link http://dev.mysql.com/doc/en/delete.html MySQL
- * @link http://www.postgresql.org/docs/current/static/sql-delete.html PostgreSQL
- * @link http://www.sqlite.org/lang_delete.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms189835.aspx Transact-SQL
+ * @link http://dev.mysql.com/doc/en/update.html MySQL
+ * @link http://www.postgresql.org/docs/current/static/sql-update.html PostgreSQL
+ * @link http://www.sqlite.org/lang_update.html SQLite
+ * @link http://msdn.microsoft.com/en-us/library/ms177523.aspx Transact-SQL
  */
-class Database_Command_Delete extends Database_Command
+class SQL_DML_Update extends SQL_Expression
 {
 	/**
-	 * @uses Database_Command_Delete::from()
+	 * @uses SQL_DML_Update::table()
+	 * @uses SQL_DML_Update::set()
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
+	 * @param   array   $values Hash of (column => value) assignments
 	 */
-	public function __construct($table = NULL, $alias = NULL)
+	public function __construct($table = NULL, $alias = NULL, $values = NULL)
 	{
 		parent::__construct('');
 
-		$this->from($table, $alias);
+		$this->table($table, $alias)->set($values);
 	}
 
 	public function __toString()
 	{
-		$value = 'DELETE FROM :table';
+		$value = 'UPDATE :table SET :values';
 
-		if ( ! empty($this->parameters[':using']))
+		if ( ! empty($this->parameters[':from']))
 		{
+			// Not allowed in MySQL
 			// Not allowed in SQLite
-			// Should be 'FROM' in MSSQL
-			$value .= ' USING :using';
+			$value .= ' FROM :from';
 		}
 
 		if ( ! empty($this->parameters[':where']))
@@ -57,13 +59,13 @@ class Database_Command_Delete extends Database_Command
 	}
 
 	/**
-	 * Set the table from which to delete rows
+	 * Set the table in which to update rows
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
-	public function from($table, $alias = NULL)
+	public function table($table, $alias = NULL)
 	{
 		if ( ! $table instanceof SQL_Expression
 			AND ! $table instanceof SQL_Identifier)
@@ -79,14 +81,50 @@ class Database_Command_Delete extends Database_Command
 	}
 
 	/**
-	 * Set the maximum number of rows to be deleted.
+	 * Append multiple column assignments
 	 *
-	 * @param   integer $count  Number of rows
+	 * @param   mixed   $values Hash of (column => value) assignments
 	 * @return  $this
 	 */
-	public function limit($count)
+	public function set($values)
 	{
-		$this->parameters[':limit'] = $count;
+		if (is_array($values))
+		{
+			foreach ($values as $column => $value)
+			{
+				$column = new SQL_Column($column);
+
+				$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
+			}
+		}
+		elseif ($values === NULL)
+		{
+			$this->parameters[':values'] = array();
+		}
+		else
+		{
+			$this->parameters[':values'] = $values;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Append a column assignment
+	 *
+	 * @param   mixed   $column Converted to SQL_Column
+	 * @param   mixed   $value  Value assigned to the column
+	 * @return  $this
+	 */
+	public function value($column, $value)
+	{
+		if ( ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
+		{
+			$column = new SQL_Column($column);
+		}
+
+		$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
 
 		return $this;
 	}
@@ -94,20 +132,21 @@ class Database_Command_Delete extends Database_Command
 	/**
 	 * Set the table(s) referenced in the search conditions.
 	 *
+	 * [!!] Not supported by MySQL
 	 * [!!] Not supported by SQLite
 	 *
 	 * @param   mixed   $reference      SQL_From or converted to SQL_Table
 	 * @param   string  $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
-	public function using($reference, $table_alias = NULL)
+	public function from($reference, $table_alias = NULL)
 	{
 		if ( ! $reference instanceof SQL_From)
 		{
 			$reference = new SQL_From($reference, $table_alias);
 		}
 
-		$this->parameters[':using'] = $reference;
+		$this->parameters[':from'] = $reference;
 
 		return $this;
 	}
@@ -135,6 +174,19 @@ class Database_Command_Delete extends Database_Command
 		}
 
 		$this->parameters[':where'] = $left_column;
+
+		return $this;
+	}
+
+	/**
+	 * Set the maximum number of rows to be updated.
+	 *
+	 * @param   integer $count  Number of rows
+	 * @return  $this
+	 */
+	public function limit($count)
+	{
+		$this->parameters[':limit'] = $count;
 
 		return $this;
 	}

@@ -154,11 +154,11 @@ abstract class Database
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
-	 * @return  Database_Command_Delete
+	 * @return  SQL_DML_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
 	{
-		return new Database_Command_Delete($table, $alias);
+		return new SQL_DML_Delete($table, $alias);
 	}
 
 	/**
@@ -322,11 +322,11 @@ abstract class Database
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @param   array   $values Hash of (column => value) assignments
-	 * @return  Database_Command_Update
+	 * @return  SQL_DML_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
 	{
-		return new Database_Command_Update($table, $alias, $values);
+		return new SQL_DML_Update($table, $alias, $values);
 	}
 
 	/**

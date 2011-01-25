@@ -9,7 +9,7 @@
 class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Command_Delete::__construct
+	 * @covers  SQL_DML_Delete::__construct
 	 */
 	public function test_constructor()
 	{
@@ -18,13 +18,13 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('DELETE FROM "pre_"',         $db->quote(new Database_Command_Delete));
-		$this->assertSame('DELETE FROM "pre_a"',        $db->quote(new Database_Command_Delete('a')));
-		$this->assertSame('DELETE FROM "pre_a" AS "b"', $db->quote(new Database_Command_Delete('a', 'b')));
+		$this->assertSame('DELETE FROM "pre_"',         $db->quote(new SQL_DML_Delete));
+		$this->assertSame('DELETE FROM "pre_a"',        $db->quote(new SQL_DML_Delete('a')));
+		$this->assertSame('DELETE FROM "pre_a" AS "b"', $db->quote(new SQL_DML_Delete('a', 'b')));
 	}
 
 	/**
-	 * @covers  Database_Command_Delete::from
+	 * @covers  SQL_DML_Delete::from
 	 */
 	public function test_from()
 	{
@@ -33,7 +33,7 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Delete;
+		$command = new SQL_DML_Delete;
 
 		$this->assertSame($command, $command->from('a'), 'Chainable (string)');
 		$this->assertSame('DELETE FROM "pre_a"', $db->quote($command));
@@ -43,7 +43,7 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Delete::limit
+	 * @covers  SQL_DML_Delete::limit
 	 */
 	public function test_limit()
 	{
@@ -52,7 +52,7 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Delete('a');
+		$command = new SQL_DML_Delete('a');
 
 		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
 		$this->assertSame('DELETE FROM "pre_a" LIMIT 5', $db->quote($command));
@@ -65,7 +65,7 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Delete::using
+	 * @covers  SQL_DML_Delete::using
 	 */
 	public function test_using()
 	{
@@ -74,7 +74,7 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Delete('a');
+		$command = new SQL_DML_Delete('a');
 
 		$this->assertSame($command, $command->using('b'), 'Chainable (string)');
 		$this->assertSame('DELETE FROM "pre_a" USING "pre_b"', $db->quote($command));
@@ -90,7 +90,7 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Delete::where
+	 * @covers  SQL_DML_Delete::where
 	 */
 	public function test_where()
 	{
@@ -99,7 +99,7 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Delete('a');
+		$command = new SQL_DML_Delete('a');
 
 		$this->assertSame($command, $command->where(new SQL_Conditions(new SQL_Column('b.c'), '=', 0)), 'Chainable (SQL_Conditions)');
 		$this->assertSame('DELETE FROM "pre_a" WHERE "pre_b"."c" = 0', $db->quote($command));
@@ -115,11 +115,11 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Delete::__toString
+	 * @covers  SQL_DML_Delete::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_Command_Delete;
+		$command = new SQL_DML_Delete;
 		$command
 			->from('a')
 			->using('b')

@@ -13,7 +13,8 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-delete.html
  */
-class Database_PostgreSQL_Delete extends Database_Command_Delete
+class Database_PostgreSQL_Delete extends SQL_DML_Delete
+	implements Database_iExecutable
 {
 	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
@@ -80,7 +81,7 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 	public function execute($db)
 	{
 		if (empty($this->parameters[':returning']))
-			return parent::execute($db);
+			return $db->execute_command($this);
 
 		return $db->execute_query($db->quote($this), $this->as_object);
 	}

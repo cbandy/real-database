@@ -9,7 +9,7 @@
 class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Command_Update::__construct
+	 * @covers  SQL_DML_Update::__construct
 	 */
 	public function test_constructor()
 	{
@@ -18,16 +18,16 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('UPDATE "pre_" SET ',                 $db->quote(new Database_Command_Update));
-		$this->assertSame('UPDATE "pre_a" SET ',                $db->quote(new Database_Command_Update('a')));
-		$this->assertSame('UPDATE "pre_b" AS "c" SET ',         $db->quote(new Database_Command_Update('b', 'c')));
-		$this->assertSame('UPDATE "pre_d" AS "e" SET "f" = 0',  $db->quote(new Database_Command_Update('d', 'e', array('f' => 0))));
-		$this->assertSame('UPDATE "pre_g" SET "h" = 1',         $db->quote(new Database_Command_Update('g', NULL, array('h' => 1))));
-		$this->assertSame('UPDATE "pre_" SET "i" = 2',          $db->quote(new Database_Command_Update(NULL, NULL, array('i' => 2))));
+		$this->assertSame('UPDATE "pre_" SET ',                 $db->quote(new SQL_DML_Update));
+		$this->assertSame('UPDATE "pre_a" SET ',                $db->quote(new SQL_DML_Update('a')));
+		$this->assertSame('UPDATE "pre_b" AS "c" SET ',         $db->quote(new SQL_DML_Update('b', 'c')));
+		$this->assertSame('UPDATE "pre_d" AS "e" SET "f" = 0',  $db->quote(new SQL_DML_Update('d', 'e', array('f' => 0))));
+		$this->assertSame('UPDATE "pre_g" SET "h" = 1',         $db->quote(new SQL_DML_Update('g', NULL, array('h' => 1))));
+		$this->assertSame('UPDATE "pre_" SET "i" = 2',          $db->quote(new SQL_DML_Update(NULL, NULL, array('i' => 2))));
 	}
 
 	/**
-	 * @covers  Database_Command_Update::table
+	 * @covers  SQL_DML_Update::table
 	 */
 	public function test_table()
 	{
@@ -36,7 +36,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Update;
+		$command = new SQL_DML_Update;
 
 		$this->assertSame($command, $command->table('a'), 'Chainable (string)');
 		$this->assertSame('UPDATE "pre_a" SET ', $db->quote($command));
@@ -46,7 +46,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Update::set
+	 * @covers  SQL_DML_Update::set
 	 */
 	public function test_set()
 	{
@@ -55,7 +55,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Update('a');
+		$command = new SQL_DML_Update('a');
 
 		$this->assertSame($command, $command->set(array('b' => 0, 'c' => 1)), 'Chainable (array)');
 		$this->assertSame('UPDATE "pre_a" SET "b" = 0, "c" = 1', $db->quote($command));
@@ -68,7 +68,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Update::value
+	 * @covers  SQL_DML_Update::value
 	 */
 	public function test_value()
 	{
@@ -77,7 +77,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Update('a');
+		$command = new SQL_DML_Update('a');
 
 		$this->assertSame($command, $command->value('b', 0));
 		$this->assertSame('UPDATE "pre_a" SET "b" = 0', $db->quote($command));
@@ -87,7 +87,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Update::from
+	 * @covers  SQL_DML_Update::from
 	 */
 	public function test_from()
 	{
@@ -96,7 +96,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Update('a', 'b', array('c' => 0));
+		$command = new SQL_DML_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->from('d'), 'Chainable (string)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_d"', $db->quote($command));
@@ -112,7 +112,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Update::where
+	 * @covers  SQL_DML_Update::where
 	 */
 	public function test_where()
 	{
@@ -121,7 +121,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Update('a', 'b', array('c' => 0));
+		$command = new SQL_DML_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->where(new SQL_Conditions(new SQL_Column('d'), '=', 1)), 'Chainable (SQL_Conditions)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 WHERE "d" = 1', $db->quote($command));
@@ -137,7 +137,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Update::limit
+	 * @covers  SQL_DML_Update::limit
 	 */
 	public function test_limit()
 	{
@@ -146,7 +146,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Update('a', 'b', array('c' => 0));
+		$command = new SQL_DML_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 LIMIT 5', $db->quote($command));
@@ -159,11 +159,11 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Update::__toString
+	 * @covers  SQL_DML_Update::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_Command_Update;
+		$command = new SQL_DML_Update;
 		$command
 			->table('a')
 			->set(array('b' => 0))

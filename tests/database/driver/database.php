@@ -90,18 +90,18 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 			array('command', array('a'), 'Database_Command'),
 			array('command', array('a', array('b')), 'Database_Command'),
 
-			array('delete', array(), 'Database_Command_Delete'),
-			array('delete', array('a'), 'Database_Command_Delete'),
-			array('delete', array('a', 'b'), 'Database_Command_Delete'),
+			array('delete', array(), 'SQL_DML_Delete'),
+			array('delete', array('a'), 'SQL_DML_Delete'),
+			array('delete', array('a', 'b'), 'SQL_DML_Delete'),
 
 			array('insert', array(), 'Database_Command_Insert'),
 			array('insert', array('a'), 'Database_Command_Insert'),
 			array('insert', array('a', array('b')), 'Database_Command_Insert'),
 
-			array('update', array(), 'Database_Command_Update'),
-			array('update', array('a'), 'Database_Command_Update'),
-			array('update', array('a', 'b'), 'Database_Command_Update'),
-			array('update', array('a', 'b', array('c' => 'd')), 'Database_Command_Update'),
+			array('update', array(), 'SQL_DML_Update'),
+			array('update', array('a'), 'SQL_DML_Update'),
+			array('update', array('a', 'b'), 'SQL_DML_Update'),
+			array('update', array('a', 'b', array('c' => 'd')), 'SQL_DML_Update'),
 
 			// Queries
 
