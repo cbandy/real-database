@@ -121,6 +121,18 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database::execute
+	 */
+	public function test_execute()
+	{
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_command');
+
+		$mock->execute('SELECT 1');
+	}
+
+	/**
 	 * @covers  Database::alter
 	 * @covers  Database::binary
 	 * @covers  Database::column

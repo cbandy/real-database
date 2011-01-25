@@ -484,6 +484,26 @@ abstract class Database
 	abstract public function disconnect();
 
 	/**
+	 * Execute a SQL statement.
+	 *
+	 * @todo Better description
+	 *
+	 * @see Database::execute_command()
+	 * @see Database::execute_insert()
+	 * @see Database::execute_query()
+	 *
+	 * @param   string|Database_Expression  $statement
+	 * @return  mixed
+	 */
+	public function execute($statement)
+	{
+		if ($statement instanceof Database_iExecutable)
+			return $statement->execute($this);
+
+		return $this->execute_command($statement);
+	}
+
+	/**
 	 * Execute a SQL statement, returning the number of rows affected
 	 *
 	 * Do not use this method to count the rows returned by a query (e.g., a
