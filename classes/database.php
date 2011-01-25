@@ -491,7 +491,7 @@ abstract class Database
 	 * results.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string  $statement  SQL command
+	 * @param   string|Database_Expression  $statement  SQL command
 	 * @return  integer Number of affected rows
 	 */
 	abstract public function execute_command($statement);
@@ -501,8 +501,8 @@ abstract class Database
 	 * statement is not a query (e.g., a DELETE statement)
 	 *
 	 * @throws  Database_Exception
-	 * @param   string          $statement  SQL query
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|Database_Expression  $statement  SQL query
+	 * @param   string|boolean              $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 * @return  Database_Result Result set or NULL
 	 */
 	abstract public function execute_query($statement, $as_object = FALSE);

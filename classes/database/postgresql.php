@@ -802,6 +802,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function execute_command($statement)
 	{
+		if ( ! is_string($statement))
+		{
+			$statement = $this->quote($statement);
+		}
+
 		$rows = $this->_evaluate_command($this->_execute($statement));
 
 		while ($result = pg_get_result($this->_connection))
@@ -844,6 +849,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		if (empty($statement))
 			return NULL;
+
+		if ( ! is_string($statement))
+		{
+			$statement = $this->quote($statement);
+		}
 
 		return $this->_evaluate_query($this->_execute($statement), $as_object);
 	}

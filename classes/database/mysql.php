@@ -351,6 +351,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		if (empty($statement))
 			return 0;
 
+		if ( ! is_string($statement))
+		{
+			$statement = $this->quote($statement);
+		}
+
 		$result = $this->_execute($statement);
 
 		if (is_resource($result))
@@ -370,6 +375,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 	{
 		if (empty($statement))
 			return NULL;
+
+		if ( ! is_string($statement))
+		{
+			$statement = $this->quote($statement);
+		}
 
 		$result = $this->_execute($statement);
 

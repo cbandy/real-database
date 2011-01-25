@@ -255,6 +255,11 @@ class Database_PDO extends Database
 
 		$this->_connection or $this->connect();
 
+		if ( ! is_string($statement))
+		{
+			$statement = $this->quote($statement);
+		}
+
 		if ( ! empty($this->_config['profiling']))
 		{
 			$benchmark = Profiler::start("Database ($this->_name)", $statement);
@@ -303,6 +308,11 @@ class Database_PDO extends Database
 			return NULL;
 
 		$this->_connection or $this->connect();
+
+		if ( ! is_string($statement))
+		{
+			$statement = $this->quote($statement);
+		}
 
 		if ( ! empty($this->_config['profiling']))
 		{
