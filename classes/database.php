@@ -286,7 +286,7 @@ abstract class Database
 	/**
 	 * Create a query set
 	 *
-	 * @param   Database_Query  $query
+	 * @param   SQL_Expression  $query
 	 * @return  Database_Query_Set
 	 */
 	public static function query_set($query = NULL)
