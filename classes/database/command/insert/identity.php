@@ -13,9 +13,9 @@
 class Database_Command_Insert_Identity extends Database_Command_Insert
 {
 	/**
-	 * @var mixed   Column to return when executed
+	 * @var Database_Expression|Database_Identifier Column to return when executed
 	 */
-	protected $_return;
+	public $identity;
 
 	/**
 	 * Execute the INSERT on a Database. Returns an array when identity() is set.
@@ -26,7 +26,7 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 	 */
 	public function execute($db)
 	{
-		if ( ! empty($this->_return))
+		if ( ! empty($this->identity))
 			return $db->execute_insert($db->quote($this));
 
 		return parent::execute($db);
@@ -50,7 +50,7 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 			$column = new Database_Column($column);
 		}
 
-		$this->_return = $column;
+		$this->identity = $column;
 
 		return $this;
 	}

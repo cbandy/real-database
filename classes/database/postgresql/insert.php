@@ -72,11 +72,11 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 
 		$result = $db->execute_query($db->quote($this), $this->as_object);
 
-		if (empty($this->_return))
+		if (empty($this->identity))
 			return $result;
 
 		$rows = $result->count();
-		$result = $result->get(($this->_return instanceof Database_Identifier) ? $this->_return->name : NULL);
+		$result = $result->get(($this->identity instanceof Database_Identifier) ? $this->identity->name : NULL);
 
 		return array($rows, $result);
 	}
@@ -91,13 +91,13 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	{
 		parent::identity($column);
 
-		if (empty($this->_return))
+		if (empty($this->identity))
 		{
 			unset($this->parameters[':returning']);
 		}
 		else
 		{
-			$this->parameters[':returning'] = $this->_return;
+			$this->parameters[':returning'] = $this->identity;
 		}
 
 		return $this;
@@ -111,7 +111,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	 */
 	public function returning($columns)
 	{
-		$this->_return = NULL;
+		$this->identity = NULL;
 
 		if (is_array($columns))
 		{
