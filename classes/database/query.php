@@ -11,28 +11,18 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
 class Database_Query extends Database_Command
+	implements Database_iExecutable, Database_iQuery
 {
 	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 */
 	public $as_object = FALSE;
 
-	/**
-	 * Return rows as associative arrays when executed.
-	 *
-	 * @return  $this
-	 */
 	public function as_assoc()
 	{
 		return $this->as_object(FALSE);
 	}
 
-	/**
-	 * Set the class as which to return rows when executed.
-	 *
-	 * @param   string|boolean  $class  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 * @return  $this
-	 */
 	public function as_object($class = TRUE)
 	{
 		$this->as_object = $class;
@@ -41,8 +31,9 @@ class Database_Query extends Database_Command
 	}
 
 	/**
-	 * Execute the query against a Database
+	 * Execute the query against a Database.
 	 *
+	 * @throws  Database_Exception
 	 * @param   Database    $db Connection on which to execute
 	 * @return  Database_Result Result set
 	 */

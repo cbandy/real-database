@@ -11,6 +11,7 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
 class Database_Command_Insert_Identity extends Database_Command_Insert
+	implements Database_iExecutable
 {
 	/**
 	 * @var Database_Expression|Database_Identifier Column to return when executed
@@ -20,7 +21,8 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 	/**
 	 * Execute the INSERT on a Database. Returns an array when identity() is set.
 	 *
-	 * @param   Database_iInsert    $db Connection on which to execute
+	 * @throws  Database_Exception
+	 * @param   Database    $db Connection on which to execute
 	 * @return  integer Number of affected rows
 	 * @return  array   List including number of affected rows and identity value
 	 */
@@ -33,7 +35,7 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 	}
 
 	/**
-	 * Name of the IDENTITY column to return when executed
+	 * Set the name of the IDENTITY column to return when executed.
 	 *
 	 * Behavior varies between database implementations. Reliable only when
 	 * inserting one row.
