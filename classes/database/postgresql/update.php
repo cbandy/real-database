@@ -83,7 +83,7 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 		if (empty($this->parameters[':returning']))
 			return $db->execute_command($this);
 
-		return $db->execute_query($db->quote($this), $this->as_object);
+		return $db->execute_query($this, $this->as_object);
 	}
 
 	public function from($reference, $table_alias = NULL)

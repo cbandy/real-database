@@ -83,7 +83,7 @@ class Database_PostgreSQL_Delete extends SQL_DML_Delete
 		if (empty($this->parameters[':returning']))
 			return $db->execute_command($this);
 
-		return $db->execute_query($db->quote($this), $this->as_object);
+		return $db->execute_query($this, $this->as_object);
 	}
 
 	public function limit($count)
