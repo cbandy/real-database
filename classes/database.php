@@ -34,11 +34,11 @@ abstract class Database
 	 *
 	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
 	 * @param   mixed   $name   Converted to SQL_Identifier
-	 * @return  Database_Command
+	 * @return  SQL_Expression
 	 */
 	public static function alter($type, $name = NULL)
 	{
-		$class = "Database_Command_Alter_$type";
+		$class = "SQL_DDL_Alter_$type";
 
 		return new $class($name);
 	}
@@ -95,11 +95,11 @@ abstract class Database
 	 *
 	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
 	 * @param   mixed   $name   Converted to SQL_Identifier
-	 * @return  Database_Command
+	 * @return  SQL_Expression
 	 */
 	public static function create($type, $name = NULL)
 	{
-		$class = "Database_Command_Create_$type";
+		$class = "SQL_DDL_Create_$type";
 
 		return new $class($name);
 	}
@@ -166,14 +166,14 @@ abstract class Database
 	 *
 	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
 	 * @param   mixed   $name   Converted to SQL_Identifier
-	 * @return  Database_Command
+	 * @return  SQL_DDL_Drop
 	 */
 	public static function drop($type, $name = NULL)
 	{
 		if (strtoupper($type) === 'TABLE')
-			return new Database_Command_Drop_Table($name);
+			return new SQL_DDL_Drop_Table($name);
 
-		return new Database_Command_Drop($type, $name);
+		return new SQL_DDL_Drop($type, $name);
 	}
 
 	/**

@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/lang_createview.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms187956.aspx Transact-SQL
  */
-class Database_Command_Create_View extends Database_Command
+class SQL_DDL_Create_View extends SQL_Expression
 {
 	/**
 	 * @var boolean Whether or not an existing view should be replaced
@@ -26,11 +26,11 @@ class Database_Command_Create_View extends Database_Command
 	protected $_temporary;
 
 	/**
-	 * @uses Database_Command_Create_View::name()
-	 * @uses Database_Command_Create_View::query()
+	 * @uses SQL_DDL_Create_View::name()
+	 * @uses SQL_DDL_Create_View::query()
 	 *
 	 * @param   mixed           $name   Converted to SQL_Table
-	 * @param   Database_Query  $query
+	 * @param   SQL_Expression  $query
 	 */
 	public function __construct($name = NULL, $query = NULL)
 	{
@@ -141,7 +141,7 @@ class Database_Command_Create_View extends Database_Command
 	/**
 	 * Set the query which will provide the columns and rows of the view
 	 *
-	 * @param   Database_Query  $query
+	 * @param   SQL_Expression  $query
 	 * @return  $this
 	 */
 	public function query($query)

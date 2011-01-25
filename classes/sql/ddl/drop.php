@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/lang.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/cc879259.aspx Transact-SQL
  */
-class Database_Command_Drop extends Database_Command
+class SQL_DDL_Drop extends SQL_Expression
 {
 	/**
 	 * @var boolean Whether or not dependent objects should be dropped
@@ -26,8 +26,8 @@ class Database_Command_Drop extends Database_Command
 	protected $_if_exists;
 
 	/**
-	 * @uses Database_Command_Drop::name()
-	 * @uses Database_Command_Drop::cascade()
+	 * @uses SQL_DDL_Drop::name()
+	 * @uses SQL_DDL_Drop::cascade()
 	 *
 	 * @param   string  $type       SCHEMA, TABLE, VIEW, etc
 	 * @param   mixed   $name       Converted to SQL_Identifier

@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/lang_createtable.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms174979.aspx Transact-SQL
  */
-class Database_Command_Create_Table extends Database_Command
+class SQL_DDL_Create_Table extends SQL_Expression
 {
 	/**
 	 * @var boolean
@@ -21,7 +21,7 @@ class Database_Command_Create_Table extends Database_Command
 	protected $_temporary;
 
 	/**
-	 * @uses Database_Command_Create_Table::name()
+	 * @uses SQL_DDL_Create_Table::name()
 	 *
 	 * @param   mixed   $name   Converted to SQL_Table
 	 */
@@ -135,7 +135,7 @@ class Database_Command_Create_Table extends Database_Command
 	/**
 	 * Set the query from which the table definition is inferred
 	 *
-	 * @param   Database_Query  $query
+	 * @param   SQL_Expression  $query
 	 * @return  $this
 	 */
 	public function query($query)

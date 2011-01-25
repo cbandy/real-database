@@ -9,7 +9,7 @@
 class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Command_Create_View::__construct
+	 * @covers  SQL_DDL_Create_View::__construct
 	 */
 	public function test_constructor()
 	{
@@ -18,11 +18,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('CREATE VIEW "pre_a" AS b', $db->quote(new Database_Command_Create_View('a', new Database_Query('b'))));
+		$this->assertSame('CREATE VIEW "pre_a" AS b', $db->quote(new SQL_DDL_Create_View('a', new Database_Query('b'))));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_View::name
+	 * @covers  SQL_DDL_Create_View::name
 	 */
 	public function test_name()
 	{
@@ -31,14 +31,14 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_View('a', new Database_Query('b'));
+		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->name('c'));
 		$this->assertSame('CREATE VIEW "pre_c" AS b', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_View::query
+	 * @covers  SQL_DDL_Create_View::query
 	 */
 	public function test_query()
 	{
@@ -47,14 +47,14 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_View('a', new Database_Query('b'));
+		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->query(new Database_Query('c')));
 		$this->assertSame('CREATE VIEW "pre_a" AS c', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_View::column
+	 * @covers  SQL_DDL_Create_View::column
 	 */
 	public function test_column()
 	{
@@ -63,7 +63,7 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_View('a', new Database_Query('b'));
+		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->column('c'));
 		$this->assertSame('CREATE VIEW "pre_a" ("c") AS b', $db->quote($command));
@@ -73,7 +73,7 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_View::columns
+	 * @covers  SQL_DDL_Create_View::columns
 	 */
 	public function test_columns()
 	{
@@ -82,14 +82,14 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_View('a', new Database_Query('b'));
+		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->columns(array('c')));
 		$this->assertSame('CREATE VIEW "pre_a" ("c") AS b', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_View::replace
+	 * @covers  SQL_DDL_Create_View::replace
 	 */
 	public function test_replace()
 	{
@@ -98,7 +98,7 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_View('a', new Database_Query('b'));
+		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->replace(), 'Chainable (void)');
 		$this->assertSame('CREATE OR REPLACE VIEW "pre_a" AS b', $db->quote($command));
@@ -111,7 +111,7 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_View::temporary
+	 * @covers  SQL_DDL_Create_View::temporary
 	 */
 	public function test_temporary()
 	{
@@ -120,7 +120,7 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_View('a', new Database_Query('b'));
+		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
 
 		$this->assertSame($command, $command->temporary(), 'Chainable (void)');
 		$this->assertSame('CREATE TEMPORARY VIEW "pre_a" AS b', $db->quote($command));
@@ -133,11 +133,11 @@ class Database_Base_Command_Create_View_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_View::__toString
+	 * @covers  SQL_DDL_Create_View::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_Command_Create_View;
+		$command = new SQL_DDL_Create_View;
 		$command
 			->replace()
 			->temporary()

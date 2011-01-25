@@ -13,7 +13,7 @@
  *
  * @link http://dev.mysql.com/doc/en/create-index.html
  */
-class Database_MySQL_Create_Index extends Database_Command_Create_Index
+class Database_MySQL_Create_Index extends SQL_DDL_Create_Index
 {
 	/**
 	 * @var string  Index type

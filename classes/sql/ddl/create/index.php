@@ -13,12 +13,12 @@
  * @link http://www.sqlite.org/lang_createindex.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms188783.aspx Transact-SQL
  */
-class Database_Command_Create_Index extends Database_Command
+class SQL_DDL_Create_Index extends SQL_Expression
 {
 	/**
-	 * @uses Database_Command_Create_Index::columns()
-	 * @uses Database_Command_Create_Index::name()
-	 * @uses Database_Command_Create_Index::on()
+	 * @uses SQL_DDL_Create_Index::columns()
+	 * @uses SQL_DDL_Create_Index::name()
+	 * @uses SQL_DDL_Create_Index::on()
 	 *
 	 * @param   mixed   $name       Converted to SQL_Identifier
 	 * @param   mixed   $table      Converted to SQL_Table

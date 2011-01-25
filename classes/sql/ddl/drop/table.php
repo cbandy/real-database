@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/lang_droptable.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms173790.aspx Transact-SQL
  */
-class Database_Command_Drop_Table extends Database_Command_Drop
+class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 {
 	/**
 	 * @param   mixed   $name       Converted to SQL_Table

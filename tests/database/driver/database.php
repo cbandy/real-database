@@ -116,23 +116,23 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 
 			// DDL Commands
 
-			array('alter', array('table'), 'Database_Command_Alter_Table'),
-			array('alter', array('table', 'a'), 'Database_Command_Alter_Table'),
+			array('alter', array('table'), 'SQL_DDL_Alter_Table'),
+			array('alter', array('table', 'a'), 'SQL_DDL_Alter_Table'),
 
-			array('create', array('index'), 'Database_Command_Create_Index'),
-			array('create', array('index', 'a'), 'Database_Command_Create_Index'),
+			array('create', array('index'), 'SQL_DDL_Create_Index'),
+			array('create', array('index', 'a'), 'SQL_DDL_Create_Index'),
 
-			array('create', array('table'), 'Database_Command_Create_Table'),
-			array('create', array('table', 'a'), 'Database_Command_Create_Table'),
+			array('create', array('table'), 'SQL_DDL_Create_Table'),
+			array('create', array('table', 'a'), 'SQL_DDL_Create_Table'),
 
-			array('create', array('view'), 'Database_Command_Create_View'),
-			array('create', array('view', 'a'), 'Database_Command_Create_View'),
+			array('create', array('view'), 'SQL_DDL_Create_View'),
+			array('create', array('view', 'a'), 'SQL_DDL_Create_View'),
 
-			array('drop', array('index'), 'Database_Command_Drop'),
-			array('drop', array('index', 'a'), 'Database_Command_Drop'),
+			array('drop', array('index'), 'SQL_DDL_Drop'),
+			array('drop', array('index', 'a'), 'SQL_DDL_Drop'),
 
-			array('drop', array('table'), 'Database_Command_Drop_Table'),
-			array('drop', array('table', 'a'), 'Database_Command_Drop_Table'),
+			array('drop', array('table'), 'SQL_DDL_Drop_Table'),
+			array('drop', array('table', 'a'), 'SQL_DDL_Drop_Table'),
 
 			// DDL Expressions
 

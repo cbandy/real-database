@@ -165,8 +165,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$result = array
 		(
-			array('alter', array('table'), new Database_Command_Alter_Table),
-			array('alter', array('table', 'a'), new Database_Command_Alter_Table('a')),
+			array('alter', array('table'), new SQL_DDL_Alter_Table),
+			array('alter', array('table', 'a'), new SQL_DDL_Alter_Table('a')),
 
 			array('binary', array('a'), new Database_Binary('a')),
 
@@ -180,14 +180,14 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('conditions', array('a', '='), new SQL_Conditions('a', '=')),
 			array('conditions', array('a', '=', 'b'), new SQL_Conditions('a', '=', 'b')),
 
-			array('create', array('index'), new Database_Command_Create_Index),
-			array('create', array('index', 'a'), new Database_Command_Create_Index('a')),
+			array('create', array('index'), new SQL_DDL_Create_Index),
+			array('create', array('index', 'a'), new SQL_DDL_Create_Index('a')),
 
-			array('create', array('table'), new Database_Command_Create_Table),
-			array('create', array('table', 'a'), new Database_Command_Create_Table('a')),
+			array('create', array('table'), new SQL_DDL_Create_Table),
+			array('create', array('table', 'a'), new SQL_DDL_Create_Table('a')),
 
-			array('create', array('view'), new Database_Command_Create_View),
-			array('create', array('view', 'a'), new Database_Command_Create_View('a')),
+			array('create', array('view'), new SQL_DDL_Create_View),
+			array('create', array('view', 'a'), new SQL_DDL_Create_View('a')),
 
 			array('datetime', array(1258461296), new Database_DateTime(1258461296)),
 			array('datetime', array(1258461296, 'UTC'), new Database_DateTime(1258461296, 'UTC')),
@@ -206,11 +206,11 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('delete', array('a'), new Database_Command_Delete('a')),
 			array('delete', array('a', 'b'), new Database_Command_Delete('a', 'b')),
 
-			array('drop', array('index'), new Database_Command_Drop('index')),
-			array('drop', array('index', 'a'), new Database_Command_Drop('index', 'a')),
+			array('drop', array('index'), new SQL_DDL_Drop('index')),
+			array('drop', array('index', 'a'), new SQL_DDL_Drop('index', 'a')),
 
-			array('drop', array('table'), new Database_Command_Drop_Table),
-			array('drop', array('table', 'a'), new Database_Command_Drop_Table('a')),
+			array('drop', array('table'), new SQL_DDL_Drop_Table),
+			array('drop', array('table', 'a'), new SQL_DDL_Drop_Table('a')),
 
 			array('expression', array('a'), new SQL_Expression('a')),
 			array('expression', array('a', array('b')), new SQL_Expression('a', array('b'))),

@@ -13,7 +13,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-altertable.html
  */
-class Database_PostgreSQL_Alter_Table extends Database_Command_Alter_Table
+class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 {
 	/**
 	 * Remove a column from the table, optionally removing dependent objects.

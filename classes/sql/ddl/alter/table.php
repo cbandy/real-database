@@ -13,10 +13,10 @@
  * @link http://www.sqlite.org/lang_altertable.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms190273.aspx Transact-SQL
  */
-class Database_Command_Alter_Table extends Database_Command
+class SQL_DDL_Alter_Table extends SQL_Expression
 {
 	/**
-	 * @uses Database_Command_Alter_Table::name()
+	 * @uses SQL_DDL_Alter_Table::name()
 	 *
 	 * @param   mixed   $name   Converted to SQL_Table
 	 */

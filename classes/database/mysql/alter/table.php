@@ -13,7 +13,7 @@
  *
  * @link http://dev.mysql.com/doc/en/alter-table.html
  */
-class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
+class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 {
 	/**
 	 * Append a FIRST or AFTER clause to a SQL_Expression.

@@ -9,24 +9,24 @@
 class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Command_Drop::__construct
+	 * @covers  SQL_DDL_Drop::__construct
 	 */
 	public function test_constructor()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
-		$this->assertSame('DROP A "b"', $db->quote(new Database_Command_Drop('a', 'b')));
-		$this->assertSame('DROP A "b" CASCADE', $db->quote(new Database_Command_Drop('a', 'b', TRUE)));
-		$this->assertSame('DROP A "b" RESTRICT', $db->quote(new Database_Command_Drop('a', 'b', FALSE)));
+		$this->assertSame('DROP A "b"', $db->quote(new SQL_DDL_Drop('a', 'b')));
+		$this->assertSame('DROP A "b" CASCADE', $db->quote(new SQL_DDL_Drop('a', 'b', TRUE)));
+		$this->assertSame('DROP A "b" RESTRICT', $db->quote(new SQL_DDL_Drop('a', 'b', FALSE)));
 	}
 
 	/**
-	 * @covers  Database_Command_Drop::cascade
+	 * @covers  SQL_DDL_Drop::cascade
 	 */
 	public function test_cascade()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_Command_Drop('a', 'b');
+		$command = new SQL_DDL_Drop('a', 'b');
 
 		$this->assertSame($command, $command->cascade(), 'Chainable (void)');
 		$this->assertSame('DROP A "b" CASCADE', $db->quote($command));
@@ -42,12 +42,12 @@ class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Drop::if_exists
+	 * @covers  SQL_DDL_Drop::if_exists
 	 */
 	public function test_if_exists()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_Command_Drop('a', 'b');
+		$command = new SQL_DDL_Drop('a', 'b');
 
 		$this->assertSame($command, $command->if_exists(), 'Chainable (void)');
 		$this->assertSame('DROP A IF EXISTS "b"', $db->quote($command));
@@ -60,35 +60,35 @@ class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Drop::name
+	 * @covers  SQL_DDL_Drop::name
 	 */
 	public function test_name()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_Command_Drop('a', 'b');
+		$command = new SQL_DDL_Drop('a', 'b');
 
 		$this->assertSame($command, $command->name('c'));
 		$this->assertSame('DROP A "c"', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Drop::names
+	 * @covers  SQL_DDL_Drop::names
 	 */
 	public function test_names()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_Command_Drop('a');
+		$command = new SQL_DDL_Drop('a');
 
 		$this->assertSame($command, $command->names(array('b', 'c')));
 		$this->assertSame('DROP A "b", "c"', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Drop::__toString
+	 * @covers  SQL_DDL_Drop::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_Command_Drop('a');
+		$command = new SQL_DDL_Drop('a');
 		$command
 			->if_exists()
 			->name('b')

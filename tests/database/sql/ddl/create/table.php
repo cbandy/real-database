@@ -9,7 +9,7 @@
 class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Command_Create_Table::__construct
+	 * @covers  SQL_DDL_Create_Table::__construct
 	 */
 	public function test_constructor()
 	{
@@ -18,16 +18,16 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('CREATE TABLE :name (:columns)', $db->quote(new Database_Command_Create_Table));
+		$this->assertSame('CREATE TABLE :name (:columns)', $db->quote(new SQL_DDL_Create_Table));
 
-		$command = new Database_Command_Create_Table('a');
+		$command = new SQL_DDL_Create_Table('a');
 		$command->parameters[':columns'] = array();
 
 		$this->assertSame('CREATE TABLE "pre_a" ()', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Table::name
+	 * @covers  SQL_DDL_Create_Table::name
 	 */
 	public function test_name()
 	{
@@ -36,7 +36,7 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Table;
+		$command = new SQL_DDL_Create_Table;
 		$command->parameters[':columns'] = array();
 
 		$this->assertSame($command, $command->name('a'), 'Chainable');
@@ -44,7 +44,7 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Table::column
+	 * @covers  SQL_DDL_Create_Table::column
 	 */
 	public function test_column()
 	{
@@ -53,7 +53,7 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Table('a');
+		$command = new SQL_DDL_Create_Table('a');
 
 		$this->assertSame($command, $command->column(new SQL_DDL_Column('b', 'c')));
 		$this->assertSame('CREATE TABLE "pre_a" ("b" c)', $db->quote($command));
@@ -66,7 +66,7 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Table::constraint
+	 * @covers  SQL_DDL_Create_Table::constraint
 	 */
 	public function test_constraint()
 	{
@@ -75,7 +75,7 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Table('a');
+		$command = new SQL_DDL_Create_Table('a');
 		$command->parameters[':columns'] = array();
 
 		$this->assertSame($command, $command->constraint(new SQL_DDL_Constraint_Primary(array('b'))));
@@ -89,7 +89,7 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Table::query
+	 * @covers  SQL_DDL_Create_Table::query
 	 */
 	public function test_query()
 	{
@@ -98,14 +98,14 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Table('a');
+		$command = new SQL_DDL_Create_Table('a');
 
 		$this->assertSame($command, $command->query(new Database_Query('b')));
 		$this->assertSame('CREATE TABLE "pre_a" AS (b)', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Table::temporary
+	 * @covers  SQL_DDL_Create_Table::temporary
 	 */
 	public function test_temporary()
 	{
@@ -114,7 +114,7 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Table('a');
+		$command = new SQL_DDL_Create_Table('a');
 		$command->parameters[':columns'] = array();
 
 		$this->assertSame($command, $command->temporary(), 'Chainable (void)');
@@ -128,11 +128,11 @@ class Database_Base_Command_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Table::__toString
+	 * @covers  SQL_DDL_Create_Table::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_Command_Create_Table;
+		$command = new SQL_DDL_Create_Table;
 		$command
 			->temporary()
 			->column(new SQL_DDL_Column('a', 'b'));

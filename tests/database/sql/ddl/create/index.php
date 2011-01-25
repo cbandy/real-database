@@ -9,7 +9,7 @@
 class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Command_Create_Index::__construct
+	 * @covers  SQL_DDL_Create_Index::__construct
 	 */
 	public function test_constructor()
 	{
@@ -18,12 +18,12 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('CREATE INDEX "a" ON "pre_b" ()', $db->quote(new Database_Command_Create_Index('a', 'b')));
-		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c")', $db->quote(new Database_Command_Create_Index('a', 'b', array('c'))));
+		$this->assertSame('CREATE INDEX "a" ON "pre_b" ()', $db->quote(new SQL_DDL_Create_Index('a', 'b')));
+		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c")', $db->quote(new SQL_DDL_Create_Index('a', 'b', array('c'))));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Index::name
+	 * @covers  SQL_DDL_Create_Index::name
 	 */
 	public function test_name()
 	{
@@ -32,14 +32,14 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Index('a', 'b');
+		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->name('c'));
 		$this->assertSame('CREATE INDEX "c" ON "pre_b" ()', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Index::unique
+	 * @covers  SQL_DDL_Create_Index::unique
 	 */
 	public function test_unique()
 	{
@@ -48,7 +48,7 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Index('a', 'b');
+		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->unique(), 'Chainable (void)');
 		$this->assertSame('CREATE UNIQUE INDEX "a" ON "pre_b" ()', $db->quote($command));
@@ -61,7 +61,7 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Index::on
+	 * @covers  SQL_DDL_Create_Index::on
 	 */
 	public function test_on()
 	{
@@ -70,14 +70,14 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Index('a', 'b');
+		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->on('c'));
 		$this->assertSame('CREATE INDEX "a" ON "pre_c" ()', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Index::column
+	 * @covers  SQL_DDL_Create_Index::column
 	 */
 	public function test_column()
 	{
@@ -86,7 +86,7 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Index('a', 'b');
+		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->column('c'), 'Chainable (column)');
 		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c")', $db->quote($command));
@@ -96,7 +96,7 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Index::columns
+	 * @covers  SQL_DDL_Create_Index::columns
 	 */
 	public function test_columns()
 	{
@@ -105,18 +105,18 @@ class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Create_Index('a', 'b');
+		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->columns(array('c')));
 		$this->assertSame('CREATE INDEX "a" ON "pre_b" ("c")', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Create_Index::__toString
+	 * @covers  SQL_DDL_Create_Index::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_Command_Create_Index;
+		$command = new SQL_DDL_Create_Index;
 		$command->unique();
 
 		$this->assertSame('CREATE :type INDEX :name ON :table (:columns)', (string) $command);
