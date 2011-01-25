@@ -231,8 +231,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('query_set', array(), new Database_Query_Set),
 			array('query_set', array(new Database_Query('a')), new Database_Query_Set(new Database_Query('a'))),
 
-			array('select', array(), new Database_Query_Select),
-			array('select', array(array('a' => 'b')), new Database_Query_Select(array('a' => 'b'))),
+			array('select', array(), new Database_Select),
+			array('select', array(array('a' => 'b')), new Database_Select(array('a' => 'b'))),
 
 			array('table', array('a'), new SQL_Table('a')),
 

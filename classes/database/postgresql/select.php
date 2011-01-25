@@ -13,7 +13,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-select.html
  */
-class Database_PostgreSQL_Select extends Database_Query_Select
+class Database_PostgreSQL_Select extends Database_Select
 {
 	/**
 	 * Set values by which rows should be considered unique

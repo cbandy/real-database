@@ -111,8 +111,8 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 			array('query_set', array(), 'Database_Query_Set'),
 			array('query_set', array(new Database_Query('a')), 'Database_Query_Set'),
 
-			array('select', array(), 'Database_Query_Select'),
-			array('select', array(array('a' => 'b')), 'Database_Query_Select'),
+			array('select', array(), 'Database_Select'),
+			array('select', array(array('a' => 'b')), 'Database_Select'),
 
 			// DDL Commands
 

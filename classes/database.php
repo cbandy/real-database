@@ -298,11 +298,11 @@ abstract class Database
 	 * Create a SELECT query
 	 *
 	 * @param   mixed   $columns    Hash of (alias => column) pairs
-	 * @return  Database_Query_Select
+	 * @return  Database_Select
 	 */
 	public static function select($columns = NULL)
 	{
-		return new Database_Query_Select($columns);
+		return new Database_Select($columns);
 	}
 
 	/**

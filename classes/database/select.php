@@ -8,7 +8,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Query_Select extends SQL_DML_Select
+class Database_Select extends SQL_DML_Select
 	implements Database_iExecutable, Database_iQuery
 {
 	/**
