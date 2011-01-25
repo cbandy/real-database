@@ -14,6 +14,7 @@
  * @link http://www.postgresql.org/docs/current/static/sql-insert.html
  */
 class Database_PostgreSQL_Insert extends Database_Insert
+	implements Database_PostgreSQL_iReturning
 {
 	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
@@ -32,22 +33,11 @@ class Database_PostgreSQL_Insert extends Database_Insert
 		return $value;
 	}
 
-	/**
-	 * Return rows as associative arrays when executed.
-	 *
-	 * @return  $this
-	 */
 	public function as_assoc()
 	{
 		return $this->as_object(FALSE);
 	}
 
-	/**
-	 * Set the class as which to return rows when executed.
-	 *
-	 * @param   string|boolean  $class  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 * @return  $this
-	 */
 	public function as_object($class = TRUE)
 	{
 		$this->as_object = $class;
@@ -98,12 +88,6 @@ class Database_PostgreSQL_Insert extends Database_Insert
 		return $this;
 	}
 
-	/**
-	 * Append values to return when executed
-	 *
-	 * @param   mixed   $columns    Each element converted to SQL_Column
-	 * @return  $this
-	 */
 	public function returning($columns)
 	{
 		$this->identity = NULL;

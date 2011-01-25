@@ -14,7 +14,7 @@
  * @link http://www.postgresql.org/docs/current/static/sql-update.html
  */
 class Database_PostgreSQL_Update extends SQL_DML_Update
-	implements Database_iExecutable
+	implements Database_iExecutable, Database_PostgreSQL_iReturning
 {
 	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
@@ -47,22 +47,11 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 		return $value;
 	}
 
-	/**
-	 * Return rows as associative arrays when executed.
-	 *
-	 * @return  $this
-	 */
 	public function as_assoc()
 	{
 		return $this->as_object(FALSE);
 	}
 
-	/**
-	 * Set the class as which to return rows when executed.
-	 *
-	 * @param   string|boolean  $class  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 * @return  $this
-	 */
 	public function as_object($class = TRUE)
 	{
 		$this->as_object = $class;
@@ -102,12 +91,6 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 		return parent::limit($count);
 	}
 
-	/**
-	 * Append values to return when executed
-	 *
-	 * @param   mixed   $columns    Each element converted to SQL_Column
-	 * @return  $this
-	 */
 	public function returning($columns)
 	{
 		if (is_array($columns))
