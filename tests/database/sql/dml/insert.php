@@ -9,7 +9,7 @@
 class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Command_Insert::__construct
+	 * @covers  SQL_DML_Insert::__construct
 	 */
 	public function test_constructor()
 	{
@@ -18,13 +18,13 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('INSERT INTO "pre_" DEFAULT VALUES',          $db->quote(new Database_Command_Insert));
-		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES',         $db->quote(new Database_Command_Insert('a')));
-		$this->assertSame('INSERT INTO "pre_a" ("b") DEFAULT VALUES',   $db->quote(new Database_Command_Insert('a', array('b'))));
+		$this->assertSame('INSERT INTO "pre_" DEFAULT VALUES',          $db->quote(new SQL_DML_Insert));
+		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES',         $db->quote(new SQL_DML_Insert('a')));
+		$this->assertSame('INSERT INTO "pre_a" ("b") DEFAULT VALUES',   $db->quote(new SQL_DML_Insert('a', array('b'))));
 	}
 
 	/**
-	 * @covers  Database_Command_Insert::into
+	 * @covers  SQL_DML_Insert::into
 	 */
 	public function test_into()
 	{
@@ -33,14 +33,14 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Insert;
+		$command = new SQL_DML_Insert;
 
 		$this->assertSame($command, $command->into('a'), 'Chainable (string)');
 		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Insert::columns
+	 * @covers  SQL_DML_Insert::columns
 	 */
 	public function test_columns()
 	{
@@ -49,14 +49,14 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Insert('a');
+		$command = new SQL_DML_Insert('a');
 
 		$this->assertSame($command, $command->columns(array('b', new SQL_Expression('c'), new SQL_Column('d'))), 'Chainable (array)');
 		$this->assertSame('INSERT INTO "pre_a" ("b", c, "d") DEFAULT VALUES', $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_Command_Insert::values
+	 * @covers  SQL_DML_Insert::values
 	 */
 	public function test_values()
 	{
@@ -65,7 +65,7 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Insert('a', array('b','c'));
+		$command = new SQL_DML_Insert('a', array('b','c'));
 
 		$this->assertSame($command, $command->values(array(0,1)), 'Chainable (array)');
 		$this->assertSame('INSERT INTO "pre_a" ("b", "c") VALUES (0, 1)', $db->quote($command));
@@ -78,7 +78,7 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Insert::values
+	 * @covers  SQL_DML_Insert::values
 	 */
 	public function test_values_arrays()
 	{
@@ -87,7 +87,7 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new Database_Command_Insert('a', array('b','c'));
+		$command = new SQL_DML_Insert('a', array('b','c'));
 
 		$command->values(array(0,1));
 
@@ -96,11 +96,11 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Command_Insert::__toString
+	 * @covers  SQL_DML_Insert::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_Command_Insert;
+		$command = new SQL_DML_Insert;
 		$command
 			->into('a')
 			->columns(array('b'));

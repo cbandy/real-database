@@ -10,7 +10,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Command_Insert_Identity extends Database_Command_Insert
+class Database_Command_Insert_Identity extends SQL_DML_Insert
 	implements Database_iExecutable
 {
 	/**
@@ -31,7 +31,7 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 		if ( ! empty($this->identity))
 			return $db->execute_insert($this, $this->identity);
 
-		return parent::execute($db);
+		return $db->execute_command($this);
 	}
 
 	/**

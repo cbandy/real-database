@@ -94,9 +94,9 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 			array('delete', array('a'), 'SQL_DML_Delete'),
 			array('delete', array('a', 'b'), 'SQL_DML_Delete'),
 
-			array('insert', array(), 'Database_Command_Insert'),
-			array('insert', array('a'), 'Database_Command_Insert'),
-			array('insert', array('a', array('b')), 'Database_Command_Insert'),
+			array('insert', array(), 'SQL_DML_Insert'),
+			array('insert', array('a'), 'SQL_DML_Insert'),
+			array('insert', array('a', array('b')), 'SQL_DML_Insert'),
 
 			array('update', array(), 'SQL_DML_Update'),
 			array('update', array('a'), 'SQL_DML_Update'),

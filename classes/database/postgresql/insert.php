@@ -68,17 +68,12 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	public function execute($db)
 	{
 		if (empty($this->parameters[':returning']))
-			return parent::execute($db);
-
-		$result = $db->execute_query($db->quote($this), $this->as_object);
+			return $db->execute_command($this);
 
 		if (empty($this->identity))
-			return $result;
+			return $db->execute_query($this, $this->as_object);
 
-		$rows = $result->count();
-		$result = $result->get(($this->identity instanceof SQL_Identifier) ? $this->identity->name : NULL);
-
-		return array($rows, $result);
+		return $db->execute_insert($this, $this->identity, $this->as_object);
 	}
 
 	/**

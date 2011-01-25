@@ -15,11 +15,11 @@
  * @link http://www.sqlite.org/lang_insert.html SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms174335.aspx Transact-SQL
  */
-class Database_Command_Insert extends Database_Command
+class SQL_DML_Insert extends SQL_Expression
 {
 	/**
-	 * @uses Database_Command_Insert::into()
-	 * @uses Database_Command_Insert::columns()
+	 * @uses SQL_DML_Insert::into()
+	 * @uses SQL_DML_Insert::columns()
 	 *
 	 * @param   mixed   $table      Converted to SQL_Table
 	 * @param   array   $columns    Each element converted to SQL_Column
