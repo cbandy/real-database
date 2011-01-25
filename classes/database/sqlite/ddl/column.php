@@ -13,7 +13,7 @@
  *
  * @link http://www.sqlite.org/lang_createtable.html#rowid
  */
-class Database_SQLite_DDL_Column extends Database_DDL_Column_Identity
+class Database_SQLite_DDL_Column extends Database_DDL_Column
 {
 	public function identity()
 	{

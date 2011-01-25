@@ -8,7 +8,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Database_DDL_Column_Identity extends SQL_DDL_Column
+abstract class Database_DDL_Column extends SQL_DDL_Column
 {
 	/**
 	 * Enable IDENTITY behavior on the column. Adds a PRIMARY KEY constraint and causes the database

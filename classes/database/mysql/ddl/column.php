@@ -14,7 +14,7 @@
  * @link http://dev.mysql.com/doc/en/create-table.html
  * @link http://dev.mysql.com/doc/en/example-auto-increment.html
  */
-class Database_MySQL_DDL_Column extends Database_DDL_Column_Identity
+class Database_MySQL_DDL_Column extends Database_DDL_Column
 {
 	/**
 	 * @var boolean

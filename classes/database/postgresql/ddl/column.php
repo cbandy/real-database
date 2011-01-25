@@ -14,7 +14,7 @@
  * @link http://www.postgresql.org/docs/current/static/sql-createtable.html
  * @link http://www.postgresql.org/docs/current/static/datatype-numeric.html#DATATYPE-SERIAL
  */
-class Database_PostgreSQL_DDL_Column extends Database_DDL_Column_Identity
+class Database_PostgreSQL_DDL_Column extends Database_DDL_Column
 {
 	public function identity()
 	{
