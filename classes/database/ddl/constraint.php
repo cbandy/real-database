@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/syntaxdiagrams.html#table-constraint SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms189862.aspx Transact-SQL
  */
-abstract class Database_DDL_Constraint extends Database_Expression
+abstract class Database_DDL_Constraint extends SQL_Expression
 {
 	public function __toString()
 	{
@@ -26,15 +26,15 @@ abstract class Database_DDL_Constraint extends Database_Expression
 	/**
 	 * Set the name of the constraint
 	 *
-	 * @param   mixed   $value  Converted to Database_Identifier
+	 * @param   mixed   $value  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function name($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Identifier($value);
+			$value = new SQL_Identifier($value);
 		}
 
 		$this->parameters[':name'] = $value;

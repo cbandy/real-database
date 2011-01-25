@@ -20,7 +20,7 @@ class Database_PostgreSQL_Select extends Database_Query_Select
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/sql-select.html#SQL-DISTINCT
 	 *
-	 * @param   mixed   $columns    Each element converted to Database_Column
+	 * @param   mixed   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function distinct($columns = TRUE)
@@ -32,15 +32,15 @@ class Database_PostgreSQL_Select extends Database_Query_Select
 		{
 			foreach ($columns as & $column)
 			{
-				if ( ! $column instanceof Database_Expression
-					AND ! $column instanceof Database_Identifier)
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
 				{
-					$column = new Database_Column($column);
+					$column = new SQL_Column($column);
 				}
 			}
 		}
 
-		$this->parameters[':distinct'] = new Database_Expression('DISTINCT ON (?)', array($columns));
+		$this->parameters[':distinct'] = new SQL_Expression('DISTINCT ON (?)', array($columns));
 
 		return $this;
 	}

@@ -73,23 +73,23 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 				'DELETE FROM $table', array(),
 			),
 			array(
-				'DELETE FROM ?', array(new Database_Table($this->_table)),
+				'DELETE FROM ?', array(new SQL_Table($this->_table)),
 				'DELETE FROM $table', array(),
 			),
 			array(
-				'DELETE FROM :table', array(':table' => new Database_Table($this->_table)),
+				'DELETE FROM :table', array(':table' => new SQL_Table($this->_table)),
 				'DELETE FROM $table', array(),
 			),
 			array(
-				'DELETE FROM $table WHERE ?', array(new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
 				'DELETE FROM $table WHERE $column = ?', array(1 => 60),
 			),
 			array(
-				'DELETE FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
 				'DELETE FROM $table WHERE $column = ?', array(1 => 60),
 			),
 			array(
-				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
 				'DELETE FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
 			),
 			array(
@@ -113,11 +113,11 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 				'DELETE FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
 			),
 			array(
-				'DELETE FROM $table WHERE $column IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'DELETE FROM $table WHERE $column IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
 				'DELETE FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
 			),
 			array(
-				'DELETE FROM $table WHERE $column IN (?)', array(array(new Database_Identifier($this->_column), 70, 80)),
+				'DELETE FROM $table WHERE $column IN (?)', array(array(new SQL_Identifier($this->_column), 70, 80)),
 				'DELETE FROM $table WHERE $column IN ($column, ?, ?)', array(1 => 70, 80),
 			),
 		);
@@ -151,23 +151,23 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 				'SELECT * FROM $table', array(),
 			),
 			array(
-				'SELECT * FROM ?', array(new Database_Table($this->_table)),
+				'SELECT * FROM ?', array(new SQL_Table($this->_table)),
 				'SELECT * FROM $table', array(),
 			),
 			array(
-				'SELECT * FROM :table', array(':table' => new Database_Table($this->_table)),
+				'SELECT * FROM :table', array(':table' => new SQL_Table($this->_table)),
 				'SELECT * FROM $table', array(),
 			),
 			array(
-				'SELECT * FROM $table WHERE ?', array(new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'SELECT * FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
 				'SELECT * FROM $table WHERE $column = ?', array(1 => 60),
 			),
 			array(
-				'SELECT * FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'SELECT * FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
 				'SELECT * FROM $table WHERE $column = ?', array(1 => 60),
 			),
 			array(
-				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column($this->_column), '=', 60)),
+				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
 				'SELECT * FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
 			),
 			array(
@@ -191,11 +191,11 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 				'SELECT * FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
 			),
 			array(
-				'SELECT * FROM $table WHERE $column IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'SELECT * FROM $table WHERE $column IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
 				'SELECT * FROM $table WHERE $column IN (?, ?, ?)', array(1 => 60, 70, 80),
 			),
 			array(
-				'SELECT * FROM $table WHERE $column IN (?)', array(array(new Database_Identifier($this->_column), 70, 80)),
+				'SELECT * FROM $table WHERE $column IN (?)', array(array(new SQL_Identifier($this->_column), 70, 80)),
 				'SELECT * FROM $table WHERE $column IN ($column, ?, ?)', array(1 => 70, 80),
 			),
 		);

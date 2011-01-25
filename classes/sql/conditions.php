@@ -10,7 +10,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Conditions extends Database_Expression
+class SQL_Conditions extends SQL_Expression
 {
 	/**
 	 * @var bool    Whether or not the (sub-)expression has just begun
@@ -100,17 +100,17 @@ class Database_Conditions extends Database_Expression
 	 * Add a condition while converting the LHS to a column.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
 	public function column($logic, $left_column, $operator, $right)
 	{
-		if ( ! $left_column instanceof Database_Expression
-			AND ! $left_column instanceof Database_Identifier)
+		if ( ! $left_column instanceof SQL_Expression
+			AND ! $left_column instanceof SQL_Identifier)
 		{
-			$left_column = new Database_Column($left_column);
+			$left_column = new SQL_Column($left_column);
 		}
 
 		return $this->add($logic, $left_column, $operator, $right);
@@ -120,17 +120,17 @@ class Database_Conditions extends Database_Expression
 	 * Add a condition while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function columns($logic, $left_column, $operator, $right_column)
 	{
-		if ( ! $right_column instanceof Database_Expression
-			AND ! $right_column instanceof Database_Identifier)
+		if ( ! $right_column instanceof SQL_Expression
+			AND ! $right_column instanceof SQL_Identifier)
 		{
-			$right_column = new Database_Column($right_column);
+			$right_column = new SQL_Column($right_column);
 		}
 
 		return $this->column($logic, $left_column, $operator, $right_column);
@@ -169,17 +169,17 @@ class Database_Conditions extends Database_Expression
 	 * Add a negated condition while converting the LHS to a column.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
 	public function not_column($logic, $left_column, $operator, $right)
 	{
-		if ( ! $left_column instanceof Database_Expression
-			AND ! $left_column instanceof Database_Identifier)
+		if ( ! $left_column instanceof SQL_Expression
+			AND ! $left_column instanceof SQL_Identifier)
 		{
-			$left_column = new Database_Column($left_column);
+			$left_column = new SQL_Column($left_column);
 		}
 
 		return $this->not($logic, $left_column, $operator, $right);
@@ -189,17 +189,17 @@ class Database_Conditions extends Database_Expression
 	 * Add a negated condition while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function not_columns($logic, $left_column, $operator, $right_column)
 	{
-		if ( ! $right_column instanceof Database_Expression
-			AND ! $right_column instanceof Database_Identifier)
+		if ( ! $right_column instanceof SQL_Expression
+			AND ! $right_column instanceof SQL_Identifier)
 		{
-			$right_column = new Database_Column($right_column);
+			$right_column = new SQL_Column($right_column);
 		}
 
 		return $this->not_column($logic, $left_column, $operator, $right_column);
@@ -238,17 +238,17 @@ class Database_Conditions extends Database_Expression
 	 * Open a negated parenthesis while converting the LHS to a column.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
 	public function not_open_column($logic, $left_column, $operator, $right)
 	{
-		if ( ! $left_column instanceof Database_Expression
-			AND ! $left_column instanceof Database_Identifier)
+		if ( ! $left_column instanceof SQL_Expression
+			AND ! $left_column instanceof SQL_Identifier)
 		{
-			$left_column = new Database_Column($left_column);
+			$left_column = new SQL_Column($left_column);
 		}
 
 		return $this->not_open($logic, $left_column, $operator, $right);
@@ -258,17 +258,17 @@ class Database_Conditions extends Database_Expression
 	 * Open a negated parenthesis while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function not_open_columns($logic, $left_column, $operator, $right_column)
 	{
-		if ( ! $right_column instanceof Database_Expression
-			AND ! $right_column instanceof Database_Identifier)
+		if ( ! $right_column instanceof SQL_Expression
+			AND ! $right_column instanceof SQL_Identifier)
 		{
-			$right_column = new Database_Column($right_column);
+			$right_column = new SQL_Column($right_column);
 		}
 
 		return $this->not_open_column($logic, $left_column, $operator, $right_column);
@@ -307,17 +307,17 @@ class Database_Conditions extends Database_Expression
 	 * Open a parenthesis while converting the LHS to a column.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
 	 */
 	public function open_column($logic, $left_column, $operator, $right)
 	{
-		if ( ! $left_column instanceof Database_Expression
-			AND ! $left_column instanceof Database_Identifier)
+		if ( ! $left_column instanceof SQL_Expression
+			AND ! $left_column instanceof SQL_Identifier)
 		{
-			$left_column = new Database_Column($left_column);
+			$left_column = new SQL_Column($left_column);
 		}
 
 		return $this->open($logic, $left_column, $operator, $right);
@@ -327,17 +327,17 @@ class Database_Conditions extends Database_Expression
 	 * Open a parenthesis while converting both operands to columns.
 	 *
 	 * @param   string  $logic          Logical operator
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function open_columns($logic, $left_column, $operator, $right_column)
 	{
-		if ( ! $right_column instanceof Database_Expression
-			AND ! $right_column instanceof Database_Identifier)
+		if ( ! $right_column instanceof SQL_Expression
+			AND ! $right_column instanceof SQL_Identifier)
 		{
-			$right_column = new Database_Column($right_column);
+			$right_column = new SQL_Column($right_column);
 		}
 
 		return $this->open_column($logic, $left_column, $operator, $right_column);
@@ -359,7 +359,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a condition using AND while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -372,9 +372,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a condition using AND while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function and_columns($left_column, $operator, $right_column)
@@ -398,7 +398,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a negated condition using AND while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -411,9 +411,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a negated condition using AND while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function and_not_columns($left_column, $operator, $right_column)
@@ -437,7 +437,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a negated parenthesis using AND while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -450,9 +450,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a negated parenthesis using AND while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function and_not_open_columns($left_column, $operator, $right_column)
@@ -476,7 +476,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a parenthesis using AND while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -489,9 +489,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a parenthesis using AND while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function and_open_columns($left_column, $operator, $right_column)
@@ -502,7 +502,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a condition using OR while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -515,9 +515,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a condition using OR while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function or_columns($left_column, $operator, $right_column)
@@ -541,7 +541,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a negated condition using OR while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -554,9 +554,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Add a negated condition using OR while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function or_not_columns($left_column, $operator, $right_column)
@@ -580,7 +580,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a negated parenthesis using OR while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -593,9 +593,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a negated parenthesis using OR while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function or_not_open_columns($left_column, $operator, $right_column)
@@ -619,7 +619,7 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a parenthesis using OR while converting the LHS to a column.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -632,9 +632,9 @@ class Database_Conditions extends Database_Expression
 	/**
 	 * Open a parenthesis using OR while converting both operands to columns.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to Database_Column
+	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function or_open_columns($left_column, $operator, $right_column)

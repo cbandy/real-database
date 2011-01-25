@@ -30,7 +30,7 @@ class Database_Command_Drop extends Database_Command
 	 * @uses Database_Command_Drop::cascade()
 	 *
 	 * @param   string  $type       SCHEMA, TABLE, VIEW, etc
-	 * @param   mixed   $name       Converted to Database_Identifier
+	 * @param   mixed   $name       Converted to SQL_Identifier
 	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
 	 */
 	public function __construct($type, $name = NULL, $cascade = NULL)
@@ -101,15 +101,15 @@ class Database_Command_Drop extends Database_Command
 	/**
 	 * Set the name of the object to be dropped
 	 *
-	 * @param   mixed   $value  Converted to Database_Identifier
+	 * @param   mixed   $value  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function name($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Identifier($value);
+			$value = new SQL_Identifier($value);
 		}
 
 		$this->parameters[':name'] = $value;
@@ -120,7 +120,7 @@ class Database_Command_Drop extends Database_Command
 	/**
 	 * Set the names of multiple objects to be dropped
 	 *
-	 * @param   mixed   $values Each element converted to Database_Identifier
+	 * @param   mixed   $values Each element converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function names($values)
@@ -130,10 +130,10 @@ class Database_Command_Drop extends Database_Command
 			// SQLite allows only one
 			foreach ($values as & $value)
 			{
-				if ( ! $value instanceof Database_Expression
-					AND ! $value instanceof Database_Identifier)
+				if ( ! $value instanceof SQL_Expression
+					AND ! $value instanceof SQL_Identifier)
 				{
-					$value = new Database_Identifier($value);
+					$value = new SQL_Identifier($value);
 				}
 			}
 		}

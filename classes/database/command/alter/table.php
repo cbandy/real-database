@@ -18,7 +18,7 @@ class Database_Command_Alter_Table extends Database_Command
 	/**
 	 * @uses Database_Command_Alter_Table::name()
 	 *
-	 * @param   mixed   $name   Converted to Database_Table
+	 * @param   mixed   $name   Converted to SQL_Table
 	 */
 	public function __construct($name = NULL)
 	{
@@ -38,7 +38,7 @@ class Database_Command_Alter_Table extends Database_Command
 	 */
 	public function add_column($column)
 	{
-		$this->parameters[':actions'][] = new Database_Expression('ADD ?', array($column));
+		$this->parameters[':actions'][] = new SQL_Expression('ADD ?', array($column));
 
 		return $this;
 	}
@@ -53,7 +53,7 @@ class Database_Command_Alter_Table extends Database_Command
 	 */
 	public function add_constraint($constraint)
 	{
-		$this->parameters[':actions'][] = new Database_Expression('ADD ?', array($constraint));
+		$this->parameters[':actions'][] = new SQL_Expression('ADD ?', array($constraint));
 
 		return $this;
 	}
@@ -63,18 +63,18 @@ class Database_Command_Alter_Table extends Database_Command
 	 *
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $name   Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function drop_column($name)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Column($name);
+			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new Database_Expression('DROP COLUMN ?', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression('DROP COLUMN ?', array($name));
 
 		return $this;
 	}
@@ -85,18 +85,18 @@ class Database_Command_Alter_Table extends Database_Command
 	 * [!!] Not supported by SQLite
 	 *
 	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
-	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @param   mixed   $name   Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function drop_constraint($type, $name)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Identifier($name);
+			$name = new SQL_Identifier($name);
 		}
 
-		$this->parameters[':actions'][] = new Database_Expression('DROP CONSTRAINT ?', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression('DROP CONSTRAINT ?', array($name));
 
 		return $this;
 	}
@@ -106,18 +106,18 @@ class Database_Command_Alter_Table extends Database_Command
 	 *
 	 * [!!] Not supported by SQLite or SQL Server
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $name   Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function drop_default($name)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Column($name);
+			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new Database_Expression('ALTER ? DROP DEFAULT', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression('ALTER ? DROP DEFAULT', array($name));
 
 		return $this;
 	}
@@ -125,15 +125,15 @@ class Database_Command_Alter_Table extends Database_Command
 	/**
 	 * Set the name of the table to be altered.
 	 *
-	 * @param   mixed   $value  Converted to Database_Table
+	 * @param   mixed   $value  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function name($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Table($value);
+			$value = new SQL_Table($value);
 		}
 
 		$this->parameters[':name'] = $value;
@@ -146,18 +146,18 @@ class Database_Command_Alter_Table extends Database_Command
 	 *
 	 * [!!] Not supported by SQL Server
 	 *
-	 * @param   mixed   $name   Converted to Database_Table
+	 * @param   mixed   $name   Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function rename($name)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Table($name);
+			$name = new SQL_Table($name);
 		}
 
-		$this->parameters[':actions'] = array(new Database_Expression('RENAME TO ?', array($name)));
+		$this->parameters[':actions'] = array(new SQL_Expression('RENAME TO ?', array($name)));
 
 		return $this;
 	}
@@ -167,19 +167,19 @@ class Database_Command_Alter_Table extends Database_Command
 	 *
 	 * [!!] Not supported by SQLite or SQL Server
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $name   Converted to SQL_Column
 	 * @param   mixed   $value
 	 * @return  $this
 	 */
 	public function set_default($name, $value)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Column($name);
+			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new Database_Expression('ALTER ? SET DEFAULT ?', array($name, $value));
+		$this->parameters[':actions'][] = new SQL_Expression('ALTER ? SET DEFAULT ?', array($name, $value));
 
 		return $this;
 	}

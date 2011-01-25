@@ -23,7 +23,7 @@ class Database_Command_Create_Table extends Database_Command
 	/**
 	 * @uses Database_Command_Create_Table::name()
 	 *
-	 * @param   mixed   $name   Converted to Database_Table
+	 * @param   mixed   $name   Converted to SQL_Table
 	 */
 	public function __construct($name = NULL)
 	{
@@ -116,15 +116,15 @@ class Database_Command_Create_Table extends Database_Command
 	/**
 	 * Set the name of the table
 	 *
-	 * @param   mixed   $value  Converted to Database_Table
+	 * @param   mixed   $value  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function name($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Table($value);
+			$value = new SQL_Table($value);
 		}
 
 		$this->parameters[':name'] = $value;

@@ -197,23 +197,23 @@ class Database_Query_Set extends Database_Query
 	/**
 	 * Append a column or expression by which rows should be sorted
 	 *
-	 * @param   mixed   $column     Converted to Database_Column
+	 * @param   mixed   $column     Converted to SQL_Column
 	 * @param   mixed   $direction  Direction of sort
 	 * @return  $this
 	 */
 	public function order_by($column, $direction = NULL)
 	{
-		if ( ! $column instanceof Database_Expression
-			AND ! $column instanceof Database_Identifier)
+		if ( ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
 		if ($direction)
 		{
-			$column = ($direction instanceof Database_Expression)
-				? new Database_Expression('? ?', array($column, $direction))
-				: new Database_Expression('? '.strtoupper($direction), array($column));
+			$column = ($direction instanceof SQL_Expression)
+				? new SQL_Expression('? ?', array($column, $direction))
+				: new SQL_Expression('? '.strtoupper($direction), array($column));
 		}
 
 		$this->parameters[':orderby'][] = $column;

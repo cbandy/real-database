@@ -29,7 +29,7 @@ class Database_Command_Create_View extends Database_Command
 	 * @uses Database_Command_Create_View::name()
 	 * @uses Database_Command_Create_View::query()
 	 *
-	 * @param   mixed           $name   Converted to Database_Table
+	 * @param   mixed           $name   Converted to SQL_Table
 	 * @param   Database_Query  $query
 	 */
 	public function __construct($name = NULL, $query = NULL)
@@ -81,15 +81,15 @@ class Database_Command_Create_View extends Database_Command
 	/**
 	 * Append one column to be included in the view
 	 *
-	 * @param   mixed   $column Converted to Database_Column
+	 * @param   mixed   $column Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function column($column)
 	{
-		if ( ! $column instanceof Database_Expression
-			AND ! $column instanceof Database_Identifier)
+		if ( ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
 		$this->parameters[':columns'][] = $column;
@@ -100,17 +100,17 @@ class Database_Command_Create_View extends Database_Command
 	/**
 	 * Set the columns to be included in the view
 	 *
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
 		foreach ($columns as & $column)
 		{
-			if ( ! $column instanceof Database_Expression
-				AND ! $column instanceof Database_Identifier)
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
 			{
-				$column = new Database_Column($column);
+				$column = new SQL_Column($column);
 			}
 		}
 
@@ -122,15 +122,15 @@ class Database_Command_Create_View extends Database_Command
 	/**
 	 * Set the name of the view
 	 *
-	 * @param   mixed   $value  Converted to Database_Table
+	 * @param   mixed   $value  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function name($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Table($value);
+			$value = new SQL_Table($value);
 		}
 
 		$this->parameters[':name'] = $value;

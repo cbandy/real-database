@@ -18,7 +18,7 @@ class Database_DDL_Constraint_Unique extends Database_DDL_Constraint
 	/**
 	 * @uses Database_DDL_Constraint_Unique::columns()
 	 *
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 */
 	public function __construct($columns = array())
 	{
@@ -42,17 +42,17 @@ class Database_DDL_Constraint_Unique extends Database_DDL_Constraint
 	/**
 	 * Set the group of columns that must contain unique values
 	 *
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
 		foreach ($columns as & $column)
 		{
-			if ( ! $column instanceof Database_Expression
-				AND ! $column instanceof Database_Identifier)
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
 			{
-				$column = new Database_Column($column);
+				$column = new SQL_Column($column);
 			}
 		}
 

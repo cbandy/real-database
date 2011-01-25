@@ -96,7 +96,7 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 	/**
 	 * Append values to return when executed
 	 *
-	 * @param   mixed   $columns    Each element converted to Database_Column
+	 * @param   mixed   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function returning($columns)
@@ -105,15 +105,15 @@ class Database_PostgreSQL_Delete extends Database_Command_Delete
 		{
 			foreach ($columns as $alias => $column)
 			{
-				if ( ! $column instanceof Database_Expression
-					AND ! $column instanceof Database_Identifier)
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
 				{
-					$column = new Database_Column($column);
+					$column = new SQL_Column($column);
 				}
 
 				if (is_string($alias) AND $alias !== '')
 				{
-					$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
+					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
 				}
 
 				$this->parameters[':returning'][] = $column;

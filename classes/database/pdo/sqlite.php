@@ -29,8 +29,8 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	/**
 	 * Create a column expression
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
-	 * @param   mixed   $type   Converted to Database_Expression
+	 * @param   mixed   $name   Converted to SQL_Column
+	 * @param   mixed   $type   Converted to SQL_Expression
 	 * @return  Database_SQLite_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -41,8 +41,8 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	/**
 	 * Create an INSERT command
 	 *
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  Database_SQLite_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -163,7 +163,7 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	 * the SQL-92 Information Schema. Includes one non-standard field, `sql`, which contains the
 	 * text of the original CREATE command.
 	 *
-	 * @param   mixed   $schema Converted to Database_Identifier
+	 * @param   mixed   $schema Converted to SQL_Identifier
 	 * @return  array
 	 */
 	public function schema_tables($schema = NULL)

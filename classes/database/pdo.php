@@ -132,10 +132,10 @@ class Database_PDO extends Database
 			return implode(', ', $result);
 		}
 
-		if ($value instanceof Database_Expression)
+		if ($value instanceof SQL_Expression)
 			return $this->_parse($value->__toString(), $value->parameters, $result_parameters);
 
-		if ($value instanceof Database_Identifier)
+		if ($value instanceof SQL_Identifier)
 			return $this->quote($value);
 
 		$result_parameters[] = $value;
@@ -294,8 +294,8 @@ class Database_PDO extends Database
 	 * Not all drivers support this method. When inserting multiple rows, the
 	 * row to which the identity value belongs depends on the driver.
 	 *
-	 * @param   string|Database_Expression  $statement  SQL insert
-	 * @param   mixed                       $identity   Ignored
+	 * @param   string|SQL_Expression   $statement  SQL insert
+	 * @param   mixed                   $identity   Ignored
 	 * @return  array   List including number of affected rows and an identity value
 	 */
 	public function execute_insert($statement, $identity)

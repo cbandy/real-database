@@ -1,9 +1,10 @@
 <?php
 
 /**
- * The name of an object in the database, such as a column, constraint, index or table.
+ * The name of an object in the database, such as a column, constraint, index
+ * or table.
  *
- * Use the more specific [Database_Table] and [Database_Column] for tables and columns,
+ * Use the more specific [SQL_Table] and [SQL_Column] for tables and columns,
  * respectively.
  *
  * @package     RealDatabase
@@ -12,7 +13,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Identifier
+class SQL_Identifier
 {
 	public $name;
 	public $namespace;

@@ -40,7 +40,7 @@ class Database_MySQL_Create_Index extends Database_Command_Create_Index
 	 */
 	public function type($type)
 	{
-		$this->parameters[':type'] = new Database_Expression(strtoupper($type));
+		$this->parameters[':type'] = new SQL_Expression(strtoupper($type));
 
 		return $this;
 	}

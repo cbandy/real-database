@@ -20,11 +20,11 @@ class Database_PostgreSQL_DDL_Column extends Database_DDL_Column_Identity
 	{
 		if (isset($this->parameters[':type']) AND in_array(strtolower($this->parameters[':type']->_value), array('bigint', 'bigserial', 'int8'), TRUE))
 		{
-			$this->parameters[':type'] = new Database_Expression('BIGSERIAL');
+			$this->parameters[':type'] = new SQL_Expression('BIGSERIAL');
 		}
 		else
 		{
-			$this->parameters[':type'] = new Database_Expression('SERIAL');
+			$this->parameters[':type'] = new SQL_Expression('SERIAL');
 		}
 
 		if (isset($this->parameters[':constraints']))

@@ -16,11 +16,11 @@
 class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
 {
 	/**
-	 * Append a FIRST or AFTER clause to a Database_Expression.
+	 * Append a FIRST or AFTER clause to a SQL_Expression.
 	 *
-	 * @param   Database_Expression $expression
-	 * @param   boolean|mixed       $after      TRUE for FIRST or Converted to Database_Column
-	 * @return  Database_Expression Modified expression object
+	 * @param   SQL_Expression  $expression
+	 * @param   boolean|mixed   $after      TRUE for FIRST or Converted to SQL_Column
+	 * @return  SQL_Expression Modified expression object
 	 */
 	protected function _position($expression, $after)
 	{
@@ -30,10 +30,10 @@ class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
 		}
 		elseif ($after)
 		{
-			if ( ! $after instanceof Database_Expression
-				AND ! $after instanceof Database_Identifier)
+			if ( ! $after instanceof SQL_Expression
+				AND ! $after instanceof SQL_Identifier)
 			{
-				$after = new Database_Column($after);
+				$after = new SQL_Column($after);
 			}
 
 			$expression->_value .= ' AFTER ?';
@@ -47,12 +47,12 @@ class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
 	 * Add a column to the table, optionally specifying the position.
 	 *
 	 * @param   Database_DDL_Column $column
-	 * @param   boolean|mixed       $after  TRUE for FIRST or Converted to Database_Column
+	 * @param   boolean|mixed       $after  TRUE for FIRST or Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function add_column($column, $after = FALSE)
 	{
-		$this->parameters[':actions'][] = $this->_position(new Database_Expression('ADD ?', array($column)), $after);
+		$this->parameters[':actions'][] = $this->_position(new SQL_Expression('ADD ?', array($column)), $after);
 
 		return $this;
 	}
@@ -60,45 +60,45 @@ class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
 	/**
 	 * Change a column in the table, optionally specifying the position.
 	 *
-	 * @param   mixed               $name   Converted to Database_Column
+	 * @param   mixed               $name   Converted to SQL_Column
 	 * @param   Database_DDL_Column $column
-	 * @param   boolean|mixed       $after  TRUE for FIRST or Converted to Database_Column
+	 * @param   boolean|mixed       $after  TRUE for FIRST or Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function change_column($name, $column, $after = FALSE)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Column($name);
+			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = $this->_position(new Database_Expression('CHANGE ? ?', array($name, $column)), $after);
+		$this->parameters[':actions'][] = $this->_position(new SQL_Expression('CHANGE ? ?', array($name, $column)), $after);
 
 		return $this;
 	}
 
 	public function drop_constraint($type, $name)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Identifier($name);
+			$name = new SQL_Identifier($name);
 		}
 
 		$type = strtoupper($type);
 
 		if ($type === 'FOREIGN')
 		{
-			$this->parameters[':actions'][] = new Database_Expression('DROP FOREIGN KEY ?', array($name));
+			$this->parameters[':actions'][] = new SQL_Expression('DROP FOREIGN KEY ?', array($name));
 		}
 		elseif ($type === 'PRIMARY')
 		{
-			$this->parameters[':actions'][] = new Database_Expression('DROP PRIMARY KEY');
+			$this->parameters[':actions'][] = new SQL_Expression('DROP PRIMARY KEY');
 		}
 		elseif ($type !== 'CHECK')
 		{
-			$this->parameters[':actions'][] = new Database_Expression('DROP INDEX ?', array($name));
+			$this->parameters[':actions'][] = new SQL_Expression('DROP INDEX ?', array($name));
 		}
 
 		return $this;
@@ -113,7 +113,7 @@ class Database_MySQL_Alter_Table extends Database_Command_Alter_Table
 	 */
 	public function option($option, $value)
 	{
-		$this->parameters[':actions'][] = new Database_Expression("$option ?", array($value));
+		$this->parameters[':actions'][] = new SQL_Expression("$option ?", array($value));
 
 		return $this;
 	}

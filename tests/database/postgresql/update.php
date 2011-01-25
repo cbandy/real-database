@@ -92,7 +92,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 
 		$query->where('value', '=', 100);
 
-		$this->assertSame($query, $query->returning(new Database_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
+		$this->assertSame($query, $query->returning(new SQL_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
 
 		$result = $query->execute($db);
 

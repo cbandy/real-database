@@ -32,7 +32,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->values(array('b')), 'Chainable (one array)');
 		$this->assertSame('INSERT INTO '.$table." VALUES ('b');", $db->quote($command));
 
-		$this->assertSame($command, $command->values(new Database_EXpression('c')), 'Chainable (expression)');
+		$this->assertSame($command, $command->values(new SQL_Expression('c')), 'Chainable (expression)');
 		$this->assertSame('INSERT INTO '.$table.' c', $db->quote($command));
 
 		$this->assertSame($command, $command->values(array('c'), array('d')), 'Chainable (two arrays)');

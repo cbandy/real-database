@@ -21,8 +21,8 @@ class Database_Command_Insert extends Database_Command
 	 * @uses Database_Command_Insert::into()
 	 * @uses Database_Command_Insert::columns()
 	 *
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 */
 	public function __construct($table = NULL, $columns = NULL)
 	{
@@ -60,7 +60,7 @@ class Database_Command_Insert extends Database_Command
 	/**
 	 * Set the list of columns to be populated with values
 	 *
-	 * @param   array|NULL  $columns    Each element converted to Database_Column
+	 * @param   array|NULL  $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function columns($columns)
@@ -69,10 +69,10 @@ class Database_Command_Insert extends Database_Command
 		{
 			foreach ($columns as & $column)
 			{
-				if ( ! $column instanceof Database_Expression
-					AND ! $column instanceof Database_Identifier)
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
 				{
-					$column = new Database_Column($column);
+					$column = new SQL_Column($column);
 				}
 			}
 		}
@@ -85,15 +85,15 @@ class Database_Command_Insert extends Database_Command
 	/**
 	 * Set the table in which to insert rows
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function into($table)
 	{
-		if ( ! $table instanceof Database_Expression
-			AND ! $table instanceof Database_Identifier)
+		if ( ! $table instanceof SQL_Expression
+			AND ! $table instanceof SQL_Identifier)
 		{
-			$table = new Database_Table($table);
+			$table = new SQL_Table($table);
 		}
 
 		$this->parameters[':table'] = $table;
@@ -117,7 +117,7 @@ class Database_Command_Insert extends Database_Command
 			foreach ($values as $row)
 			{
 				// Wrap each row in parentheses
-				$this->parameters[':values'][] = new Database_Expression('(?)', array($row));
+				$this->parameters[':values'][] = new SQL_Expression('(?)', array($row));
 			}
 		}
 		else

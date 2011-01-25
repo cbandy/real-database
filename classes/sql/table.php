@@ -1,8 +1,7 @@
 <?php
 
 /**
- * Column identifier. When quoted, the namespace is treated as a [Database_Table] unless it is a
- * [Database_Identifier].
+ * Table identifier. When quoted, the configured table prefix is added.
  *
  * @package     RealDatabase
  * @category    Identifiers
@@ -11,7 +10,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Column extends Database_Identifier
+class SQL_Table extends SQL_Identifier
 {
 
 }

@@ -18,19 +18,19 @@ class Database_PostgreSQL_Alter_Table extends Database_Command_Alter_Table
 	/**
 	 * Remove a column from the table, optionally removing dependent objects.
 	 *
-	 * @param   mixed   $name       Converted to Database_Column
+	 * @param   mixed   $name       Converted to SQL_Column
 	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
 	 * @return  $this
 	 */
 	public function drop_column($name, $cascade = NULL)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Column($name);
+			$name = new SQL_Column($name);
 		}
 
-		$result = new Database_Expression('DROP COLUMN ?', array($name));
+		$result = new SQL_Expression('DROP COLUMN ?', array($name));
 
 		if ($cascade !== NULL)
 		{
@@ -46,19 +46,19 @@ class Database_PostgreSQL_Alter_Table extends Database_Command_Alter_Table
 	 * Remove a constraint from the table, optionally removing dependent objects.
 	 *
 	 * @param   string  $type       Unused
-	 * @param   mixed   $name       Converted to Database_Identifier
+	 * @param   mixed   $name       Converted to SQL_Identifier
 	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
 	 * @return  $this
 	 */
 	public function drop_constraint($type, $name, $cascade = NULL)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Identifier($name);
+			$name = new SQL_Identifier($name);
 		}
 
-		$result = new Database_Expression('DROP CONSTRAINT ?', array($name));
+		$result = new SQL_Expression('DROP CONSTRAINT ?', array($name));
 
 		if ($cascade !== NULL)
 		{
@@ -73,25 +73,25 @@ class Database_PostgreSQL_Alter_Table extends Database_Command_Alter_Table
 	/**
 	 * Rename a column. This cannot be combined with other actions.
 	 *
-	 * @param   mixed   $old_name   Converted to Database_Column
-	 * @param   mixed   $new_name   Converted to Database_Column
+	 * @param   mixed   $old_name   Converted to SQL_Column
+	 * @param   mixed   $new_name   Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function rename_column($old_name, $new_name)
 	{
-		if ( ! $old_name instanceof Database_Expression
-			AND ! $old_name instanceof Database_Identifier)
+		if ( ! $old_name instanceof SQL_Expression
+			AND ! $old_name instanceof SQL_Identifier)
 		{
-			$old_name = new Database_Column($old_name);
+			$old_name = new SQL_Column($old_name);
 		}
 
-		if ( ! $new_name instanceof Database_Expression
-			AND ! $new_name instanceof Database_Identifier)
+		if ( ! $new_name instanceof SQL_Expression
+			AND ! $new_name instanceof SQL_Identifier)
 		{
-			$new_name = new Database_Column($new_name);
+			$new_name = new SQL_Column($new_name);
 		}
 
-		$this->parameters[':actions'] = new Database_Expression('RENAME ? TO ?', array($old_name, $new_name));
+		$this->parameters[':actions'] = new SQL_Expression('RENAME ? TO ?', array($old_name, $new_name));
 
 		return $this;
 	}
@@ -99,19 +99,19 @@ class Database_PostgreSQL_Alter_Table extends Database_Command_Alter_Table
 	/**
 	 * Add or remove the NOT NULL constraint on a column.
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
+	 * @param   mixed   $name   Converted to SQL_Column
 	 * @param   boolean $value  TRUE to add or FALSE to remove
 	 * @return  $this
 	 */
 	public function set_not_null($name, $value = TRUE)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Column($name);
+			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new Database_Expression(($value ? 'SET' : 'DROP').' NOT NULL ?', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression(($value ? 'SET' : 'DROP').' NOT NULL ?', array($name));
 
 		return $this;
 	}
@@ -119,31 +119,31 @@ class Database_PostgreSQL_Alter_Table extends Database_Command_Alter_Table
 	/**
 	 * Change the type of a column, optionally using an expression to facilitate the conversion.
 	 *
-	 * @param   mixed   $column Converted to Database_Column
-	 * @param   mixed   $type   Converted to Database_Expression
-	 * @param   mixed   $using  Converted to Database_Expression
+	 * @param   mixed   $column Converted to SQL_Column
+	 * @param   mixed   $type   Converted to SQL_Expression
+	 * @param   mixed   $using  Converted to SQL_Expression
 	 * @return  $this
 	 */
 	public function type($name, $type, $using = NULL)
 	{
-		if ( ! $name instanceof Database_Expression
-			AND ! $name instanceof Database_Identifier)
+		if ( ! $name instanceof SQL_Expression
+			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new Database_Column($name);
+			$name = new SQL_Column($name);
 		}
 
-		if ( ! $type instanceof Database_Expression)
+		if ( ! $type instanceof SQL_Expression)
 		{
-			$type = new Database_Expression($type);
+			$type = new SQL_Expression($type);
 		}
 
-		$result = new Database_Expression('ALTER ? TYPE ?', array($name, $type));
+		$result = new SQL_Expression('ALTER ? TYPE ?', array($name, $type));
 
 		if ($using !== NULL)
 		{
-			if ( ! $using instanceof Database_Expression)
+			if ( ! $using instanceof SQL_Expression)
 			{
-				$using = new Database_Expression($using);
+				$using = new SQL_Expression($using);
 			}
 
 			$result->_value .= ' USING ?';

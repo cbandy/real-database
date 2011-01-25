@@ -55,8 +55,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	/**
 	 * Create a column expression
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
-	 * @param   mixed   $type   Converted to Database_Expression
+	 * @param   mixed   $name   Converted to SQL_Column
+	 * @param   mixed   $type   Converted to SQL_Expression
 	 * @return  Database_PostgreSQL_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -67,7 +67,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	/**
 	 * Create a DELETE command
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  Database_PostgreSQL_Delete
 	 */
@@ -113,8 +113,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	/**
 	 * Create an INSERT command
 	 *
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  Database_PostgreSQL_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -136,7 +136,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	/**
 	 * Create an UPDATE command
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @param   array   $values Hash of (column => value) assignments
 	 * @return  Database_PostgreSQL_Update
@@ -442,11 +442,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				{
 					$result .= $this->_parse_array($value, $result_parameters);
 				}
-				elseif ($value instanceof Database_Expression)
+				elseif ($value instanceof SQL_Expression)
 				{
 					$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
 				}
-				elseif ($value instanceof Database_Identifier)
+				elseif ($value instanceof SQL_Identifier)
 				{
 					$result .= $this->quote($value);
 				}
@@ -473,11 +473,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 					{
 						$fragments[$placeholder] = $this->_parse_array($value, $result_parameters);
 					}
-					elseif ($value instanceof Database_Expression)
+					elseif ($value instanceof SQL_Expression)
 					{
 						$fragments[$placeholder] = $this->_parse($value->__toString(), $value->parameters, $result_parameters);
 					}
-					elseif ($value instanceof Database_Identifier)
+					elseif ($value instanceof SQL_Identifier)
 					{
 						$fragments[$placeholder] = $this->quote($value);
 					}
@@ -519,11 +519,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			{
 				$result .= $this->_parse_array($value, $result_parameters);
 			}
-			elseif ($value instanceof Database_Expression)
+			elseif ($value instanceof SQL_Expression)
 			{
 				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
 			}
-			elseif ($value instanceof Database_Identifier)
+			elseif ($value instanceof SQL_Identifier)
 			{
 				$result .= $this->quote($value);
 			}
@@ -616,7 +616,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * Insert records into a table from an array of strings describing each row
 	 *
 	 * @throws  Database_Exception
-	 * @param   mixed   $table      Converted to Database_Table
+	 * @param   mixed   $table      Converted to SQL_Table
 	 * @param   array   $rows       Each element is a delimited string
 	 * @param   string  $delimiter  Column delimiter
 	 * @param   string  $null       NULL representation
@@ -650,7 +650,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 *
 	 * @throws  Database_Exception
 	 * @throws  Kohana_Exception
-	 * @param   mixed   $table      Converted to Database_Table
+	 * @param   mixed   $table      Converted to SQL_Table
 	 * @param   string  $delimiter  Column delimiter
 	 * @param   string  $null       NULL representation
 	 * @return  array   Rows from the table as delimited strings
@@ -667,9 +667,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 		else
 		{
-			if ( ! $table instanceof Database_Identifier)
+			if ( ! $table instanceof SQL_Identifier)
 			{
-				$table = new Database_Table($table);
+				$table = new SQL_Table($table);
 			}
 
 			if (empty($table->namespace))
@@ -822,17 +822,17 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * row.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|Database_Expression  $statement  SQL insert
-	 * @param   mixed                       $identity   Converted to Database_Column
-	 * @param   string|boolean              $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|SQL_Expression   $statement  SQL insert
+	 * @param   mixed                   $identity   Converted to SQL_Column
+	 * @param   string|boolean          $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 * @return  array   List including number of affected rows and a value from the first row
 	 */
 	public function execute_insert($statement, $identity, $as_object = FALSE)
 	{
-		if ( ! $identity instanceof Database_Expression
-			AND ! $identity instanceof Database_Identifier)
+		if ( ! $identity instanceof SQL_Expression
+			AND ! $identity instanceof SQL_Identifier)
 		{
-			$identity = new Database_Column($identity);
+			$identity = new SQL_Column($identity);
 		}
 
 		if ($statement instanceof Database_PostgreSQL_Insert
@@ -858,7 +858,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		$rows = $result->count();
 		$result = $result->get(
-			($identity instanceof Database_Identifier) ? $identity->name : NULL
+			($identity instanceof SQL_Identifier) ? $identity->name : NULL
 		);
 
 		return array($rows, $result);
@@ -1032,7 +1032,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function schema_tables($schema = NULL)
 	{
-		if ($schema instanceof Database_Identifier)
+		if ($schema instanceof SQL_Identifier)
 		{
 			$schema = $schema->name;
 		}
@@ -1072,7 +1072,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function table_columns($table)
 	{
-		if ($table instanceof Database_Identifier)
+		if ($table instanceof SQL_Identifier)
 		{
 			$schema = $table->namespace;
 			$table = $table->name;

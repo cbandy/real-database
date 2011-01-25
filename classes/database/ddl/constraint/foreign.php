@@ -34,8 +34,8 @@ class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 	 * @uses Database_DDL_Constraint_Foreign::table()
 	 * @uses Database_DDL_Constraint_Foreign::columns()
 	 *
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 */
 	public function __construct($table = NULL, $columns = array())
 	{
@@ -107,17 +107,17 @@ class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 	/**
 	 * Set the referenced columns
 	 *
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
 		foreach ($columns as & $column)
 		{
-			if ( ! $column instanceof Database_Expression
-				AND ! $column instanceof Database_Identifier)
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
 			{
-				$column = new Database_Column($column);
+				$column = new SQL_Column($column);
 			}
 		}
 
@@ -169,17 +169,17 @@ class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 	/**
 	 * Set the referencing columns
 	 *
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function referencing($columns)
 	{
 		foreach ($columns as & $column)
 		{
-			if ( ! $column instanceof Database_Expression
-				AND ! $column instanceof Database_Identifier)
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
 			{
-				$column = new Database_Column($column);
+				$column = new SQL_Column($column);
 			}
 		}
 
@@ -191,15 +191,15 @@ class Database_DDL_Constraint_Foreign extends Database_DDL_Constraint
 	/**
 	 * Set the referenced table
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function table($table)
 	{
-		if ( ! $table instanceof Database_Expression
-			AND ! $table instanceof Database_Identifier)
+		if ( ! $table instanceof SQL_Expression
+			AND ! $table instanceof SQL_Identifier)
 		{
-			$table = new Database_Table($table);
+			$table = new SQL_Table($table);
 		}
 
 		$this->parameters[':table'] = $table;

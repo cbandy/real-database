@@ -30,7 +30,7 @@ class Database_Base_Identifier_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Identifier::__construct
+	 * @covers  SQL_Identifier::__construct
 	 * @dataProvider    provider_constructor
 	 *
 	 * @param   array|string    $argument   Argument to the constructor
@@ -39,7 +39,7 @@ class Database_Base_Identifier_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($argument, $name, $namespace)
 	{
-		$identifier = new Database_Identifier($argument);
+		$identifier = new SQL_Identifier($argument);
 
 		$this->assertSame($name, $identifier->name);
 		$this->assertSame($namespace, $identifier->namespace);

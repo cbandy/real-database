@@ -1,10 +1,11 @@
 <?php
 
 /**
- * A raw SQL fragment that may contain placeholders. When the expression is processed for execution,
- * placeholders are replaced with their escaped/quoted parameter values.
+ * A raw SQL fragment that may contain placeholders. When the expression is
+ * processed for execution, placeholders are replaced with their escaped/quoted
+ * parameter values.
  *
- * Anything may be used as a parameter value including other [Database_Expression]s.
+ * Anything may be used as a parameter value including other [SQL_Expression]s.
  *
  * @package     RealDatabase
  *
@@ -12,7 +13,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Expression
+class SQL_Expression
 {
 	/**
 	 * @var mixed   SQL expression with or without parameter placeholders

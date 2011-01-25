@@ -260,10 +260,10 @@ class Database_Base_Query_Set_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->order_by('x'), 'Chainable (string)');
 		$this->assertSame('(a) ORDER BY "x"', $db->quote($query));
 
-		$this->assertSame($query, $query->order_by(new Database_Expression('other'), 'asc'), 'Chainable (expression, string)');
+		$this->assertSame($query, $query->order_by(new SQL_Expression('other'), 'asc'), 'Chainable (expression, string)');
 		$this->assertSame('(a) ORDER BY "x", other ASC', $db->quote($query));
 
-		$this->assertSame($query, $query->order_by('y', new Database_Expression('USING something')), 'Chainable (string, expression)');
+		$this->assertSame($query, $query->order_by('y', new SQL_Expression('USING something')), 'Chainable (string, expression)');
 		$this->assertSame('(a) ORDER BY "x", other ASC, "y" USING something', $db->quote($query));
 	}
 

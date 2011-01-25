@@ -84,21 +84,21 @@ class Database_Query_Select extends Database_Query
 	/**
 	 * Append one column or expression to be selected
 	 *
-	 * @param   mixed   $column Converted to Database_Column
+	 * @param   mixed   $column Converted to SQL_Column
 	 * @param   string  $alias  Column alias
 	 * @return  $this
 	 */
 	public function column($column, $alias = NULL)
 	{
-		if ( ! $column instanceof Database_Expression
-			AND ! $column instanceof Database_Identifier)
+		if ( ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
 		if ($alias)
 		{
-			$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
+			$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
 		}
 
 		$this->parameters[':columns'][] = $column;
@@ -114,7 +114,7 @@ class Database_Query_Select extends Database_Query
 	 */
 	public function distinct($value = TRUE)
 	{
-		$this->parameters[':distinct'] = $value ? new Database_Expression('DISTINCT') : FALSE;
+		$this->parameters[':distinct'] = $value ? new SQL_Expression('DISTINCT') : FALSE;
 
 		return $this;
 	}
@@ -122,15 +122,15 @@ class Database_Query_Select extends Database_Query
 	/**
 	 * Set the table(s) from which to retrieve rows
 	 *
-	 * @param   mixed   $reference      Database_From or converted to Database_Table
-	 * @param   string  $table_alias    Table alias when converting to Database_Table
+	 * @param   mixed   $reference      SQL_From or converted to SQL_Table
+	 * @param   string  $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
 	public function from($reference, $table_alias = NULL)
 	{
-		if ( ! $reference instanceof Database_From)
+		if ( ! $reference instanceof SQL_From)
 		{
-			$reference = new Database_From($reference, $table_alias);
+			$reference = new SQL_From($reference, $table_alias);
 		}
 
 		$this->parameters[':from'] = $reference;
@@ -141,17 +141,17 @@ class Database_Query_Select extends Database_Query
 	/**
 	 * Set the columns by which rows should be grouped
 	 *
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function group_by($columns)
 	{
 		foreach ($columns as & $column)
 		{
-			if ( ! $column instanceof Database_Expression
-				AND ! $column instanceof Database_Identifier)
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
 			{
-				$column = new Database_Column($column);
+				$column = new SQL_Column($column);
 			}
 		}
 
@@ -164,7 +164,7 @@ class Database_Query_Select extends Database_Query
 	 * Set the group search condition(s). When no operator is specified, the
 	 * first argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -173,13 +173,13 @@ class Database_Query_Select extends Database_Query
 	{
 		if ($operator !== NULL)
 		{
-			if ( ! $left_column instanceof Database_Expression
-				AND ! $left_column instanceof Database_Identifier)
+			if ( ! $left_column instanceof SQL_Expression
+				AND ! $left_column instanceof SQL_Identifier)
 			{
-				$left_column = new Database_Column($left_column);
+				$left_column = new SQL_Column($left_column);
 			}
 
-			$left_column = new Database_Conditions($left_column, $operator, $right);
+			$left_column = new SQL_Conditions($left_column, $operator, $right);
 		}
 
 		$this->parameters[':having'] = $left_column;
@@ -216,23 +216,23 @@ class Database_Query_Select extends Database_Query
 	/**
 	 * Append a column or expression by which rows should be sorted
 	 *
-	 * @param   mixed   $column     Converted to Database_Column
+	 * @param   mixed   $column     Converted to SQL_Column
 	 * @param   mixed   $direction  Direction of sort
 	 * @return  $this
 	 */
 	public function order_by($column, $direction = NULL)
 	{
-		if ( ! $column instanceof Database_Expression
-			AND ! $column instanceof Database_Identifier)
+		if ( ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
 		if ($direction)
 		{
-			$column = ($direction instanceof Database_Expression)
-				? new Database_Expression('? ?', array($column, $direction))
-				: new Database_Expression('? '.strtoupper($direction), array($column));
+			$column = ($direction instanceof SQL_Expression)
+				? new SQL_Expression('? ?', array($column, $direction))
+				: new SQL_Expression('? '.strtoupper($direction), array($column));
 		}
 
 		$this->parameters[':orderby'][] = $column;
@@ -252,15 +252,15 @@ class Database_Query_Select extends Database_Query
 		{
 			foreach ($columns as $alias => $column)
 			{
-				if ( ! $column instanceof Database_Expression
-					AND ! $column instanceof Database_Identifier)
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
 				{
-					$column = new Database_Column($column);
+					$column = new SQL_Column($column);
 				}
 
 				if (is_string($alias) AND $alias !== '')
 				{
-					$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
+					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
 				}
 
 				$this->parameters[':columns'][] = $column;
@@ -282,7 +282,7 @@ class Database_Query_Select extends Database_Query
 	 * Set the search condition(s). When no operator is specified, the first
 	 * argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -291,13 +291,13 @@ class Database_Query_Select extends Database_Query
 	{
 		if ($operator !== NULL)
 		{
-			if ( ! $left_column instanceof Database_Expression
-				AND ! $left_column instanceof Database_Identifier)
+			if ( ! $left_column instanceof SQL_Expression
+				AND ! $left_column instanceof SQL_Identifier)
 			{
-				$left_column = new Database_Column($left_column);
+				$left_column = new SQL_Column($left_column);
 			}
 
-			$left_column = new Database_Conditions($left_column, $operator, $right);
+			$left_column = new SQL_Conditions($left_column, $operator, $right);
 		}
 
 		$this->parameters[':where'] = $left_column;

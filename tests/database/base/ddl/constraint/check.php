@@ -16,7 +16,7 @@ class Database_Base_DDL_Constraint_Check_Test extends PHPUnit_Framework_TestCase
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$this->assertSame('CHECK (:conditions)', $db->quote(new Database_DDL_Constraint_Check));
-		$this->assertSame('CHECK (1)', $db->quote(new Database_DDL_Constraint_Check(new Database_Conditions(1))));
+		$this->assertSame('CHECK (1)', $db->quote(new Database_DDL_Constraint_Check(new SQL_Conditions(1))));
 	}
 
 	/**
@@ -27,7 +27,7 @@ class Database_Base_DDL_Constraint_Check_Test extends PHPUnit_Framework_TestCase
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$constraint = new Database_DDL_Constraint_Check;
 
-		$this->assertSame($constraint, $constraint->conditions(new Database_Conditions(1)), 'Chainable');
+		$this->assertSame($constraint, $constraint->conditions(new SQL_Conditions(1)), 'Chainable');
 		$this->assertSame('CHECK (1)', $db->quote($constraint));
 	}
 
@@ -39,7 +39,7 @@ class Database_Base_DDL_Constraint_Check_Test extends PHPUnit_Framework_TestCase
 		$constraint = new Database_DDL_Constraint_Check;
 		$constraint
 			->name('a')
-			->conditions(new Database_Conditions(1));
+			->conditions(new SQL_Conditions(1));
 
 		$this->assertSame('CONSTRAINT :name CHECK (:conditions)', (string) $constraint);
 	}

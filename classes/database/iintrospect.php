@@ -28,7 +28,7 @@ interface Database_iIntrospect
 	 *       ),
 	 *     );
 	 *
-	 * @param   mixed   $schema Converted to Database_Identifier
+	 * @param   mixed   $schema Converted to SQL_Identifier
 	 * @return  array
 	 */
 	public function schema_tables($schema = NULL);
@@ -72,7 +72,7 @@ interface Database_iIntrospect
 	 *       ),
 	 *     );
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @return  array
 	 */
 	public function table_columns($table);

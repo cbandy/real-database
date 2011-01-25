@@ -8,7 +8,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Prepared_Command extends Database_Expression
+class Database_Prepared_Command extends SQL_Expression
 {
 	/**
 	 * @var Database

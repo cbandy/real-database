@@ -323,7 +323,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		return array
 		(
 			array(array($this->_table)),
-			array(new Database_Identifier($this->_table)),
+			array(new SQL_Identifier($this->_table)),
 		);
 	}
 

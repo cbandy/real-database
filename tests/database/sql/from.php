@@ -19,7 +19,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$from = new Database_From('one');
+		$from = new SQL_From('one');
 
 		$this->assertSame($from, $from->$method('two'), 'Chainable (string)');
 		$this->assertSame('"pre_one" '.$expected.' JOIN "pre_two"', $db->quote($from));
@@ -29,7 +29,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::__construct
+	 * @covers  SQL_From::__construct
 	 */
 	public function test_constructor()
 	{
@@ -38,14 +38,14 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('', $db->quote(new Database_From));
-		$this->assertSame('"pre_one"', $db->quote(new Database_From('one')));
-		$this->assertSame('"pre_one" AS "a"', $db->quote(new Database_From('one', 'a')));
+		$this->assertSame('', $db->quote(new SQL_From));
+		$this->assertSame('"pre_one"', $db->quote(new SQL_From('one')));
+		$this->assertSame('"pre_one" AS "a"', $db->quote(new SQL_From('one', 'a')));
 	}
 
 	/**
-	 * @covers  Database_From::_add
-	 * @covers  Database_From::add
+	 * @covers  SQL_From::_add
+	 * @covers  SQL_From::add
 	 */
 	public function test_add()
 	{
@@ -54,14 +54,14 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$from = new Database_From('one');
+		$from = new SQL_From('one');
 
 		$this->assertSame($from, $from->add('two', 'b'));
 		$this->assertSame('"pre_one", "pre_two" AS "b"', $db->quote($from));
 	}
 
 	/**
-	 * @covers  Database_From::join
+	 * @covers  SQL_From::join
 	 */
 	public function test_join()
 	{
@@ -70,7 +70,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$from = new Database_From('one');
+		$from = new SQL_From('one');
 
 		$this->assertSame($from, $from->join('two', 'b'));
 		$this->assertSame('"pre_one" JOIN "pre_two" AS "b"', $db->quote($from));
@@ -80,7 +80,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::cross_join
+	 * @covers  SQL_From::cross_join
 	 */
 	public function test_cross_join()
 	{
@@ -88,7 +88,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::full_join
+	 * @covers  SQL_From::full_join
 	 */
 	public function test_full_join()
 	{
@@ -96,7 +96,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::inner_join
+	 * @covers  SQL_From::inner_join
 	 */
 	public function test_inner_join()
 	{
@@ -104,7 +104,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::left_join
+	 * @covers  SQL_From::left_join
 	 */
 	public function test_left_join()
 	{
@@ -112,7 +112,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::right_join
+	 * @covers  SQL_From::right_join
 	 */
 	public function test_right_join()
 	{
@@ -120,7 +120,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::natural_full_join
+	 * @covers  SQL_From::natural_full_join
 	 */
 	public function test_natural_full_join()
 	{
@@ -128,7 +128,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::natural_inner_join
+	 * @covers  SQL_From::natural_inner_join
 	 */
 	public function test_natural_inner_join()
 	{
@@ -136,7 +136,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::natural_left_join
+	 * @covers  SQL_From::natural_left_join
 	 */
 	public function test_natural_left_join()
 	{
@@ -144,7 +144,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::natural_right_join
+	 * @covers  SQL_From::natural_right_join
 	 */
 	public function test_natural_right_join()
 	{
@@ -152,7 +152,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::on
+	 * @covers  SQL_From::on
 	 */
 	public function test_on()
 	{
@@ -161,15 +161,15 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$from = new Database_From('one');
+		$from = new SQL_From('one');
 		$from->join('two');
 
-		$conditions = new Database_Conditions(new Database_Column('one.x'), '=', new Database_Column('two.x'));
+		$conditions = new SQL_Conditions(new SQL_Column('one.x'), '=', new SQL_Column('two.x'));
 
 		$this->assertSame($from, $from->on($conditions), 'Chainable (conditions)');
 		$this->assertSame('"pre_one" JOIN "pre_two" ON ("pre_one"."x" = "pre_two"."x")', $db->quote($from));
 
-		$from = new Database_From('one');
+		$from = new SQL_From('one');
 		$from->join('two');
 
 		$this->assertSame($from, $from->on('one.y', '=', 'two.y'), 'Chainable (operands)');
@@ -177,8 +177,8 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::open
-	 * @covers  Database_From::close
+	 * @covers  SQL_From::open
+	 * @covers  SQL_From::close
 	 */
 	public function test_parentheses()
 	{
@@ -187,7 +187,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$from = new Database_From;
+		$from = new SQL_From;
 
 		$this->assertSame($from, $from->open());
 		$this->assertSame('(', $db->quote($from));
@@ -212,7 +212,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_From::using
+	 * @covers  SQL_From::using
 	 */
 	public function test_using()
 	{
@@ -221,7 +221,7 @@ class Database_Base_From_Test extends PHPUnit_Framework_TestCase
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$from = new Database_From('one');
+		$from = new SQL_From('one');
 		$from->join('two');
 
 		$this->assertSame($from, $from->using(array('x', 'y')));

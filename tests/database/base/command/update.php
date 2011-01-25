@@ -60,7 +60,7 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->set(array('b' => 0, 'c' => 1)), 'Chainable (array)');
 		$this->assertSame('UPDATE "pre_a" SET "b" = 0, "c" = 1', $db->quote($command));
 
-		$this->assertSame($command, $command->set(new Database_Expression('d')), 'Chainable (Database_Expression)');
+		$this->assertSame($command, $command->set(new SQL_Expression('d')), 'Chainable (SQL_Expression)');
 		$this->assertSame('UPDATE "pre_a" SET d', $db->quote($command));
 
 		$this->assertSame($command, $command->set(NULL), 'Chainable (NULL)');
@@ -104,10 +104,10 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->from('e', 'f'), 'Chainable (string, string)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_e" AS "f"', $db->quote($command));
 
-		$from = new Database_From('g', 'h');
+		$from = new SQL_From('g', 'h');
 		$from->join('i');
 
-		$this->assertSame($command, $command->from($from), 'Chainable (Database_From)');
+		$this->assertSame($command, $command->from($from), 'Chainable (SQL_From)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 FROM "pre_g" AS "h" JOIN "pre_i"', $db->quote($command));
 	}
 
@@ -123,16 +123,16 @@ class Database_Base_Command_Update_Test extends PHPUnit_Framework_TestCase
 
 		$command = new Database_Command_Update('a', 'b', array('c' => 0));
 
-		$this->assertSame($command, $command->where(new Database_Conditions(new Database_Column('d'), '=', 1)), 'Chainable (Database_Conditions)');
+		$this->assertSame($command, $command->where(new SQL_Conditions(new SQL_Column('d'), '=', 1)), 'Chainable (SQL_Conditions)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 WHERE "d" = 1', $db->quote($command));
 
 		$this->assertSame($command, $command->where('e', '=', 2), 'Chainable (string, string, integer)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 WHERE "e" = 2', $db->quote($command));
 
-		$conditions = new Database_Conditions;
-		$conditions->open(NULL)->add(NULL, new Database_Column('f'), '=', 3)->close();
+		$conditions = new SQL_Conditions;
+		$conditions->open(NULL)->add(NULL, new SQL_Column('f'), '=', 3)->close();
 
-		$this->assertSame($command, $command->where($conditions, '=', TRUE), 'Chainable (Database_Conditions, string, boolean)');
+		$this->assertSame($command, $command->where($conditions, '=', TRUE), 'Chainable (SQL_Conditions, string, boolean)');
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 WHERE ("f" = 3) = \'1\'', $db->quote($command));
 	}
 

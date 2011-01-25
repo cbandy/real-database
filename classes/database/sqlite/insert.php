@@ -46,7 +46,7 @@ class Database_SQLite_Insert extends Database_Command_Insert_Identity
 			foreach (func_get_args() as $row)
 			{
 				// Wrap each row in parentheses
-				$this->parameters[$this->_values++] = new Database_Expression('(?)', array($row));
+				$this->parameters[$this->_values++] = new SQL_Expression('(?)', array($row));
 			}
 		}
 		elseif ($values === NULL)

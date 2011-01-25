@@ -16,7 +16,7 @@
 class Database_Command_Drop_Table extends Database_Command_Drop
 {
 	/**
-	 * @param   mixed   $name       Converted to Database_Table
+	 * @param   mixed   $name       Converted to SQL_Table
 	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
 	 */
 	public function __construct($name = NULL, $cascade = NULL)
@@ -27,15 +27,15 @@ class Database_Command_Drop_Table extends Database_Command_Drop
 	/**
 	 * Set the name of the table to be dropped
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function name($table)
 	{
-		if ( ! $table instanceof Database_Expression
-			AND ! $table instanceof Database_Identifier)
+		if ( ! $table instanceof SQL_Expression
+			AND ! $table instanceof SQL_Identifier)
 		{
-			$table = new Database_Table($table);
+			$table = new SQL_Table($table);
 		}
 
 		$this->parameters[':name'] = $table;
@@ -46,7 +46,7 @@ class Database_Command_Drop_Table extends Database_Command_Drop
 	/**
 	 * Set the names of multiple tables to be dropped
 	 *
-	 * @param   mixed|NULL  $tables Each element converted to Database_Table
+	 * @param   mixed|NULL  $tables Each element converted to SQL_Table
 	 * @return  $this
 	 */
 	public function names($tables)
@@ -56,10 +56,10 @@ class Database_Command_Drop_Table extends Database_Command_Drop
 			// SQLite allows only one
 			foreach ($tables as & $table)
 			{
-				if ( ! $table instanceof Database_Expression
-					AND ! $table instanceof Database_Identifier)
+				if ( ! $table instanceof SQL_Expression
+					AND ! $table instanceof SQL_Identifier)
 				{
-					$table = new Database_Table($table);
+					$table = new SQL_Table($table);
 				}
 			}
 		}

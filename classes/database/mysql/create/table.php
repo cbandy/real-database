@@ -86,15 +86,15 @@ class Database_MySQL_Create_Table extends Database_Command_Create_Table
 	/**
 	 * Set the table from which to copy this table definition
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function like($table)
 	{
-		if ( ! $table instanceof Database_Expression
-			AND ! $table instanceof Database_Identifier)
+		if ( ! $table instanceof SQL_Expression
+			AND ! $table instanceof SQL_Identifier)
 		{
-			$table = new Database_Table($table);
+			$table = new SQL_Table($table);
 		}
 
 		$this->parameters[':like'] = $table;
@@ -114,7 +114,7 @@ class Database_MySQL_Create_Table extends Database_Command_Create_Table
 
 		foreach ($options as $option => $value)
 		{
-			$result[] = new Database_Expression("$option ?", array($value));
+			$result[] = new SQL_Expression("$option ?", array($value));
 		}
 
 		$this->parameters[':options'] = $result;

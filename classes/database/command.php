@@ -10,7 +10,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Command extends Database_Expression
+class Database_Command extends SQL_Expression
 {
 	/**
 	 * Execute the command on a Database

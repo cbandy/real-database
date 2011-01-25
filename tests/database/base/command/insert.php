@@ -51,7 +51,7 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$command = new Database_Command_Insert('a');
 
-		$this->assertSame($command, $command->columns(array('b', new Database_Expression('c'), new Database_Column('d'))), 'Chainable (array)');
+		$this->assertSame($command, $command->columns(array('b', new SQL_Expression('c'), new SQL_Column('d'))), 'Chainable (array)');
 		$this->assertSame('INSERT INTO "pre_a" ("b", c, "d") DEFAULT VALUES', $db->quote($command));
 	}
 
@@ -70,7 +70,7 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->values(array(0,1)), 'Chainable (array)');
 		$this->assertSame('INSERT INTO "pre_a" ("b", "c") VALUES (0, 1)', $db->quote($command));
 
-		$this->assertSame($command, $command->values(new Database_Expression('d')), 'Chainable (Database_Expression)');
+		$this->assertSame($command, $command->values(new SQL_Expression('d')), 'Chainable (SQL_Expression)');
 		$this->assertSame('INSERT INTO "pre_a" ("b", "c") d', $db->quote($command));
 
 		$this->assertSame($command, $command->values(NULL), 'Chainable (NULL)');
@@ -111,7 +111,7 @@ class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame('INSERT INTO :table (:columns) VALUES :values', (string) $command);
 
-		$command->values(new Database_Expression('d'));
+		$command->values(new SQL_Expression('d'));
 
 		$this->assertSame('INSERT INTO :table (:columns) :values', (string) $command);
 	}

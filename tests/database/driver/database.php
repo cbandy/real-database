@@ -67,23 +67,23 @@ class Database_Driver_Database_Test extends PHPUnit_Framework_TestCase
 
 			// Expressions
 
-			array('conditions', array(), 'Database_Conditions'),
-			array('conditions', array('a'), 'Database_Conditions'),
-			array('conditions', array('a', '='), 'Database_Conditions'),
-			array('conditions', array('a', '=', 'b'), 'Database_Conditions'),
+			array('conditions', array(), 'SQL_Conditions'),
+			array('conditions', array('a'), 'SQL_Conditions'),
+			array('conditions', array('a', '='), 'SQL_Conditions'),
+			array('conditions', array('a', '=', 'b'), 'SQL_Conditions'),
 
-			array('expression', array('a'), 'Database_Expression'),
-			array('expression', array('a', array('b')), 'Database_Expression'),
+			array('expression', array('a'), 'SQL_Expression'),
+			array('expression', array('a', array('b')), 'SQL_Expression'),
 
-			array('from', array(), 'Database_From'),
-			array('from', array('a'),'Database_From'),
-			array('from', array('a', 'b'), 'Database_From'),
+			array('from', array(), 'SQL_From'),
+			array('from', array('a'),'SQL_From'),
+			array('from', array('a', 'b'), 'SQL_From'),
 
 			// Identifiers
 
-			array('column', array('a'), 'Database_Column'),
-			array('identifier', array('a'), 'Database_Identifier'),
-			array('table', array('a'), 'Database_Table'),
+			array('column', array('a'), 'SQL_Column'),
+			array('identifier', array('a'), 'SQL_Identifier'),
+			array('table', array('a'), 'SQL_Table'),
 
 			// Commands
 

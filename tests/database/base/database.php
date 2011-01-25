@@ -170,15 +170,15 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 			array('binary', array('a'), new Database_Binary('a')),
 
-			array('column', array('a'), new Database_Column('a')),
+			array('column', array('a'), new SQL_Column('a')),
 
 			array('command', array('a'), new Database_Command('a')),
 			array('command', array('a', array('b')), new Database_Command('a', array('b'))),
 
-			array('conditions', array(), new Database_Conditions),
-			array('conditions', array('a'), new Database_Conditions('a')),
-			array('conditions', array('a', '='), new Database_Conditions('a', '=')),
-			array('conditions', array('a', '=', 'b'), new Database_Conditions('a', '=', 'b')),
+			array('conditions', array(), new SQL_Conditions),
+			array('conditions', array('a'), new SQL_Conditions('a')),
+			array('conditions', array('a', '='), new SQL_Conditions('a', '=')),
+			array('conditions', array('a', '=', 'b'), new SQL_Conditions('a', '=', 'b')),
 
 			array('create', array('index'), new Database_Command_Create_Index),
 			array('create', array('index', 'a'), new Database_Command_Create_Index('a')),
@@ -212,14 +212,14 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('drop', array('table'), new Database_Command_Drop_Table),
 			array('drop', array('table', 'a'), new Database_Command_Drop_Table('a')),
 
-			array('expression', array('a'), new Database_Expression('a')),
-			array('expression', array('a', array('b')), new Database_Expression('a', array('b'))),
+			array('expression', array('a'), new SQL_Expression('a')),
+			array('expression', array('a', array('b')), new SQL_Expression('a', array('b'))),
 
-			array('from', array(), new Database_From),
-			array('from', array('a'), new Database_From('a')),
-			array('from', array('a', 'b'), new Database_From('a', 'b')),
+			array('from', array(), new SQL_From),
+			array('from', array('a'), new SQL_From('a')),
+			array('from', array('a', 'b'), new SQL_From('a', 'b')),
 
-			array('identifier', array('a'), new Database_Identifier('a')),
+			array('identifier', array('a'), new SQL_Identifier('a')),
 
 			array('insert', array(), new Database_Command_Insert),
 			array('insert', array('a'), new Database_Command_Insert('a')),
@@ -234,7 +234,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('select', array(), new Database_Query_Select),
 			array('select', array(array('a' => 'b')), new Database_Query_Select(array('a' => 'b'))),
 
-			array('table', array('a'), new Database_Table('a')),
+			array('table', array('a'), new SQL_Table('a')),
 
 			array('update', array(), new Database_Command_Update),
 			array('update', array('a'), new Database_Command_Update('a')),
@@ -320,24 +320,24 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_quote_identifier()
 	{
-		$one = new Database_Identifier('one');
+		$one = new SQL_Identifier('one');
 
-		$two_array = new Database_Identifier('two');
+		$two_array = new SQL_Identifier('two');
 		$two_array->namespace = array('one');
 
-		$two_identifier = new Database_Identifier('two');
+		$two_identifier = new SQL_Identifier('two');
 		$two_identifier->namespace = $one;
 
-		$two_string = new Database_Identifier('two');
+		$two_string = new SQL_Identifier('two');
 		$two_string->namespace = 'one';
 
-		$three_array = new Database_Identifier('three');
+		$three_array = new SQL_Identifier('three');
 		$three_array->namespace = array('one','two');
 
-		$three_identifier = new Database_Identifier('three');
+		$three_identifier = new SQL_Identifier('three');
 		$three_identifier->namespace = $two_identifier;
 
-		$three_string = new Database_Identifier('three');
+		$three_string = new SQL_Identifier('three');
 		$three_string->namespace = 'one.two';
 
 		return array
@@ -382,15 +382,15 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_quote_table()
 	{
-		$one = new Database_Identifier('one');
+		$one = new SQL_Identifier('one');
 
-		$two_array = new Database_Identifier('two');
+		$two_array = new SQL_Identifier('two');
 		$two_array->namespace = array('one');
 
-		$two_identifier = new Database_Identifier('two');
+		$two_identifier = new SQL_Identifier('two');
 		$two_identifier->namespace = $one;
 
-		$two_string = new Database_Identifier('two');
+		$two_string = new SQL_Identifier('two');
 		$two_string->namespace = 'one';
 
 		return array
@@ -429,35 +429,35 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_quote_column()
 	{
-		$one = new Database_Identifier('one');
+		$one = new SQL_Identifier('one');
 
-		$two_array = new Database_Identifier('two');
+		$two_array = new SQL_Identifier('two');
 		$two_array->namespace = array('one');
 
-		$two_identifier = new Database_Identifier('two');
+		$two_identifier = new SQL_Identifier('two');
 		$two_identifier->namespace = $one;
 
-		$two_string = new Database_Identifier('two');
+		$two_string = new SQL_Identifier('two');
 		$two_string->namespace = 'one';
 
-		$two_table = new Database_Identifier('two');
-		$two_table->namespace = new Database_Table('one');
+		$two_table = new SQL_Identifier('two');
+		$two_table->namespace = new SQL_Table('one');
 
-		$three_array = new Database_Identifier('three');
+		$three_array = new SQL_Identifier('three');
 		$three_array->namespace = array('one','two');
 
-		$three_identifier = new Database_Identifier('three');
+		$three_identifier = new SQL_Identifier('three');
 		$three_identifier->namespace = $two_identifier;
 
-		$three_string = new Database_Identifier('three');
+		$three_string = new SQL_Identifier('three');
 		$three_string->namespace = 'one.two';
 
-		$three_table = new Database_Identifier('three');
-		$three_table->namespace = new Database_Table('one.two');
+		$three_table = new SQL_Identifier('three');
+		$three_table->namespace = new SQL_Table('one.two');
 
-		$one_star = new Database_Identifier('*');
-		$two_star = new Database_Identifier('one.*');
-		$three_star = new Database_Identifier('one.two.*');
+		$one_star = new SQL_Identifier('*');
+		$two_star = new SQL_Identifier('one.*');
+		$three_star = new SQL_Identifier('one.two.*');
 
 		return array
 		(
@@ -522,50 +522,50 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		return array
 		(
 			// No arguments
-			array(new Database_Expression(''),          ''),
-			array(new Database_Expression('expr'),      'expr'),
-			array(new Database_Expression('?'),         '?'),
-			array(new Database_Expression(':param'),    ':param'),
+			array(new SQL_Expression(''),          ''),
+			array(new SQL_Expression('expr'),      'expr'),
+			array(new SQL_Expression('?'),         '?'),
+			array(new SQL_Expression(':param'),    ':param'),
 
 			// Empty
-			array(new Database_Expression('', array(NULL)), ''),
-			array(new Database_Expression('', array(1)),    ''),
-			array(new Database_Expression('', array('a')),  ''),
+			array(new SQL_Expression('', array(NULL)), ''),
+			array(new SQL_Expression('', array(1)),    ''),
+			array(new SQL_Expression('', array('a')),  ''),
 
 			// No parameters
-			array(new Database_Expression('expr', array(NULL)), 'expr'),
-			array(new Database_Expression('expr', array(1)),    'expr'),
-			array(new Database_Expression('expr', array('a')),  'expr'),
+			array(new SQL_Expression('expr', array(NULL)), 'expr'),
+			array(new SQL_Expression('expr', array(1)),    'expr'),
+			array(new SQL_Expression('expr', array('a')),  'expr'),
 
 			// Positional parameter
-			array(new Database_Expression('?', array(NULL)),    'NULL'),
-			array(new Database_Expression('?', array(1)),       '1'),
-			array(new Database_Expression('?', array('a')),     "'a'"),
+			array(new SQL_Expression('?', array(NULL)),    'NULL'),
+			array(new SQL_Expression('?', array(1)),       '1'),
+			array(new SQL_Expression('?', array('a')),     "'a'"),
 
-			array(new Database_Expression('before ?', array(1)),        'before 1'),
-			array(new Database_Expression('? after', array(1)),         '1 after'),
-			array(new Database_Expression('before ? after', array(1)),  'before 1 after'),
+			array(new SQL_Expression('before ?', array(1)),        'before 1'),
+			array(new SQL_Expression('? after', array(1)),         '1 after'),
+			array(new SQL_Expression('before ? after', array(1)),  'before 1 after'),
 
 			// Positional Parameters
-			array(new Database_Expression('? split ?', array(1, 2)),                '1 split 2'),
-			array(new Database_Expression('before ? split ?', array(1, 2)),         'before 1 split 2'),
-			array(new Database_Expression('? split ? after', array(1, 2)),          '1 split 2 after'),
-			array(new Database_Expression('before ? split ? after', array(1, 2)),   'before 1 split 2 after'),
+			array(new SQL_Expression('? split ?', array(1, 2)),                '1 split 2'),
+			array(new SQL_Expression('before ? split ?', array(1, 2)),         'before 1 split 2'),
+			array(new SQL_Expression('? split ? after', array(1, 2)),          '1 split 2 after'),
+			array(new SQL_Expression('before ? split ? after', array(1, 2)),   'before 1 split 2 after'),
 
 			// Named parameter
-			array(new Database_Expression(':param', array(':param' => NULL)),   'NULL'),
-			array(new Database_Expression(':param', array(':param' => 1)),      '1'),
-			array(new Database_Expression(':param', array(':param' => 'a')),    "'a'"),
+			array(new SQL_Expression(':param', array(':param' => NULL)),   'NULL'),
+			array(new SQL_Expression(':param', array(':param' => 1)),      '1'),
+			array(new SQL_Expression(':param', array(':param' => 'a')),    "'a'"),
 
-			array(new Database_Expression('before :param', array(':param' => 1)),       'before 1'),
-			array(new Database_Expression(':param after', array(':param' => 1)),        '1 after'),
-			array(new Database_Expression('before :param after', array(':param' => 1)), 'before 1 after'),
+			array(new SQL_Expression('before :param', array(':param' => 1)),       'before 1'),
+			array(new SQL_Expression(':param after', array(':param' => 1)),        '1 after'),
+			array(new SQL_Expression('before :param after', array(':param' => 1)), 'before 1 after'),
 
 			// Named parameters
-			array(new Database_Expression(':a split :b', array(':a' => 1, ':b' => 2)),              '1 split 2'),
-			array(new Database_Expression('before :a split :b', array(':a' => 1, ':b' => 2)),       'before 1 split 2'),
-			array(new Database_Expression(':a split :b after', array(':a' => 1, ':b' => 2)),        '1 split 2 after'),
-			array(new Database_Expression('before :a split :b after', array(':a' => 1, ':b' => 2)), 'before 1 split 2 after'),
+			array(new SQL_Expression(':a split :b', array(':a' => 1, ':b' => 2)),              '1 split 2'),
+			array(new SQL_Expression('before :a split :b', array(':a' => 1, ':b' => 2)),       'before 1 split 2'),
+			array(new SQL_Expression(':a split :b after', array(':a' => 1, ':b' => 2)),        '1 split 2 after'),
+			array(new SQL_Expression('before :a split :b after', array(':a' => 1, ':b' => 2)), 'before 1 split 2 after'),
 		);
 	}
 
@@ -584,13 +584,13 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(new Database_Expression('?', array(1 => NULL))),
-			array(new Database_Expression('?', array(1 => 2))),
-			array(new Database_Expression('?', array(1 => 'a'))),
+			array(new SQL_Expression('?', array(1 => NULL))),
+			array(new SQL_Expression('?', array(1 => 2))),
+			array(new SQL_Expression('?', array(1 => 'a'))),
 
-			array(new Database_Expression(':param', array(NULL))),
-			array(new Database_Expression(':param', array(1))),
-			array(new Database_Expression(':param', array('a'))),
+			array(new SQL_Expression(':param', array(NULL))),
+			array(new SQL_Expression(':param', array(1))),
+			array(new SQL_Expression(':param', array('a'))),
 		);
 	}
 
@@ -621,18 +621,18 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array(array('a', 'alias'),  "'a'".' AS "alias"'),
 
 			// Expression
-			array(array(new Database_Expression('expr')),           'expr'),
-			array(array(new Database_Expression('expr'), 'alias'),  'expr AS "alias"'),
+			array(array(new SQL_Expression('expr')),           'expr'),
+			array(array(new SQL_Expression('expr'), 'alias'),  'expr AS "alias"'),
 
 			// Identifiers
-			array(array(new Database_Identifier('one.two')),    '"one"."two"'),
-			array(array(new Database_Column('one.two')),        '"pre_one"."two"'),
-			array(array(new Database_Table('one.two')),         '"one"."pre_two"'),
+			array(array(new SQL_Identifier('one.two')),    '"one"."two"'),
+			array(array(new SQL_Column('one.two')),        '"pre_one"."two"'),
+			array(array(new SQL_Table('one.two')),         '"one"."pre_two"'),
 
 			// Identifiers with aliases
-			array(array(new Database_Identifier('one.two'), 'alias'),   '"one"."two" AS "alias"'),
-			array(array(new Database_Column('one.two'), 'alias'),       '"pre_one"."two" AS "alias"'),
-			array(array(new Database_Table('one.two'), 'alias'),        '"one"."pre_two" AS "alias"'),
+			array(array(new SQL_Identifier('one.two'), 'alias'),   '"one"."two" AS "alias"'),
+			array(array(new SQL_Column('one.two'), 'alias'),       '"pre_one"."two" AS "alias"'),
+			array(array(new SQL_Table('one.two'), 'alias'),        '"one"."pre_two" AS "alias"'),
 
 			// Array
 			array(array(array(NULL, 1 ,'a')), "NULL, 1, 'a'"),

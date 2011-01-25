@@ -17,7 +17,7 @@ class Database_DDL_Constraint_Check extends Database_DDL_Constraint
 	/**
 	 * @uses Database_DDL_Constraint_Check::conditions()
 	 *
-	 * @param   Database_Conditions $conditions
+	 * @param   SQL_Conditions  $conditions
 	 */
 	public function __construct($conditions = NULL)
 	{
@@ -37,7 +37,7 @@ class Database_DDL_Constraint_Check extends Database_DDL_Constraint
 	/**
 	 * Set the conditions of the constraint
 	 *
-	 * @param   Database_Conditions $conditions
+	 * @param   SQL_Conditions  $conditions
 	 * @return  $this
 	 */
 	public function conditions($conditions)

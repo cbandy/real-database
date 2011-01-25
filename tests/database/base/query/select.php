@@ -31,10 +31,10 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->select(array('x')));
 		$this->assertSame('SELECT "x"', $db->quote($query));
 
-		$this->assertSame($query, $query->select(array('y' => new Database_Expression('a'))));
+		$this->assertSame($query, $query->select(array('y' => new SQL_Expression('a'))));
 		$this->assertSame('SELECT "x", a AS "y"', $db->quote($query));
 
-		$this->assertSame($query, $query->select(new Database_Expression('b')));
+		$this->assertSame($query, $query->select(new SQL_Expression('b')));
 		$this->assertSame('SELECT b', $db->quote($query));
 	}
 
@@ -90,7 +90,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->from('one', 'a'), 'Chainable (table)');
 		$this->assertSame('SELECT "pre_one"."x" FROM "pre_one" AS "a"', $db->quote($query));
 
-		$from = new Database_From('one');
+		$from = new SQL_From('one');
 		$from->add('two')->join('three');
 
 		$this->assertSame($query, $query->from($from), 'Chainable (from)');
@@ -103,16 +103,16 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 	public function test_where()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$query = new Database_Query_Select(new Database_Expression(1));
+		$query = new Database_Query_Select(new SQL_Expression(1));
 
-		$this->assertSame($query, $query->where(new Database_Conditions(new Database_Column('y'), '=', 1)), 'Chainable (conditions)');
+		$this->assertSame($query, $query->where(new SQL_Conditions(new SQL_Column('y'), '=', 1)), 'Chainable (conditions)');
 		$this->assertSame('SELECT 1 WHERE "y" = 1', $db->quote($query));
 
 		$this->assertSame($query, $query->where('y', '=', 0), 'Chainable (operands)');
 		$this->assertSame('SELECT 1 WHERE "y" = 0', $db->quote($query));
 
-		$conditions = new Database_Conditions;
-		$conditions->open(NULL)->add(NULL, new Database_Column('y'), '=', 0)->close();
+		$conditions = new SQL_Conditions;
+		$conditions->open(NULL)->add(NULL, new SQL_Column('y'), '=', 0)->close();
 
 		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
 		$this->assertSame('SELECT 1 WHERE ("y" = 0) = \'1\'', $db->quote($query));
@@ -130,7 +130,7 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 
 		$query = new Database_Query_Select(array('x'));
 
-		$this->assertSame($query, $query->group_by(array('y', 'one.z', new Database_Expression('expr'))));
+		$this->assertSame($query, $query->group_by(array('y', 'one.z', new SQL_Expression('expr'))));
 
 		$this->assertSame('SELECT "x" GROUP BY "y", "pre_one"."z", expr', $db->quote($query));
 	}
@@ -143,14 +143,14 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_Query_Select(array('x'));
 
-		$this->assertSame($query, $query->having(new Database_Conditions(new Database_Column('x'), '=', 1)), 'Chainable (conditions)');
+		$this->assertSame($query, $query->having(new SQL_Conditions(new SQL_Column('x'), '=', 1)), 'Chainable (conditions)');
 		$this->assertSame('SELECT "x" HAVING "x" = 1', $db->quote($query));
 
 		$this->assertSame($query, $query->having('x', '=', 0), 'Chainable (operands)');
 		$this->assertSame('SELECT "x" HAVING "x" = 0', $db->quote($query));
 
-		$conditions = new Database_Conditions;
-		$conditions->open(NULL)->add(NULL, new Database_Column('x'), '=', 0)->close();
+		$conditions = new SQL_Conditions;
+		$conditions->open(NULL)->add(NULL, new SQL_Column('x'), '=', 0)->close();
 
 		$this->assertSame($query, $query->having($conditions, '=', TRUE), 'Chainable (conditions as operand)');
 		$this->assertSame('SELECT "x" HAVING ("x" = 0) = \'1\'', $db->quote($query));
@@ -167,10 +167,10 @@ class Database_Base_Query_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->order_by('x'));
 		$this->assertSame('SELECT "x", "y" ORDER BY "x"', $db->quote($query));
 
-		$this->assertSame($query, $query->order_by(new Database_Expression('other'), 'asc'));
+		$this->assertSame($query, $query->order_by(new SQL_Expression('other'), 'asc'));
 		$this->assertSame('SELECT "x", "y" ORDER BY "x", other ASC', $db->quote($query));
 
-		$this->assertSame($query, $query->order_by('y', new Database_Expression('USING something')));
+		$this->assertSame($query, $query->order_by('y', new SQL_Expression('USING something')));
 		$this->assertSame('SELECT "x", "y" ORDER BY "x", other ASC, "y" USING something', $db->quote($query));
 	}
 

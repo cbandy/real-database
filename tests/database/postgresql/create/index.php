@@ -32,7 +32,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->column('e', 'desc', 'first'), 'Chainable (column, direction, position)');
 		$this->assertSame('CREATE INDEX "a" ON '.$table.' ("c", "d" ASC, "e" DESC NULLS FIRST)', $db->quote($command));
 
-		$this->assertSame($command, $command->column(new Database_Expression('f')), 'Chainable (expression)');
+		$this->assertSame($command, $command->column(new SQL_Expression('f')), 'Chainable (expression)');
 		$this->assertSame('CREATE INDEX "a" ON '.$table.' ("c", "d" ASC, "e" DESC NULLS FIRST, (f))', $db->quote($command));
 	}
 
@@ -78,7 +78,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$command = new Database_PostgreSQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
-		$this->assertSame($command, $command->where(new Database_Conditions(1)));
+		$this->assertSame($command, $command->where(new SQL_Conditions(1)));
 		$this->assertSame('CREATE INDEX "a" ON '.$table.' () WHERE 1', $db->quote($command));
 	}
 

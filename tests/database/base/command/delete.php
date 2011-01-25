@@ -82,10 +82,10 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->using('c', 'd'), 'Chainable (string, string)');
 		$this->assertSame('DELETE FROM "pre_a" USING "pre_c" AS "d"', $db->quote($command));
 
-		$from = new Database_From('e', 'f');
+		$from = new SQL_From('e', 'f');
 		$from->join('g');
 
-		$this->assertSame($command, $command->using($from), 'Chainable (Database_From)');
+		$this->assertSame($command, $command->using($from), 'Chainable (SQL_From)');
 		$this->assertSame('DELETE FROM "pre_a" USING "pre_e" AS "f" JOIN "pre_g"', $db->quote($command));
 	}
 
@@ -101,16 +101,16 @@ class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$command = new Database_Command_Delete('a');
 
-		$this->assertSame($command, $command->where(new Database_Conditions(new Database_Column('b.c'), '=', 0)), 'Chainable (Database_Conditions)');
+		$this->assertSame($command, $command->where(new SQL_Conditions(new SQL_Column('b.c'), '=', 0)), 'Chainable (SQL_Conditions)');
 		$this->assertSame('DELETE FROM "pre_a" WHERE "pre_b"."c" = 0', $db->quote($command));
 
 		$this->assertSame($command, $command->where('d.e', '=', 1), 'Chainable (string, string, integer)');
 		$this->assertSame('DELETE FROM "pre_a" WHERE "pre_d"."e" = 1', $db->quote($command));
 
-		$conditions = new Database_Conditions;
-		$conditions->open(NULL)->add(NULL, new Database_Column('f.g'), '=', 2)->close();
+		$conditions = new SQL_Conditions;
+		$conditions->open(NULL)->add(NULL, new SQL_Column('f.g'), '=', 2)->close();
 
-		$this->assertSame($command, $command->where($conditions, '=', TRUE), 'Chainable (Database_Conditions, string, boolean)');
+		$this->assertSame($command, $command->where($conditions, '=', TRUE), 'Chainable (SQL_Conditions, string, boolean)');
 		$this->assertSame('DELETE FROM "pre_a" WHERE ("pre_f"."g" = 2) = \'1\'', $db->quote($command));
 	}
 

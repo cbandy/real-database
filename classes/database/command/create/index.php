@@ -20,9 +20,9 @@ class Database_Command_Create_Index extends Database_Command
 	 * @uses Database_Command_Create_Index::name()
 	 * @uses Database_Command_Create_Index::on()
 	 *
-	 * @param   mixed   $name       Converted to Database_Identifier
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   mixed   $name       Converted to SQL_Identifier
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 */
 	public function __construct($name = NULL, $table = NULL, $columns = array())
 	{
@@ -63,7 +63,7 @@ class Database_Command_Create_Index extends Database_Command
 	 */
 	public function unique($value = TRUE)
 	{
-		$this->parameters[':type'] = $value ? new Database_Expression('UNIQUE') : FALSE;
+		$this->parameters[':type'] = $value ? new SQL_Expression('UNIQUE') : FALSE;
 
 		return $this;
 	}
@@ -71,15 +71,15 @@ class Database_Command_Create_Index extends Database_Command
 	/**
 	 * Set the name of the index to be created
 	 *
-	 * @param   mixed   $value  Converted to Database_Identifier
+	 * @param   mixed   $value  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function name($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Identifier($value);
+			$value = new SQL_Identifier($value);
 		}
 
 		$this->parameters[':name'] = $value;
@@ -90,15 +90,15 @@ class Database_Command_Create_Index extends Database_Command
 	/**
 	 * Set the table to be indexed
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function on($table)
 	{
-		if ( ! $table instanceof Database_Expression
-			AND ! $table instanceof Database_Identifier)
+		if ( ! $table instanceof SQL_Expression
+			AND ! $table instanceof SQL_Identifier)
 		{
-			$table = new Database_Table($table);
+			$table = new SQL_Table($table);
 		}
 
 		$this->parameters[':table'] = $table;
@@ -109,21 +109,21 @@ class Database_Command_Create_Index extends Database_Command
 	/**
 	 * Append one column or expression to be included in the index
 	 *
-	 * @param   mixed   $column     Converted to Database_Column
+	 * @param   mixed   $column     Converted to SQL_Column
 	 * @param   string  $direction  Direction to sort, ASC or DESC
 	 * @return  $this
 	 */
 	public function column($column, $direction = NULL)
 	{
-		if ( ! $column instanceof Database_Expression
-			AND ! $column instanceof Database_Identifier)
+		if ( ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
 		if ($direction)
 		{
-			$column = new Database_Expression('? '.strtoupper($direction), array($column));
+			$column = new SQL_Expression('? '.strtoupper($direction), array($column));
 		}
 
 		$this->parameters[':columns'][] = $column;
@@ -134,17 +134,17 @@ class Database_Command_Create_Index extends Database_Command
 	/**
 	 * Set the columns and/or expressions to be included in the index
 	 *
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
 		foreach ($columns as & $column)
 		{
-			if ( ! $column instanceof Database_Expression
-				AND ! $column instanceof Database_Identifier)
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
 			{
-				$column = new Database_Column($column);
+				$column = new SQL_Column($column);
 			}
 		}
 

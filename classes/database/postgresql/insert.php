@@ -76,7 +76,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 			return $result;
 
 		$rows = $result->count();
-		$result = $result->get(($this->identity instanceof Database_Identifier) ? $this->identity->name : NULL);
+		$result = $result->get(($this->identity instanceof SQL_Identifier) ? $this->identity->name : NULL);
 
 		return array($rows, $result);
 	}
@@ -84,7 +84,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	/**
 	 * Set the name of the column to return from the first row when executed
 	 *
-	 * @param   mixed   $column Converted to Database_Column
+	 * @param   mixed   $column Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function identity($column)
@@ -106,7 +106,7 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 	/**
 	 * Append values to return when executed
 	 *
-	 * @param   mixed   $columns    Each element converted to Database_Column
+	 * @param   mixed   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
 	public function returning($columns)
@@ -117,15 +117,15 @@ class Database_PostgreSQL_Insert extends Database_Command_Insert_Identity
 		{
 			foreach ($columns as $alias => $column)
 			{
-				if ( ! $column instanceof Database_Expression
-					AND ! $column instanceof Database_Identifier)
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
 				{
-					$column = new Database_Column($column);
+					$column = new SQL_Column($column);
 				}
 
 				if (is_string($alias) AND $alias !== '')
 				{
-					$column = new Database_Expression('? AS ?', array($column, new Database_Identifier($alias)));
+					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
 				}
 
 				$this->parameters[':returning'][] = $column;

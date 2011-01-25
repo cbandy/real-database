@@ -14,7 +14,7 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 	implements Database_iExecutable
 {
 	/**
-	 * @var Database_Expression|Database_Identifier Column to return when executed
+	 * @var SQL_Expression|SQL_Identifier Column to return when executed
 	 */
 	public $identity;
 
@@ -46,10 +46,10 @@ class Database_Command_Insert_Identity extends Database_Command_Insert
 	public function identity($column)
 	{
 		if ( ! empty($column)
-			AND ! $column instanceof Database_Expression
-			AND ! $column instanceof Database_Identifier)
+			AND ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
 		$this->identity = $column;

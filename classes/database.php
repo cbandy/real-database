@@ -33,7 +33,7 @@ abstract class Database
 	 * Create an ALTER command
 	 *
 	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
-	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @param   mixed   $name   Converted to SQL_Identifier
 	 * @return  Database_Command
 	 */
 	public static function alter($type, $name = NULL)
@@ -58,11 +58,11 @@ abstract class Database
 	 * Create a column identifier
 	 *
 	 * @param   array|string    $value
-	 * @return  Database_Column
+	 * @return  SQL_Column
 	 */
 	public static function column($value)
 	{
-		return new Database_Column($value);
+		return new SQL_Column($value);
 	}
 
 	/**
@@ -83,18 +83,18 @@ abstract class Database
 	 * @param   mixed   $left       Left operand
 	 * @param   string  $operator   Comparison operator
 	 * @param   mixed   $right      Right operand
-	 * @return  Database_Conditions
+	 * @return  SQL_Conditions
 	 */
 	public static function conditions($left = NULL, $operator = NULL, $right = NULL)
 	{
-		return new Database_Conditions($left, $operator, $right);
+		return new SQL_Conditions($left, $operator, $right);
 	}
 
 	/**
 	 * Create a CREATE command
 	 *
 	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
-	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @param   mixed   $name   Converted to SQL_Identifier
 	 * @return  Database_Command
 	 */
 	public static function create($type, $name = NULL)
@@ -120,8 +120,8 @@ abstract class Database
 	/**
 	 * Create a column expression
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
-	 * @param   mixed   $type   Converted to Database_Expression
+	 * @param   mixed   $name   Converted to SQL_Column
+	 * @param   mixed   $type   Converted to SQL_Expression
 	 * @return  Database_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -133,7 +133,7 @@ abstract class Database
 	 * Create a constraint expression
 	 *
 	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
-	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @param   mixed   $name   Converted to SQL_Identifier
 	 * @return  Database_DDL_Constraint
 	 */
 	public static function ddl_constraint($type, $name = NULL)
@@ -152,7 +152,7 @@ abstract class Database
 	/**
 	 * Create a DELETE command
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  Database_Command_Delete
 	 */
@@ -165,7 +165,7 @@ abstract class Database
 	 * Create a DROP command
 	 *
 	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
-	 * @param   mixed   $name   Converted to Database_Identifier
+	 * @param   mixed   $name   Converted to SQL_Identifier
 	 * @return  Database_Command
 	 */
 	public static function drop($type, $name = NULL)
@@ -181,11 +181,11 @@ abstract class Database
 	 *
 	 * @param   mixed   $value      SQL expression
 	 * @param   array   $parameters Unquoted parameters
-	 * @return  Database_Expression
+	 * @return  SQL_Expression
 	 */
 	public static function expression($value, $parameters = array())
 	{
-		return new Database_Expression($value, $parameters);
+		return new SQL_Expression($value, $parameters);
 	}
 
 	/**
@@ -219,31 +219,31 @@ abstract class Database
 	/**
 	 * Create a table reference accumulator
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
-	 * @return  Database_From
+	 * @return  SQL_From
 	 */
 	public static function from($table = NULL, $alias = NULL)
 	{
-		return new Database_From($table, $alias);
+		return new SQL_From($table, $alias);
 	}
 
 	/**
 	 * Create an identifier
 	 *
 	 * @param   array|string    $value
-	 * @return  Database_Identifier
+	 * @return  SQL_Identifier
 	 */
 	public static function identifier($value)
 	{
-		return new Database_Identifier($value);
+		return new SQL_Identifier($value);
 	}
 
 	/**
 	 * Create an INSERT command
 	 *
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  Database_Command_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -309,17 +309,17 @@ abstract class Database
 	 * Create a table identifier
 	 *
 	 * @param   array|string    $value
-	 * @return  Database_Table
+	 * @return  SQL_Table
 	 */
 	public static function table($value)
 	{
-		return new Database_Table($value);
+		return new SQL_Table($value);
 	}
 
 	/**
 	 * Create an UPDATE command
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @param   array   $values Hash of (column => value) assignments
 	 * @return  Database_Command_Update
@@ -492,7 +492,7 @@ abstract class Database
 	 * @see Database::execute_insert()
 	 * @see Database::execute_query()
 	 *
-	 * @param   string|Database_Expression  $statement
+	 * @param   string|SQL_Expression   $statement
 	 * @return  mixed
 	 */
 	public function execute($statement)
@@ -511,7 +511,7 @@ abstract class Database
 	 * results.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|Database_Expression  $statement  SQL command
+	 * @param   string|SQL_Expression   $statement  SQL command
 	 * @return  integer Number of affected rows
 	 */
 	abstract public function execute_command($statement);
@@ -523,8 +523,8 @@ abstract class Database
 	 * inserting one row.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|Database_Expression  $statement  SQL insert
-	 * @param   mixed                       $identity   Converted to Database_Column
+	 * @param   string|SQL_Expression   $statement  SQL insert
+	 * @param   mixed                   $identity   Converted to SQL_Column
 	 * @return  array   List including number of affected rows and an identity value
 	 */
 	abstract public function execute_insert($statement, $identity);
@@ -534,8 +534,8 @@ abstract class Database
 	 * statement is not a query (e.g., a DELETE statement)
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|Database_Expression  $statement  SQL query
-	 * @param   string|boolean              $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|SQL_Expression   $statement  SQL query
+	 * @param   string|boolean          $as_object  Row object class, TRUE for stdClass or FALSE for associative array
 	 * @return  Database_Result Result set or NULL
 	 */
 	abstract public function execute_query($statement, $as_object = FALSE);
@@ -587,19 +587,19 @@ abstract class Database
 		}
 		elseif (is_object($value))
 		{
-			if ($value instanceof Database_Expression)
+			if ($value instanceof SQL_Expression)
 			{
 				$value = $this->quote_expression($value);
 			}
-			elseif ($value instanceof Database_Column)
+			elseif ($value instanceof SQL_Column)
 			{
 				$value = $this->quote_column($value);
 			}
-			elseif ($value instanceof Database_Table)
+			elseif ($value instanceof SQL_Table)
 			{
 				$value = $this->quote_table($value);
 			}
-			elseif ($value instanceof Database_Identifier)
+			elseif ($value instanceof SQL_Identifier)
 			{
 				$value = $this->quote_identifier($value);
 			}
@@ -621,7 +621,7 @@ abstract class Database
 
 	/**
 	 * Quote a column identifier for inclusion in a SQL query. Adds the table
-	 * prefix unless the namespace is an instance of Database_Identifier.
+	 * prefix unless the namespace is an instance of SQL_Identifier.
 	 *
 	 * @uses Database::quote_identifier()
 	 * @uses Database::quote_table()
@@ -631,7 +631,7 @@ abstract class Database
 	 */
 	public function quote_column($value)
 	{
-		if ($value instanceof Database_Identifier)
+		if ($value instanceof SQL_Identifier)
 		{
 			$namespace = $value->namespace;
 			$value = $value->name;
@@ -651,7 +651,7 @@ abstract class Database
 		{
 			$prefix = '';
 		}
-		elseif ($namespace instanceof Database_Table OR ! $namespace instanceof Database_Identifier)
+		elseif ($namespace instanceof SQL_Table OR ! $namespace instanceof SQL_Identifier)
 		{
 			$prefix = $this->quote_table($namespace).'.';
 		}
@@ -675,7 +675,7 @@ abstract class Database
 	/**
 	 * Quote an expression's parameters for inclusion in a SQL query
 	 *
-	 * @param   Database_Expression $value  Expression to quote
+	 * @param   SQL_Expression  $value  Expression to quote
 	 * @return  string
 	 */
 	public function quote_expression($value)
@@ -728,7 +728,7 @@ abstract class Database
 	 */
 	public function quote_identifier($value)
 	{
-		if ($value instanceof Database_Identifier)
+		if ($value instanceof SQL_Identifier)
 		{
 			$namespace = $value->namespace;
 			$value = $value->name;
@@ -819,7 +819,7 @@ abstract class Database
 	 */
 	public function quote_table($value)
 	{
-		if ($value instanceof Database_Identifier)
+		if ($value instanceof SQL_Identifier)
 		{
 			$namespace = $value->namespace;
 			$value = $value->name;

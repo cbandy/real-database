@@ -24,7 +24,7 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Expression::__construct
+	 * @covers  SQL_Expression::__construct
 	 * @dataProvider  provider_constructor
 	 *
 	 * @param   array   $arguments  Arguments to the constructor
@@ -35,11 +35,11 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	{
 		if (count($arguments) === 1)
 		{
-			$expression = new Database_Expression(reset($arguments));
+			$expression = new SQL_Expression(reset($arguments));
 		}
 		elseif (count($arguments) === 2)
 		{
-			$expression = new Database_Expression(reset($arguments), next($arguments));
+			$expression = new SQL_Expression(reset($arguments), next($arguments));
 		}
 
 		$this->assertSame($value, (string) $expression);
@@ -61,7 +61,7 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Expression::__toString
+	 * @covers  SQL_Expression::__toString
 	 * @dataProvider  provider_toString
 	 *
 	 * @param   mixed   $argument   Argument to the constructor
@@ -69,18 +69,18 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_toString($argument, $expected)
 	{
-		$expression = new Database_Expression($argument);
+		$expression = new SQL_Expression($argument);
 
 		$this->assertSame($expected, (string) $expression);
 	}
 
 	/**
 	 * The __toString method of the value object is called once for each call
-	 * to Database_Expression::__toString.
+	 * to SQL_Expression::__toString.
 	 *
 	 * Build the MockObject outside of a dataProvider.
 	 *
-	 * @covers  Database_Expression::__toString
+	 * @covers  SQL_Expression::__toString
 	 */
 	public function test_toString_object()
 	{
@@ -90,18 +90,18 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 			->method('__toString')
 			->will($this->returnValue('object__toString'));
 
-		$expression = new Database_Expression($object);
+		$expression = new SQL_Expression($object);
 
 		$this->assertSame('object__toString', (string) $expression, 'Once');
 		$this->assertSame('object__toString', (string) $expression, 'Twice');
 	}
 
 	/**
-	 * @covers  Database_Expression::bind
+	 * @covers  SQL_Expression::bind
 	 */
 	public function test_bind()
 	{
-		$expression = new Database_Expression('');
+		$expression = new SQL_Expression('');
 
 		$this->assertSame($expression, $expression->bind(0, $var), 'Chainable (integer)');
 		$this->assertSame(NULL, $var, 'Variable created');
@@ -121,11 +121,11 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Expression::param
+	 * @covers  SQL_Expression::param
 	 */
 	public function test_param()
 	{
-		$expression = new Database_Expression('');
+		$expression = new SQL_Expression('');
 
 		$this->assertSame($expression, $expression->param(0, NULL), 'Chainable (integer, NULL)');
 		$this->assertSame(array(0 => NULL), $expression->parameters);
@@ -141,11 +141,11 @@ class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Expression::parameters
+	 * @covers  SQL_Expression::parameters
 	 */
 	public function test_parameters()
 	{
-		$expression = new Database_Expression('');
+		$expression = new SQL_Expression('');
 
 		$this->assertSame($expression, $expression->parameters(array()), 'Chainable (empty)');
 		$this->assertSame(array(), $expression->parameters);

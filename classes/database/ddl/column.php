@@ -13,7 +13,7 @@
  * @link http://www.sqlite.org/syntaxdiagrams.html#column-def SQLite
  * @link http://msdn.microsoft.com/en-us/library/ms174979.aspx Transact-SQL
  */
-class Database_DDL_Column extends Database_Expression
+class Database_DDL_Column extends SQL_Expression
 {
 	/**
 	 * @var boolean
@@ -24,8 +24,8 @@ class Database_DDL_Column extends Database_Expression
 	 * @uses Database_DDL_Column::name()
 	 * @uses Database_DDL_Column::type()
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
-	 * @param   mixed   $type   Converted to Database_Expression
+	 * @param   mixed   $name   Converted to SQL_Column
+	 * @param   mixed   $type   Converted to SQL_Expression
 	 */
 	public function __construct($name = NULL, $type = NULL)
 	{
@@ -67,15 +67,15 @@ class Database_DDL_Column extends Database_Expression
 	/**
 	 * Set the name of the column
 	 *
-	 * @param   mixed   $value  Converted to Database_Column
+	 * @param   mixed   $value  Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function name($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Column($value);
+			$value = new SQL_Column($value);
 		}
 
 		$this->parameters[':name'] = $value;
@@ -124,14 +124,14 @@ class Database_DDL_Column extends Database_Expression
 	/**
 	 * Set the datatype of the column
 	 *
-	 * @param   mixed   $type   Converted to Database_Expression
+	 * @param   mixed   $type   Converted to SQL_Expression
 	 * @return  $this
 	 */
 	public function type($type)
 	{
-		if ( ! $type instanceof Database_Expression)
+		if ( ! $type instanceof SQL_Expression)
 		{
-			$type = new Database_Expression($type);
+			$type = new SQL_Expression($type);
 		}
 
 		$this->parameters[':type'] = $type;
@@ -155,7 +155,7 @@ class Database_DDL_Column extends Database_Expression
 		{
 			if (empty($this->parameters[':constraints']))
 			{
-				$this->parameters[':constraints'] = new Database_Expression('?');
+				$this->parameters[':constraints'] = new SQL_Expression('?');
 			}
 			else
 			{

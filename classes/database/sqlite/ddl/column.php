@@ -19,7 +19,7 @@ class Database_SQLite_DDL_Column extends Database_DDL_Column_Identity
 	{
 		$this->not_null();
 
-		$this->parameters[':type'] = new Database_Expression('INTEGER');
+		$this->parameters[':type'] = new SQL_Expression('INTEGER');
 
 		if (isset($this->parameters[':constraints']))
 		{

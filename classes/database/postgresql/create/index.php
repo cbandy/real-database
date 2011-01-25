@@ -59,28 +59,28 @@ class Database_PostgreSQL_Create_Index extends Database_Command_Create_Index
 	/**
 	 * Append one column or expression to be included in the index
 	 *
-	 * @param   mixed   $column     Converted to Database_Column
+	 * @param   mixed   $column     Converted to SQL_Column
 	 * @param   string  $direction  Direction to sort, ASC or DESC
 	 * @param   string  $nulls      Position to which NULL values should sort, FIRST or LAST
 	 * @return  $this
 	 */
 	public function column($column, $direction = NULL, $nulls = NULL)
 	{
-		if ($column instanceof Database_Expression)
+		if ($column instanceof SQL_Expression)
 		{
 			// Wrap expression in parentheses
-			$column = new Database_Expression('(?)', array($column));
+			$column = new SQL_Expression('(?)', array($column));
 		}
-		elseif ( ! $column instanceof Database_Identifier)
+		elseif ( ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
 		if ($direction OR $nulls)
 		{
-			if ( ! $column instanceof Database_Expression)
+			if ( ! $column instanceof SQL_Expression)
 			{
-				$column = new Database_Expression('?', array($column));
+				$column = new SQL_Expression('?', array($column));
 			}
 
 			if ($direction)
@@ -102,15 +102,15 @@ class Database_PostgreSQL_Create_Index extends Database_Command_Create_Index
 	/**
 	 * Set the tablespace in which to create the index
 	 *
-	 * @param   mixed   Converted to Database_Identifier
+	 * @param   mixed   Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function tablespace($value)
 	{
-		if ( ! $value instanceof Database_Expression
-			AND ! $value instanceof Database_Identifier)
+		if ( ! $value instanceof SQL_Expression
+			AND ! $value instanceof SQL_Identifier)
 		{
-			$value = new Database_Identifier($value);
+			$value = new SQL_Identifier($value);
 		}
 
 		$this->parameters[':tablespace'] = $value;
@@ -134,7 +134,7 @@ class Database_PostgreSQL_Create_Index extends Database_Command_Create_Index
 	/**
 	 * Set the conditions for which a row is included in the partial index
 	 *
-	 * @param   Database_Conditions $conditions
+	 * @param   SQL_Conditions  $conditions
 	 * @return  $this
 	 */
 	public function where($conditions)
@@ -156,7 +156,7 @@ class Database_PostgreSQL_Create_Index extends Database_Command_Create_Index
 
 		foreach ($parameters as $param => $value)
 		{
-			$result[] = new Database_Expression("$param = ?", array($value));
+			$result[] = new SQL_Expression("$param = ?", array($value));
 		}
 
 		$this->parameters[':with'] = $result;

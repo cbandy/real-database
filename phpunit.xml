@@ -8,6 +8,7 @@
 	<testsuites>
 		<testsuite name="Database Default Implementations">
 			<directory suffix=".php">tests/database/base</directory>
+			<directory suffix=".php">tests/database/sql</directory>
 		</testsuite>
 		<testsuite name="Database MySQL Implementations">
 			<file>tests/database/mysql/testsuite.php</file>

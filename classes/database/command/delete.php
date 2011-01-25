@@ -20,7 +20,7 @@ class Database_Command_Delete extends Database_Command
 	/**
 	 * @uses Database_Command_Delete::from()
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 */
 	public function __construct($table = NULL, $alias = NULL)
@@ -59,21 +59,21 @@ class Database_Command_Delete extends Database_Command
 	/**
 	 * Set the table from which to delete rows
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function from($table, $alias = NULL)
 	{
-		if ( ! $table instanceof Database_Expression
-			AND ! $table instanceof Database_Identifier)
+		if ( ! $table instanceof SQL_Expression
+			AND ! $table instanceof SQL_Identifier)
 		{
-			$table = new Database_Table($table);
+			$table = new SQL_Table($table);
 		}
 
 		$this->parameters[':table'] = empty($alias)
 			? $table
-			: new Database_Expression('? AS ?', array($table, new Database_Identifier($alias)));
+			: new SQL_Expression('? AS ?', array($table, new SQL_Identifier($alias)));
 
 		return $this;
 	}
@@ -96,15 +96,15 @@ class Database_Command_Delete extends Database_Command
 	 *
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   mixed   $reference      Database_From or converted to Database_Table
-	 * @param   string  $table_alias    Table alias when converting to Database_Table
+	 * @param   mixed   $reference      SQL_From or converted to SQL_Table
+	 * @param   string  $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
 	public function using($reference, $table_alias = NULL)
 	{
-		if ( ! $reference instanceof Database_From)
+		if ( ! $reference instanceof SQL_From)
 		{
-			$reference = new Database_From($reference, $table_alias);
+			$reference = new SQL_From($reference, $table_alias);
 		}
 
 		$this->parameters[':using'] = $reference;
@@ -116,7 +116,7 @@ class Database_Command_Delete extends Database_Command
 	 * Set the search condition(s). When no operator is specified, the first
 	 * argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -125,13 +125,13 @@ class Database_Command_Delete extends Database_Command
 	{
 		if ($operator !== NULL)
 		{
-			if ( ! $left_column instanceof Database_Expression
-				AND ! $left_column instanceof Database_Identifier)
+			if ( ! $left_column instanceof SQL_Expression
+				AND ! $left_column instanceof SQL_Identifier)
 			{
-				$left_column = new Database_Column($left_column);
+				$left_column = new SQL_Column($left_column);
 			}
 
-			$left_column = new Database_Conditions($left_column, $operator, $right);
+			$left_column = new SQL_Conditions($left_column, $operator, $right);
 		}
 
 		$this->parameters[':where'] = $left_column;

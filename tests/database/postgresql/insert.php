@@ -45,7 +45,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->identity('id'), 'Chainable (column)');
 		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the _first_ row');
 
-		$this->assertSame($query, $query->identity(new Database_Expression("'asdf'")), 'Chainable (expression)');
+		$this->assertSame($query, $query->identity(new SQL_Expression("'asdf'")), 'Chainable (expression)');
 
 		$this->assertEquals(array(2,'asdf'), $query->execute($db), 'Expression result');
 
@@ -67,7 +67,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(2,20), $query->execute($db), 'Identity of the first row (literal)');
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n"), $db->copy_to($this->_table));
 
-		$query->values(NULL)->values(array(new Database_Expression('DEFAULT'), 85), array(30, 90));
+		$query->values(NULL)->values(array(new SQL_Expression('DEFAULT'), 85), array(30, 90));
 		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the first row (default)');
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n", "6\t85\n", "30\t90\n"), $db->copy_to($this->_table));
 	}
@@ -93,7 +93,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		if ($db->version() < '8.2')
 			$this->markTestSkipped('Not supported');
 
-		$result = $db->insert(new Database_Expression($db->quote_table($this->_table)))
+		$result = $db->insert(new SQL_Expression($db->quote_table($this->_table)))
 			->columns(array('id', 'value'))
 			->values(array(20, 75), array(21, 80))
 			->identity('id')
@@ -134,7 +134,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('more' => 6), array('more' => 7)), $result->as_array(), 'Each aliased column');
 
-		$this->assertSame($query, $query->returning(new Database_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
+		$this->assertSame($query, $query->returning(new SQL_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
 
 		$result = $query->execute($db);
 

@@ -138,7 +138,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$sql = 'INSERT INTO '.$table.' (value) VALUES (65)';
 
 		$this->assertEquals(array(1,6), $db->execute_insert($sql, 'id'), 'string, string');
-		$this->assertEquals(array(1,7), $db->execute_insert(new Database_Expression($sql), 'id'), 'Expression, string');
+		$this->assertEquals(array(1,7), $db->execute_insert(new SQL_Expression($sql), 'id'), 'Expression, string');
 	}
 
 	public function test_execute_prepared_command()
@@ -255,23 +255,23 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 				'DELETE FROM $table', array(),
 			),
 			array(
-				'DELETE FROM ?', array(new Database_Table($this->_table)),
+				'DELETE FROM ?', array(new SQL_Table($this->_table)),
 				'DELETE FROM $table', array(),
 			),
 			array(
-				'DELETE FROM :table', array(':table' => new Database_Table($this->_table)),
+				'DELETE FROM :table', array(':table' => new SQL_Table($this->_table)),
 				'DELETE FROM $table', array(),
 			),
 			array(
-				'DELETE FROM $table WHERE ?', array(new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'DELETE FROM $table WHERE "value" = $1', array(60),
 			),
 			array(
-				'DELETE FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'DELETE FROM $table WHERE "value" = $1', array(60),
 			),
 			array(
-				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
 			),
 			array(
@@ -295,11 +295,11 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
 			),
 			array(
-				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
 				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
 			),
 			array(
-				'DELETE FROM $table WHERE "value" IN (?)', array(array(new Database_Identifier('value'), 70, 80)),
+				'DELETE FROM $table WHERE "value" IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
 				'DELETE FROM $table WHERE "value" IN ("value", $1, $2)', array(70, 80),
 			),
 		);
@@ -332,23 +332,23 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 				'SELECT * FROM $table', array(),
 			),
 			array(
-				'SELECT * FROM ?', array(new Database_Table($this->_table)),
+				'SELECT * FROM ?', array(new SQL_Table($this->_table)),
 				'SELECT * FROM $table', array(),
 			),
 			array(
-				'SELECT * FROM :table', array(':table' => new Database_Table($this->_table)),
+				'SELECT * FROM :table', array(':table' => new SQL_Table($this->_table)),
 				'SELECT * FROM $table', array(),
 			),
 			array(
-				'SELECT * FROM $table WHERE ?', array(new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'SELECT * FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'SELECT * FROM $table WHERE "value" = $1', array(60),
 			),
 			array(
-				'SELECT * FROM $table WHERE :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'SELECT * FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'SELECT * FROM $table WHERE "value" = $1', array(60),
 			),
 			array(
-				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new Database_Conditions(new Database_Column('value'), '=', 60)),
+				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
 			),
 			array(
@@ -372,11 +372,11 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
 			),
 			array(
-				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, new Database_Expression(':name', array(':name' => 70)), 80)),
+				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
 				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
 			),
 			array(
-				'SELECT * FROM $table WHERE "value" IN (?)', array(array(new Database_Identifier('value'), 70, 80)),
+				'SELECT * FROM $table WHERE "value" IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
 				'SELECT * FROM $table WHERE "value" IN ("value", $1, $2)', array(70, 80),
 			),
 		);
@@ -423,7 +423,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function test_quote_expression()
 	{
 		$db = $this->sharedFixture;
-		$expression = new Database_Expression("SELECT :value::interval, 'yes':::type", array(':value' => '1 week', ':type' => new Database_Expression('boolean')));
+		$expression = new SQL_Expression("SELECT :value::interval, 'yes':::type", array(':value' => '1 week', ':type' => new SQL_Expression('boolean')));
 
 		$this->assertSame("SELECT '1 week'::interval, 'yes'::boolean", $db->quote_expression($expression));
 	}
@@ -432,8 +432,8 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 
-		$this->assertSame('1', $db->quote_expression(new Database_Expression('?', array(1))));
-		$this->assertSame('2', $db->quote_expression(new Database_Expression(':param', array(':param' => 2))));
+		$this->assertSame('1', $db->quote_expression(new SQL_Expression('?', array(1))));
+		$this->assertSame('2', $db->quote_expression(new SQL_Expression(':param', array(':param' => 2))));
 	}
 
 	public function test_savepoint_transactions()
@@ -473,7 +473,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertType('Database_PostgreSQL_Select', $query);
 
-		$query->from(new Database_From($this->_table));
+		$query->from(new SQL_From($this->_table));
 
 		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
 		$this->assertSame(4, $query->execute($db)->count(), 'Distinct (void)');
@@ -487,7 +487,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->distinct(array('value')), 'Chainable (column)');
 		$this->assertSame(4, $query->execute($db)->count(), 'Distinct on column');
 
-		$this->assertSame($query, $query->distinct(new Database_Expression('"value" % 10 = 0')), 'Chainable (expression)');
+		$this->assertSame($query, $query->distinct(new SQL_Expression('"value" % 10 = 0')), 'Chainable (expression)');
 		$this->assertSame(2, $query->execute($db)->count(), 'Distinct on expression');
 	}
 }

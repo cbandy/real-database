@@ -52,8 +52,8 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	/**
 	 * Create a column expression
 	 *
-	 * @param   mixed   $name   Converted to Database_Column
-	 * @param   mixed   $type   Converted to Database_Expression
+	 * @param   mixed   $name   Converted to SQL_Column
+	 * @param   mixed   $type   Converted to SQL_Expression
 	 * @return  Database_MySQL_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -64,8 +64,8 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	/**
 	 * Create an INSERT command
 	 *
-	 * @param   mixed   $table      Converted to Database_Table
-	 * @param   array   $columns    Each element converted to Database_Column
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  Database_Command_Insert_Identity
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -370,8 +370,8 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	 * Execute an INSERT statement, returning the number of affected rows and
 	 * the identity of the first row.
 	 *
-	 * @param   string|Database_Expression  $statement  SQL insert
-	 * @param   mixed                       $identity   Ignored
+	 * @param   string|SQL_Expression   $statement  SQL insert
+	 * @param   mixed                   $identity   Ignored
 	 * @return  array   List including number of affected rows and an identity value
 	 */
 	public function execute_insert($statement, $identity)
@@ -425,12 +425,12 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	 *
 	 * @link http://dev.mysql.com/doc/en/tables-table.html
 	 *
-	 * @param   mixed   $schema Converted to Database_Identifier
+	 * @param   mixed   $schema Converted to SQL_Identifier
 	 * @return  array
 	 */
 	public function schema_tables($schema = NULL)
 	{
-		if ($schema instanceof Database_Identifier)
+		if ($schema instanceof SQL_Identifier)
 		{
 			$schema = $schema->name;
 		}
@@ -480,12 +480,12 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	 *
 	 * @link http://dev.mysql.com/doc/en/columns-table.html
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @return  array
 	 */
 	public function table_columns($table)
 	{
-		if ($table instanceof Database_Identifier)
+		if ($table instanceof SQL_Identifier)
 		{
 			$schema = $table->namespace;
 			$table = $table->name;

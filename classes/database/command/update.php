@@ -21,7 +21,7 @@ class Database_Command_Update extends Database_Command
 	 * @uses Database_Command_Update::table()
 	 * @uses Database_Command_Update::set()
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @param   array   $values Hash of (column => value) assignments
 	 */
@@ -61,21 +61,21 @@ class Database_Command_Update extends Database_Command
 	/**
 	 * Set the table in which to update rows
 	 *
-	 * @param   mixed   $table  Converted to Database_Table
+	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
 	public function table($table, $alias = NULL)
 	{
-		if ( ! $table instanceof Database_Expression
-			AND ! $table instanceof Database_Identifier)
+		if ( ! $table instanceof SQL_Expression
+			AND ! $table instanceof SQL_Identifier)
 		{
-			$table = new Database_Table($table);
+			$table = new SQL_Table($table);
 		}
 
 		$this->parameters[':table'] = empty($alias)
 			? $table
-			: new Database_Expression('? AS ?', array($table, new Database_Identifier($alias)));
+			: new SQL_Expression('? AS ?', array($table, new SQL_Identifier($alias)));
 
 		return $this;
 	}
@@ -92,9 +92,9 @@ class Database_Command_Update extends Database_Command
 		{
 			foreach ($values as $column => $value)
 			{
-				$column = new Database_Column($column);
+				$column = new SQL_Column($column);
 
-				$this->parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
+				$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
 			}
 		}
 		elseif ($values === NULL)
@@ -112,19 +112,19 @@ class Database_Command_Update extends Database_Command
 	/**
 	 * Append a column assignment
 	 *
-	 * @param   mixed   $column Converted to Database_Column
+	 * @param   mixed   $column Converted to SQL_Column
 	 * @param   mixed   $value  Value assigned to the column
 	 * @return  $this
 	 */
 	public function value($column, $value)
 	{
-		if ( ! $column instanceof Database_Expression
-			AND ! $column instanceof Database_Identifier)
+		if ( ! $column instanceof SQL_Expression
+			AND ! $column instanceof SQL_Identifier)
 		{
-			$column = new Database_Column($column);
+			$column = new SQL_Column($column);
 		}
 
-		$this->parameters[':values'][] = new Database_Expression('? = ?', array($column, $value));
+		$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
 
 		return $this;
 	}
@@ -135,15 +135,15 @@ class Database_Command_Update extends Database_Command
 	 * [!!] Not supported by MySQL
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   mixed   $reference      Database_From or converted to Database_Table
-	 * @param   string  $table_alias    Table alias when converting to Database_Table
+	 * @param   mixed   $reference      SQL_From or converted to SQL_Table
+	 * @param   string  $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
 	public function from($reference, $table_alias = NULL)
 	{
-		if ( ! $reference instanceof Database_From)
+		if ( ! $reference instanceof SQL_From)
 		{
-			$reference = new Database_From($reference, $table_alias);
+			$reference = new SQL_From($reference, $table_alias);
 		}
 
 		$this->parameters[':from'] = $reference;
@@ -155,7 +155,7 @@ class Database_Command_Update extends Database_Command
 	 * Set the search condition(s). When no operator is specified, the first
 	 * argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to Database_Column
+	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
 	 * @param   string  $operator       Comparison operator
 	 * @param   mixed   $right          Right operand
 	 * @return  $this
@@ -164,13 +164,13 @@ class Database_Command_Update extends Database_Command
 	{
 		if ($operator !== NULL)
 		{
-			if ( ! $left_column instanceof Database_Expression
-				AND ! $left_column instanceof Database_Identifier)
+			if ( ! $left_column instanceof SQL_Expression
+				AND ! $left_column instanceof SQL_Identifier)
 			{
-				$left_column = new Database_Column($left_column);
+				$left_column = new SQL_Column($left_column);
 			}
 
-			$left_column = new Database_Conditions($left_column, $operator, $right);
+			$left_column = new SQL_Conditions($left_column, $operator, $right);
 		}
 
 		$this->parameters[':where'] = $left_column;
