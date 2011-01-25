@@ -75,8 +75,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 
-		$this->assertSame(array(0,1), $db->execute_insert(''), 'First identity from prior INSERT');
-		$this->assertSame(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)'));
+		$this->assertSame(array(0,1), $db->execute_insert('', NULL), 'First identity from prior INSERT');
+		$this->assertSame(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)', NULL));
 	}
 
 	public function test_insert()

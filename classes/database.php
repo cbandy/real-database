@@ -497,6 +497,19 @@ abstract class Database
 	abstract public function execute_command($statement);
 
 	/**
+	 * Execute a SQL statement, returning the value of an IDENTITY column.
+	 *
+	 * Behavior varies between database implementations. Reliable only when
+	 * inserting one row.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string|Database_Expression  $statement  SQL insert
+	 * @param   mixed                       $identity   Converted to Database_Column
+	 * @return  array   List including number of affected rows and an identity value
+	 */
+	abstract public function execute_insert($statement, $identity);
+
+	/**
 	 * Execute a SQL statement, returning the result set or NULL when the
 	 * statement is not a query (e.g., a DELETE statement)
 	 *

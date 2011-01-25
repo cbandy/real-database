@@ -16,7 +16,7 @@
  * @link http://php.net/manual/ref.pdo-sqlite
  * @link http://www.sqlite.org/
  */
-class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iInsert, Database_iIntrospect
+class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iIntrospect
 {
 	public static function create($type, $name = NULL)
 	{

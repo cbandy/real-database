@@ -818,6 +818,53 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Execute a SQL statement, returning the value of a column from the first
+	 * row.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string|Database_Expression  $statement  SQL insert
+	 * @param   mixed                       $identity   Converted to Database_Column
+	 * @param   string|boolean              $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @return  array   List including number of affected rows and a value from the first row
+	 */
+	public function execute_insert($statement, $identity, $as_object = FALSE)
+	{
+		if ( ! $identity instanceof Database_Expression
+			AND ! $identity instanceof Database_Identifier)
+		{
+			$identity = new Database_Column($identity);
+		}
+
+		if ($statement instanceof Database_PostgreSQL_Insert
+			AND ! empty($statement->parameters[':returning']))
+		{
+			$result = $this->_evaluate_query(
+				$this->_execute($this->quote($statement)),
+				$as_object
+			);
+		}
+		else
+		{
+			if ( ! is_string($statement))
+			{
+				$statement = $this->quote($statement);
+			}
+
+			$result = $this->_evaluate_query(
+				$this->_execute($statement.' RETURNING '.$this->quote($identity)),
+				$as_object
+			);
+		}
+
+		$rows = $result->count();
+		$result = $result->get(
+			($identity instanceof Database_Identifier) ? $identity->name : NULL
+		);
+
+		return array($rows, $result);
+	}
+
+	/**
 	 * Execute a prepared command, returning the number of affected rows
 	 *
 	 * @throws  Database_Exception

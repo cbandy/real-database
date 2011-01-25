@@ -16,7 +16,7 @@
  * @link http://php.net/manual/book.mysql
  * @link http://www.mysql.com/
  */
-class Database_MySQL extends Database implements Database_iEscape, Database_iInsert, Database_iIntrospect
+class Database_MySQL extends Database implements Database_iEscape, Database_iIntrospect
 {
 	/**
 	 * @see Database_MySQL::_select_database()
@@ -366,7 +366,15 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iIns
 		return mysql_affected_rows($this->_connection);
 	}
 
-	public function execute_insert($statement)
+	/**
+	 * Execute an INSERT statement, returning the number of affected rows and
+	 * the identity of the first row.
+	 *
+	 * @param   string|Database_Expression  $statement  SQL insert
+	 * @param   mixed                       $identity   Ignored
+	 * @return  array   List including number of affected rows and an identity value
+	 */
+	public function execute_insert($statement, $identity)
 	{
 		return array($this->execute_command($statement), mysql_insert_id($this->_connection));
 	}

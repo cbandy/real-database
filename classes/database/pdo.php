@@ -289,15 +289,16 @@ class Database_PDO extends Database
 
 	/**
 	 * Execute an INSERT statement, returning the number of affected rows and
-	 * the identity of one affected row
+	 * the identity of one affected row.
 	 *
 	 * Not all drivers support this method. When inserting multiple rows, the
 	 * row to which the identity value belongs depends on the driver.
 	 *
-	 * @param   string  $statement  INSERT statement
+	 * @param   string|Database_Expression  $statement  SQL insert
+	 * @param   mixed                       $identity   Ignored
 	 * @return  array   List including number of affected rows and an identity value
 	 */
-	public function execute_insert($statement)
+	public function execute_insert($statement, $identity)
 	{
 		return array($this->execute_command($statement), $this->_connection->lastInsertId());
 	}

@@ -130,6 +130,17 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertNull($db->execute_query('COPY '.$table.' TO STDOUT'));
 	}
 
+	public function test_execute_insert()
+	{
+		$db = $this->sharedFixture;
+		$table = $db->quote_table($this->_table);
+
+		$sql = 'INSERT INTO '.$table.' (value) VALUES (65)';
+
+		$this->assertEquals(array(1,6), $db->execute_insert($sql, 'id'), 'string, string');
+		$this->assertEquals(array(1,7), $db->execute_insert(new Database_Expression($sql), 'id'), 'Expression, string');
+	}
+
 	public function test_execute_prepared_command()
 	{
 		$db = $this->sharedFixture;

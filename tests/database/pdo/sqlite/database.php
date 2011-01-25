@@ -113,8 +113,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 
-		$this->assertEquals(array(0,3), $db->execute_insert(''), 'Prior identity');
-		$this->assertEquals(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)'));
+		$this->assertEquals(array(0,3), $db->execute_insert('', NULL), 'Prior identity');
+		$this->assertEquals(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)', NULL));
 	}
 
 	public function test_insert()
