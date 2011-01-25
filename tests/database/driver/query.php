@@ -37,16 +37,6 @@ class Database_Driver_Query_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('array', $result->current());
 	}
 
-	public function test_prepare()
-	{
-		$db = $this->sharedFixture;
-		$query = new Database_Query('SELECT * FROM '.$db->quote_table($this->_table));
-
-		$prepared = $query->prepare($db);
-
-		$this->assertType('Database_Prepared_Query', $prepared);
-	}
-
 	public function test_as_assoc()
 	{
 		$db = $this->sharedFixture;

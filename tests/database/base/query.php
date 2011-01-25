@@ -49,40 +49,31 @@ class Database_Base_Query_Test extends PHPUnit_Framework_TestCase
 	public function test_execute()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$query = new Database_Query('a');
+
 		$db->expects($this->once())
 			->method('execute_query')
-			->with($this->equalTo('a'), FALSE);
+			->with($this->equalTo($query), FALSE);
 
-		$query = new Database_Query('a');
 		$query->execute($db);
 	}
 
-	public function provider_prepare()
-	{
-		return array
-		(
-			array('a', array()),
-			array('b', array('c')),
-			array('d ?', array('e')),
-		);
-	}
-
 	/**
-	 * @covers  Database_Query::prepare
-	 * @dataProvider    provider_prepare
+	 * @covers  Database_Query::execute
+	 * @dataProvider    provider_as_object
 	 *
-	 * @param   string  $sql        Expected SQL
-	 * @param   array   $parameters Expected parameters
+	 * @param   string|boolean  $as_object  Expected value
 	 */
-	public function test_prepare($sql, $parameters)
+	public function test_execute_as_object($as_object)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$query = new Database_Query('a');
+		$query->as_object($as_object);
 
-		$query = new Database_Query($sql, $parameters);
-		$result = $query->prepare($db);
+		$db->expects($this->once())
+			->method('execute_query')
+			->with($this->equalTo($query), $as_object);
 
-		$this->assertType('Database_Prepared_Query', $result);
-		$this->assertSame($parameters, $result->parameters);
-		$this->assertSame($sql, (string) $result);
+		$query->execute($db);
 	}
 }
