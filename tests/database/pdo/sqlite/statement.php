@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_PDO_SQLite_Command_Test extends PHPUnit_Framework_TestCase
+class Database_PDO_SQLite_Statement_Test extends PHPUnit_Framework_TestCase
 {
 	protected $_table = 'temp_test_table';
 	protected $_column = 'value';
@@ -27,46 +27,44 @@ class Database_PDO_SQLite_Command_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
+	public function provider_bind()
+	{
+		return array
+		(
+			array(NULL, NULL),
+			array(FALSE, FALSE),
+			array(TRUE, TRUE),
+			array(0, 0),
+			array(1, 1),
+			array('a', 'a'),
+			array(new Database_Binary('b'), 'b'),
+		);
+	}
+
 	/**
 	 * Binding a variable can convert the value to string.
 	 *
 	 * @link    http://bugs.php.net/38334
 	 *
+	 * @covers  PDOStatement::bindParam
 	 * @dataProvider    provider_bind
 	 *
 	 * @param   mixed   $initial    Value used when preparing the statement
 	 * @param   mixed   $bound      Value after the variable has been bound
-	 * @param   mixed   $changed    Value used to alter the bound variable
 	 */
-	public function test_bind($initial, $bound, $changed)
+	public function test_bind($initial, $bound)
 	{
 		$db = $this->sharedFixture;
 		$table = $db->quote_table($this->_table);
 		$column = $db->quote_column($this->_column);
 
-		$command = $db->prepare_command("DELETE FROM $table WHERE $column = ?", array($initial));
+		$statement = $db->prepare_statement(
+			new SQL_Expression("DELETE FROM $table WHERE $column = ?", array($initial))
+		);
 
 		$var = $initial;
-		$this->assertSame($command, $command->bind(1, $var), 'Chainable');
-		$this->assertSame($bound, $command->parameters[1], 'Parameter visible');
+		$this->assertSame($statement, $statement->bind(1, $var), 'Chainable');
 		$this->assertSame($bound, $var, 'Modified by PDO during bind');
-
-		$var = $changed;
-		$this->assertSame($changed, $command->parameters[1], 'Changed by reference');
-	}
-
-	public function provider_bind()
-	{
-		return array
-		(
-			array(NULL, NULL, 'x'),
-			array(FALSE, FALSE, 'x'),
-			array(TRUE, TRUE, 'x'),
-			array(0, 0, 'x'),
-			array(1, 1, 'x'),
-			array('a', 'a', 'x'),
-			array(new Database_Binary('b'), 'b', 'x'),
-		);
 	}
 
 	protected function _test_bind_execute($value, $expected)
@@ -75,30 +73,15 @@ class Database_PDO_SQLite_Command_Test extends PHPUnit_Framework_TestCase
 		$table = $db->quote_table($this->_table);
 		$column = $db->quote_column($this->_column);
 
-		$command = $db->prepare_query("SELECT * FROM $table WHERE $column = ?", array($value));
+		$statement = $db->prepare_statement(
+			new SQL_Expression("DELETE FROM $table WHERE $column = ?", array($value))
+		);
 
 		$var = $value;
-		$command->bind(1, $var);
-		$command->execute();
+		$statement->bind(1, $var);
+		$statement->execute_command();
 
 		$this->assertSame($expected, $var, 'Modified by PDO during execution');
-	}
-
-	/**
-	 * Executing a statement with a bound variable will convert the value to
-	 * string in PHP 5.2.
-	 *
-	 * @dataProvider    provider_bind_execute_52
-	 *
-	 * @param   mixed   $value      Value used when preparing the statement
-	 * @param   string  $expected   Value after the statement is executed
-	 */
-	public function test_bind_execute_52($value, $expected)
-	{
-		if (version_compare(PHP_VERSION, '5.3', '>='))
-			$this->markTestSkipped();
-
-		$this->_test_bind_execute($value, $expected);
 	}
 
 	public function provider_bind_execute_52()
@@ -116,17 +99,19 @@ class Database_PDO_SQLite_Command_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Executing a statement with a bound variable will convert values other
-	 * than NULL to integer or string.
+	 * Executing a statement with a bound variable will convert the value to
+	 * string in PHP 5.2.
 	 *
-	 * @dataProvider    provider_bind_execute
+	 * @covers  PDOStatement::bindParam
+	 * @covers  PDOStatement::execute
+	 * @dataProvider    provider_bind_execute_52
 	 *
 	 * @param   mixed   $value      Value used when preparing the statement
-	 * @param   mixed   $expected   Value after the statement is executed
+	 * @param   string  $expected   Value after the statement is executed
 	 */
-	public function test_bind_execute($value, $expected)
+	public function test_bind_execute_52($value, $expected)
 	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
+		if (version_compare(PHP_VERSION, '5.3', '>='))
 			$this->markTestSkipped();
 
 		$this->_test_bind_execute($value, $expected);
@@ -144,5 +129,24 @@ class Database_PDO_SQLite_Command_Test extends PHPUnit_Framework_TestCase
 			array('a', 'a'),
 			array(new Database_Binary('b'), 'b'),
 		);
+	}
+
+	/**
+	 * Executing a statement with a bound variable will convert values other
+	 * than NULL to integer or string.
+	 *
+	 * @covers  PDOStatement::bindParam
+	 * @covers  PDOStatement::execute
+	 * @dataProvider    provider_bind_execute
+	 *
+	 * @param   mixed   $value      Value used when preparing the statement
+	 * @param   mixed   $expected   Value after the statement is executed
+	 */
+	public function test_bind_execute($value, $expected)
+	{
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+			$this->markTestSkipped();
+
+		$this->_test_bind_execute($value, $expected);
 	}
 }

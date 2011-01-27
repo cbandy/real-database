@@ -397,30 +397,28 @@ class Database_PDO extends Database
 		return $result;
 	}
 
-	public function prepare_command($statement, $parameters = array())
+	/**
+	 * Created a prepared statement from a SQL expression object.
+	 *
+	 * @throws  Database_Exception
+	 * @param   SQL_Expression  $statement  SQL statement
+	 * @return  Database_PostgreSQL_Statement
+	 */
+	public function prepare_statement($statement)
 	{
 		// PDOStatement parameters are 1-indexed, pad the array with a value
-		$params = array(NULL);
+		$parameters = array(NULL);
 
-		$statement = $this->prepare($this->_parse($statement, $parameters, $params));
-
-		// Remove padding
-		unset($params[0]);
-
-		return new Database_PDO_Command($this, $statement, $params);
-	}
-
-	public function prepare_query($statement, $parameters = array())
-	{
-		// PDOStatement parameters are 1-indexed, pad the array with a value
-		$params = array(NULL);
-
-		$statement = $this->prepare($this->_parse($statement, $parameters, $params));
+		$statement = $this->prepare($this->_parse(
+			(string) $statement,
+			$statement->parameters,
+			$parameters
+		));
 
 		// Remove padding
-		unset($params[0]);
+		unset($parameters[0]);
 
-		return new Database_PDO_Query($this, $statement, $params);
+		return new Database_PDO_Statement($this, $statement, $parameters);
 	}
 
 	/**
