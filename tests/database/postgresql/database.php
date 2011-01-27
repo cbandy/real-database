@@ -163,6 +163,28 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		catch (Database_Exception $e) {}
 	}
 
+	public function test_execute_prepared_insert()
+	{
+		$db = $this->sharedFixture;
+		$table = $db->quote_table($this->_table);
+
+		$name = $db->prepare(NULL, 'INSERT INTO '.$table.' ("value") VALUES (10) RETURNING "id"');
+
+		$this->assertSame(array(1, '6'), $db->execute_prepared_insert($name, 'id'));
+
+		$name = $db->prepare(NULL, 'INSERT INTO '.$table.' ("value") VALUES ($1) RETURNING "id"');
+
+		$this->assertSame(array(1, '7'), $db->execute_prepared_insert($name, 'id', array(20)));
+		$this->assertSame(array(1, '8'), $db->execute_prepared_insert($name, 'id', array(30)));
+
+		try
+		{
+			$db->execute_prepared_insert($name, 'id');
+			$this->fail('Executing without the required parameters should raise a Database_Exception');
+		}
+		catch (Database_Exception $e) {}
+	}
+
 	public function test_execute_prepared_query()
 	{
 		$db = $this->sharedFixture;
@@ -228,25 +250,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('asdf', $db->prepare('asdf', 'SELECT * FROM '.$table));
 	}
 
-	/**
-	 * @dataProvider    provider_prepare_command
-	 */
-	public function test_prepare_command($input_sql, $input_params, $expected_sql, $expected_params)
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$input_sql = str_replace('$table', $table, $input_sql);
-		$expected_sql = str_replace('$table', $table, $expected_sql);
-
-		$command = $db->prepare_command($input_sql, $input_params);
-
-		$this->assertType('Database_PostgreSQL_Command', $command);
-		$this->assertSame($expected_sql, (string) $command);
-		$this->assertSame($expected_params, $command->parameters);
-	}
-
-	public function provider_prepare_command()
+	public function provider_prepare_statement()
 	{
 		return array
 		(
@@ -306,9 +310,12 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @dataProvider    provider_prepare_query
+	 * @covers  Database_PostgreSQL::_parse
+	 * @covers  Database_PostgreSQL::_parse_array
+	 * @covers  Database_PostgreSQL::prepare_statement
+	 * @dataProvider    provider_prepare_statement
 	 */
-	public function test_prepare_query($input_sql, $input_params, $expected_sql, $expected_params)
+	public function test_prepare_statement($input_sql, $input_params, $expected_sql, $expected_params)
 	{
 		$db = $this->sharedFixture;
 		$table = $db->quote_table($this->_table);
@@ -316,100 +323,13 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$input_sql = str_replace('$table', $table, $input_sql);
 		$expected_sql = str_replace('$table', $table, $expected_sql);
 
-		$query = $db->prepare_query($input_sql, $input_params);
-
-		$this->assertType('Database_PostgreSQL_Query', $query);
-		$this->assertSame($expected_sql, (string) $query);
-		$this->assertSame($expected_params, $query->parameters);
-	}
-
-	public function provider_prepare_query()
-	{
-		return array
-		(
-			array(
-				'SELECT * FROM $table', array(),
-				'SELECT * FROM $table', array(),
-			),
-			array(
-				'SELECT * FROM ?', array(new SQL_Table($this->_table)),
-				'SELECT * FROM $table', array(),
-			),
-			array(
-				'SELECT * FROM :table', array(':table' => new SQL_Table($this->_table)),
-				'SELECT * FROM $table', array(),
-			),
-			array(
-				'SELECT * FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'SELECT * FROM $table WHERE "value" = $1', array(60),
-			),
-			array(
-				'SELECT * FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'SELECT * FROM $table WHERE "value" = $1', array(60),
-			),
-			array(
-				'SELECT * FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
-			),
-			array(
-				'SELECT * FROM $table WHERE "value" = ?', array(60),
-				'SELECT * FROM $table WHERE "value" = $1', array(60),
-			),
-			array(
-				'SELECT * FROM $table WHERE "value" = :value', array(':value' => 60),
-				'SELECT * FROM $table WHERE "value" = $1', array(60),
-			),
-			array(
-				'SELECT * FROM $table WHERE "value" = :value AND "value" = :value', array(':value' => 60),
-				'SELECT * FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
-			),
-			array(
-				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, 70, 80)),
-				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
-			),
-			array(
-				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, 70, array(80))),
-				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
-			),
-			array(
-				'SELECT * FROM $table WHERE "value" IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
-				'SELECT * FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
-			),
-			array(
-				'SELECT * FROM $table WHERE "value" IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
-				'SELECT * FROM $table WHERE "value" IN ("value", $1, $2)', array(70, 80),
-			),
+		$statement = $db->prepare_statement(
+			new SQL_Expression($input_sql, $input_params)
 		);
-	}
 
-	public function test_prepared_command_deallocate()
-	{
-		$db = $this->sharedFixture;
-		$query = $db->prepare_command('DELETE FROM '.$db->quote_table($this->_table));
-
-		$this->assertNull($query->deallocate());
-
-		try
-		{
-			$query->deallocate();
-			$this->fail('Calling deallocate() twice should fail with a Database_Exception');
-		}
-		catch (Database_Exception $e) {}
-	}
-
-	public function test_prepared_query_deallocate()
-	{
-		$db = $this->sharedFixture;
-		$query = $db->prepare_query('SELECT * FROM '.$db->quote_table($this->_table));
-
-		$this->assertNull($query->deallocate());
-
-		try
-		{
-			$query->deallocate();
-			$this->fail('Calling deallocate() twice should fail with a Database_Exception');
-		}
-		catch (Database_Exception $e) {}
+		$this->assertType('Database_PostgreSQL_Statement', $statement);
+		$this->assertSame($expected_sql, (string) $statement);
+		$this->assertSame($expected_params, $statement->parameters);
 	}
 
 	public function test_quote_binary()

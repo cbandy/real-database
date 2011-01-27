@@ -878,6 +878,38 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Execute a prepared insert, returning the value of a column from the first
+	 * row.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string          $name       Statement name
+	 * @param   mixed           $identity   Converted to SQL_Column
+	 * @param   array           $parameters Unquoted parameters
+	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @return  array   List including number of affected rows and a value from the first row
+	 */
+	public function execute_prepared_insert($name, $identity, $parameters = array(), $as_object = FALSE)
+	{
+		if ( ! $identity instanceof SQL_Expression
+			AND ! $identity instanceof SQL_Identifier)
+		{
+			$identity = new SQL_Column($identity);
+		}
+
+		$result = $this->_evaluate_query(
+			$this->_execute_prepared($name, $parameters),
+			$as_object
+		);
+
+		$rows = $result->count();
+		$result = $result->get(
+			($identity instanceof SQL_Identifier) ? $identity->name : NULL
+		);
+
+		return array($rows, $result);
+	}
+
+	/**
 	 * Execute a prepared query, returning the result set or NULL when the
 	 * statement is not a query (e.g., a DELETE statement)
 	 *
@@ -938,22 +970,26 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		return $name;
 	}
 
-	public function prepare_command($statement, $parameters = array())
+	/**
+	 * Created a prepared statement from a SQL expression object.
+	 *
+	 * @throws  Database_Exception
+	 * @param   SQL_Expression  $statement  SQL statement
+	 * @return  Database_PostgreSQL_Statement
+	 */
+	public function prepare_statement($statement)
 	{
-		$params = array();
-		$statement = $this->_parse($statement, $parameters, $params);
+		$parameters = array();
+
+		$statement = $this->_parse(
+			(string) $statement,
+			$statement->parameters,
+			$parameters
+		);
+
 		$name = $this->prepare(NULL, $statement);
 
-		return new Database_PostgreSQL_Command($this, $name, $statement, $params);
-	}
-
-	public function prepare_query($statement, $parameters = array())
-	{
-		$params = array();
-		$statement = $this->_parse($statement, $parameters, $params);
-		$name = $this->prepare(NULL, $statement);
-
-		return new Database_PostgreSQL_Query($this, $name, $statement, $params);
+		return new Database_PostgreSQL_Statement($this, $name, $statement, $parameters);
 	}
 
 	/**
