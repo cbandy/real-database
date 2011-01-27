@@ -56,19 +56,4 @@ class Database_Driver_Query_Cached_Test extends PHPUnit_Framework_TestCase
 		$this->assertType($class, $cached->execute(), 'First execution not cached');
 		$this->assertType('Database_Result_Array', $cached->execute(), 'Second execution cached');
 	}
-
-	public function test_prepared()
-	{
-		$db = $this->sharedFixture;
-		$query = $db->prepare_query('SELECT * FROM '.$db->quote_table($this->_table));
-		$class = get_class($query->execute());
-
-		$cached = new Database_Query_Cached(5, $db, $query);
-
-		// Clear the cache
-		$cached->delete();
-
-		$this->assertType($class, $cached->execute(), 'First execution not cached');
-		$this->assertType('Database_Result_Array', $cached->execute(), 'Second execution cached');
-	}
 }
