@@ -37,6 +37,21 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertNull($db->execute_query('DELETE FROM '.$db->quote_table($this->_table)));
 	}
 
+	/**
+	 * @covers  Database_PDO::last_insert_id
+	 */
+	public function test_last_insert_id()
+	{
+		$db = $this->sharedFixture;
+		$table = $db->quote_table($this->_table);
+		$column = $db->quote_column($this->_column);
+
+		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (100)');
+
+		$this->assertEquals(4, $db->last_insert_id(), 'Once');
+		$this->assertEquals(4, $db->last_insert_id(), 'Twice');
+	}
+
 	public function test_prepare()
 	{
 		$db = $this->sharedFixture;

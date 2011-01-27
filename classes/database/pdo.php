@@ -300,7 +300,7 @@ class Database_PDO extends Database
 	 */
 	public function execute_insert($statement, $identity)
 	{
-		return array($this->execute_command($statement), $this->_connection->lastInsertId());
+		return array($this->execute_command($statement), $this->last_insert_id());
 	}
 
 	public function execute_query($statement, $as_object = FALSE)
@@ -343,6 +343,19 @@ class Database_PDO extends Database
 			return NULL;
 
 		return new Database_PDO_Result($statement, $as_object);
+	}
+
+	/**
+	 * Retrieve the identity of a row from the previously executed INSERT.
+	 *
+	 * Not all drivers support this method. If multiple rows were inserted, the
+	 * row to which the identity value belongs depends on the driver.
+	 *
+	 * @return  string The identity value of an inserted row
+	 */
+	public function last_insert_id()
+	{
+		return $this->_connection->lastInsertId();
 	}
 
 	/**
