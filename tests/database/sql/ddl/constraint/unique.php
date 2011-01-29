@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.ddl
  */
-class Database_Base_DDL_Constraint_Unique_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_DDL_Constraint_Unique_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers  SQL_DDL_Constraint_Unique::__construct

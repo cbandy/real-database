@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.commands
  */
-class Database_Base_Command_Insert_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers  SQL_DML_Insert::__construct

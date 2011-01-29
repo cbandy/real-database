@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.expressions
  */
-class Database_Base_From_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @param   string  $method     Method to call

@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.identifiers
  */
-class Database_Base_Identifier_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_Identifier_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_constructor()
 	{

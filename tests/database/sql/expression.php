@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.expressions
  */
-class Database_Base_Expression_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_Expression_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_constructor()
 	{

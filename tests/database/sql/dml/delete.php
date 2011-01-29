@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.commands
  */
-class Database_Base_Command_Delete_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers  SQL_DML_Delete::__construct

@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.ddl
  */
-class Database_Base_Command_Create_Index_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers  SQL_DDL_Create_Index::__construct

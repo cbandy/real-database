@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.ddl
  */
-class Database_Base_Command_Drop_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers  SQL_DDL_Drop::__construct

@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.expressions
  */
-class Database_Base_Conditions_Test extends PHPUnit_Framework_TestCase
+class Database_SQL_Conditions_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @covers  SQL_Conditions::__construct
