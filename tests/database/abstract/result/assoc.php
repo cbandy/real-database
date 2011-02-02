@@ -8,6 +8,9 @@ require_once dirname(dirname(__FILE__)).'/result'.EXT;
  */
 abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Result_Test
 {
+	/**
+	 * @covers  Database_Result::as_array
+	 */
 	public function test_array()
 	{
 		$result = $this->_select_all();
@@ -18,6 +21,9 @@ abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Res
 		$this->assertEquals(array(50 => 50, 55 => 55, 60 => 60), $result->as_array('value', 'value'));
 	}
 
+	/**
+	 * @covers  Database_Result::as_array
+	 */
 	public function test_array_position()
 	{
 		$result = $this->_select_all();
@@ -27,6 +33,9 @@ abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Res
 		$this->assertEquals(array('value' => 55), $result->current(), 'Same position');
 	}
 
+	/**
+	 * @covers  Database_Result::current
+	 */
 	public function test_current()
 	{
 		$result = $this->_select_all();
@@ -35,6 +44,9 @@ abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Res
 		$this->assertEquals(array('value' => 50), $result->current(), 'Do not advance');
 	}
 
+	/**
+	 * @covers  Database_Result::next
+	 */
 	public function test_next()
 	{
 		$result = $this->_select_all();
@@ -51,6 +63,9 @@ abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Res
 		$this->assertFalse($result->valid());
 	}
 
+	/**
+	 * @covers  Database_Result::offsetGet
+	 */
 	public function test_offset_get()
 	{
 		$result = $this->_select_all();
@@ -59,6 +74,9 @@ abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Res
 		$this->assertEquals(array('value' => 60), $result->offsetGet(2));
 	}
 
+	/**
+	 * @covers  Database_Result::prev
+	 */
 	public function test_prev()
 	{
 		$result = $this->_select_all();
@@ -77,6 +95,9 @@ abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Res
 		$this->assertFalse($result->valid());
 	}
 
+	/**
+	 * @covers  Database_Result::rewind
+	 */
 	public function test_rewind()
 	{
 		$result = $this->_select_all();
@@ -88,6 +109,9 @@ abstract class Database_Abstract_Result_Assoc_Test extends Database_Abstract_Res
 		$this->assertEquals(array('value' => 50), $result->current());
 	}
 
+	/**
+	 * @covers  Database_Result::seek
+	 */
 	public function test_seek()
 	{
 		$result = $this->_select_all();

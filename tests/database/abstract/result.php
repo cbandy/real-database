@@ -29,6 +29,9 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 	 */
 	abstract protected function _select_null();
 
+	/**
+	 * @covers  Database_Result::count
+	 */
 	public function test_count()
 	{
 		$result = $this->_select_all();
@@ -36,6 +39,9 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(3, $result->count());
 	}
 
+	/**
+	 * @covers  Database_Result::get
+	 */
 	public function test_get()
 	{
 		$result = $this->_select_all();
@@ -46,6 +52,9 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('other', $result->get('non', 'other'), 'non-existent');
 	}
 
+	/**
+	 * @covers  Database_Result::get
+	 */
 	public function test_get_after_next()
 	{
 		$result = $this->_select_all()->next();
@@ -56,6 +65,9 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals('other', $result->get('non', 'other'), 'non-existent');
 	}
 
+	/**
+	 * @covers  Database_Result::get
+	 */
 	public function test_get_null()
 	{
 		$result = $this->_select_null();
@@ -65,6 +77,9 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('other', $result->get('value', 'other'), 'default');
 	}
 
+	/**
+	 * @covers  Database_Result::offsetExists
+	 */
 	public function tests_offset_exists()
 	{
 		$result = $this->_select_all();
@@ -76,6 +91,9 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 		$this->assertFalse($result->offsetExists(3));
 	}
 
+	/**
+	 * @covers  Database_Result::offsetGet
+	 */
 	public function test_offset_get_error()
 	{
 		$result = $this->_select_all();
@@ -98,6 +116,7 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_Result::offsetSet
 	 * @expectedException Kohana_Exception
 	 */
 	public function test_offset_set()
@@ -108,6 +127,7 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_Result::offsetUnset
 	 * @expectedException Kohana_Exception
 	 */
 	public function test_offset_unset()
@@ -117,6 +137,9 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 		$result->offsetUnset(0);
 	}
 
+	/**
+	 * @covers  Database_Result::seek
+	 */
 	public function test_seek_error()
 	{
 		$result = $this->_select_all();
