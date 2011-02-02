@@ -462,6 +462,19 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 		$this->_test_method_type('table', array('a'), 'SQL_Table');
 	}
 
+	/**
+	 * @covers  Database_iIntrospect::table_columns
+	 */
+	public function test_table_columns_no_table()
+	{
+		$db = $this->_database();
+
+		if ( ! $db instanceof Database_iIntrospect)
+			$this->markTestSkipped('Connection does not implement Database_iIntrospect');
+
+		$this->assertSame(array(), $db->table_columns('table-does-not-exist'));
+	}
+
 	public function provider_update()
 	{
 		return array
