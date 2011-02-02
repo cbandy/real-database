@@ -78,6 +78,26 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_Result::key
+	 */
+	public function test_key()
+	{
+		$result = $this->_select_all();
+
+		$this->assertSame(0, $result->key());
+	}
+
+	/**
+	 * @covers  Database_Result::key
+	 */
+	public function test_key_after_next()
+	{
+		$result = $this->_select_all()->next();
+
+		$this->assertSame(1, $result->key());
+	}
+
+	/**
 	 * @covers  Database_Result::offsetExists
 	 */
 	public function tests_offset_exists()
