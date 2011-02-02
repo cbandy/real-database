@@ -26,4 +26,20 @@ class Database_Base_Result_Array_Test extends Database_Abstract_Result_Assoc_Tes
 			array('value' => NULL),
 		), FALSE);
 	}
+
+	/**
+	 * @covers  Database_Result_Array::as_array
+	 */
+	public function test_array()
+	{
+		parent::test_array();
+	}
+
+	/**
+	 * @covers  Database_Result_Array::current
+	 */
+	public function test_current()
+	{
+		parent::test_current();
+	}
 }
