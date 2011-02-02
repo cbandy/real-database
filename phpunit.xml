@@ -22,8 +22,5 @@
 		<testsuite name="Database SQLite Implementations">
 			<file>tests/database/pdo/sqlite/testsuite.php</file>
 		</testsuite>
-		<testsuite name="Database Driver Tests">
-			<file>tests/database/driver/testsuite.php</file>
-		</testsuite>
 	</testsuites>
 </phpunit>
