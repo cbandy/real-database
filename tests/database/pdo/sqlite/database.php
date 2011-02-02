@@ -1,4 +1,7 @@
 <?php
+
+require_once dirname(dirname(dirname(__FILE__))).'/abstract/database'.EXT;
+
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -6,7 +9,7 @@
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
+class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 {
 	protected $_table = 'temp_test_table';
 
@@ -29,14 +32,36 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @test
-	 * @dataProvider    provider_datatype
+	 * @covers  Database_PDO_SQLite::create
+	 * @dataProvider    provider_create_index
+	 *
+	 * @param   array   $arguments
 	 */
-	public function test_datatype($type, $attribute, $expected)
+	public function test_create_index($arguments)
 	{
-		$db = $this->sharedFixture;
+		return parent::test_create_index($arguments);
+	}
 
-		$this->assertSame($expected, $db->datatype($type, $attribute));
+	/**
+	 * @covers  Database_PDO_SQLite::create
+	 * @dataProvider    provider_create_table
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_create_table($arguments)
+	{
+		$this->_test_method_type('create', $arguments, 'Database_SQLite_Create_Table');
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::create
+	 * @dataProvider    provider_create_view
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_create_view($arguments)
+	{
+		return parent::test_create_view($arguments);
 	}
 
 	public function provider_datatype()
@@ -53,6 +78,28 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 			array('not-a-type', 'type', NULL),
 			array('not-a-type', NULL, array()),
 		);
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::datatype
+	 * @dataProvider    provider_datatype
+	 */
+	public function test_datatype($type, $attribute, $expected)
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame($expected, $db->datatype($type, $attribute));
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::ddl_column
+	 * @dataProvider    provider_ddl_column
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_ddl_column($arguments)
+	{
+		$this->_test_method_type('ddl_column', $arguments, 'Database_SQLite_DDL_Column');
 	}
 
 	public function test_execute_command_query()
@@ -117,20 +164,25 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)', NULL));
 	}
 
-	public function test_insert()
+	/**
+	 * @covers  Database_PDO_SQLite::insert
+	 * @dataProvider    provider_insert
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_insert($arguments)
+	{
+		$this->_test_method_type('insert', $arguments, 'Database_SQLite_Insert');
+	}
+
+	public function test_insert_execute()
 	{
 		$db = $this->sharedFixture;
-		$query = $db->insert($this->_table, array('value'));
 
-		$this->assertType('Database_SQLite_Insert', $query);
+		$statement = new Database_SQLite_Insert($this->_table, array('value'));
+		$statement->identity('id')->values(array('65'), array('70'));
 
-		$query->identity('id')->values(array('65'), array('70'));
-
-		$this->assertEquals(array(1,5), $query->execute($db), 'Count is always one. Identity is INTEGER PRIMARY KEY of the last row');
-
-		$query->values(NULL)->values(array('75'));
-
-		$this->assertEquals(array(1,6), $query->execute($db));
+		$this->assertEquals(array(1,5), $statement->execute($db), 'Count is always one. Identity is INTEGER PRIMARY KEY of the last row');
 	}
 
 	public function provider_table_columns()
@@ -191,6 +243,7 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_PDO_SQLite::table_columns
 	 * @dataProvider provider_table_columns
 	 */
 	public function test_table_columns($column, $expected)

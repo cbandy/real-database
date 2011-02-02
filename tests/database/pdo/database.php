@@ -1,4 +1,7 @@
 <?php
+
+require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
+
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -6,7 +9,7 @@
  * @group   database
  * @group   database.pdo
  */
-class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
+class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 {
 	protected $_table = 'temp_test_table';
 	protected $_column = 'value';

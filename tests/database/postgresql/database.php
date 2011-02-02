@@ -1,4 +1,7 @@
 <?php
+
+require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
+
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -6,7 +9,7 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 {
 	protected $_table = 'temp_test_table';
 
@@ -32,6 +35,20 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::alter
+	 * @dataProvider    provider_alter_table
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_alter_table($arguments)
+	{
+		$this->_test_method_type('alter', $arguments, 'Database_PostgreSQL_Alter_Table');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::copy_from
+	 */
 	public function test_copy_from()
 	{
 		$db = $this->sharedFixture;
@@ -49,6 +66,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::copy_from
 	 * @expectedException   Database_Exception
 	 */
 	public function test_copy_from_error()
@@ -58,6 +76,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db->copy_from('kohana-nonexistent-table', array("8\t70"));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::copy_to
+	 */
 	public function test_copy_to()
 	{
 		$db = $this->sharedFixture;
@@ -67,6 +88,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::copy_to
 	 * @expectedException   Database_Exception
 	 */
 	public function test_copy_to_error()
@@ -74,6 +96,39 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 
 		$db->copy_to('kohana-nonexistent-table');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::create
+	 * @dataProvider    provider_create_index
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_create_index($arguments)
+	{
+		$this->_test_method_type('create', $arguments, 'Database_PostgreSQL_Create_Index');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::create
+	 * @dataProvider    provider_create_table
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_create_table($arguments)
+	{
+		return parent::test_create_table($arguments);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::create
+	 * @dataProvider    provider_create_view
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_create_view($arguments)
+	{
+		return parent::test_create_view($arguments);
 	}
 
 	public function provider_datatype()
@@ -86,6 +141,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::datatype
 	 * @dataProvider provider_datatype
 	 */
 	public function test_datatype($type, $attribute, $expected)
@@ -95,6 +151,21 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::ddl_column
+	 * @dataProvider    provider_ddl_column
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_ddl_column($arguments)
+	{
+		$this->_test_method_type('ddl_column', $arguments, 'Database_PostgreSQL_DDL_Column');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::_evaluate_command
+	 * @covers  Database_PostgreSQL::execute_command
+	 */
 	public function test_execute_command_query()
 	{
 		$db = $this->sharedFixture;
@@ -102,6 +173,10 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(5, $db->execute_command('SELECT * FROM '.$db->quote_table($this->_table)), 'Number of returned rows');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::_evaluate_command
+	 * @covers  Database_PostgreSQL::execute_command
+	 */
 	public function test_execute_compound_command()
 	{
 		$db = $this->sharedFixture;
@@ -130,6 +205,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertNull($db->execute_query('COPY '.$table.' TO STDOUT'));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::execute_insert
+	 */
 	public function test_execute_insert()
 	{
 		$db = $this->sharedFixture;
@@ -141,6 +219,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(1,7), $db->execute_insert(new SQL_Expression($sql), 'id'), 'Expression, string');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::execute_prepared_command
+	 */
 	public function test_execute_prepared_command()
 	{
 		$db = $this->sharedFixture;
@@ -163,6 +244,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		catch (Database_Exception $e) {}
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::execute_prepared_insert
+	 */
 	public function test_execute_prepared_insert()
 	{
 		$db = $this->sharedFixture;
@@ -185,6 +269,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		catch (Database_Exception $e) {}
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::execute_prepared_query
+	 */
 	public function test_execute_prepared_query()
 	{
 		$db = $this->sharedFixture;
@@ -234,6 +321,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertType('Database_PostgreSQL_Database_Test_Class', $result->current(), 'Result type (Database_PostgreSQL_Database_Test_Class)');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::prepare
+	 */
 	public function test_prepare()
 	{
 		$db = $this->sharedFixture;
@@ -340,6 +430,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("'\\\\200\\\\000\\\\350'", $db->quote($binary));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::quote_expression
+	 */
 	public function test_quote_expression()
 	{
 		$db = $this->sharedFixture;
@@ -348,6 +441,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("SELECT '1 week'::interval, 'yes'::boolean", $db->quote_expression($expression));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::quote_expression
+	 */
 	public function test_quote_expression_placeholder_first()
 	{
 		$db = $this->sharedFixture;
@@ -384,31 +480,6 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertNull($db->rollback());
 
 		$this->assertSame(5, $db->execute_query($select)->count(), 'Rollback 65');
-	}
-
-	public function test_select()
-	{
-		$db = $this->sharedFixture;
-		$query = $db->select(array('value'));
-
-		$this->assertType('Database_PostgreSQL_Select', $query);
-
-		$query->from(new SQL_Table_Reference($this->_table));
-
-		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
-		$this->assertSame(4, $query->execute($db)->count(), 'Distinct (void)');
-
-		$this->assertSame($query, $query->distinct(TRUE), 'Chainable (TRUE)');
-		$this->assertSame(4, $query->execute($db)->count(), 'Distinct (TRUE)');
-
-		$this->assertSame($query, $query->distinct(FALSE), 'Chainable (FALSE)');
-		$this->assertSame(5, $query->execute($db)->count(), 'Not distinct');
-
-		$this->assertSame($query, $query->distinct(array('value')), 'Chainable (column)');
-		$this->assertSame(4, $query->execute($db)->count(), 'Distinct on column');
-
-		$this->assertSame($query, $query->distinct(new SQL_Expression('"value" % 10 = 0')), 'Chainable (expression)');
-		$this->assertSame(2, $query->execute($db)->count(), 'Distinct on expression');
 	}
 }
 
