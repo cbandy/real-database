@@ -180,4 +180,22 @@ abstract class Database_Abstract_Result_Test extends PHPUnit_Framework_TestCase
 		}
 		catch (OutOfBoundsException $e) {}
 	}
+
+	/**
+	 * @covers  Database_Result::valid
+	 */
+	public function test_valid()
+	{
+		$result = $this->_select_all();
+
+		$this->assertTrue($result->valid(), 'Initial');
+
+		$result->prev();
+
+		$this->assertFalse($result->valid(), 'Beginning');
+
+		$result->rewind()->next()->next()->next();
+
+		$this->assertFalse($result->valid(), 'End');
+	}
 }
