@@ -1,15 +1,15 @@
 <?php
 
-require_once dirname(dirname(dirname(__FILE__))).'/abstract/result/assoc'.EXT;
+require_once dirname(dirname(dirname(__FILE__))).'/abstract/result/object'.EXT;
 
 /**
  * @package RealDatabase
  * @author  Chris Bandy
  *
  * @group   database
- * @group   database.result
+ * @group   database.mysql
  */
-class Database_Driver_Result_Assoc_Test extends Database_Abstract_Result_Assoc_Test
+class Database_MySQL_Result_Object_Test extends Database_Abstract_Result_Object_Test
 {
 	protected $_table = 'temp_test_table';
 
@@ -17,14 +17,14 @@ class Database_Driver_Result_Assoc_Test extends Database_Abstract_Result_Assoc_T
 	{
 		$db = $this->sharedFixture;
 
-		return $db->execute_query('SELECT * FROM '.$db->quote_table($this->_table).' ORDER BY value');
+		return $db->execute_query('SELECT * FROM '.$db->quote_table($this->_table).' ORDER BY value', TRUE);
 	}
 
 	protected function _select_null()
 	{
 		$db = $this->sharedFixture;
 
-		return $db->execute_query('SELECT NULL AS value FROM '.$db->quote_table($this->_table));
+		return $db->execute_query('SELECT NULL AS value FROM '.$db->quote_table($this->_table), TRUE);
 	}
 
 	public function setUp()
