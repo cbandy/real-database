@@ -8,14 +8,9 @@
  */
 class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 {
-	public function test_constructor()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table('a');
-
-		$this->assertSame("CREATE TABLE $table", $db->quote(new Database_MySQL_Create_Table('a')));
-	}
-
+	/**
+	 * @covers  Database_MySQL_Create_Table::if_not_exists
+	 */
 	public function test_if_not_exists()
 	{
 		$db = $this->sharedFixture;
@@ -32,6 +27,9 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("CREATE TABLE IF NOT EXISTS $table", $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_MySQL_Create_Table::like
+	 */
 	public function test_like()
 	{
 		$db = $this->sharedFixture;
@@ -43,6 +41,9 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("CREATE TABLE $table LIKE $like", $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_MySQL_Create_Table::options
+	 */
 	public function test_options()
 	{
 		$db = $this->sharedFixture;
@@ -53,52 +54,24 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("CREATE TABLE $table ENGINE 'InnoDB', AUTO_INCREMENT 5", $db->quote($command));
 	}
 
-	public function test_query()
+	/**
+	 * @covers  Database_MySQL_Create_Table::__toString
+	 */
+	public function test_toString()
 	{
-		$db = $this->sharedFixture;
-		$command = new Database_MySQL_Create_Table('a');
-		$table = $db->quote_table('a');
+		$command = new Database_MySQL_Create_Table;
+		$command
+			->temporary()
+			->if_not_exists()
+			->column(new SQL_DDL_Column('a', 'b'))
+			->constraint(new SQL_DDL_Constraint_Primary(array('c')))
+			->options(array('d' => 'e'))
+			->query(new SQL_Expression('f'));
 
-		$this->assertSame($command, $command->query(new Database_Query('b')));
-		$this->assertSame("CREATE TABLE $table AS b", $db->quote($command));
-	}
+		$this->assertSame('CREATE TEMPORARY TABLE IF NOT EXISTS :name (:columns, :constraints) :options AS :query', (string) $command);
 
-	public function test_query_columns()
-	{
-		$db = $this->sharedFixture;
-		$command = new Database_MySQL_Create_Table('a');
-		$command->column(new SQL_DDL_Column('b', 'c'));
-		$command->query(new Database_Query('d'));
-		$table = $db->quote_table('a');
+		$command->like('g');
 
-		$this->assertSame("CREATE TABLE $table (`b` c) AS d", $db->quote($command));
-	}
-
-	public function test_query_columns_constraints()
-	{
-		$db = $this->sharedFixture;
-		$command = new Database_MySQL_Create_Table('a');
-		$command->column(new SQL_DDL_Column('b', 'c'));
-		$command->constraint(new SQL_DDL_Constraint_Unique(array('d')));
-		$command->query(new Database_Query('e'));
-		$table = $db->quote_table('a');
-
-		$this->assertSame("CREATE TABLE $table (`b` c, UNIQUE (`d`)) AS e", $db->quote($command));
-	}
-
-	public function test_temporary()
-	{
-		$db = $this->sharedFixture;
-		$command = new Database_MySQL_Create_Table('a');
-		$table = $db->quote_table('a');
-
-		$this->assertSame($command, $command->temporary(), 'Chainable (void)');
-		$this->assertSame("CREATE TEMPORARY TABLE $table", $db->quote($command));
-
-		$this->assertSame($command, $command->temporary(FALSE), 'Chainable (FALSE)');
-		$this->assertSame("CREATE TABLE $table", $db->quote($command));
-
-		$this->assertSame($command, $command->temporary(TRUE), 'Chainable (TRUE)');
-		$this->assertSame("CREATE TEMPORARY TABLE $table", $db->quote($command));
+		$this->assertSame('CREATE TEMPORARY TABLE IF NOT EXISTS :name LIKE :like', (string) $command);
 	}
 }

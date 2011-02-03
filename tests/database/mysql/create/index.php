@@ -8,15 +8,9 @@
  */
 class Database_MySQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 {
-	public function test_constructor()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table('b');
-
-		$this->assertSame("CREATE INDEX `a` ON $table ()", $db->quote(new Database_MySQL_Create_Index('a', 'b')));
-		$this->assertSame("CREATE INDEX `a` ON $table (`c`)", $db->quote(new Database_MySQL_Create_Index('a', 'b', array('c'))));
-	}
-
+	/**
+	 * @covers  Database_MySQL_Create_Index::type
+	 */
 	public function test_type()
 	{
 		$db = $this->sharedFixture;
@@ -27,6 +21,10 @@ class Database_MySQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("CREATE FULLTEXT INDEX `a` ON $table ()", $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_MySQL_Create_Index::__toString
+	 * @covers  Database_MySQL_Create_Index::using
+	 */
 	public function test_using()
 	{
 		$db = $this->sharedFixture;

@@ -8,6 +8,10 @@
  */
 class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_MySQL_Alter_Table::_position
+	 * @covers  Database_MySQL_Alter_Table::add_column
+	 */
 	public function test_add_column()
 	{
 		$db = $this->sharedFixture;
@@ -24,6 +28,10 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("ALTER TABLE $table ADD `b` c, ADD `e` f FIRST, ADD `g` h AFTER `i`", $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_MySQL_Alter_Table::_position
+	 * @covers  Database_MySQL_Alter_Table::change_column
+	 */
 	public function test_change_column()
 	{
 		$db = $this->sharedFixture;
@@ -40,6 +48,9 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("ALTER TABLE $table CHANGE `b` `c` d, CHANGE `e` `f` g FIRST, CHANGE `h` `i` j AFTER `k`", $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_MySQL_Alter_Table::drop_constraint
+	 */
 	public function test_drop_constraint()
 	{
 		$db = $this->sharedFixture;
@@ -56,6 +67,9 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("ALTER TABLE $table DROP PRIMARY KEY, DROP FOREIGN KEY `c`, DROP INDEX `d`", $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_MySQL_Alter_Table::option
+	 */
 	public function test_option()
 	{
 		$db = $this->sharedFixture;
