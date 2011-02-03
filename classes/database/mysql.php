@@ -336,13 +336,13 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 
 	public function execute_command($statement)
 	{
-		if (empty($statement))
-			return 0;
-
 		if ( ! is_string($statement))
 		{
 			$statement = $this->quote($statement);
 		}
+
+		if (empty($statement))
+			return 0;
 
 		$result = $this->_execute($statement);
 
@@ -369,13 +369,13 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 
 	public function execute_query($statement, $as_object = FALSE)
 	{
-		if (empty($statement))
-			return NULL;
-
 		if ( ! is_string($statement))
 		{
 			$statement = $this->quote($statement);
 		}
+
+		if (empty($statement))
+			return NULL;
 
 		$result = $this->_execute($statement);
 
