@@ -262,46 +262,94 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 		$this->_test_method_type('drop', $arguments, $expected);
 	}
 
-	/**
-	 * @covers  Database::execute_command
-	 */
-	public function test_execute_command_empty()
+	public function provider_execute_command_empty()
 	{
-		$db = $this->_database();
-
-		$this->assertSame(0, $db->execute_command(''));
+		return array
+		(
+			array(''),
+			array(new SQL_Expression('')),
+		);
 	}
 
 	/**
 	 * @covers  Database::execute_command
-	 * @expectedException Database_Exception
+	 * @dataProvider  provider_execute_command_empty
+	 *
+	 * @param   string|SQL_Expression   $value  Empty statement
 	 */
-	public function test_execute_command_error()
+	public function test_execute_command_empty($value)
 	{
 		$db = $this->_database();
 
-		$db->execute_command('invalid command');
+		$this->assertSame(0, $db->execute_command($value));
+	}
+
+	public function provider_execute_command_error()
+	{
+		return array
+		(
+			array('invalid command'),
+			array(new SQL_Expression('invalid command')),
+		);
+	}
+
+	/**
+	 * @covers  Database::execute_command
+	 * @dataProvider  provider_execute_command_error
+	 * @expectedException Database_Exception
+	 *
+	 * @param   string|SQL_Expression   $value  Bad SQL statement
+	 */
+	public function test_execute_command_error($value)
+	{
+		$db = $this->_database();
+
+		$db->execute_command($value);
+	}
+
+	public function provider_execute_query_empty()
+	{
+		return array
+		(
+			array(''),
+			array(new SQL_Expression('')),
+		);
 	}
 
 	/**
 	 * @covers  Database::execute_query
+	 * @dataProvider  provider_execute_query_empty
+	 *
+	 * @param   string|SQL_Expression   $value  Empty statement
 	 */
-	public function test_execute_query_empty()
+	public function test_execute_query_empty($value)
 	{
 		$db = $this->_database();
 
-		$this->assertNull($db->execute_query(''));
+		$this->assertNull($db->execute_query($value));
+	}
+
+	public function provider_execute_query_error()
+	{
+		return array
+		(
+			array('invalid query'),
+			array(new SQL_Expression('invalid query')),
+		);
 	}
 
 	/**
 	 * @covers  Database::execute_query
+	 * @dataProvider  provider_execute_query_error
 	 * @expectedException Database_Exception
+	 *
+	 * @param   string|SQL_Expression   $value  Bad SQL statement
 	 */
-	public function test_execute_query_error()
+	public function test_execute_query_error($value)
 	{
 		$db = $this->_database();
 
-		$db->execute_query('invalid query');
+		$db->execute_query($value);
 	}
 
 	public function provider_expression()
