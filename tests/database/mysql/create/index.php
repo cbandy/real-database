@@ -8,12 +8,21 @@
  */
 class Database_MySQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('mysql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_MySQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
+	}
+
 	/**
 	 * @covers  Database_MySQL_Create_Index::type
 	 */
 	public function test_type()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_MySQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
@@ -27,7 +36,7 @@ class Database_MySQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_MySQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 

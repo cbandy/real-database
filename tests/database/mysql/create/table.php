@@ -8,12 +8,21 @@
  */
 class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('mysql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_MySQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
+	}
+
 	/**
 	 * @covers  Database_MySQL_Create_Table::if_not_exists
 	 */
 	public function test_if_not_exists()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_MySQL_Create_Table('a');
 		$table = $db->quote_table('a');
 
@@ -32,7 +41,7 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_like()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_MySQL_Create_Table('a');
 		$table = $db->quote_table('a');
 		$like = $db->quote_table('b');
@@ -46,7 +55,7 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_options()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_MySQL_Create_Table('a');
 		$table = $db->quote_table('a');
 

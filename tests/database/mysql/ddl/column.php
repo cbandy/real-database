@@ -8,12 +8,21 @@
  */
 class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('mysql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_MySQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
+	}
+
 	/**
 	 * @covers  Database_MySQL_DDL_Column::auto_increment
 	 */
 	public function test_auto_increment()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->auto_increment(), 'Chainable (void)');
@@ -31,7 +40,7 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_comment()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->comment('c'));
@@ -43,7 +52,7 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constraint()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->constraint(new SQL_DDL_Constraint_Unique), 'Chainable (unique)');
@@ -64,7 +73,7 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->identity());

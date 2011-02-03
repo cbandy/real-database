@@ -11,7 +11,7 @@
 			<directory suffix=".php">tests/database/sql</directory>
 		</testsuite>
 		<testsuite name="Database MySQL Implementations">
-			<file>tests/database/mysql/testsuite.php</file>
+			<directory suffix=".php">tests/database/mysql</directory>
 		</testsuite>
 		<testsuite name="Database PostgreSQL Implementations">
 			<file>tests/database/postgresql/testsuite.php</file>

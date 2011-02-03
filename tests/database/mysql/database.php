@@ -11,11 +11,20 @@ require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
  */
 class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('mysql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_MySQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
+	}
+
 	protected $_table = 'temp_test_table';
 
 	public function setUp()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->sharedFixture = Database::factory();
 
 		$db->execute_command('CREATE TEMPORARY TABLE '.$db->quote_table($this->_table).' (id bigint unsigned AUTO_INCREMENT PRIMARY KEY, value integer)');
 		$db->execute_command('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (50), (55), (60)');
@@ -101,6 +110,18 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 	public function test_ddl_column($arguments)
 	{
 		$this->_test_method_type('ddl_column', $arguments, 'Database_MySQL_DDL_Column');
+	}
+
+	/**
+	 * @covers  Database_MySQL::_execute
+	 * @dataProvider  provider_execute_command_error
+	 * @expectedException Database_Exception
+	 *
+	 * @param   string|SQL_Expression   $value  Bad SQL statement
+	 */
+	public function test_execute_command_error($value)
+	{
+		parent::test_execute_command_error($value);
 	}
 
 	/**

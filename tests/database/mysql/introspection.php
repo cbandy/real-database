@@ -8,6 +8,15 @@
  */
 class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('mysql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_MySQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
+	}
+
 	protected $_information_schema_defaults = array
 	(
 		'column_name'       => NULL,
@@ -30,7 +39,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	public function tearDown()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$db->execute_command('DROP TABLE IF EXISTS '.$db->quote_table($this->_table));
 	}
@@ -40,7 +49,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_timestamp()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
@@ -226,7 +235,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_type($column, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
@@ -303,7 +312,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_type_collation($column, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
@@ -334,7 +343,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_columns_argument($input)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table).' ( field date )');
 
 		$expected = array_merge($this->_information_schema_defaults, array(
