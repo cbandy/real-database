@@ -19,13 +19,12 @@ class Database_PostgreSQL_TestSuite extends PHPUnit_Framework_TestSuite
 		if ( ! extension_loaded('pgsql'))
 			$this->markTestSuiteSkipped('PostgreSQL extension not installed');
 
-		if ( ! $name = Kohana::config('unittest')->db_connection
-			OR ! $config = Kohana::config('database')->get($name)
+		if ( ! $config = Kohana::config('database')->get('default')
 			OR $config['type'] !== 'PostgreSQL')
 		{
 			$this->markTestSuiteSkipped('Database not configured for PostgreSQL');
 		}
 
-		$this->sharedFixture = Database::instance($name);
+		$this->sharedFixture = Database::factory();
 	}
 }

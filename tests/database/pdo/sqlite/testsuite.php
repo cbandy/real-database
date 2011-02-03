@@ -22,13 +22,12 @@ class Database_PDO_SQLite_TestSuite extends PHPUnit_Framework_TestSuite
 		if ( ! extension_loaded('pdo_sqlite'))
 			$this->markTestSuiteSkipped('PDO SQLite extension not installed');
 
-		if ( ! $name = Kohana::config('unittest')->db_connection
-			OR ! $config = Kohana::config('database')->get($name)
+		if ( ! $config = Kohana::config('database')->get('default')
 			OR $config['type'] !== 'PDO_SQLite')
 		{
 			$this->markTestSuiteSkipped('Database not configured for SQLite using PDO');
 		}
 
-		$this->sharedFixture = Database::instance($name);
+		$this->sharedFixture = Database::factory();
 	}
 }

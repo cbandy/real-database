@@ -10,6 +10,6 @@ abstract class Database_Abstract_TestCase extends PHPUnit_Framework_TestCase
 	 */
 	protected function _database()
 	{
-		return Database::factory(Kohana::config('unittest')->db_connection);
+		return Database::factory();
 	}
 }
