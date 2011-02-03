@@ -250,15 +250,15 @@ class Database_PDO extends Database
 
 	public function execute_command($statement)
 	{
-		if (empty($statement))
-			return 0;
-
 		$this->_connection or $this->connect();
 
 		if ( ! is_string($statement))
 		{
 			$statement = $this->quote($statement);
 		}
+
+		if (empty($statement))
+			return 0;
 
 		if ( ! empty($this->_config['profiling']))
 		{
@@ -305,15 +305,15 @@ class Database_PDO extends Database
 
 	public function execute_query($statement, $as_object = FALSE)
 	{
-		if (empty($statement))
-			return NULL;
-
 		$this->_connection or $this->connect();
 
 		if ( ! is_string($statement))
 		{
 			$statement = $this->quote($statement);
 		}
+
+		if (empty($statement))
+			return NULL;
 
 		if ( ! empty($this->_config['profiling']))
 		{
