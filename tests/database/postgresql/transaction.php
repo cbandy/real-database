@@ -11,11 +11,20 @@ require_once dirname(dirname(__FILE__)).'/abstract/transaction'.EXT;
  */
 class Database_PostgreSQL_Transaction_Test extends Database_Abstract_Transaction_Test
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('pgsql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_PostgreSQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
+	}
+
 	protected $_table = 'temp_test_table';
 
 	public function setUp()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->sharedFixture = Database::factory();
 
 		$db->execute_command(implode('; ', array(
 			'CREATE TEMPORARY TABLE '.$this->_table.' (value integer)',

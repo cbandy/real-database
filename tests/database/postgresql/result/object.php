@@ -11,6 +11,15 @@ require_once dirname(dirname(dirname(__FILE__))).'/abstract/result/object'.EXT;
  */
 class Database_PostgreSQL_Result_Object_Test extends Database_Abstract_Result_Object_Test
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('pgsql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_PostgreSQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
+	}
+
 	protected $_table = 'temp_test_table';
 
 	protected function _select_all()
@@ -29,7 +38,7 @@ class Database_PostgreSQL_Result_Object_Test extends Database_Abstract_Result_Ob
 
 	public function setUp()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->sharedFixture = Database::factory();
 		$table = $db->quote_table($this->_table);
 
 		$db->execute_command('CREATE TEMPORARY TABLE '.$table.' (value integer)');

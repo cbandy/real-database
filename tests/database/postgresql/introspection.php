@@ -8,6 +8,15 @@
  */
 class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('pgsql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_PostgreSQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
+	}
+
 	protected $_information_schema_defaults = array
 	(
 		'column_name'       => NULL,
@@ -25,7 +34,7 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	public function tearDown()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$db->execute_command('DROP TABLE IF EXISTS '.$db->quote_table($this->_table));
 	}
@@ -229,7 +238,7 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_column_type($column, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
@@ -259,7 +268,7 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table_columns_argument($input)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table).' ( field boolean )');
 
 		$expected = array_merge($this->_information_schema_defaults, array(

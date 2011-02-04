@@ -8,12 +8,21 @@
  */
 class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('pgsql'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
+
+		if ( ! Database::factory() instanceof Database_PostgreSQL)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
+	}
+
 	/**
 	 * @covers  Database_PostgreSQL_Create_Index::column
 	 */
 	public function test_column()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_PostgreSQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
@@ -35,7 +44,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_tablespace()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_PostgreSQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
@@ -48,7 +57,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_PostgreSQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
@@ -61,7 +70,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_where()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_PostgreSQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
@@ -74,7 +83,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_with()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$command = new Database_PostgreSQL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
