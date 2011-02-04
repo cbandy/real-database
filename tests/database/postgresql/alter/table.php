@@ -8,6 +8,9 @@
  */
 class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 {
+	/**
+	 * @covers  Database_PostgreSQL_Alter_Table::drop_column
+	 */
 	public function test_drop_column()
 	{
 		$db = $this->sharedFixture;
@@ -24,6 +27,9 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE '.$table.' DROP COLUMN "b", DROP COLUMN "c" RESTRICT, DROP COLUMN "d" CASCADE', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Alter_Table::drop_constraint
+	 */
 	public function test_drop_constraint()
 	{
 		$db = $this->sharedFixture;
@@ -40,6 +46,9 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE '.$table.' DROP CONSTRAINT "c", DROP CONSTRAINT "e" RESTRICT, DROP CONSTRAINT "g" CASCADE', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Alter_Table::rename_column
+	 */
 	public function test_rename_column()
 	{
 		$db = $this->sharedFixture;
@@ -50,6 +59,9 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE '.$table.' RENAME "b" TO "c"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Alter_Table::set_not_null
+	 */
 	public function test_set_not_null()
 	{
 		$db = $this->sharedFixture;
@@ -66,6 +78,9 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('ALTER TABLE '.$table.' SET NOT NULL "b", DROP NOT NULL "c", SET NOT NULL "d"', $db->quote($command));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Alter_Table::type
+	 */
 	public function test_type()
 	{
 		$db = $this->sharedFixture;

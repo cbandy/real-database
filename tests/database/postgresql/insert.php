@@ -32,6 +32,10 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::execute
+	 * @covers  Database_PostgreSQL_Insert::identity
+	 */
 	public function test_identity()
 	{
 		$db = $this->sharedFixture;
@@ -53,6 +57,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(2, $query->execute($db), 'No identity');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::identity
+	 */
 	public function test_identity_assigned()
 	{
 		$db = $this->sharedFixture;
@@ -72,6 +79,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n", "6\t85\n", "30\t90\n"), $db->copy_to($this->_table));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::identity
+	 */
 	public function test_identity_query()
 	{
 		$db = $this->sharedFixture;
@@ -86,6 +96,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the _first_ row');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::identity
+	 */
 	public function test_identity_table_expression()
 	{
 		$db = $this->sharedFixture;
@@ -102,6 +115,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(2,20), $result, 'Identity of the first row');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::identity
+	 */
 	public function test_identity_without_columns()
 	{
 		$db = $this->sharedFixture;
@@ -117,6 +133,9 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(2,20), $result, 'Identity of the first row');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::returning
+	 */
 	public function test_returning()
 	{
 		$db = $this->sharedFixture;
@@ -144,6 +163,10 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(2, $query->execute($db));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::as_assoc
+	 * @covers  Database_PostgreSQL_Insert::execute
+	 */
 	public function test_as_assoc()
 	{
 		$db = $this->sharedFixture;
@@ -163,6 +186,10 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(array('id' => 6), array('id' => 7)), $result->as_array(), 'Each column');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Insert::as_object
+	 * @covers  Database_PostgreSQL_Insert::execute
+	 */
 	public function test_as_object()
 	{
 		$db = $this->sharedFixture;
@@ -180,5 +207,17 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array( (object) array('id' => 6), (object) array('id' => 7)), $result->as_array(), 'Each column');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Insert::__toString
+	 */
+	public function test_toString()
+	{
+		$command = new Database_PostgreSQL_Insert;
+		$command
+			->returning(array('a'));
+
+		$this->assertSame('INSERT INTO :table DEFAULT VALUES RETURNING :returning', (string) $command);
 	}
 }

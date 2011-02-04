@@ -32,6 +32,9 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Update::from
+	 */
 	public function test_from_limit()
 	{
 		$db = $this->sharedFixture;
@@ -47,6 +50,9 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->from(NULL), 'Chainable (reset)');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Update::limit
+	 */
 	public function test_limit()
 	{
 		$db = $this->sharedFixture;
@@ -62,6 +68,9 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(1, $command->execute($db));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Update::limit
+	 */
 	public function test_limit_from()
 	{
 		$db = $this->sharedFixture;
@@ -77,6 +86,9 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Update::returning
+	 */
 	public function test_returning()
 	{
 		$db = $this->sharedFixture;
@@ -102,6 +114,10 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(2, $query->execute($db));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Update::as_assoc
+	 * @covers  Database_PostgreSQL_Update::execute
+	 */
 	public function test_as_assoc()
 	{
 		$db = $this->sharedFixture;
@@ -117,6 +133,10 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL_Update::as_object
+	 * @covers  Database_PostgreSQL_Update::execute
+	 */
 	public function test_as_object()
 	{
 		$db = $this->sharedFixture;
@@ -130,5 +150,22 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::__toString
+	 */
+	public function test_toString()
+	{
+		$command = new Database_PostgreSQL_Update;
+
+		$this->assertSame('UPDATE :table SET :values', (string) $command);
+
+		$command
+			->where(new SQL_Conditions)
+			->limit(1)
+			->returning('a');
+
+		$this->assertSame('UPDATE :table SET :values WHERE ctid IN (SELECT ctid FROM :table WHERE :where LIMIT :limit) RETURNING :returning', (string) $command);
 	}
 }
