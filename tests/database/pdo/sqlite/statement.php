@@ -8,12 +8,21 @@
  */
 class Database_PDO_SQLite_Statement_Test extends PHPUnit_Framework_TestCase
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('pdo_sqlite'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('PDO SQLite extension not installed');
+
+		if ( ! Database::factory() instanceof Database_PDO_SQLite)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for SQLite using PDO');
+	}
+
 	protected $_table = 'temp_test_table';
 	protected $_column = 'value';
 
 	public function setUp()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->sharedFixture = Database::factory();
 		$table = $db->quote_table($this->_table);
 		$column = $db->quote_column($this->_column);
 

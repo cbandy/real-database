@@ -17,10 +17,10 @@
 			<directory suffix=".php">tests/database/postgresql</directory>
 		</testsuite>
 		<testsuite name="Database PDO Implementations">
-			<file>tests/database/pdo/testsuite.php</file>
+			<directory suffix=".php">tests/database/pdo</directory>
 		</testsuite>
 		<testsuite name="Database SQLite Implementations">
-			<file>tests/database/pdo/sqlite/testsuite.php</file>
+			<directory suffix=".php">tests/database/pdo/sqlite</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

@@ -11,11 +11,20 @@ require_once dirname(dirname(dirname(__FILE__))).'/abstract/transaction'.EXT;
  */
 class Database_PDO_SQLite_Transaction_Test extends Database_Abstract_Transaction_Test
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('pdo_sqlite'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('PDO SQLite extension not installed');
+
+		if ( ! Database::factory() instanceof Database_PDO_SQLite)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for SQLite using PDO');
+	}
+
 	protected $_table = 'temp_test_table';
 
 	public function setUp()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->sharedFixture = Database::factory();
 
 		$db->execute_command('CREATE TEMPORARY TABLE '.$this->_table.' (value integer)');
 		$db->execute_command('INSERT INTO '.$this->_table.' (value) VALUES (50)');

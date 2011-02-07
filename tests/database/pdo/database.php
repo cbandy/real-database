@@ -11,12 +11,21 @@ require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
  */
 class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 {
+	public static function setUpBeforeClass()
+	{
+		if ( ! extension_loaded('pdo'))
+			throw new PHPUnit_Framework_SkippedTestSuiteError('PDO extension not installed');
+
+		if ( ! Database::factory() instanceof Database_PDO)
+			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PDO');
+	}
+
 	protected $_table = 'temp_test_table';
 	protected $_column = 'value';
 
 	public function setUp()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->sharedFixture = Database::factory();
 		$table = $db->quote_table($this->_table);
 		$column = $db->quote_column($this->_column);
 
