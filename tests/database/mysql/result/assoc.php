@@ -53,4 +53,20 @@ class Database_MySQL_Result_Assoc_Test extends Database_Abstract_Result_Assoc_Te
 
 		$db->disconnect();
 	}
+
+	/**
+	 * @covers  Database_MySQL_Result::current
+	 */
+	public function test_current()
+	{
+		parent::test_current();
+	}
+
+	/**
+	 * @covers  Database_MySQL_Result::get
+	 */
+	public function test_get_null()
+	{
+		parent::test_get_null();
+	}
 }

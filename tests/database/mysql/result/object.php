@@ -53,4 +53,12 @@ class Database_MySQL_Result_Object_Test extends Database_Abstract_Result_Object_
 
 		$db->disconnect();
 	}
+
+	/**
+	 * @covers  Database_MySQL_Result::current
+	 */
+	public function test_current()
+	{
+		parent::test_current();
+	}
 }
