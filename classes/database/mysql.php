@@ -30,7 +30,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		if (strtoupper($type) === 'TABLE')
 			return new Database_MySQL_Alter_Table($name);
 
+		// @codeCoverageIgnoreStart
 		return parent::alter($type, $name);
+		// @codeCoverageIgnoreEnd
 	}
 
 	public static function create($type, $name = NULL)
@@ -46,7 +48,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		if ($type === 'VIEW')
 			return new Database_MySQL_Create_View($name);
 
+		// @codeCoverageIgnoreStart
 		return parent::create($type, $name);
+		// @codeCoverageIgnoreEnd
 	}
 
 	/**
@@ -233,7 +237,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		}
 		catch (Exception $e)
 		{
+			// @codeCoverageIgnoreStart
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			// @codeCoverageIgnoreEnd
 		}
 
 		if ( ! is_resource($this->_connection))
