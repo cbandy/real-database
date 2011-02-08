@@ -22,19 +22,19 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @link http://bugs.php.net/51607
 	 * @var boolean
 	 */
-	protected static $_BUG_COPY_QUOTE_TABLE;
+	public static $bug_copy_quote_table;
 
 	/**
 	 * @link http://bugs.php.net/51609
 	 * @var boolean
 	 */
-	protected static $_BUG_COPY_TO_NULL;
+	public static $bug_copy_to_null;
 
 	/**
 	 * @link http://bugs.php.net/50195
 	 * @var boolean
 	 */
-	protected static $_BUG_COPY_TO_SCHEMA;
+	public static $bug_copy_to_schema;
 
 	public static function alter($type, $name = NULL)
 	{
@@ -76,40 +76,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	public static function delete($table = NULL, $alias = NULL)
 	{
 		return new Database_PostgreSQL_Delete($table, $alias);
-	}
-
-	/**
-	 * Initialize runtime constants
-	 *
-	 * @link http://php.net/manual/reserved.constants
-	 *
-	 * @return  void
-	 */
-	public static function initialize()
-	{
-		if (defined('PHP_VERSION_ID'))
-		{
-			// Only available in PHP >= 5.2.7
-			$php_version_id = PHP_VERSION_ID;
-		}
-		else
-		{
-			list($major, $minor, $release) = explode('.', PHP_VERSION);
-			$php_version_id = $major * 10000 + $minor * 100 + $release;
-		}
-
-		if ($php_version_id < 50300)
-		{
-			Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE = $php_version_id < 50214;
-			Database_PostgreSQL::$_BUG_COPY_TO_NULL     = $php_version_id < 50214;
-			Database_PostgreSQL::$_BUG_COPY_TO_SCHEMA   = $php_version_id < 50212;
-		}
-		else
-		{
-			Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE = $php_version_id < 50303;
-			Database_PostgreSQL::$_BUG_COPY_TO_NULL     = $php_version_id < 50303;
-			Database_PostgreSQL::$_BUG_COPY_TO_SCHEMA   = $php_version_id < 50302;
-		}
 	}
 
 	/**
@@ -636,7 +602,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$table = $this->quote_table($table);
 
-		if (Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE)
+		if (Database_PostgreSQL::$bug_copy_quote_table)
 		{
 			$table = trim($table, $this->_quote);
 		}
@@ -667,11 +633,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	public function copy_to($table, $delimiter = "\t", $null = '\\N')
 	{
-		if ( ! Database_PostgreSQL::$_BUG_COPY_QUOTE_TABLE)
+		if ( ! Database_PostgreSQL::$bug_copy_quote_table)
 		{
 			$table = $this->quote_table($table);
 		}
-		elseif (Database_PostgreSQL::$_BUG_COPY_TO_SCHEMA)
+		elseif (Database_PostgreSQL::$bug_copy_to_schema)
 		{
 			$table = trim($this->quote_table($table), $this->_quote);
 		}
@@ -692,7 +658,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 		}
 
-		if (Database_PostgreSQL::$_BUG_COPY_TO_NULL)
+		if (Database_PostgreSQL::$bug_copy_to_null)
 		{
 			if ($null !== '\\N')
 				throw new Kohana_Exception('Setting the NULL representation is broken before PHP 5.2.14 and 5.3.3');
@@ -1164,4 +1130,22 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 }
 
 // Static initialization
-Database_PostgreSQL::initialize();
+
+if (version_compare(PHP_VERSION, '5.3.0', '<'))
+{
+	// PHP_VERSION_ID only available in PHP >= 5.2.7
+	list($major, $minor, $release) = explode('.', PHP_VERSION);
+	$php_version_id = $major * 10000 + $minor * 100 + $release;
+
+	Database_PostgreSQL::$bug_copy_quote_table  = $php_version_id < 50214;
+	Database_PostgreSQL::$bug_copy_to_null      = $php_version_id < 50214;
+	Database_PostgreSQL::$bug_copy_to_schema    = $php_version_id < 50212;
+
+	unset($major, $minor, $release, $php_version_id);
+}
+else
+{
+	Database_PostgreSQL::$bug_copy_quote_table  = PHP_VERSION_ID < 50303;
+	Database_PostgreSQL::$bug_copy_to_null      = PHP_VERSION_ID < 50303;
+	Database_PostgreSQL::$bug_copy_to_schema    = PHP_VERSION_ID < 50302;
+}
