@@ -41,7 +41,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		if (strtoupper($type) === 'TABLE')
 			return new Database_PostgreSQL_Alter_Table($name);
 
+		// @codeCoverageIgnoreStart
 		return parent::alter($type, $name);
+		// @codeCoverageIgnoreEnd
 	}
 
 	public static function create($type, $name = NULL)
@@ -337,22 +339,26 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! pg_send_query($this->_connection, $statement))
 		{
+			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
 			{
 				Profiler::delete($benchmark);
 			}
 
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			// @codeCoverageIgnoreEnd
 		}
 
 		if ( ! $result = pg_get_result($this->_connection))
 		{
+			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
 			{
 				Profiler::delete($benchmark);
 			}
 
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (isset($benchmark))
@@ -392,12 +398,14 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! $result = pg_get_result($this->_connection))
 		{
+			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
 			{
 				Profiler::delete($benchmark);
 			}
 
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			// @codeCoverageIgnoreEnd
 		}
 
 		if (isset($benchmark))
@@ -588,7 +596,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 		catch (Exception $e)
 		{
+			// @codeCoverageIgnoreStart
 			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			// @codeCoverageIgnoreEnd
 		}
 
 		if ( ! is_resource($this->_connection))
