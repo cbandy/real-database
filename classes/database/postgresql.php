@@ -835,7 +835,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$identity = new SQL_Column($identity);
 		}
 
-		if ($statement instanceof Database_PostgreSQL_Insert
+		if ($statement instanceof Database_PostgreSQL_iReturning
 			AND ! empty($statement->parameters[':returning']))
 		{
 			$result = $this->_evaluate_query(

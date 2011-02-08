@@ -264,6 +264,19 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::execute_insert
+	 */
+	public function test_execute_insert_ireturning()
+	{
+		$db = $this->sharedFixture;
+
+		$delete = new Database_PostgreSQL_Delete($this->_table);
+		$delete->where('value', '=', 60)->returning(array('id'));
+
+		$this->assertEquals(array(1,3), $db->execute_insert($delete, 'id'));
+	}
+
+	/**
 	 * @covers  Database_PostgreSQL::execute_prepared_command
 	 */
 	public function test_execute_prepared_command()
