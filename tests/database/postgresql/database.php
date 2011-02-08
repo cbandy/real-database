@@ -172,6 +172,27 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::delete
+	 * @dataProvider    provider_delete
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_delete($arguments)
+	{
+		$this->_test_method_type('delete', $arguments, 'Database_PostgreSQL_Delete');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::execute_command
+	 */
+	public function test_execute_command_expression()
+	{
+		$db = $this->sharedFixture;
+
+		$this->assertSame(5, $db->execute_command(new SQL_Expression('DELETE FROM ?', array(new SQL_Table($this->_table)))));
+	}
+
+	/**
 	 * @covers  Database_PostgreSQL::_evaluate_command
 	 * @covers  Database_PostgreSQL::execute_command
 	 */
@@ -224,8 +245,22 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 
 		$sql = 'INSERT INTO '.$table.' (value) VALUES (65)';
 
-		$this->assertEquals(array(1,6), $db->execute_insert($sql, 'id'), 'string, string');
-		$this->assertEquals(array(1,7), $db->execute_insert(new SQL_Expression($sql), 'id'), 'Expression, string');
+		$this->assertEquals(array(1,6), $db->execute_insert($sql, 'id'));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::execute_insert
+	 */
+	public function test_execute_insert_expression()
+	{
+		$db = $this->sharedFixture;
+
+		$sql = new SQL_Expression(
+			'INSERT INTO ? (value) VALUES (65)',
+			array(new SQL_Table($this->_table))
+		);
+
+		$this->assertEquals(array(1,6), $db->execute_insert($sql, 'id'));
 	}
 
 	/**
@@ -328,6 +363,30 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 
 		$this->assertType('Database_PostgreSQL_Result', $result, 'Result type (Database_PostgreSQL_Database_Test_Class)');
 		$this->assertType('Database_PostgreSQL_Database_Test_Class', $result->current(), 'Result type (Database_PostgreSQL_Database_Test_Class)');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::execute_query
+	 */
+	public function test_execute_query_expression()
+	{
+		$db = Database::factory();
+
+		$result = $db->execute_query(new SQL_Expression('SELECT ?', array(1)));
+
+		$this->assertType('Database_PostgreSQL_Result', $result);
+		$this->assertSame(1, count($result));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::insert
+	 * @dataProvider    provider_insert
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_insert($arguments)
+	{
+		$this->_test_method_type('insert', $arguments, 'Database_PostgreSQL_Insert');
 	}
 
 	/**
@@ -461,6 +520,38 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame('2', $db->quote_expression(new SQL_Expression(':param', array(':param' => 2))));
 	}
 
+	public function provider_quote_literal()
+	{
+		return array
+		(
+			array(NULL, 'NULL'),
+			array(FALSE, "'0'"),
+			array(TRUE, "'1'"),
+
+			array(0, '0'),
+			array(-1, '-1'),
+			array(51678, '51678'),
+			array(12.345, '12.345000'),
+
+			array('string', "'string'"),
+			array("multiline\nstring", "'multiline\nstring'"),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::quote_literal
+	 * @dataProvider    provider_quote_literal
+	 *
+	 * @param   mixed   $value
+	 * @param   string  $expected
+	 */
+	public function test_quote_literal($value, $expected)
+	{
+		$db = Database::factory();
+
+		$this->assertSame($expected, $db->quote_literal($value));
+	}
+
 	public function test_savepoint_transactions()
 	{
 		$db = $this->sharedFixture;
@@ -489,6 +580,28 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertNull($db->rollback());
 
 		$this->assertSame(5, $db->execute_query($select)->count(), 'Rollback 65');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::select
+	 * @dataProvider    provider_select
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_select($arguments)
+	{
+		$this->_test_method_type('select', $arguments, 'Database_PostgreSQL_Select');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::update
+	 * @dataProvider    provider_update
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_update($arguments)
+	{
+		$this->_test_method_type('update', $arguments, 'Database_PostgreSQL_Update');
 	}
 }
 

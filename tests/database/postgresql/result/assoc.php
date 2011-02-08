@@ -53,4 +53,20 @@ class Database_PostgreSQL_Result_Assoc_Test extends Database_Abstract_Result_Ass
 
 		$db->disconnect();
 	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::as_array
+	 */
+	public function test_array()
+	{
+		parent::test_array();
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::get
+	 */
+	public function test_get()
+	{
+		parent::test_get();
+	}
 }
