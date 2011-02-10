@@ -191,6 +191,88 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame(1, count($result));
 	}
 
+	public function provider_prepare_statement()
+	{
+		return array
+		(
+			array(
+				'DELETE FROM $table', array(),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM ?', array(new SQL_Table($this->_table)),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM :table', array(':table' => new SQL_Table($this->_table)),
+				'DELETE FROM $table', array(),
+			),
+			array(
+				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE `value` = ?', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE `value` = ?', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
+				'DELETE FROM $table WHERE `value` = ? AND `value` = ?', array(60, 60),
+			),
+			array(
+				'DELETE FROM $table WHERE `value` = ?', array(60),
+				'DELETE FROM $table WHERE `value` = ?', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE `value` = :value', array(':value' => 60),
+				'DELETE FROM $table WHERE `value` = ?', array(60),
+			),
+			array(
+				'DELETE FROM $table WHERE `value` = :value AND `value` = :value', array(':value' => 60),
+				'DELETE FROM $table WHERE `value` = ? AND `value` = ?', array(60, 60),
+			),
+			array(
+				'DELETE FROM $table WHERE `value` IN (?)', array(array(60, 70, 80)),
+				'DELETE FROM $table WHERE `value` IN (?, ?, ?)', array(60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE `value` IN (?)', array(array(60, 70, array(80))),
+				'DELETE FROM $table WHERE `value` IN (?, ?, ?)', array(60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE `value` IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
+				'DELETE FROM $table WHERE `value` IN (?, ?, ?)', array(60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE `value` IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
+				'DELETE FROM $table WHERE `value` IN (`value`, ?, ?)', array(70, 80),
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database::_parse
+	 * @covers  Database::_parse_value
+	 * @covers  Database_MySQL::prepare_statement
+	 * @dataProvider    provider_prepare_statement
+	 */
+	public function test_prepare_statement($input_sql, $input_params, $expected_sql, $expected_params)
+	{
+		$db = $this->sharedFixture;
+		$table = $db->quote_table($this->_table);
+
+		$input_sql = strtr($input_sql, array('$table' => $table));
+		$expected_sql = strtr($expected_sql, array('$table' => $table));
+
+		$statement = $db->prepare_statement(
+			new SQL_Expression($input_sql, $input_params)
+		);
+
+		$this->assertType('Database_MySQL_Statement', $statement);
+		$this->assertSame($expected_sql, $statement->statement);
+		$this->assertSame($expected_params, $statement->parameters);
+	}
+
 	public function provider_quote_literal()
 	{
 		return array

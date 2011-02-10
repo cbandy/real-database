@@ -392,6 +392,56 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	}
 
 	/**
+	 * Create a prepared statement after connecting.
+	 *
+	 * @link http://dev.mysql.com/doc/en/prepare.html
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $name       Statement name or NULL to have one generated
+	 * @param   string  $statement  SQL statement
+	 * @return  string  Statement name
+	 */
+	public function prepare($name, $statement)
+	{
+		if ($name === NULL)
+		{
+			$name = 'kohana_'.sha1($statement);
+		}
+
+		$this->_execute(
+			'PREPARE '.$this->quote_identifier($name)
+			.' FROM '.$this->quote_literal($statement)
+		);
+
+		return $name;
+	}
+
+	/**
+	 * Created a prepared statement from a SQL expression object.
+	 *
+	 * @throws  Database_Exception
+	 * @param   SQL_Expression  $statement  SQL statement
+	 * @return  Database_MySQL_Statement
+	 */
+	public function prepare_statement($statement)
+	{
+		$parameters = array();
+
+		$statement = $this->_parse(
+			(string) $statement,
+			$statement->parameters,
+			$parameters
+		);
+
+		$name = $this->prepare(NULL, $statement);
+
+		$result = new Database_MySQL_Statement($this, $name, $parameters);
+		$result->statement = $statement;
+
+		return $result;
+	}
+
+	/**
 	 * Quote a literal value for inclusion in a SQL query
 	 *
 	 * @uses Database_MySQL::escape()
