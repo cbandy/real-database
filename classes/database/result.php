@@ -33,7 +33,7 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	 */
 	public function __construct($as_object)
 	{
-		$this->_as_object = $as_object;
+		$this->_as_object = ($as_object === TRUE) ? 'stdClass' : $as_object;
 	}
 
 	/**

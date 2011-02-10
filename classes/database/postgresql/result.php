@@ -28,11 +28,6 @@ class Database_PostgreSQL_Result extends Database_Result
 	{
 		parent::__construct($as_object);
 
-		if ($as_object === TRUE)
-		{
-			$this->_as_object = 'stdClass';
-		}
-
 		$this->_count = pg_num_rows($result);
 		$this->_result = $result;
 	}
