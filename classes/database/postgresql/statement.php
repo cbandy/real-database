@@ -24,32 +24,30 @@ class Database_PostgreSQL_Statement
 	protected $_name;
 
 	/**
-	 * @var string  SQL statement
-	 */
-	protected $_statement;
-
-	/**
 	 * @var array   Unquoted parameters
 	 */
 	public $parameters;
 
 	/**
+	 * @var string  Original SQL of this statement
+	 */
+	public $statement;
+
+	/**
 	 * @param   Database_PostgreSQL $db
 	 * @param   string  $name       Statement name
-	 * @param   string  $statement  SQL statement
 	 * @param   array   $parameters Unquoted literal parameters
 	 */
-	public function __construct($db, $name, $statement, $parameters = array())
+	public function __construct($db, $name, $parameters = array())
 	{
 		$this->_db = $db;
 		$this->_name = $name;
-		$this->_statement = $statement;
 		$this->parameters = $parameters;
 	}
 
 	public function __toString()
 	{
-		return $this->_statement;
+		return $this->_name;
 	}
 
 	/**

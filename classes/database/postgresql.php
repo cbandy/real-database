@@ -965,7 +965,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		$name = $this->prepare(NULL, $statement);
 
-		return new Database_PostgreSQL_Statement($this, $name, $statement, $parameters);
+		$result = new Database_PostgreSQL_Statement($this, $name, $parameters);
+		$result->statement = $statement;
+
+		return $result;
 	}
 
 	/**

@@ -499,7 +499,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		);
 
 		$this->assertType('Database_PostgreSQL_Statement', $statement);
-		$this->assertSame($expected_sql, (string) $statement);
+		$this->assertSame($expected_sql, $statement->statement);
 		$this->assertSame($expected_params, $statement->parameters);
 	}
 

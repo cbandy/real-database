@@ -41,7 +41,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 	}
 
-	public function provider_constructor_statement()
+	public function provider_constructor_name()
 	{
 		return array
 		(
@@ -53,14 +53,14 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers  Database_PostgreSQL_Statement::__construct
 	 * @covers  Database_PostgreSQL_Statement::__toString
-	 * @dataProvider    provider_constructor_statement
+	 * @dataProvider    provider_constructor_name
 	 *
-	 * @param   string  $value  SQL statement
+	 * @param   string  $value  Statement name
 	 */
 	public function test_constructor_statement($value)
 	{
 		$db = $this->sharedFixture;
-		$statement = new Database_PostgreSQL_Statement($db, 'name', $value);
+		$statement = new Database_PostgreSQL_Statement($db, $value);
 
 		$this->assertSame($value, (string) $statement);
 	}
@@ -85,7 +85,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	public function test_constructor_parameters($value)
 	{
 		$db = $this->sharedFixture;
-		$statement = new Database_PostgreSQL_Statement($db, 'name', 'statement', $value);
+		$statement = new Database_PostgreSQL_Statement($db, 'name', $value);
 
 		$this->assertSame($value, $statement->parameters);
 	}
@@ -110,7 +110,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	public function test_bind($initial, $changed)
 	{
 		$db = $this->sharedFixture;
-		$statement = new Database_PostgreSQL_Statement($db, 'name', '');
+		$statement = new Database_PostgreSQL_Statement($db, 'name');
 
 		$var = $initial;
 		$this->assertSame($statement, $statement->bind('$1', $var), 'Chainable');
@@ -128,7 +128,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 		$name = $db->prepare(NULL, 'SELECT 1');
-		$statement = new Database_PostgreSQL_Statement($db, $name, '');
+		$statement = new Database_PostgreSQL_Statement($db, $name);
 
 		$this->assertNull($statement->deallocate());
 
@@ -161,7 +161,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 		$name = $db->prepare(NULL, strtr($statement, array('$table' => $db->quote_table($this->_table))));
-		$statement = new Database_PostgreSQL_Statement($db, $name, '');
+		$statement = new Database_PostgreSQL_Statement($db, $name);
 
 		$this->assertSame($expected, $statement->execute_command());
 	}
@@ -186,7 +186,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->sharedFixture;
 		$name = $db->prepare(NULL, strtr($statement, array('$table' => $db->quote_table($this->_table))));
-		$statement = new Database_PostgreSQL_Statement($db, $name, '');
+		$statement = new Database_PostgreSQL_Statement($db, $name);
 
 		$this->assertEquals($expected, $statement->execute_insert('id'));
 	}
@@ -199,7 +199,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 		$db = $this->sharedFixture;
 		$table = $db->quote_table($this->_table);
 		$name = $db->prepare(NULL, "SELECT * FROM $table WHERE value < 60");
-		$statement = new Database_PostgreSQL_Statement($db, $name, '');
+		$statement = new Database_PostgreSQL_Statement($db, $name);
 
 		$result = $statement->execute_query();
 
@@ -233,7 +233,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	public function test_param($value)
 	{
 		$db = $this->sharedFixture;
-		$statement = new Database_PostgreSQL_Statement($db, 'name', '');
+		$statement = new Database_PostgreSQL_Statement($db, 'name');
 
 		$this->assertSame($statement, $statement->param('$1', $value), 'Chainable');
 		$this->assertSame($value, $statement->parameters['$1'], 'Parameter visible');
@@ -245,7 +245,7 @@ class Database_PostgreSQL_Statement_Test extends PHPUnit_Framework_TestCase
 	public function test_parameters()
 	{
 		$db = $this->sharedFixture;
-		$statement = new Database_PostgreSQL_Statement($db, 'name', '');
+		$statement = new Database_PostgreSQL_Statement($db, 'name');
 
 		$this->assertSame($statement, $statement->parameters(array('a', 'b')), 'Chainable (1)');
 		$this->assertSame(array('a', 'b'), $statement->parameters);
