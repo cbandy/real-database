@@ -132,8 +132,8 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
-	 * @covers  Database_PDO::_parse
-	 * @covers  Database_PDO::_parse_value
+	 * @covers  Database::_parse
+	 * @covers  Database::_parse_value
 	 * @covers  Database_PDO::prepare_statement
 	 * @dataProvider    provider_prepare_statement
 	 */

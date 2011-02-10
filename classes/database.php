@@ -360,6 +360,98 @@ abstract class Database
 	}
 
 	/**
+	 * Recursively replace array, Expression and Identifier parameters until all
+	 * parameters are positional literals.
+	 *
+	 * @param   string  $statement          SQL statement with (or without) placeholders
+	 * @param   array   $parameters         Unquoted parameters
+	 * @param   array   $result_parameters  Parameters for the resulting statement
+	 * @return  string  SQL statement
+	 */
+	protected function _parse($statement, $parameters, & $result_parameters)
+	{
+		$chunks = preg_split(
+			$this->_placeholder,
+			$statement,
+			NULL,
+			PREG_SPLIT_OFFSET_CAPTURE
+		);
+
+		$position = 0;
+		$prev = $chunks[0];
+		$result = $prev[0];
+
+		for ($i = 1, $max = count($chunks); $i < $max; ++$i)
+		{
+			if ($statement[$chunks[$i][1] - 1] === '?')
+			{
+				// Character before the current chunk is a question mark
+				$placeholder = $position++;
+			}
+			else
+			{
+				// End of the previous chunk
+				$offset = $prev[1] + strlen($prev[0]);
+
+				// Text between the current chunk and the previous one
+				$placeholder = substr(
+					$statement,
+					$offset,
+					$chunks[$i][1] - $offset
+				);
+			}
+
+			$prev = $chunks[$i];
+			$result .= $this->_parse_value(
+				$parameters[$placeholder],
+				$result_parameters
+			).$prev[0];
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Recursively expand a parameter value to a SQL fragment consisting only of
+	 * positional placeholders.
+	 *
+	 * @param   mixed   $value              Unquoted parameter
+	 * @param   array   $result_parameters  Parameters for the resulting fragment
+	 * @return  string  SQL fragment
+	 */
+	protected function _parse_value($value, & $result_parameters)
+	{
+		if (is_array($value))
+		{
+			if (empty($value))
+				return '';
+
+			$result = array();
+
+			foreach ($value as $v)
+			{
+				$result[] = $this->_parse_value($v, $result_parameters);
+			}
+
+			return implode(', ', $result);
+		}
+
+		if ($value instanceof SQL_Expression)
+			return $this->_parse(
+				(string) $value,
+				$value->parameters,
+				$result_parameters
+			);
+
+		if ($value instanceof SQL_Identifier)
+			return $this->quote($value);
+
+		$result_parameters[] = $value;
+
+		return '?';
+	}
+
+	/**
 	 * Start a transaction
 	 *
 	 * @throws  Database_Exception
@@ -648,9 +740,16 @@ abstract class Database
 		if (empty($parameters))
 			return $value;
 
-		// Trying to maintain context between calls (and recurse) using preg_replace_callback is too complicated.
-		// Capturing the placeholder offsets allows us to iterate over a single expression and recurse using the call stack.
-		$chunks = preg_split($this->_placeholder, $value, NULL, PREG_SPLIT_OFFSET_CAPTURE);
+		// Trying to maintain context between calls (and recurse) using
+		// preg_replace_callback is too complicated. Capturing the placeholder
+		// offsets allows us to iterate over a single expression and recurse
+		// using the call stack.
+		$chunks = preg_split(
+			$this->_placeholder,
+			$value,
+			NULL,
+			PREG_SPLIT_OFFSET_CAPTURE
+		);
 
 		$position = 0;
 		$prev = $chunks[0];
@@ -671,9 +770,6 @@ abstract class Database
 				// Text between the current chunk and the previous one
 				$placeholder = substr($value, $offset, $chunks[$i][1] - $offset);
 			}
-
-			//if ( ! array_key_exists($placeholder, $parameters))
-			//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
 
 			$prev = $chunks[$i];
 			$result .= $this->quote($parameters[$placeholder]).$prev[0];
