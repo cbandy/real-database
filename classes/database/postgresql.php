@@ -418,7 +418,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				}
 				elseif ($value instanceof SQL_Expression)
 				{
-					$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+					$result .= $this->_parse( (string) $value, $value->parameters, $result_parameters);
 				}
 				elseif ($value instanceof SQL_Identifier)
 				{
@@ -449,7 +449,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 					}
 					elseif ($value instanceof SQL_Expression)
 					{
-						$fragments[$placeholder] = $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+						$fragments[$placeholder] = $this->_parse( (string) $value, $value->parameters, $result_parameters);
 					}
 					elseif ($value instanceof SQL_Identifier)
 					{
@@ -495,7 +495,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 			elseif ($value instanceof SQL_Expression)
 			{
-				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+				$result .= $this->_parse( (string) $value, $value->parameters, $result_parameters);
 			}
 			elseif ($value instanceof SQL_Identifier)
 			{
