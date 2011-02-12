@@ -1,12 +1,10 @@
 <?php
 
-require_once dirname(__FILE__).'/testcase'.EXT;
-
 /**
  * @package RealDatabase
  * @author  Chris Bandy
  */
-abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCase
+abstract class Database_Abstract_Database_Test extends PHPUnit_Framework_TestCase
 {
 	/**
 	 * @param   string  $method     Database method to call
@@ -15,7 +13,7 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 	 */
 	protected function _test_method_type($method, $arguments, $expected)
 	{
-		$db = $this->_database();
+		$db = Database::factory();
 
 		$result = call_user_func_array(array($db, $method), $arguments);
 
@@ -279,7 +277,7 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 	 */
 	public function test_execute_command_empty($value)
 	{
-		$db = $this->_database();
+		$db = Database::factory();
 
 		$this->assertSame(0, $db->execute_command($value));
 	}
@@ -302,7 +300,7 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 	 */
 	public function test_execute_command_error($value)
 	{
-		$db = $this->_database();
+		$db = Database::factory();
 
 		$db->execute_command($value);
 	}
@@ -324,7 +322,7 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 	 */
 	public function test_execute_query_empty($value)
 	{
-		$db = $this->_database();
+		$db = Database::factory();
 
 		$this->assertNull($db->execute_query($value));
 	}
@@ -347,7 +345,7 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 	 */
 	public function test_execute_query_error($value)
 	{
-		$db = $this->_database();
+		$db = Database::factory();
 
 		$db->execute_query($value);
 	}
@@ -446,7 +444,7 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 	 */
 	public function test_reconnect()
 	{
-		$db = $this->_database();
+		$db = Database::factory();
 
 		$db->connect();
 		$db->disconnect();
@@ -515,7 +513,7 @@ abstract class Database_Abstract_Database_Test extends Database_Abstract_TestCas
 	 */
 	public function test_table_columns_no_table()
 	{
-		$db = $this->_database();
+		$db = Database::factory();
 
 		if ( ! $db instanceof Database_iIntrospect)
 			$this->markTestSkipped('Connection does not implement Database_iIntrospect');
