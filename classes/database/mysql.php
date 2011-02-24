@@ -75,7 +75,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	 */
 	protected $_connection_id;
 
-	protected $_quote = '`';
+	protected $_quote_left = '`';
+
+	protected $_quote_right = '`';
 
 	/**
 	 * Create a MySQL connection

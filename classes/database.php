@@ -182,9 +182,10 @@ abstract class Database
 	 * it is passed directly.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string  $name   Connection name
-	 * @param   array   $config Configuration
-	 * @param   string  $quote  Character used to quote identifiers
+	 * @param   string          $name   Connection name
+	 * @param   array           $config Configuration
+	 * @param   string|array    $quote  Character used to quote identifiers or
+	 *                                  array of the left and right characters
 	 * @return  Database
 	 */
 	public static function factory($name = 'default', $config = NULL, $quote = NULL)
@@ -234,9 +235,10 @@ abstract class Database
 	 * unless it is passed directly.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string  $name   Instance name
-	 * @param   array   $config Configuration
-	 * @param   string  $quote  Character used to quote identifiers
+	 * @param   string          $name   Instance name
+	 * @param   array           $config Configuration
+	 * @param   string|array    $quote  Character used to quote identifiers or
+	 *                                  array of the left and right characters
 	 * @return  Database
 	 */
 	public static function instance($name = 'default', $config = NULL, $quote = NULL)
@@ -335,16 +337,22 @@ abstract class Database
 	protected $_placeholder = '/(?:\?|:\w++)/';
 
 	/**
-	 * @var string  Character used to quote identifiers (tables, columns, aliases, etc.)
+	 * @var string  Left character used to quote identifiers (tables, columns, aliases, etc.)
 	 */
-	protected $_quote = '"';
+	protected $_quote_left = '"';
+
+	/**
+	 * @var string  Right character used to quote identifiers (tables, columns, aliases, etc.)
+	 */
+	protected $_quote_right = '"';
 
 	/**
 	 * Create a database connection. The database type is not verified.
 	 *
-	 * @param   string  $name   Connection name
-	 * @param   array   $config Configuration
-	 * @param   string  $quote  Character used to quote identifiers
+	 * @param   string          $name   Connection name
+	 * @param   array           $config Configuration
+	 * @param   string|array    $quote  Character used to quote identifiers or
+	 *                                  array of the left and right characters
 	 */
 	public function __construct($name, $config, $quote = NULL)
 	{
@@ -353,7 +361,15 @@ abstract class Database
 
 		if ($quote !== NULL)
 		{
-			$this->_quote = $quote;
+			if (is_array($quote))
+			{
+				$this->_quote_left = reset($quote);
+				$this->_quote_right = next($quote);
+			}
+			else
+			{
+				$this->_quote_left = $this->_quote_right = $quote;
+			}
 		}
 	}
 
@@ -676,7 +692,7 @@ abstract class Database
 		}
 
 		if (isset($alias))
-			return $value.' AS '.$this->_quote.$alias.$this->_quote;
+			return $value.' AS '.$this->_quote_left.$alias.$this->_quote_right;
 
 		return $value;
 	}
@@ -728,7 +744,7 @@ abstract class Database
 		}
 		else
 		{
-			$value = $prefix.$this->_quote.$value.$this->_quote;
+			$value = $prefix.$this->_quote_left.$value.$this->_quote_right;
 		}
 
 		return $value;
@@ -821,7 +837,7 @@ abstract class Database
 			foreach ($namespace as $part)
 			{
 				// Quote each of the parts
-				$prefix .= $this->_quote.$part.$this->_quote.'.';
+				$prefix .= $this->_quote_left.$part.$this->_quote_right.'.';
 			}
 		}
 		else
@@ -829,7 +845,7 @@ abstract class Database
 			$prefix = $this->quote_identifier($namespace).'.';
 		}
 
-		$value = $prefix.$this->_quote.$value.$this->_quote;
+		$value = $prefix.$this->_quote_left.$value.$this->_quote_right;
 
 		return $value;
 	}
@@ -910,7 +926,7 @@ abstract class Database
 			$prefix = $this->quote_identifier($namespace).'.';
 		}
 
-		$value = $prefix.$this->_quote.$this->table_prefix().$value.$this->_quote;
+		$value = $prefix.$this->_quote_left.$this->table_prefix().$value.$this->_quote_right;
 
 		return $value;
 	}

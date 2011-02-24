@@ -339,29 +339,29 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		return array
 		(
 			// Strings
-			array('one',                '"one"'),
-			array('one.two',            '"one"."two"'),
-			array('one.two.three',      '"one"."two"."three"'),
-			array('one.two.three.four', '"one"."two"."three"."four"'),
+			array('one',                '<one>'),
+			array('one.two',            '<one>.<two>'),
+			array('one.two.three',      '<one>.<two>.<three>'),
+			array('one.two.three.four', '<one>.<two>.<three>.<four>'),
 
 			// Arrays of strings
-			array(array('one'),                      '"one"'),
-			array(array('one','two'),                '"one"."two"'),
-			array(array('one','two','three'),        '"one"."two"."three"'),
-			array(array('one','two','three','four'), '"one"."two"."three"."four"'),
+			array(array('one'),                      '<one>'),
+			array(array('one','two'),                '<one>.<two>'),
+			array(array('one','two','three'),        '<one>.<two>.<three>'),
+			array(array('one','two','three','four'), '<one>.<two>.<three>.<four>'),
 
 			// Identifier, no namespace
-			array($one, '"one"'),
+			array($one, '<one>'),
 
 			// Identifier, one namespace
-			array($two_array,      '"one"."two"'),
-			array($two_identifier, '"one"."two"'),
-			array($two_string,     '"one"."two"'),
+			array($two_array,      '<one>.<two>'),
+			array($two_identifier, '<one>.<two>'),
+			array($two_string,     '<one>.<two>'),
 
 			// Identifier, two namespaces
-			array($three_array,      '"one"."two"."three"'),
-			array($three_identifier, '"one"."two"."three"'),
-			array($three_string,     '"one"."two"."three"'),
+			array($three_array,      '<one>.<two>.<three>'),
+			array($three_identifier, '<one>.<two>.<three>'),
+			array($three_string,     '<one>.<two>.<three>'),
 		);
 	}
 
@@ -371,7 +371,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_identifier($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('<','>')));
 
 		$this->assertSame($expected, $db->quote_identifier($value));
 	}
@@ -392,20 +392,20 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		return array
 		(
 			// Strings
-			array('one',     '"pre_one"'),
-			array('one.two', '"one"."pre_two"'),
+			array('one',     '<pre_one>'),
+			array('one.two', '<one>.<pre_two>'),
 
 			// Array of strings
-			array(array('one'),       '"pre_one"'),
-			array(array('one','two'), '"one"."pre_two"'),
+			array(array('one'),       '<pre_one>'),
+			array(array('one','two'), '<one>.<pre_two>'),
 
 			// Identifier, no namespace
-			array($one, '"pre_one"'),
+			array($one, '<pre_one>'),
 
 			// Identifier, one namespace
-			array($two_array,      '"one"."pre_two"'),
-			array($two_identifier, '"one"."pre_two"'),
-			array($two_string,     '"one"."pre_two"'),
+			array($two_array,      '<one>.<pre_two>'),
+			array($two_identifier, '<one>.<pre_two>'),
+			array($two_string,     '<one>.<pre_two>'),
 		);
 	}
 
@@ -415,7 +415,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_table($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('<','>')));
 		$db->expects($this->once())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
@@ -458,44 +458,44 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		return array
 		(
 			// Strings
-			array('one',            '"one"'),
-			array('one.two',        '"pre_one"."two"'),
-			array('one.two.three',  '"one"."pre_two"."three"'),
+			array('one',            '<one>'),
+			array('one.two',        '<pre_one>.<two>'),
+			array('one.two.three',  '<one>.<pre_two>.<three>'),
 
 			// Array of strings
-			array(array('one'),                 '"one"'),
-			array(array('one','two'),           '"pre_one"."two"'),
-			array(array('one','two','three'),   '"one"."pre_two"."three"'),
+			array(array('one'),                 '<one>'),
+			array(array('one','two'),           '<pre_one>.<two>'),
+			array(array('one','two','three'),   '<one>.<pre_two>.<three>'),
 
 			// Identifiers, no namespace
-			array($one, '"one"'),
+			array($one, '<one>'),
 
 			// Identifiers, one namespace
-			array($two_array,       '"pre_one"."two"'),
-			array($two_identifier,  '"one"."two"'),
-			array($two_string,      '"pre_one"."two"'),
-			array($two_table,       '"pre_one"."two"'),
+			array($two_array,       '<pre_one>.<two>'),
+			array($two_identifier,  '<one>.<two>'),
+			array($two_string,      '<pre_one>.<two>'),
+			array($two_table,       '<pre_one>.<two>'),
 
 			// Identifiers, two namespaces
-			array($three_array,         '"one"."pre_two"."three"'),
-			array($three_identifier,    '"one"."two"."three"'),
-			array($three_string,        '"one"."pre_two"."three"'),
-			array($three_table,         '"one"."pre_two"."three"'),
+			array($three_array,         '<one>.<pre_two>.<three>'),
+			array($three_identifier,    '<one>.<two>.<three>'),
+			array($three_string,        '<one>.<pre_two>.<three>'),
+			array($three_table,         '<one>.<pre_two>.<three>'),
 
 			// Strings with asterisks
 			array('*',          '*'),
-			array('one.*',      '"pre_one".*'),
-			array('one.two.*',  '"one"."pre_two".*'),
+			array('one.*',      '<pre_one>.*'),
+			array('one.two.*',  '<one>.<pre_two>.*'),
 
 			// Arrays of strings with asterisks
 			array(array('*'),               '*'),
-			array(array('one','*'),         '"pre_one".*'),
-			array(array('one','two','*'),   '"one"."pre_two".*'),
+			array(array('one','*'),         '<pre_one>.*'),
+			array(array('one','two','*'),   '<one>.<pre_two>.*'),
 
 			// Identifiers with asterisks
 			array($one_star,    '*'),
-			array($two_star,    '"pre_one".*'),
-			array($three_star,  '"one"."pre_two".*'),
+			array($two_star,    '<pre_one>.*'),
+			array($three_star,  '<one>.<pre_two>.*'),
 		);
 	}
 
@@ -505,7 +505,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_column($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('<','>')));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
