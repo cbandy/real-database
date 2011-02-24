@@ -184,9 +184,10 @@ abstract class Database
 	 * @throws  Kohana_Exception
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
+	 * @param   string  $quote  Character used to quote identifiers
 	 * @return  Database
 	 */
-	public static function factory($name = 'default', $config = NULL)
+	public static function factory($name = 'default', $config = NULL, $quote = NULL)
 	{
 		if ($config === NULL)
 		{
@@ -201,7 +202,7 @@ abstract class Database
 		$driver = 'Database_'.$config['type'];
 
 		// Create the database connection
-		return new $driver($name, $config);
+		return new $driver($name, $config, $quote);
 	}
 
 	/**
@@ -235,13 +236,14 @@ abstract class Database
 	 * @throws  Kohana_Exception
 	 * @param   string  $name   Instance name
 	 * @param   array   $config Configuration
+	 * @param   string  $quote  Character used to quote identifiers
 	 * @return  Database
 	 */
-	public static function instance($name = 'default', $config = NULL)
+	public static function instance($name = 'default', $config = NULL, $quote = NULL)
 	{
 		if ( ! isset(Database::$_instances[$name]))
 		{
-			Database::$_instances[$name] = Database::factory($name, $config);
+			Database::$_instances[$name] = Database::factory($name, $config, $quote);
 		}
 
 		return Database::$_instances[$name];
@@ -342,11 +344,17 @@ abstract class Database
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
+	 * @param   string  $quote  Character used to quote identifiers
 	 */
-	public function __construct($name, $config)
+	public function __construct($name, $config, $quote = NULL)
 	{
 		$this->_config = $config;
 		$this->_name = $name;
+
+		if ($quote !== NULL)
+		{
+			$this->_quote = $quote;
+		}
 	}
 
 	public function __destruct()
