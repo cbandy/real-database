@@ -12,7 +12,7 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
 class Database_Insert extends SQL_DML_Insert
-	implements Database_iExecutable
+	implements Database_iInsert
 {
 	/**
 	 * @var SQL_Expression|SQL_Identifier Column to return when executed
@@ -35,15 +35,6 @@ class Database_Insert extends SQL_DML_Insert
 		return $db->execute_command($this);
 	}
 
-	/**
-	 * Set the name of the IDENTITY column to return when executed.
-	 *
-	 * Behavior varies between database implementations. Reliable only when
-	 * inserting one row.
-	 *
-	 * @param   mixed   $column Converted to Database_Column
-	 * @return  $this
-	 */
 	public function identity($column)
 	{
 		if ( ! empty($column)
