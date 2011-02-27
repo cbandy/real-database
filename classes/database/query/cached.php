@@ -21,14 +21,14 @@ class Database_Query_Cached
 	protected $_lifetime;
 
 	/**
-	 * @var Database_Query  Query to cache when executed
+	 * @var Database_iQuery Query to cache when executed
 	 */
 	protected $_query;
 
 	/**
 	 * @param   integer         $lifetime   Cache lifetime
 	 * @param   Database        $db         Database on which to execute
-	 * @param   Database_Query  $query      Query to execute
+	 * @param   Database_iQuery $query      Query to execute
 	 */
 	public function __construct($lifetime, $db, $query)
 	{
@@ -57,14 +57,14 @@ class Database_Query_Cached
 	public function execute()
 	{
 		if ($this->_lifetime < 0)
-			return $this->_query->execute($this->_db);
+			return $this->_db->execute($this->_query);
 
 		$key = $this->key();
 
 		if ($result = Kohana::cache($key, NULL, $this->_lifetime))
 			return new Database_Result_Array($result, $this->_query->as_object);
 
-		$result = $this->_query->execute($this->_db);
+		$result = $this->_db->execute($this->_query);
 
 		Kohana::cache($key, $result->as_array(), $this->_lifetime);
 

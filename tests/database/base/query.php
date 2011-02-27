@@ -42,38 +42,4 @@ class Database_Base_Query_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($query, $query->as_object($as_object), 'Chainable');
 		$this->assertSame($as_object, $query->as_object);
 	}
-
-	/**
-	 * @covers  Database_Query::execute
-	 */
-	public function test_execute()
-	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$query = new Database_Query('a');
-
-		$db->expects($this->once())
-			->method('execute_query')
-			->with($this->equalTo($query), FALSE);
-
-		$query->execute($db);
-	}
-
-	/**
-	 * @covers  Database_Query::execute
-	 * @dataProvider    provider_as_object
-	 *
-	 * @param   string|boolean  $as_object  Expected value
-	 */
-	public function test_execute_as_object($as_object)
-	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$query = new Database_Query('a');
-		$query->as_object($as_object);
-
-		$db->expects($this->once())
-			->method('execute_query')
-			->with($this->equalTo($query), $as_object);
-
-		$query->execute($db);
-	}
 }

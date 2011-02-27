@@ -19,22 +19,6 @@ class Database_Insert extends SQL_DML_Insert
 	 */
 	public $identity;
 
-	/**
-	 * Execute the INSERT on a Database. Returns an array when identity() is set.
-	 *
-	 * @throws  Database_Exception
-	 * @param   Database    $db Connection on which to execute
-	 * @return  integer Number of affected rows
-	 * @return  array   List including number of affected rows and identity value
-	 */
-	public function execute($db)
-	{
-		if ( ! empty($this->identity))
-			return $db->execute_insert($this, $this->identity);
-
-		return $db->execute_command($this);
-	}
-
 	public function identity($column)
 	{
 		if ( ! empty($column)

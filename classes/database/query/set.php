@@ -9,7 +9,7 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
 class Database_Query_Set extends SQL_DML_Set
-	implements Database_iExecutable, Database_iQuery
+	implements Database_iQuery
 {
 	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
@@ -26,17 +26,5 @@ class Database_Query_Set extends SQL_DML_Set
 		$this->as_object = $class;
 
 		return $this;
-	}
-
-	/**
-	 * Execute the query against a Database.
-	 *
-	 * @throws  Database_Exception
-	 * @param   Database    $db Connection on which to execute
-	 * @return  Database_Result Result set
-	 */
-	public function execute($db)
-	{
-		return $db->execute_query($this, $this->as_object);
 	}
 }

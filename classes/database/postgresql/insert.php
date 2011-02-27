@@ -46,27 +46,6 @@ class Database_PostgreSQL_Insert extends Database_Insert
 	}
 
 	/**
-	 * Execute the INSERT on a Database. Returns an array when identity() is
-	 * set. Returns a result set when returning() is set.
-	 *
-	 * @throws  Database_Exception
-	 * @param   Database_PostgreSQL $db Connection on which to execute
-	 * @return  integer                     Number of affected rows
-	 * @return  array                       List including number of affected rows and identity of first row
-	 * @return  Database_PostgreSQL_Result  Result set
-	 */
-	public function execute($db)
-	{
-		if (empty($this->parameters[':returning']))
-			return $db->execute_command($this);
-
-		if (empty($this->identity))
-			return $db->execute_query($this, $this->as_object);
-
-		return $db->execute_insert($this, $this->identity, $this->as_object);
-	}
-
-	/**
 	 * Set the name of the column to return from the first row when executed
 	 *
 	 * @param   mixed   $column Converted to SQL_Column

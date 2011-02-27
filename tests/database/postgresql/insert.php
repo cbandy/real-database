@@ -42,7 +42,6 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Insert::execute
 	 * @covers  Database_PostgreSQL_Insert::identity
 	 */
 	public function test_identity()
@@ -56,14 +55,14 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 			->values(array(75), array(80));
 
 		$this->assertSame($query, $query->identity('id'), 'Chainable (column)');
-		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the _first_ row');
+		$this->assertEquals(array(2,6), $db->execute($query), 'Identity of the _first_ row');
 
 		$this->assertSame($query, $query->identity(new SQL_Expression("'asdf'")), 'Chainable (expression)');
 
-		$this->assertEquals(array(2,'asdf'), $query->execute($db), 'Expression result');
+		$this->assertEquals(array(2,'asdf'), $db->execute($query), 'Expression result');
 
 		$this->assertSame($query, $query->identity(NULL), 'Chainable (reset)');
-		$this->assertSame(2, $query->execute($db), 'No identity');
+		$this->assertSame(2, $db->execute($query), 'No identity');
 	}
 
 	/**
@@ -80,11 +79,11 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 			->identity('id');
 
 		$query->values(array(20, 75), array(21, 80));
-		$this->assertEquals(array(2,20), $query->execute($db), 'Identity of the first row (literal)');
+		$this->assertEquals(array(2,20), $db->execute($query), 'Identity of the first row (literal)');
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n"), $db->copy_to($this->_table));
 
 		$query->values(NULL)->values(array(new SQL_Expression('DEFAULT'), 85), array(30, 90));
-		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the first row (default)');
+		$this->assertEquals(array(2,6), $db->execute($query), 'Identity of the first row (default)');
 		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "20\t75\n", "21\t80\n", "6\t85\n", "30\t90\n"), $db->copy_to($this->_table));
 	}
 
@@ -102,7 +101,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 			->values($db->query('SELECT 75 as "value" UNION SELECT 80'))
 			->identity('id');
 
-		$this->assertEquals(array(2,6), $query->execute($db), 'Identity of the _first_ row');
+		$this->assertEquals(array(2,6), $db->execute($query), 'Identity of the _first_ row');
 	}
 
 	/**
@@ -115,11 +114,12 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		if ($db->version() < '8.2')
 			$this->markTestSkipped('Not supported');
 
-		$result = $db->insert(new SQL_Expression($db->quote_table($this->_table)))
-			->columns(array('id', 'value'))
-			->values(array(20, 75), array(21, 80))
-			->identity('id')
-			->execute($db);
+		$result = $db->execute(
+			$db->insert(new SQL_Expression($db->quote_table($this->_table)))
+				->columns(array('id', 'value'))
+				->values(array(20, 75), array(21, 80))
+				->identity('id')
+		);
 
 		$this->assertEquals(array(2,20), $result, 'Identity of the first row');
 	}
@@ -134,10 +134,11 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		if ($db->version() < '8.2')
 			$this->markTestSkipped('Not supported');
 
-		$result = $db->insert($this->_table)
-			->values(array(20, 75), array(21, 80))
-			->identity('id')
-			->execute($db);
+		$result = $db->execute(
+			$db->insert($this->_table)
+				->values(array(20, 75), array(21, 80))
+				->identity('id')
+		);
 
 		$this->assertEquals(array(2,20), $result, 'Identity of the first row');
 	}
@@ -157,24 +158,23 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('more' => 6), array('more' => 7)), $result->as_array(), 'Each aliased column');
 
 		$this->assertSame($query, $query->returning(new SQL_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertEquals(array(array('rawr' => 'asdf'), array('rawr' => 'asdf')), $result->as_array(), 'Each expression');
 
 		$this->assertSame($query, $query->returning(NULL), 'Chainable (reset)');
-		$this->assertSame(2, $query->execute($db));
+		$this->assertSame(2, $db->execute($query));
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL_Insert::as_assoc
-	 * @covers  Database_PostgreSQL_Insert::execute
 	 */
 	public function test_as_assoc()
 	{
@@ -189,7 +189,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->as_assoc(), 'Chainable');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('id' => 6), array('id' => 7)), $result->as_array(), 'Each column');
@@ -197,7 +197,6 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Insert::as_object
-	 * @covers  Database_PostgreSQL_Insert::execute
 	 */
 	public function test_as_object()
 	{
@@ -212,7 +211,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->as_object(), 'Chainable');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array( (object) array('id' => 6), (object) array('id' => 7)), $result->as_array(), 'Each column');

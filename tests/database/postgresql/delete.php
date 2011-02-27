@@ -50,12 +50,12 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 		$command = $db->delete($this->_table)->where('value', 'between', array(42,62));
 
 		$this->assertSame($command, $command->limit(2), 'Chainable (int)');
-		$this->assertSame(2, $command->execute($db));
+		$this->assertSame(2, $db->execute($command));
 
-		$this->assertSame(0, $command->limit(0)->execute($db), 'Zero');
+		$this->assertSame(0, $db->execute($command->limit(0)), 'Zero');
 
 		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
-		$this->assertSame(1, $command->execute($db));
+		$this->assertSame(1, $db->execute($command));
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('more' => 2), array('more' => 3)), $result->as_array(), 'Each aliased column');
@@ -96,7 +96,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->returning(new SQL_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('rawr' => 'asdf')), $result->as_array());
@@ -104,12 +104,11 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 		$query->where(NULL);
 
 		$this->assertSame($query, $query->returning(NULL), 'Chainable (reset)');
-		$this->assertSame(2, $query->execute($db));
+		$this->assertSame(2, $db->execute($query));
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL_Delete::as_assoc
-	 * @covers  Database_PostgreSQL_Delete::execute
 	 */
 	public function test_as_assoc()
 	{
@@ -120,7 +119,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->as_assoc(), 'Chainable');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
@@ -128,7 +127,6 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Delete::as_object
-	 * @covers  Database_PostgreSQL_Delete::execute
 	 */
 	public function test_as_object()
 	{
@@ -139,7 +137,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->as_object(), 'Chainable (void)');
 
-		$result = $query->execute($db);
+		$result = $db->execute($query);
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
