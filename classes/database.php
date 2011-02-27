@@ -588,21 +588,31 @@ abstract class Database
 	abstract public function disconnect();
 
 	/**
-	 * Execute a SQL statement.
+	 * Execute a SQL statement returning the number of affected rows.
 	 *
-	 * @todo Better description
+	 * Returns a result set when the statement is [Database_iQuery]. Returns an
+	 * array when the statement is [Database_iInsert] and has an identity set.
 	 *
 	 * @see Database::execute_command()
 	 * @see Database::execute_insert()
 	 * @see Database::execute_query()
 	 *
 	 * @param   string|SQL_Expression   $statement
-	 * @return  mixed
+	 *
+	 * @return  integer         Number of affected rows
+	 * @return  array           List including number of affected rows and an identity value
+	 * @return  Database_Result Result set
 	 */
 	public function execute($statement)
 	{
-		if ($statement instanceof Database_iExecutable)
-			return $statement->execute($this);
+		if (is_object($statement))
+		{
+			if ($statement instanceof Database_iQuery)
+				return $this->execute_query($statement, $statement->as_object);
+
+			if ($statement instanceof Database_iInsert AND $statement->identity)
+				return $this->execute_insert($statement, $statement->identity);
+		}
 
 		return $this->execute_command($statement);
 	}
