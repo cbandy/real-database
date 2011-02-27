@@ -1,4 +1,8 @@
 <?php
+
+require_once dirname(__FILE__).'/testcase'.EXT;;
+require_once 'PHPUnit/Extensions/Database/DataSet/CsvDataSet.php';
+
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -6,33 +10,19 @@
  * @group   database
  * @group   database.mysql
  */
-class Database_MySQL_Statement_Test extends PHPUnit_Framework_TestCase
+class Database_MySQL_Statement_Test extends Database_MySQL_TestCase
 {
-	public static function setUpBeforeClass()
+	protected $_table = 'kohana_test_table';
+
+	protected function getDataSet()
 	{
-		if ( ! extension_loaded('mysql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
+		$dataset = new PHPUnit_Extensions_Database_DataSet_CsvDataSet;
+		$dataset->addTable(
+			Database::factory()->table_prefix().$this->_table,
+			dirname(dirname(__FILE__)).'/datasets/values.csv'
+		);
 
-		if ( ! Database::factory() instanceof Database_MySQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
-	}
-
-	protected $_table = 'temp_test_table';
-
-	public function setUp()
-	{
-		$db = $this->sharedFixture = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$db->execute_command('CREATE TEMPORARY TABLE '.$db->quote_table($this->_table).' (id bigint unsigned AUTO_INCREMENT PRIMARY KEY, value integer)');
-		$db->execute_command('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (50), (55), (60), (65), (65)');
-	}
-
-	public function tearDown()
-	{
-		$db = $this->sharedFixture;
-
-		$db->disconnect();
+		return $dataset;
 	}
 
 	public function provider_constructor_name()
@@ -139,8 +129,8 @@ class Database_MySQL_Statement_Test extends PHPUnit_Framework_TestCase
 		return array
 		(
 			array(1, 'INSERT INTO $table (value) VALUES (10)', array()),
-			array(2, 'DELETE FROM $table WHERE value = ?', array(65)),
-			array(1, 'UPDATE $table SET value = ? WHERE value = 60', array(20)),
+			array(3, 'DELETE FROM $table WHERE value = ?', array(65)),
+			array(2, 'UPDATE $table SET value = ? WHERE value = 60', array(20)),
 		);
 	}
 
@@ -155,7 +145,7 @@ class Database_MySQL_Statement_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_command($expected, $statement, $parameters)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$name = $db->prepare(NULL, strtr($statement, array('$table' => $db->quote_table($this->_table))));
 		$statement = new Database_MySQL_Statement($db, $name, $parameters);
 
@@ -166,9 +156,9 @@ class Database_MySQL_Statement_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(array(2, 6), 'INSERT INTO $table (value) VALUES (10), (20)', array()),
-			array(array(1, 6), 'INSERT INTO $table (value) VALUES (?)', array(50)),
-			array(array(2, 6), 'INSERT INTO $table (value) VALUES (?), (?)', array(70, 80)),
+			array(array(2, 8), 'INSERT INTO $table (value) VALUES (10), (20)', array()),
+			array(array(1, 8), 'INSERT INTO $table (value) VALUES (?)', array(50)),
+			array(array(2, 8), 'INSERT INTO $table (value) VALUES (?), (?)', array(70, 80)),
 		);
 	}
 
@@ -183,7 +173,7 @@ class Database_MySQL_Statement_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_insert($expected, $statement, $parameters)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$name = $db->prepare(NULL, strtr($statement, array('$table' => $db->quote_table($this->_table))));
 		$statement = new Database_MySQL_Statement($db, $name, $parameters);
 
@@ -202,10 +192,10 @@ class Database_MySQL_Statement_Test extends PHPUnit_Framework_TestCase
 				array('id' => 1, 'value' => 50),
 				array('id' => 2, 'value' => 55),
 			)),
-			array('SELECT * FROM $table WHERE value > ?', array(55), array(
-				array('id' => 3, 'value' => 60),
-				array('id' => 4, 'value' => 65),
+			array('SELECT * FROM $table WHERE value > ?', array(60), array(
 				array('id' => 5, 'value' => 65),
+				array('id' => 6, 'value' => 65),
+				array('id' => 7, 'value' => 65),
 			)),
 		);
 	}
@@ -221,7 +211,7 @@ class Database_MySQL_Statement_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_query($statement, $parameters, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
 		$name = $db->prepare(NULL, strtr($statement, array('$table' => $db->quote_table($this->_table))));
 		$statement = new Database_MySQL_Statement($db, $name, $parameters);
