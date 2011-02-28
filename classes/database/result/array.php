@@ -21,9 +21,8 @@ class Database_Result_Array extends Database_Result
 	 */
 	public function __construct($data, $as_object)
 	{
-		parent::__construct($as_object);
+		parent::__construct($as_object, count($data));
 
-		$this->_count = count($data);
 		$this->_data = $data;
 	}
 

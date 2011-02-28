@@ -24,16 +24,29 @@
  */
 abstract class Database_Result implements ArrayAccess, Countable, Iterator, SeekableIterator
 {
+	/**
+	 * @var string|boolean  Row object class or FALSE for associative array
+	 */
 	protected $_as_object;
-	protected $_count = 0;
+
+	/**
+	 * @var integer Number of rows
+	 */
+	protected $_count;
+
+	/**
+	 * @var integer Current index
+	 */
 	protected $_position = 0;
 
 	/**
 	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   integer         $count      Number of rows
 	 */
-	public function __construct($as_object)
+	public function __construct($as_object, $count)
 	{
 		$this->_as_object = ($as_object === TRUE) ? 'stdClass' : $as_object;
+		$this->_count = $count;
 	}
 
 	/**

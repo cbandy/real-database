@@ -34,9 +34,8 @@ class Database_Base_Result_Assoc_Test_Result extends Database_Result
 
 	public function __construct($data)
 	{
-		parent::__construct(FALSE);
+		parent::__construct(FALSE, count($data));
 
-		$this->_count = count($data);
 		$this->_data = $data;
 	}
 

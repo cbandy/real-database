@@ -26,9 +26,8 @@ class Database_PostgreSQL_Result extends Database_Result
 	 */
 	public function __construct($result, $as_object)
 	{
-		parent::__construct($as_object);
+		parent::__construct($as_object, pg_num_rows($result));
 
-		$this->_count = pg_num_rows($result);
 		$this->_result = $result;
 	}
 

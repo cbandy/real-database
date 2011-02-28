@@ -29,7 +29,7 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->getMockForAbstractClass('Database', array('db', array()));
 		$query = $this->getMock('Database_Query', array('execute'), array('query'));
-		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE));
+		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE, 1));
 		$array = array(array('kohana'));
 
 		$query->expects($this->exactly(2))
@@ -57,7 +57,7 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->getMockForAbstractClass('Database', array('db', array()));
 		$query = $this->getMock('Database_Query', array('execute'), array('query'));
-		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE));
+		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE, 1));
 		$array = array(array('kohana'));
 
 		$query->expects($this->once())
