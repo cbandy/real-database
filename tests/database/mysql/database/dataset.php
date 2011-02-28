@@ -118,4 +118,119 @@ class Database_MySQL_Database_DataSet_Test extends Database_MySQL_TestCase
 
 		$this->assertSame(array(0,8), $result, 'First AUTO_INCREMENT of prior INSERT');
 	}
+
+	public function provider_transaction_command()
+	{
+		return array
+		(
+			array(
+				new SQL_Expression('SELECT * FROM ?', array(new SQL_Table($this->_table))),
+				new SQL_Expression('INSERT INTO ? (value) VALUES (100)', array(new SQL_Table($this->_table))),
+			),
+			array(
+				new SQL_Expression('SELECT * FROM ?', array(new SQL_Table($this->_table))),
+				new SQL_Expression('DELETE FROM ? WHERE value = 60', array(new SQL_Table($this->_table))),
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::begin
+	 * @dataProvider    provider_transaction_command
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command    SQL command that alters the dataset
+	 */
+	public function test_transaction_begin($query, $command)
+	{
+		$db = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		$this->assertNull($db->begin());
+
+		$this->assertSame($initial, $db->execute_query($query)->as_array(), 'No change');
+
+		// Change the dataset
+		$db->execute_command($command);
+
+		$this->assertSame($initial, Database::factory()->execute_query($query)->as_array(), 'Other connection unaffected');
+	}
+
+	/**
+	 * @covers  Database_MySQL::rollback
+	 * @dataProvider    provider_transaction_command
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command    SQL command that alters the dataset
+	 */
+	public function test_transaction_rollback($query, $command)
+	{
+		$db = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		// Change the dataset
+		$db->begin();
+		$db->execute_command($command);
+
+		$this->assertNull($db->rollback());
+
+		$this->assertSame($initial, $db->execute_query($query)->as_array(), 'Changes reverted');
+	}
+
+	public function provider_transaction_result()
+	{
+		return array
+		(
+			array(
+				new SQL_Expression('SELECT value FROM ?', array(new SQL_Table($this->_table))),
+				new SQL_Expression('INSERT INTO ? (value) VALUES (100)', array(new SQL_Table($this->_table))),
+				array(
+					array('value' => 50),
+					array('value' => 55),
+					array('value' => 60),
+					array('value' => 60),
+					array('value' => 65),
+					array('value' => 65),
+					array('value' => 65),
+					array('value' => 100),
+				),
+			),
+			array(
+				new SQL_Expression('SELECT value FROM ?', array(new SQL_Table($this->_table))),
+				new SQL_Expression('DELETE FROM ? WHERE value = 60', array(new SQL_Table($this->_table))),
+				array(
+					array('value' => 50),
+					array('value' => 55),
+					array('value' => 65),
+					array('value' => 65),
+					array('value' => 65),
+				),
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::commit
+	 * @dataProvider    provider_transaction_result
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command    SQL command that alters the dataset
+	 * @param   array           $expected   Expected result of the query after command is executed and after commit
+	 */
+	public function test_transaction_commit($query, $command, $expected)
+	{
+		$db = Database::factory();
+		$other = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		// Change the dataset
+		$db->begin();
+		$db->execute_command($command);
+
+		$this->assertSame($initial, $other->execute_query($query)->as_array(), 'Other connection unaffected');
+
+		$this->assertNull($db->commit());
+
+		$this->assertEquals($expected, $other->execute_query($query)->as_array(), 'Other connection affected');
+	}
 }
