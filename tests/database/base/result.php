@@ -529,4 +529,172 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expected, $result->as_array($key, $value));
 	}
+
+	public function provider_as_array_after_seek()
+	{
+		$result = array();
+
+		$rows = array(
+			array('id' => 5, 'value' => 50),
+			array('id' => 6, 'value' => 60),
+			array('id' => 7, 'value' => 70),
+		);
+
+		// data set #0
+		$result[] = array(FALSE, 0, NULL, NULL, $rows, $rows);
+		$result[] = array(FALSE, 1, NULL, NULL, $rows, $rows);
+		$result[] = array(FALSE, 2, NULL, NULL, $rows, $rows);
+
+		// data set #3
+		$result[] = array(FALSE, 0, NULL, 'id', $rows, array(5, 6, 7));
+		$result[] = array(FALSE, 1, NULL, 'id', $rows, array(5, 6, 7));
+		$result[] = array(FALSE, 2, NULL, 'id', $rows, array(5, 6, 7));
+
+		// data set #6
+		$result[] = array(FALSE, 0, NULL, 'value', $rows, array(50, 60, 70));
+		$result[] = array(FALSE, 1, NULL, 'value', $rows, array(50, 60, 70));
+		$result[] = array(FALSE, 2, NULL, 'value', $rows, array(50, 60, 70));
+
+		// data set #9
+		$result[] = array(FALSE, 0, 'id', 'value', $rows, array(5 => 50, 6 => 60, 7 => 70));
+		$result[] = array(FALSE, 1, 'id', 'value', $rows, array(5 => 50, 6 => 60, 7 => 70));
+		$result[] = array(FALSE, 2, 'id', 'value', $rows, array(5 => 50, 6 => 60, 7 => 70));
+
+		// data set #12
+		$result[] = array(FALSE, 0, 'value', 'id', $rows, array(50 => 5, 60 => 6, 70 => 7));
+		$result[] = array(FALSE, 1, 'value', 'id', $rows, array(50 => 5, 60 => 6, 70 => 7));
+		$result[] = array(FALSE, 2, 'value', 'id', $rows, array(50 => 5, 60 => 6, 70 => 7));
+
+		// data set #15
+		$result[] = array(FALSE, 0, 'id', NULL, $rows, array(
+			5 => array('id' => 5, 'value' => 50),
+			6 => array('id' => 6, 'value' => 60),
+			7 => array('id' => 7, 'value' => 70),
+		));
+		$result[] = array(FALSE, 1, 'id', NULL, $rows, array(
+			5 => array('id' => 5, 'value' => 50),
+			6 => array('id' => 6, 'value' => 60),
+			7 => array('id' => 7, 'value' => 70),
+		));
+		$result[] = array(FALSE, 2, 'id', NULL, $rows, array(
+			5 => array('id' => 5, 'value' => 50),
+			6 => array('id' => 6, 'value' => 60),
+			7 => array('id' => 7, 'value' => 70),
+		));
+
+		// data set #18
+		$result[] = array(FALSE, 0, 'value', NULL, $rows, array(
+			50 => array('id' => 5, 'value' => 50),
+			60 => array('id' => 6, 'value' => 60),
+			70 => array('id' => 7, 'value' => 70),
+		));
+		$result[] = array(FALSE, 1, 'value', NULL, $rows, array(
+			50 => array('id' => 5, 'value' => 50),
+			60 => array('id' => 6, 'value' => 60),
+			70 => array('id' => 7, 'value' => 70),
+		));
+		$result[] = array(FALSE, 2, 'value', NULL, $rows, array(
+			50 => array('id' => 5, 'value' => 50),
+			60 => array('id' => 6, 'value' => 60),
+			70 => array('id' => 7, 'value' => 70),
+		));
+
+		$rows = array(
+			(object) array('a' => 'A', 'b' => 'B'),
+			(object) array('a' => 'C', 'b' => 'D'),
+			(object) array('a' => 3, 'b' => 100),
+		);
+
+		// data set #21
+		$result[] = array(TRUE, 0, NULL, NULL, $rows, $rows);
+		$result[] = array(TRUE, 1, NULL, NULL, $rows, $rows);
+		$result[] = array(TRUE, 2, NULL, NULL, $rows, $rows);
+
+		// data set #24
+		$result[] = array(TRUE, 0, NULL, 'a', $rows, array('A', 'C', 3));
+		$result[] = array(TRUE, 1, NULL, 'a', $rows, array('A', 'C', 3));
+		$result[] = array(TRUE, 2, NULL, 'a', $rows, array('A', 'C', 3));
+
+		// data set #27
+		$result[] = array(TRUE, 0, NULL, 'b', $rows, array('B', 'D', 100));
+		$result[] = array(TRUE, 1, NULL, 'b', $rows, array('B', 'D', 100));
+		$result[] = array(TRUE, 2, NULL, 'b', $rows, array('B', 'D', 100));
+
+		// data set #30
+		$result[] = array(TRUE, 0, 'a', 'b', $rows, array('A' => 'B', 'C' => 'D', 3 => 100));
+		$result[] = array(TRUE, 1, 'a', 'b', $rows, array('A' => 'B', 'C' => 'D', 3 => 100));
+		$result[] = array(TRUE, 2, 'a', 'b', $rows, array('A' => 'B', 'C' => 'D', 3 => 100));
+
+		// data set #33
+		$result[] = array(TRUE, 0, 'b', 'a', $rows, array('B' => 'A', 'D' => 'C', 100 => 3));
+		$result[] = array(TRUE, 1, 'b', 'a', $rows, array('B' => 'A', 'D' => 'C', 100 => 3));
+		$result[] = array(TRUE, 2, 'b', 'a', $rows, array('B' => 'A', 'D' => 'C', 100 => 3));
+
+		// data set #36
+		$result[] = array(TRUE, 0, 'a', NULL, $rows, array(
+			'A' => (object) array('a' => 'A', 'b' => 'B'),
+			'C' => (object) array('a' => 'C', 'b' => 'D'),
+			3 => (object) array('a' => 3, 'b' => 100),
+		));
+		$result[] = array(TRUE, 1, 'a', NULL, $rows, array(
+			'A' => (object) array('a' => 'A', 'b' => 'B'),
+			'C' => (object) array('a' => 'C', 'b' => 'D'),
+			3 => (object) array('a' => 3, 'b' => 100),
+		));
+		$result[] = array(TRUE, 2, 'a', NULL, $rows, array(
+			'A' => (object) array('a' => 'A', 'b' => 'B'),
+			'C' => (object) array('a' => 'C', 'b' => 'D'),
+			3 => (object) array('a' => 3, 'b' => 100),
+		));
+
+		// data set #39
+		$result[] = array(TRUE, 0, 'b', NULL, $rows, array(
+			'B' => (object) array('a' => 'A', 'b' => 'B'),
+			'D' => (object) array('a' => 'C', 'b' => 'D'),
+			100 => (object) array('a' => 3, 'b' => 100),
+		));
+		$result[] = array(TRUE, 1, 'b', NULL, $rows, array(
+			'B' => (object) array('a' => 'A', 'b' => 'B'),
+			'D' => (object) array('a' => 'C', 'b' => 'D'),
+			100 => (object) array('a' => 3, 'b' => 100),
+		));
+		$result[] = array(TRUE, 2, 'b', NULL, $rows, array(
+			'B' => (object) array('a' => 'A', 'b' => 'B'),
+			'D' => (object) array('a' => 'C', 'b' => 'D'),
+			100 => (object) array('a' => 3, 'b' => 100),
+		));
+
+		return $result;
+	}
+
+	/**
+	 * @covers  Database_Result::as_array
+	 * @dataProvider    provider_as_array_after_seek
+	 *
+	 * @param   string|boolean  $as_object
+	 * @param   integer         $position
+	 * @param   string          $key        First argument to method
+	 * @param   string          $value      Second argument to method
+	 * @param   array           $rows       Data set
+	 * @param   array           $expected
+	 */
+	public function test_as_array_after_seek($as_object, $position, $key, $value, $rows, $expected)
+	{
+		$result = $this->getMockForAbstractClass(
+			'Database_Result',
+			array($as_object, count($rows))
+		);
+
+		foreach ($rows as $i => $row)
+		{
+			$result->expects($this->at($i))
+				->method('current')
+				->will($this->returnValue($row));
+		}
+
+		$result->seek($position);
+
+		$this->assertEquals($expected, $result->as_array($key, $value));
+		$this->assertSame($position, $result->key(), 'Position unchanged');
+	}
 }
