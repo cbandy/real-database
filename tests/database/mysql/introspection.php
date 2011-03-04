@@ -35,7 +35,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		'column_comment'    => NULL,
 	);
 
-	protected $_table = 'temp_test_table';
+	protected $_table = 'kohana_introspect_test_table';
 
 	public function tearDown()
 	{
@@ -46,6 +46,8 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * Results for the TIMESTAMP type vary between MySQL versions
+	 *
+	 * @covers  Database_MySQL::table_columns
 	 */
 	public function test_table_column_timestamp()
 	{
@@ -231,7 +233,8 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * Test literal types. No `collation_name` is expected.
 	 *
-	 * @dataProvider provider_table_column_type
+	 * @covers  Database_MySQL::table_columns
+	 * @dataProvider    provider_table_column_type
 	 */
 	public function test_table_column_type($column, $expected)
 	{
@@ -308,7 +311,8 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * Test collated data types. The default collation is expected.
 	 *
-	 * @dataProvider provider_table_column_type_collation
+	 * @covers  Database_MySQL::table_columns
+	 * @dataProvider    provider_table_column_type_collation
 	 */
 	public function test_table_column_type_collation($column, $expected)
 	{
@@ -339,6 +343,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * Test different arguments to table_columns()
 	 *
+	 * @covers  Database_MySQL::table_columns
 	 * @dataProvider    provider_table_columns_argument
 	 */
 	public function test_table_columns_argument($input)
