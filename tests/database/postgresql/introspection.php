@@ -234,7 +234,8 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @dataProvider provider_table_column_type
+	 * @covers  Database_PostgreSQL::table_columns
+	 * @dataProvider    provider_table_column_type
 	 */
 	public function test_table_column_type($column, $expected)
 	{
@@ -264,6 +265,7 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * Test different arguments to table_columns()
 	 *
+	 * @covers  Database_PostgreSQL::table_columns
 	 * @dataProvider    provider_table_columns_argument
 	 */
 	public function test_table_columns_argument($input)

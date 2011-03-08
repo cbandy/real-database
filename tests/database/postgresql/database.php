@@ -292,6 +292,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::escape
 	 * @covers  Database_PostgreSQL::quote_literal
 	 * @dataProvider    provider_quote_literal
 	 *
