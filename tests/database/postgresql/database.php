@@ -3,8 +3,9 @@
 require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
 
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  PostgreSQL
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.postgresql
@@ -20,29 +21,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
 	}
 
-	protected $_table = 'temp_test_table';
-
-	public function setUp()
-	{
-		$db = $this->sharedFixture = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$db->execute_command(implode('; ', array(
-			'CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)',
-			'INSERT INTO '.$table.' ("value") VALUES (50)',
-			'INSERT INTO '.$table.' ("value") VALUES (55)',
-			'INSERT INTO '.$table.' ("value") VALUES (60)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-		)));
-	}
-
-	public function tearDown()
-	{
-		$db = $this->sharedFixture;
-
-		$db->disconnect();
-	}
+	protected $_table = 'kohana_test_table';
 
 	/**
 	 * @covers  Database_PostgreSQL::alter
@@ -57,43 +36,13 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 
 	/**
 	 * @covers  Database_PostgreSQL::copy_from
-	 */
-	public function test_copy_from()
-	{
-		$db = $this->sharedFixture;
-		$db->copy_from($this->_table, array("8\t\\N", "9\t75"));
-
-		$this->assertEquals(array(
-			array('id' => 1, 'value' => 50),
-			array('id' => 2, 'value' => 55),
-			array('id' => 3, 'value' => 60),
-			array('id' => 4, 'value' => 65),
-			array('id' => 5, 'value' => 65),
-			array('id' => 8, 'value' => NULL),
-			array('id' => 9, 'value' => 75),
-		), $db->execute_query('SELECT * FROM '.$db->quote_table($this->_table).' ORDER BY "id"')->as_array());
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::copy_from
 	 * @expectedException   Database_Exception
 	 */
 	public function test_copy_from_error()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$db->copy_from('kohana-nonexistent-table', array("8\t70"));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::copy_to
-	 */
-	public function test_copy_to()
-	{
-		$db = $this->sharedFixture;
-		$db->execute_command('INSERT INTO '.$db->quote_table($this->_table).' ("value") VALUES (NULL)');
-
-		$this->assertEquals(array("1\t50\n", "2\t55\n", "3\t60\n", "4\t65\n", "5\t65\n", "6\t\\N\n"), $db->copy_to($this->_table));
 	}
 
 	/**
@@ -102,7 +51,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_copy_to_error()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$db->copy_to('kohana-nonexistent-table');
 	}
@@ -155,7 +104,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_datatype($type, $attribute, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
@@ -183,215 +132,6 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL::execute_command
-	 */
-	public function test_execute_command_expression()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertSame(5, $db->execute_command(new SQL_Expression('DELETE FROM ?', array(new SQL_Table($this->_table)))));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::_evaluate_command
-	 * @covers  Database_PostgreSQL::execute_command
-	 */
-	public function test_execute_command_query()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertSame(5, $db->execute_command('SELECT * FROM '.$db->quote_table($this->_table)), 'Number of returned rows');
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::_evaluate_command
-	 * @covers  Database_PostgreSQL::execute_command
-	 */
-	public function test_execute_compound_command()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$this->assertSame(2, $db->execute_command('DELETE FROM '.$table.' WHERE "id" = 3; DELETE FROM '.$table.' WHERE "id" = 5'), 'Total number of rows');
-
-		try
-		{
-			// Connection should have no pending results
-			$db->execute_query('SELECT * FROM '.$table);
-		}
-		catch (Exception $e)
-		{
-			$this->fail($e->getMessage());
-		}
-	}
-
-	public function test_execute_copy()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$this->assertSame(0, $db->execute_command('COPY '.$table.' TO STDOUT'));
-
-		$this->assertNull($db->execute_query('COPY '.$table.' TO STDOUT'));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::execute_insert
-	 */
-	public function test_execute_insert()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$sql = 'INSERT INTO '.$table.' (value) VALUES (65)';
-
-		$this->assertEquals(array(1,6), $db->execute_insert($sql, 'id'));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::execute_insert
-	 */
-	public function test_execute_insert_expression()
-	{
-		$db = $this->sharedFixture;
-
-		$sql = new SQL_Expression(
-			'INSERT INTO ? (value) VALUES (65)',
-			array(new SQL_Table($this->_table))
-		);
-
-		$this->assertEquals(array(1,6), $db->execute_insert($sql, 'id'));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::execute_insert
-	 */
-	public function test_execute_insert_ireturning()
-	{
-		$db = $this->sharedFixture;
-
-		$delete = new Database_PostgreSQL_Delete($this->_table);
-		$delete->where('value', '=', 60)->returning(array('id'));
-
-		$this->assertEquals(array(1,3), $db->execute_insert($delete, 'id'));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::execute_prepared_command
-	 */
-	public function test_execute_prepared_command()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$name = $db->prepare(NULL, 'UPDATE '.$table.' SET "value" = 20 WHERE "value" = 65');
-
-		$this->assertSame(2, $db->execute_prepared_command($name));
-
-		$name = $db->prepare(NULL, 'UPDATE '.$table.' SET "value" = $1 WHERE "value" = $2');
-
-		$this->assertSame(1, $db->execute_prepared_command($name, array(20, 50)));
-		$this->assertSame(3, $db->execute_prepared_command($name, array(30, 20)));
-
-		try
-		{
-			$db->execute_prepared_command($name);
-			$this->fail('Executing without the required parameters should raise a Database_Exception');
-		}
-		catch (Database_Exception $e) {}
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::execute_prepared_insert
-	 */
-	public function test_execute_prepared_insert()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$name = $db->prepare(NULL, 'INSERT INTO '.$table.' ("value") VALUES (10) RETURNING "id"');
-
-		$this->assertSame(array(1, '6'), $db->execute_prepared_insert($name, 'id'));
-
-		$name = $db->prepare(NULL, 'INSERT INTO '.$table.' ("value") VALUES ($1) RETURNING "id"');
-
-		$this->assertSame(array(1, '7'), $db->execute_prepared_insert($name, 'id', array(20)));
-		$this->assertSame(array(1, '8'), $db->execute_prepared_insert($name, 'id', array(30)));
-
-		try
-		{
-			$db->execute_prepared_insert($name, 'id');
-			$this->fail('Executing without the required parameters should raise a Database_Exception');
-		}
-		catch (Database_Exception $e) {}
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::execute_prepared_query
-	 */
-	public function test_execute_prepared_query()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$name = $db->prepare(NULL, 'SELECT * FROM '.$table.' WHERE "value" = $1');
-
-		$result = $db->execute_prepared_query($name, array(60));
-
-		$this->assertType('Database_PostgreSQL_Result', $result, 'Parameters (1)');
-		$this->assertSame(1, $result->count(), 'Parameters (1)');
-		$this->assertEquals(60, $result->get('value'));
-
-		$result = $db->execute_prepared_query($name, array(50));
-
-		$this->assertType('Database_PostgreSQL_Result', $result, 'Parameters (2)');
-		$this->assertSame(1, $result->count(), 'Parameters (2)');
-		$this->assertEquals(50, $result->get('value'));
-
-		try
-		{
-			$db->execute_prepared_query($name);
-			$this->fail('Executing without the required parameters should raise a Database_Exception');
-		}
-		catch (Database_Exception $e) {}
-
-		$name = $db->prepare(NULL, 'SELECT * FROM '.$table);
-
-		$result = $db->execute_prepared_query($name);
-
-		$this->assertType('Database_PostgreSQL_Result', $result, 'No parameters');
-		$this->assertType('array', $result->current(), 'No parameters');
-
-		$result = $db->execute_prepared_query($name, array(), FALSE);
-
-		$this->assertType('Database_PostgreSQL_Result', $result, 'Result type (FALSE)');
-		$this->assertType('array', $result->current(), 'Result type (FALSE)');
-
-		$result = $db->execute_prepared_query($name, array(), TRUE);
-
-		$this->assertType('Database_PostgreSQL_Result', $result, 'Result type (TRUE)');
-		$this->assertType('stdClass', $result->current(), 'Result type (TRUE)');
-
-		$result = $db->execute_prepared_query($name, array(), 'Database_PostgreSQL_Database_Test_Class');
-
-		$this->assertType('Database_PostgreSQL_Result', $result, 'Result type (Database_PostgreSQL_Database_Test_Class)');
-		$this->assertType('Database_PostgreSQL_Database_Test_Class', $result->current(), 'Result type (Database_PostgreSQL_Database_Test_Class)');
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::execute_query
-	 */
-	public function test_execute_query_expression()
-	{
-		$db = Database::factory();
-
-		$result = $db->execute_query(new SQL_Expression('SELECT ?', array(1)));
-
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertSame(1, count($result));
-	}
-
-	/**
 	 * @covers  Database_PostgreSQL::insert
 	 * @dataProvider    provider_insert
 	 *
@@ -407,7 +147,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_prepare()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
 
 		$name = $db->prepare(NULL, 'SELECT * FROM '.$table);
@@ -488,7 +228,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_prepare_statement($input_sql, $input_params, $expected_sql, $expected_params)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
 
 		$input_sql = str_replace('$table', $table, $input_sql);
@@ -505,7 +245,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 
 	public function test_quote_binary()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$binary = new Database_Binary("\200\0\350");
 
 		$this->assertSame("'\\\\200\\\\000\\\\350'", $db->quote($binary));
@@ -516,7 +256,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_quote_expression()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$expression = new SQL_Expression("SELECT :value::interval, 'yes':::type", array(':value' => '1 week', ':type' => new SQL_Expression('boolean')));
 
 		$this->assertSame("SELECT '1 week'::interval, 'yes'::boolean", $db->quote_expression($expression));
@@ -527,7 +267,7 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_quote_expression_placeholder_first()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$this->assertSame('1', $db->quote_expression(new SQL_Expression('?', array(1))));
 		$this->assertSame('2', $db->quote_expression(new SQL_Expression(':param', array(':param' => 2))));
@@ -565,36 +305,6 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame($expected, $db->quote_literal($value));
 	}
 
-	public function test_savepoint_transactions()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-
-		$delete = 'DELETE FROM '.$table;
-		$select = 'SELECT * FROM '.$table;
-
-		$this->assertSame(5, $db->execute_query($select)->count(), 'Initial');
-
-		$db->begin();
-		$db->execute_command($delete.' WHERE "value" = 65');
-
-		$this->assertSame(3, $db->execute_query($select)->count(), 'Deleted 65');
-
-		$this->assertNull($db->savepoint('test_savepoint'));
-
-		$db->execute_command($delete.' WHERE "value" = 55');
-
-		$this->assertSame(2, $db->execute_query($select)->count(), 'Deleted 55');
-
-		$this->assertNull($db->rollback('test_savepoint'));
-
-		$this->assertSame(3, $db->execute_query($select)->count(), 'Rollback 55');
-
-		$this->assertNull($db->rollback());
-
-		$this->assertSame(5, $db->execute_query($select)->count(), 'Rollback 65');
-	}
-
 	/**
 	 * @covers  Database_PostgreSQL::select
 	 * @dataProvider    provider_select
@@ -617,5 +327,3 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->_test_method_type('update', $arguments, 'Database_PostgreSQL_Update');
 	}
 }
-
-class Database_PostgreSQL_Database_Test_Class {}
