@@ -77,7 +77,7 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 
 	public function from($reference, $table_alias = NULL)
 	{
-		if ( ! empty($reference) AND ! empty($this->parameters[':limit']))
+		if ( ! empty($reference) AND isset($this->parameters[':limit']))
 			throw new Kohana_Exception('PostgreSQL UPDATE does not support LIMIT with FROM');
 
 		return parent::from($reference, $table_alias);
