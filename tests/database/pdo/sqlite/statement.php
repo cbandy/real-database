@@ -1,39 +1,29 @@
 <?php
+
+require_once dirname(__FILE__).'/testcase'.EXT;
+require_once 'PHPUnit/Extensions/Database/DataSet/CsvDataSet.php';
+
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  SQLite
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_PDO_SQLite_Statement_Test extends PHPUnit_Framework_TestCase
+class Database_PDO_SQLite_Statement_Test extends Database_PDO_SQLite_TestCase
 {
-	public static function setUpBeforeClass()
+	protected $_table = 'kohana_test_table';
+
+	protected function getDataSet()
 	{
-		if ( ! extension_loaded('pdo_sqlite'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('PDO SQLite extension not installed');
+		$dataset = new PHPUnit_Extensions_Database_DataSet_CsvDataSet;
+		$dataset->addTable(
+			Database::factory()->table_prefix().$this->_table,
+			dirname(dirname(dirname(__FILE__))).'/datasets/values.csv'
+		);
 
-		if ( ! Database::factory() instanceof Database_PDO_SQLite)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for SQLite using PDO');
-	}
-
-	protected $_table = 'temp_test_table';
-	protected $_column = 'value';
-
-	public function setUp()
-	{
-		$db = $this->sharedFixture = Database::factory();
-		$table = $db->quote_table($this->_table);
-		$column = $db->quote_column($this->_column);
-
-		$db->execute_command('CREATE TEMPORARY TABLE '.$table.' ('.$column.' integer)');
-	}
-
-	public function tearDown()
-	{
-		$db = $this->sharedFixture;
-
-		$db->disconnect();
+		return $dataset;
 	}
 
 	public function provider_bind()
@@ -63,12 +53,11 @@ class Database_PDO_SQLite_Statement_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_bind($initial, $bound)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
-		$column = $db->quote_column($this->_column);
 
 		$statement = $db->prepare_statement(
-			new SQL_Expression("DELETE FROM $table WHERE $column = ?", array($initial))
+			new SQL_Expression("DELETE FROM $table WHERE value = ?", array($initial))
 		);
 
 		$var = $initial;
@@ -78,12 +67,11 @@ class Database_PDO_SQLite_Statement_Test extends PHPUnit_Framework_TestCase
 
 	protected function _test_bind_execute($value, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
-		$column = $db->quote_column($this->_column);
 
 		$statement = $db->prepare_statement(
-			new SQL_Expression("DELETE FROM $table WHERE $column = ?", array($value))
+			new SQL_Expression("DELETE FROM $table WHERE value = ?", array($value))
 		);
 
 		$var = $value;
