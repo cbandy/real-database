@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(__FILE__).'/testcase'.EXT;;
+require_once dirname(__FILE__).'/testcase'.EXT;
 require_once 'PHPUnit/Extensions/Database/DataSet/CsvDataSet.php';
 
 /**
