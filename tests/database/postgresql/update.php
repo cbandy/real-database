@@ -17,148 +17,265 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
 	}
 
-	protected $_table = 'temp_test_table';
-
-	public function setUp()
-	{
-		$db = $this->sharedFixture = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$db->execute_command(implode('; ', array(
-			'CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)',
-			'INSERT INTO '.$table.' ("value") VALUES (50)',
-			'INSERT INTO '.$table.' ("value") VALUES (55)',
-			'INSERT INTO '.$table.' ("value") VALUES (60)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-		)));
-	}
-
-	public function tearDown()
-	{
-		$db = $this->sharedFixture;
-
-		$db->disconnect();
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Update::from
-	 */
-	public function test_from_limit()
-	{
-		$db = $this->sharedFixture;
-		$command = $db->update($this->_table)->limit(5);
-
-		try
-		{
-			$command->from($this->_table);
-			$this->setExpectedException('Kohana_Exception');
-		}
-		catch (Kohana_Exception $e) {}
-
-		$this->assertSame($command, $command->from(NULL), 'Chainable (reset)');
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Update::limit
-	 */
-	public function test_limit()
-	{
-		$db = $this->sharedFixture;
-		$command = $db->update($this->_table, NULL, array('value' => 100))
-			->where('value', 'between', array(42,62));
-
-		$this->assertSame($command, $command->limit(2), 'Chainable (int)');
-		$this->assertSame(2, $command->execute($db));
-
-		$this->assertSame(0, $command->limit(0)->execute($db), 'Zero');
-
-		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
-		$this->assertSame(1, $command->execute($db));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Update::limit
-	 */
-	public function test_limit_from()
-	{
-		$db = $this->sharedFixture;
-		$command = $db->update($this->_table)->from($this->_table);
-
-		try
-		{
-			$command->limit(5);
-			$this->setExpectedException('Kohana_Exception');
-		}
-		catch (Kohana_Exception $e) {}
-
-		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Update::returning
-	 */
-	public function test_returning()
-	{
-		$db = $this->sharedFixture;
-		$query = $db->update($this->_table, NULL, array('value' => 100))
-			->where('value', 'between', array(52,62));
-
-		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
-
-		$result = $query->execute($db);
-
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertEquals(array(array('more' => 2), array('more' => 3)), $result->as_array(), 'Each aliased column');
-
-		$query->where('value', '=', 100);
-
-		$this->assertSame($query, $query->returning(new SQL_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
-
-		$result = $query->execute($db);
-
-		$this->assertEquals(array(array('rawr' => 'asdf'), array('rawr' => 'asdf')), $result->as_array(), 'Each expression');
-
-		$this->assertSame($query, $query->returning(NULL), 'Chainable (reset)');
-		$this->assertSame(2, $query->execute($db));
-	}
-
 	/**
 	 * @covers  Database_PostgreSQL_Update::as_assoc
-	 * @covers  Database_PostgreSQL_Update::execute
 	 */
 	public function test_as_assoc()
 	{
-		$db = $this->sharedFixture;
-		$query = $db->update($this->_table, NULL, array('value' => 100))
-			->where('value', 'between', array(52,62))
-			->returning(array('id'));
+		$command = new Database_PostgreSQL_Update;
 
-		$this->assertSame($query, $query->as_assoc(), 'Chainable');
+		$this->assertSame($command, $command->as_assoc(), 'Chainable');
+		$this->assertSame(FALSE, $command->as_object);
+	}
 
-		$result = $query->execute($db);
-
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
+	public function provider_as_object()
+	{
+		return array
+		(
+			array(FALSE),
+			array(TRUE),
+			array('a'),
+		);
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL_Update::as_object
-	 * @covers  Database_PostgreSQL_Update::execute
+	 * @dataProvider    provider_as_object
+	 *
+	 * @param   string|boolean  $as_object  Expected value
 	 */
-	public function test_as_object()
+	public function test_as_object($as_object)
 	{
-		$db = $this->sharedFixture;
-		$query = $db->update($this->_table, NULL, array('value' => 100))
-			->where('value', 'between', array(52,62))
-			->returning(array('id'));
+		$command = new Database_PostgreSQL_Update;
 
-		$this->assertSame($query, $query->as_object(), 'Chainable');
+		$this->assertSame($command, $command->as_object($as_object), 'Chainable');
+		$this->assertSame($as_object, $command->as_object);
+	}
 
-		$result = $query->execute($db);
+	public function provider_from_limit()
+	{
+		return array
+		(
+			array(0, 'a'),
+			array(0, array('a')),
 
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
+			array(1, 'a'),
+			array(1, array('a')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::from
+	 * @dataProvider    provider_from_limit
+	 *
+	 * @param   mixed   $limit
+	 * @param   mixed   $from
+	 */
+	public function test_from_limit($limit, $from)
+	{
+		$command = new Database_PostgreSQL_Update;
+		$command->limit($limit);
+
+		$this->setExpectedException('Kohana_Exception');
+
+		$command->from($from);
+	}
+
+	public function provider_from_limit_reset()
+	{
+		return array
+		(
+			array(NULL, NULL),
+
+			array(0, NULL),
+			array(0, ''),
+			array(0, array()),
+
+			array(1, NULL),
+			array(1, ''),
+			array(1, array()),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::from
+	 * @dataProvider    provider_from_limit_reset
+	 *
+	 * @param   mixed   $limit
+	 * @param   mixed   $from
+	 */
+	public function test_from_limit_reset($limit, $from)
+	{
+		$command = new Database_PostgreSQL_Update;
+		$command->limit($limit);
+
+		$this->assertSame($command, $command->from($from));
+	}
+
+	public function provider_limit()
+	{
+		return array
+		(
+			array(NULL, 'UPDATE "" SET '),
+			array(0, 'UPDATE "" SET  WHERE ctid IN (SELECT ctid FROM "" LIMIT 0)'),
+			array(1, 'UPDATE "" SET  WHERE ctid IN (SELECT ctid FROM "" LIMIT 1)'),
+			array(5, 'UPDATE "" SET  WHERE ctid IN (SELECT ctid FROM "" LIMIT 5)'),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::limit
+	 * @dataProvider    provider_limit
+	 *
+	 * @param   mixed   $value
+	 * @param   string  $expected
+	 */
+	public function test_limit($value, $expected)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Update;
+
+		$this->assertSame($command, $command->limit($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::limit
+	 * @dataProvider    provider_from_limit
+	 *
+	 * @param   mixed   $limit
+	 * @param   mixed   $from
+	 */
+	public function test_limit_from($limit, $from)
+	{
+		$command = new Database_PostgreSQL_Update;
+		$command->from($from);
+
+		$this->setExpectedException('Kohana_Exception');
+
+		$command->limit($limit);
+	}
+
+	public function provider_limit_from_reset()
+	{
+		return array
+		(
+			array(NULL),
+
+			array(''),
+			array('a'),
+
+			array(array()),
+			array(array('a')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::limit
+	 * @dataProvider    provider_limit_from_reset
+	 *
+	 * @param   mixed   $from
+	 */
+	public function test_limit_from_reset($from)
+	{
+		$command = new Database_PostgreSQL_Update;
+		$command->from($from);
+
+		$this->assertSame($command, $command->limit(NULL));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::limit
+	 * @dataProvider    provider_limit
+	 *
+	 * @param   mixed   $value
+	 */
+	public function test_limit_reset($value)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Update;
+		$command->limit($value);
+
+		$command->limit(NULL);
+
+		$this->assertSame('UPDATE "" SET ', $db->quote($command));
+	}
+
+	public function provider_returning()
+	{
+		return array
+		(
+			array(NULL, 'UPDATE "" SET '),
+
+			array(
+				array('a'),
+				'UPDATE "" SET  RETURNING "a"',
+			),
+			array(
+				array('a', 'b'),
+				'UPDATE "" SET  RETURNING "a", "b"',
+			),
+			array(
+				array('a' => 'b'),
+				'UPDATE "" SET  RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => 'b', 'c' => 'd'),
+				'UPDATE "" SET  RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'UPDATE "" SET  RETURNING "a"',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'UPDATE "" SET  RETURNING "a", "b"',
+			),
+			array(
+				array('a' => new SQL_Column('b')),
+				'UPDATE "" SET  RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
+				'UPDATE "" SET  RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(new SQL_Expression('expr'), 'UPDATE "" SET  RETURNING expr'),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::returning
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value
+	 * @param   string  $expected
+	 */
+	public function test_returning($value, $expected)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Update;
+
+		$this->assertSame($command, $command->returning($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Update::returning
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value
+	 */
+	public function test_returning_reset($value)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Update;
+		$command->returning($value);
+
+		$command->returning(NULL);
+
+		$this->assertSame('UPDATE "" SET ', $db->quote($command));
 	}
 
 	/**

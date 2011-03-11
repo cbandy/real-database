@@ -17,55 +17,42 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
 	}
 
-	protected $_table = 'temp_test_table';
-
-	public function setUp()
+	public function provider_distinct()
 	{
-		$db = $this->sharedFixture = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$db->execute_command(implode('; ', array(
-			'CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)',
-			'INSERT INTO '.$table.' ("value") VALUES (50)',
-			'INSERT INTO '.$table.' ("value") VALUES (55)',
-			'INSERT INTO '.$table.' ("value") VALUES (60)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-		)));
+		return array
+		(
+			array(FALSE, 'SELECT '),
+			array(TRUE, 'SELECT DISTINCT '),
+			array(array('value'), 'SELECT DISTINCT ON ("value") '),
+			array(new SQL_Expression('expr'), 'SELECT DISTINCT ON (expr) '),
+		);
 	}
 
-	public function tearDown()
+	/**
+	 * @covers  Database_PostgreSQL_Select::distinct
+	 * @dataProvider    provider_distinct
+	 *
+	 * @param   mixed   $value
+	 * @param   string  $expected
+	 */
+	public function test_distinct($value, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
+		$query = new Database_PostgreSQL_Select;
 
-		$db->disconnect();
+		$this->assertSame($query, $query->distinct($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($query));
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL_Select::distinct
 	 */
-	public function test_distinct()
+	public function test_distinct_void()
 	{
-		$db = $this->sharedFixture;
-		$query = $db->select(array('value'));
-
-		$this->assertType('Database_PostgreSQL_Select', $query);
-
-		$query->from(new SQL_Table_Reference($this->_table));
+		$db = Database::factory();
+		$query = new Database_PostgreSQL_Select;
 
 		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
-		$this->assertSame(4, $query->execute($db)->count(), 'Distinct (void)');
-
-		$this->assertSame($query, $query->distinct(TRUE), 'Chainable (TRUE)');
-		$this->assertSame(4, $query->execute($db)->count(), 'Distinct (TRUE)');
-
-		$this->assertSame($query, $query->distinct(FALSE), 'Chainable (FALSE)');
-		$this->assertSame(5, $query->execute($db)->count(), 'Not distinct');
-
-		$this->assertSame($query, $query->distinct(array('value')), 'Chainable (column)');
-		$this->assertSame(4, $query->execute($db)->count(), 'Distinct on column');
-
-		$this->assertSame($query, $query->distinct(new SQL_Expression('"value" % 10 = 0')), 'Chainable (expression)');
-		$this->assertSame(2, $query->execute($db)->count(), 'Distinct on expression');
+		$this->assertSame('SELECT DISTINCT ', $db->quote($query), 'Distinct (void)');
 	}
 }

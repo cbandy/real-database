@@ -17,150 +17,265 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
 	}
 
-	protected $_table = 'temp_test_table';
-
-	public function setUp()
-	{
-		$db = $this->sharedFixture = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$db->execute_command(implode('; ', array(
-			'CREATE TEMPORARY TABLE '.$table.' ("id" bigserial PRIMARY KEY, "value" integer)',
-			'INSERT INTO '.$table.' ("value") VALUES (50)',
-			'INSERT INTO '.$table.' ("value") VALUES (55)',
-			'INSERT INTO '.$table.' ("value") VALUES (60)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-			'INSERT INTO '.$table.' ("value") VALUES (65)',
-		)));
-	}
-
-	public function tearDown()
-	{
-		$db = $this->sharedFixture;
-
-		$db->disconnect();
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Delete::limit
-	 */
-	public function test_limit()
-	{
-		$db = $this->sharedFixture;
-		$command = $db->delete($this->_table)->where('value', 'between', array(42,62));
-
-		$this->assertSame($command, $command->limit(2), 'Chainable (int)');
-		$this->assertSame(2, $command->execute($db));
-
-		$this->assertSame(0, $command->limit(0)->execute($db), 'Zero');
-
-		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
-		$this->assertSame(1, $command->execute($db));
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Delete::limit
-	 */
-	public function test_limit_using()
-	{
-		$db = $this->sharedFixture;
-		$command = $db->delete($this->_table)->using($this->_table);
-
-		try
-		{
-			$command->limit(5);
-			$this->setExpectedException('Kohana_Exception');
-		}
-		catch (Kohana_Exception $e) {}
-
-		$this->assertSame($command, $command->limit(NULL), 'Chainable (reset)');
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Delete::returning
-	 */
-	public function test_returning()
-	{
-		$db = $this->sharedFixture;
-
-		$query = $db->delete($this->_table)->where('value', 'between', array(52,62));
-
-		$this->assertSame($query, $query->returning(array('more' => 'id')), 'Chainable (column)');
-
-		$result = $query->execute($db);
-
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertEquals(array(array('more' => 2), array('more' => 3)), $result->as_array(), 'Each aliased column');
-
-		$query->where('id', '=', 4);
-
-		$this->assertSame($query, $query->returning(new SQL_Expression('\'asdf\' AS "rawr"')), 'Chainable (expression)');
-
-		$result = $query->execute($db);
-
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertEquals(array(array('rawr' => 'asdf')), $result->as_array());
-
-		$query->where(NULL);
-
-		$this->assertSame($query, $query->returning(NULL), 'Chainable (reset)');
-		$this->assertSame(2, $query->execute($db));
-	}
-
 	/**
 	 * @covers  Database_PostgreSQL_Delete::as_assoc
-	 * @covers  Database_PostgreSQL_Delete::execute
 	 */
 	public function test_as_assoc()
 	{
-		$db = $this->sharedFixture;
-		$query = $db->delete($this->_table)
-			->where('value', 'between', array(52,62))
-			->returning(array('id'));
+		$command = new Database_PostgreSQL_Delete;
 
-		$this->assertSame($query, $query->as_assoc(), 'Chainable');
+		$this->assertSame($command, $command->as_assoc(), 'Chainable');
+		$this->assertSame(FALSE, $command->as_object);
+	}
 
-		$result = $query->execute($db);
-
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertEquals(array(array('id' => 2), array('id' => 3)), $result->as_array(), 'Each column');
+	public function provider_as_object()
+	{
+		return array
+		(
+			array(FALSE),
+			array(TRUE),
+			array('a'),
+		);
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL_Delete::as_object
-	 * @covers  Database_PostgreSQL_Delete::execute
+	 * @dataProvider    provider_as_object
+	 *
+	 * @param   string|boolean  $as_object  Expected value
 	 */
-	public function test_as_object()
+	public function test_as_object($as_object)
 	{
-		$db = $this->sharedFixture;
-		$query = $db->delete($this->_table)
-			->where('value', 'between', array(52,62))
-			->returning(array('id'));
+		$command = new Database_PostgreSQL_Delete;
 
-		$this->assertSame($query, $query->as_object(), 'Chainable (void)');
+		$this->assertSame($command, $command->as_object($as_object), 'Chainable');
+		$this->assertSame($as_object, $command->as_object);
+	}
 
-		$result = $query->execute($db);
+	public function provider_limit()
+	{
+		return array
+		(
+			array(NULL, 'DELETE FROM ""'),
+			array(0, 'DELETE FROM "" WHERE ctid IN (SELECT ctid FROM "" LIMIT 0)'),
+			array(1, 'DELETE FROM "" WHERE ctid IN (SELECT ctid FROM "" LIMIT 1)'),
+			array(5, 'DELETE FROM "" WHERE ctid IN (SELECT ctid FROM "" LIMIT 5)'),
+		);
+	}
 
-		$this->assertType('Database_PostgreSQL_Result', $result);
-		$this->assertEquals(array( (object) array('id' => 2), (object) array('id' => 3)), $result->as_array(), 'Each column');
+	/**
+	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @dataProvider    provider_limit
+	 *
+	 * @param   mixed   $value
+	 * @param   string  $expected
+	 */
+	public function test_limit($value, $expected)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Delete;
+
+		$this->assertSame($command, $command->limit($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @dataProvider    provider_limit
+	 *
+	 * @param   mixed   $value
+	 */
+	public function test_limit_reset($value)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Delete;
+		$command->limit($value);
+
+		$command->limit(NULL);
+
+		$this->assertSame('DELETE FROM ""', $db->quote($command));
+	}
+
+	public function provider_limit_using()
+	{
+		return array
+		(
+			array(0, 'a'),
+			array(0, array('a')),
+
+			array(1, 'a'),
+			array(1, array('a')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @dataProvider    provider_limit_using
+	 *
+	 * @param   mixed   $limit
+	 * @param   mixed   $using
+	 */
+	public function test_limit_using($limit, $using)
+	{
+		$command = new Database_PostgreSQL_Delete;
+		$command->using($using);
+
+		$this->setExpectedException('Kohana_Exception');
+
+		$command->limit($limit);
+	}
+
+	public function provider_limit_using_reset()
+	{
+		return array
+		(
+			array(NULL),
+
+			array(''),
+			array('a'),
+
+			array(array()),
+			array(array('a')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @dataProvider    provider_limit_using_reset
+	 *
+	 * @param   mixed   $using
+	 */
+	public function test_limit_using_reset($using)
+	{
+		$command = new Database_PostgreSQL_Delete;
+		$command->using($using);
+
+		$this->assertSame($command, $command->limit(NULL));
+	}
+
+	public function provider_returning()
+	{
+		return array
+		(
+			array(NULL, 'DELETE FROM ""'),
+
+			array(
+				array('a'),
+				'DELETE FROM "" RETURNING "a"',
+			),
+			array(
+				array('a', 'b'),
+				'DELETE FROM "" RETURNING "a", "b"',
+			),
+			array(
+				array('a' => 'b'),
+				'DELETE FROM "" RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => 'b', 'c' => 'd'),
+				'DELETE FROM "" RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'DELETE FROM "" RETURNING "a"',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'DELETE FROM "" RETURNING "a", "b"',
+			),
+			array(
+				array('a' => new SQL_Column('b')),
+				'DELETE FROM "" RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
+				'DELETE FROM "" RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(new SQL_Expression('expr'), 'DELETE FROM "" RETURNING expr'),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Delete::returning
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value
+	 * @param   string  $expected
+	 */
+	public function test_returning($value, $expected)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Delete;
+
+		$this->assertSame($command, $command->returning($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Delete::returning
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value
+	 */
+	public function test_returning_reset($value)
+	{
+		$db = Database::factory();
+		$command = new Database_PostgreSQL_Delete;
+		$command->returning($value);
+
+		$command->returning(NULL);
+
+		$this->assertSame('DELETE FROM ""', $db->quote($command));
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL_Delete::using
+	 * @dataProvider    provider_limit_using
+	 *
+	 * @param   mixed   $limit
+	 * @param   mixed   $using
 	 */
-	public function test_using_limit()
+	public function test_using_limit($limit, $using)
 	{
-		$db = $this->sharedFixture;
-		$command = $db->delete($this->_table)->limit(5);
+		$command = new Database_PostgreSQL_Delete;
+		$command->limit($limit);
 
-		try
-		{
-			$command->using($this->_table);
-			$this->setExpectedException('Kohana_Exception');
-		}
-		catch (Kohana_Exception $e) {}
+		$this->setExpectedException('Kohana_Exception');
 
-		$this->assertSame($command, $command->using(NULL), 'Chainable (reset)');
+		$command->using($using);
+	}
+
+	public function provider_using_limit_reset()
+	{
+		return array
+		(
+			array(NULL, NULL),
+
+			array(0, NULL),
+			array(0, ''),
+			array(0, array()),
+
+			array(1, NULL),
+			array(1, ''),
+			array(1, array()),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Delete::using
+	 * @dataProvider    provider_using_limit_reset
+	 *
+	 * @param   mixed   $limit
+	 * @param   mixed   $using
+	 */
+	public function test_from_limit_reset($limit, $using)
+	{
+		$command = new Database_PostgreSQL_Delete;
+		$command->limit($limit);
+
+		$this->assertSame($command, $command->using($using));
 	}
 
 	/**
