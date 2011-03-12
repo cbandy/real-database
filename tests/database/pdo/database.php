@@ -20,53 +20,24 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PDO');
 	}
 
-	protected $_table = 'temp_test_table';
-	protected $_column = 'value';
+	protected $_table = 'kohana_test_table';
 
-	public function setUp()
-	{
-		$db = $this->sharedFixture = Database::factory();
-		$table = $db->quote_table($this->_table);
-		$column = $db->quote_column($this->_column);
-
-		$db->execute_command('CREATE TEMPORARY TABLE '.$table.' ('.$column.' integer)');
-		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (50)');
-		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (55)');
-		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (60)');
-	}
-
-	public function tearDown()
-	{
-		$db = $this->sharedFixture;
-
-		$db->disconnect();
-	}
-
+	/**
+	 * @covers  Database_PDO::execute_query
+	 */
 	public function test_execute_query_command()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$this->assertNull($db->execute_query('DELETE FROM '.$db->quote_table($this->_table)));
 	}
 
 	/**
-	 * @covers  Database_PDO::last_insert_id
+	 * @covers  Database_PDO::prepare
 	 */
-	public function test_last_insert_id()
-	{
-		$db = $this->sharedFixture;
-		$table = $db->quote_table($this->_table);
-		$column = $db->quote_column($this->_column);
-
-		$db->execute_command('INSERT INTO '.$table.' ('.$column.') VALUES (100)');
-
-		$this->assertEquals(4, $db->last_insert_id(), 'Once');
-		$this->assertEquals(4, $db->last_insert_id(), 'Twice');
-	}
-
 	public function test_prepare()
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$statement = $db->prepare('SELECT * FROM '.$db->quote_table($this->_table));
 
 		$this->assertType('PDOStatement', $statement);
@@ -89,15 +60,15 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 				'DELETE FROM $table',
 			),
 			array(
-				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'DELETE FROM $table WHERE $column = ?',
 			),
 			array(
-				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'DELETE FROM $table WHERE $column = ?',
 			),
 			array(
-				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column($this->_column), '=', 60)),
+				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
 				'DELETE FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
 			),
 			array(
@@ -125,7 +96,7 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 				'DELETE FROM $table WHERE $column IN (?, ?, ?)',
 			),
 			array(
-				'DELETE FROM $table WHERE $column IN (?)', array(array(new SQL_Identifier($this->_column), 70, 80)),
+				'DELETE FROM $table WHERE $column IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
 				'DELETE FROM $table WHERE $column IN ($column, ?, ?)',
 			),
 		);
@@ -139,9 +110,9 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_prepare_statement($input_sql, $input_params, $expected_sql)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
-		$column = $db->quote_column($this->_column);
+		$column = $db->quote_column('value');
 
 		$input_sql = strtr($input_sql, array('$table' => $table, '$column' => $column));
 		$expected_sql = strtr($expected_sql, array('$table' => $table, '$column' => $column));
