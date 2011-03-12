@@ -13,7 +13,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$table = $db->quote_table('a');
 
 		$this->assertSame('INSERT INTO '.$table.' DEFAULT VALUES', $db->quote(new Database_SQLite_Insert('a')));
@@ -25,7 +25,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_values()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_SQLite_Insert('a');
 		$table = $db->quote_table('a');
 
@@ -43,5 +43,22 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($command, $command->values(array('e'), array('f'), array('g')), 'Chainable (three arrays)');
 		$this->assertSame('INSERT INTO '.$table." VALUES ('e');INSERT INTO ".$table." VALUES ('f');INSERT INTO ".$table." VALUES ('g');", $db->quote($command));
+	}
+
+	/**
+	 * @covers  Database_SQLite_Insert::__toString
+	 */
+	public function test_toString()
+	{
+		$command = new Database_SQLite_Insert;
+		$command
+			->into('a')
+			->columns(array('b'));
+
+		$this->assertSame('INSERT INTO :table (:columns) DEFAULT VALUES', (string) $command);
+
+		$command->values(array('c'));
+
+		$this->assertSame('INSERT INTO :table (:columns) VALUES ?;', (string) $command);
 	}
 }

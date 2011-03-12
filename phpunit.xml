@@ -21,6 +21,7 @@
 		</testsuite>
 		<testsuite name="Database SQLite Implementations">
 			<directory suffix=".php">tests/database/pdo/sqlite</directory>
+			<directory suffix=".php">tests/database/sqlite</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

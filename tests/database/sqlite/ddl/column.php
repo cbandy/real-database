@@ -13,7 +13,7 @@ class Database_SQLite_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_SQLite_DDL_Column('a');
 
 		$this->assertSame($column, $column->identity());
@@ -25,7 +25,7 @@ class Database_SQLite_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_prior_constraint()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_SQLite_DDL_Column('a');
 		$column->constraint(new SQL_DDL_Constraint_Unique);
 
@@ -38,7 +38,7 @@ class Database_SQLite_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_prior_primary_key()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$column = new Database_SQLite_DDL_Column('a');
 		$column->constraint(new SQL_DDL_Constraint_Primary);
 

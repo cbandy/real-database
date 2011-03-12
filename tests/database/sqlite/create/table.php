@@ -13,7 +13,7 @@ class Database_SQLite_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_if_not_exists()
 	{
-		$db = $this->sharedFixture;
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_SQLite_Create_Table('a');
 		$command->parameters[':columns'] = array();
 		$table = $db->quote_table('a');
