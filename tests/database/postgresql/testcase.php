@@ -142,17 +142,18 @@ class Database_PostgreSQL_TestCase_Truncate
 
 		$has_restart_identity = version_compare($version, '8.4', '>=');
 
-		$sequences = array();
-		$tables = array();
-
 		/** @var $table PHPUnit_Extensions_Database_DataSet_ITable */
 		foreach ($dataSet->getReverseIterator() as $table)
 		{
-			$tables[] = $connection->quoteSchemaObject(
+			$sql = 'TRUNCATE '.$connection->quoteSchemaObject(
 				$table->getTableMetaData()->getTableName()
 			);
 
-			if ( ! $has_restart_identity)
+			if ($has_restart_identity)
+			{
+				$sql .= ' RESTART IDENTITY';
+			}
+			else
 			{
 				$table_sequences =
 					'SELECT s.relname FROM pg_catalog.pg_class t'
@@ -172,41 +173,29 @@ class Database_PostgreSQL_TestCase_Truncate
 				{
 					foreach ($table_sequences as $sequence)
 					{
-						$sequences[] = $connection->quoteSchemaObject($sequence);
+						$sql .= '; ALTER SEQUENCE '
+							.$connection->quoteSchemaObject($sequence)
+							.' RESTART';
 					}
 				}
 
 				unset($table_sequences);
 			}
-		}
 
-		$sql = 'TRUNCATE '.implode(', ', $tables);
-
-		if ($has_restart_identity)
-		{
-			$sql .= ' RESTART IDENTITY';
-		}
-		else
-		{
-			foreach ($sequences as $sequence)
+			try
 			{
-				$sql .= '; ALTER SEQUENCE '.$sequence.' RESTART';
+				$connection->getConnection()->exec($sql);
 			}
-		}
-
-		try
-		{
-			$connection->getConnection()->exec($sql);
-		}
-		catch (PDOException $e)
-		{
-			throw new PHPUnit_Extensions_Database_Operation_Exception(
-				'TRUNCATE',
-				$sql,
-				array(),
-				$table,
-				$e->getMessage()
-			);
+			catch (PDOException $e)
+			{
+				throw new PHPUnit_Extensions_Database_Operation_Exception(
+					'TRUNCATE',
+					$sql,
+					array(),
+					$table,
+					$e->getMessage()
+				);
+			}
 		}
 	}
 }
