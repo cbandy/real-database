@@ -477,6 +477,14 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 				'DELETE FROM $table WHERE "value" IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
 				'DELETE FROM $table WHERE "value" IN ("value", $1, $2)', array(70, 80),
 			),
+			array(
+				'DELETE FROM $table WHERE "value" IN (:list)', array(':list' => array(60, 70, 80)),
+				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
+			array(
+				'DELETE FROM $table WHERE "value" IN (:list) OR "value" IN (:list)', array(':list' => array(60, 70, 80)),
+				'DELETE FROM $table WHERE "value" IN ($1, $2, $3) OR "value" IN ($1, $2, $3)', array(60, 70, 80),
+			),
 		);
 	}
 

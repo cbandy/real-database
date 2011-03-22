@@ -393,7 +393,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	protected function _parse($statement, $parameters, & $result_parameters)
 	{
-		$chunks = preg_split($this->_placeholder, $statement, NULL, PREG_SPLIT_OFFSET_CAPTURE);
+		$chunks = preg_split(
+			$this->_placeholder,
+			$statement,
+			NULL,
+			PREG_SPLIT_OFFSET_CAPTURE
+		);
 
 		$fragments = NULL;
 		$position = 0;
@@ -406,10 +411,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			{
 				// Positional parameter
 				$placeholder = $position++;
-
-				//if ( ! array_key_exists($placeholder, $parameters))
-				//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
-
 				$value = $parameters[$placeholder];
 
 				if (is_array($value))
@@ -418,7 +419,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				}
 				elseif ($value instanceof SQL_Expression)
 				{
-					$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+					$result .= $this->_parse(
+						(string) $value,
+						$value->parameters,
+						$result_parameters
+					);
 				}
 				elseif ($value instanceof SQL_Identifier)
 				{
@@ -438,18 +443,22 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 				if ( ! isset($fragments[$placeholder]))
 				{
-					//if ( ! array_key_exists($placeholder, $parameters))
-					//	throw new Kohana_Exception('Expression lacking parameter ":param"', array(':param' => $placeholder));
-
 					$value = $parameters[$placeholder];
 
 					if (is_array($value))
 					{
-						$fragments[$placeholder] = $this->_parse_array($value, $result_parameters);
+						$fragments[$placeholder] = $this->_parse_array(
+							$value,
+							$result_parameters
+						);
 					}
 					elseif ($value instanceof SQL_Expression)
 					{
-						$fragments[$placeholder] = $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+						$fragments[$placeholder] = $this->_parse(
+							(string) $value,
+							$value->parameters,
+							$result_parameters
+						);
 					}
 					elseif ($value instanceof SQL_Identifier)
 					{
@@ -473,8 +482,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Recursively convert an array to a SQL fragment with parameters consisting only of unquoted
-	 * literals.
+	 * Recursively convert an array to a SQL fragment with parameters consisting
+	 * only of unquoted literals.
 	 *
 	 * @param   array   $array              Unquoted parameters
 	 * @param   array   $result_parameters  Parameters for the resulting fragment
@@ -495,7 +504,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 			elseif ($value instanceof SQL_Expression)
 			{
-				$result .= $this->_parse($value->__toString(), $value->parameters, $result_parameters);
+				$result .= $this->_parse(
+					(string) $value,
+					$value->parameters,
+					$result_parameters
+				);
 			}
 			elseif ($value instanceof SQL_Identifier)
 			{

@@ -123,6 +123,8 @@ class SQL_DML_Set extends SQL_Expression
 	/**
 	 * Add a query using EXCEPT
 	 *
+	 * [!!] Not supported by MySQL
+	 *
 	 * @param   SQL_Expression  $query
 	 * @param   boolean         $all    Allow duplicate rows
 	 * @return  $this
@@ -134,6 +136,8 @@ class SQL_DML_Set extends SQL_Expression
 
 	/**
 	 * Open a parenthesis using EXCEPT, optionally adding another query
+	 *
+	 * [!!] Not supported by MySQL
 	 *
 	 * @param   SQL_Expression  $query
 	 * @param   boolean         $all    Allow duplicate rows
@@ -147,6 +151,8 @@ class SQL_DML_Set extends SQL_Expression
 	/**
 	 * Add a query using INTERSECT
 	 *
+	 * [!!] Not supported by MySQL
+	 *
 	 * @param   SQL_Expression  $query
 	 * @param   boolean         $all    Allow duplicate rows
 	 * @return  $this
@@ -158,6 +164,8 @@ class SQL_DML_Set extends SQL_Expression
 
 	/**
 	 * Open a parenthesis using INTERSECT, optionally adding another query
+	 *
+	 * [!!] Not supported by MySQL
 	 *
 	 * @param   SQL_Expression  $query
 	 * @param   boolean         $all    Allow duplicate rows
@@ -171,6 +179,8 @@ class SQL_DML_Set extends SQL_Expression
 	/**
 	 * Set the maximum number of rows
 	 *
+	 * [!!] Not supported by SQL Server
+	 *
 	 * @param   integer $count  Number of rows
 	 * @return  $this
 	 */
@@ -183,6 +193,8 @@ class SQL_DML_Set extends SQL_Expression
 
 	/**
 	 * Set the number of rows to skip
+	 *
+	 * [!!] Not supported by SQL Server
 	 *
 	 * @param   integer $start  Number of rows
 	 * @return  $this

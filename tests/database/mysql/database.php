@@ -317,6 +317,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * @covers  Database_MySQL::escape
 	 * @covers  Database_MySQL::quote_literal
 	 * @dataProvider    provider_quote_literal
 	 *
@@ -328,5 +329,49 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$db = Database::factory();
 
 		$this->assertSame($expected, $db->quote_literal($value));
+	}
+
+	/**
+	 * @covers  Database_MySQL::connect
+	 * @covers  Database_MySQL::disconnect
+	 */
+	public function test_reconnect()
+	{
+		$db = Database::factory();
+
+		$db->connect();
+		$db->disconnect();
+		$db->connect();
+	}
+
+	public function provider_table_prefix()
+	{
+		return array
+		(
+			array('asdf', 'asdf'),
+			array(NULL, ''),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::__construct
+	 * @covers  Database_MySQL::table_prefix
+	 * @dataProvider    provider_table_prefix
+	 *
+	 * @param   string  $value
+	 * @param   string  $expected
+	 */
+	public function test_table_prefix($value, $expected)
+	{
+		$db = new Database_MySQL('name', array(
+			'connection' => array(
+				'hostname' => '',
+				'username' => '',
+				'password' => '',
+			),
+			'table_prefix' => $value,
+		));
+
+		$this->assertSame($expected, $db->table_prefix());
 	}
 }
