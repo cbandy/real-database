@@ -67,14 +67,14 @@ class SQL_DML_Select extends SQL_Expression
 
 		if (isset($this->parameters[':limit']))
 		{
-			// Not allowed in MSSQL
+			// Not allowed by MSSQL
 			$value .= ' LIMIT :limit';
 		}
 
 		if ( ! empty($this->parameters[':offset']))
 		{
 			// LIMIT required by MySQL and SQLite
-			// Not allowed in MSSQL
+			// Not allowed by MSSQL
 			$value .= ' OFFSET :offset';
 		}
 

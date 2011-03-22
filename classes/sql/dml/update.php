@@ -38,8 +38,8 @@ class SQL_DML_Update extends SQL_Expression
 
 		if ( ! empty($this->parameters[':from']))
 		{
-			// Not allowed in MySQL
-			// Not allowed in SQLite
+			// Not allowed by MySQL
+			// Not allowed by SQLite
 			$value .= ' FROM :from';
 		}
 
@@ -50,8 +50,8 @@ class SQL_DML_Update extends SQL_Expression
 
 		if (isset($this->parameters[':limit']))
 		{
-			// Not allowed in MSSQL
-			// Not allowed in PostgreSQL
+			// Not allowed by MSSQL
+			// Not allowed by PostgreSQL
 			$value .= ' LIMIT :limit';
 		}
 

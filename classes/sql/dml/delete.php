@@ -36,8 +36,8 @@ class SQL_DML_Delete extends SQL_Expression
 
 		if ( ! empty($this->parameters[':using']))
 		{
-			// Not allowed in SQLite
-			// Should be 'FROM' in MSSQL
+			// Not allowed by MSSQL
+			// Not allowed by SQLite
 			$value .= ' USING :using';
 		}
 
@@ -48,8 +48,8 @@ class SQL_DML_Delete extends SQL_Expression
 
 		if (isset($this->parameters[':limit']))
 		{
-			// Not allowed in MSSQL
-			// Not allowed in PostgreSQL
+			// Not allowed by MSSQL
+			// Not allowed by PostgreSQL
 			$value .= ' LIMIT :limit';
 		}
 
