@@ -26,6 +26,11 @@ class Database_SQLServer_Delete extends SQL_DML_Delete
 
 		$value .= ' FROM :table';
 
+		if ( ! empty($this->parameters[':returning']))
+		{
+			$value .= ' OUTPUT :returning';
+		}
+
 		if ( ! empty($this->parameters[':using']))
 		{
 			$value .= ' FROM :using';

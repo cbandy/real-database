@@ -19,8 +19,9 @@ class Database_SQLServer_Delete_Test extends PHPUnit_Framework_TestCase
 			->from('a')
 			->using('b')
 			->where('c', '=', 'd')
-			->limit(1);
+			->limit(1)
+			->returning(array('e'));
 
-		$this->assertSame('DELETE TOP (:limit) FROM :table FROM :using WHERE :where', (string) $statement);
+		$this->assertSame('DELETE TOP (:limit) FROM :table OUTPUT :returning FROM :using WHERE :where', (string) $statement);
 	}
 }
