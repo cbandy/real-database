@@ -20,22 +20,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
 	}
 
-	protected $_table = 'temp_test_table';
-
-	public function setUp()
-	{
-		$db = $this->sharedFixture = Database::factory();
-
-		$db->execute_command('CREATE TEMPORARY TABLE '.$db->quote_table($this->_table).' (id bigint unsigned AUTO_INCREMENT PRIMARY KEY, value integer)');
-		$db->execute_command('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (50), (55), (60)');
-	}
-
-	public function tearDown()
-	{
-		$db = $this->sharedFixture;
-
-		$db->disconnect();
-	}
+	protected $_table = 'kohana_test_table';
 
 	/**
 	 * @covers  Database_MySQL::alter
@@ -96,7 +81,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_datatype($type, $attribute, $expected)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
@@ -122,60 +107,6 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 	public function test_execute_command_error($value)
 	{
 		parent::test_execute_command_error($value);
-	}
-
-	/**
-	 * @covers  Database_MySQL::execute_command
-	 */
-	public function test_execute_command_expression()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertSame(3, $db->execute_command(new SQL_Expression('DELETE FROM ?', array(new SQL_Table($this->_table)))));
-	}
-
-	/**
-	 * @covers  Database_MySQL::execute_command
-	 */
-	public function test_execute_command_query()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertSame(3, $db->execute_command('SELECT * FROM '.$db->quote_table($this->_table)), 'Number of returned rows');
-	}
-
-	/**
-	 * @covers  Database_MySQL::execute_command
-	 * @expectedException Database_Exception
-	 */
-	public function test_execute_compound_command()
-	{
-		$db = $this->sharedFixture;
-
-		$db->execute_command('DELETE FROM '.$db->quote_table($this->_table).'; DELETE FROM '.$db->quote_table($this->_table));
-	}
-
-	/**
-	 * @covers  Database_MySQL::execute_query
-	 * @expectedException Database_Exception
-	 */
-	public function test_execute_compound_query()
-	{
-		$db = $this->sharedFixture;
-
-		$db->execute_query('SELECT * FROM '.$db->quote_table($this->_table).'; SELECT * FROM '.$db->quote_table($this->_table));
-	}
-
-	/**
-	 * @covers  Database_MySQL::execute_insert
-	 */
-	public function test_execute_insert()
-	{
-		$db = $this->sharedFixture;
-
-		$this->assertSame(array(0,1), $db->execute_insert('', NULL), 'First identity from prior INSERT');
-		$this->assertSame(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)', NULL));
-		$this->assertSame(array(2,5), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (70), (75)', NULL), 'AUTO_INCREMENT of the first row');
 	}
 
 	/**
@@ -283,7 +214,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 	 */
 	public function test_prepare_statement($input_sql, $input_params, $expected_sql, $expected_params)
 	{
-		$db = $this->sharedFixture;
+		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
 
 		$input_sql = strtr($input_sql, array('$table' => $table));
