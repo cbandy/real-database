@@ -607,6 +607,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$table = trim($table, $this->_quote);
 		}
 
+		$this->_connection or $this->connect();
+
 		try
 		{
 			// Raises E_WARNING on error
@@ -657,6 +659,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				$table = $this->quote_table($table);
 			}
 		}
+
+		$this->_connection or $this->connect();
 
 		if (Database_PostgreSQL::$bug_copy_to_null)
 		{
