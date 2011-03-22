@@ -8,22 +8,13 @@
  */
 class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		if ( ! extension_loaded('mysql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
-
-		if ( ! Database::factory() instanceof Database_MySQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
-	}
-
 	/**
 	 * @covers  Database_MySQL_Alter_Table::_position
 	 * @covers  Database_MySQL_Alter_Table::add_column
 	 */
 	public function test_add_column()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
 		$command = new Database_MySQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
@@ -43,7 +34,7 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_change_column()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
 		$command = new Database_MySQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
@@ -62,7 +53,7 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_drop_constraint()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
 		$command = new Database_MySQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
@@ -81,7 +72,7 @@ class Database_MySQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_option()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
 		$command = new Database_MySQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 

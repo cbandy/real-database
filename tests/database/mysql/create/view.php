@@ -8,21 +8,12 @@
  */
 class Database_MySQL_Create_View_Test extends PHPUnit_Framework_TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		if ( ! extension_loaded('mysql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
-
-		if ( ! Database::factory() instanceof Database_MySQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
-	}
-
 	/**
 	 * @covers  Database_MySQL_Create_View::algorithm
 	 */
 	public function test_algorithm()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
 		$command = new Database_MySQL_Create_View('a', new Database_Query('b'));
 		$table = $db->quote_table('a');
 
@@ -35,7 +26,7 @@ class Database_MySQL_Create_View_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_check()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
 		$command = new Database_MySQL_Create_View('a', new Database_Query('b'));
 		$table = $db->quote_table('a');
 
