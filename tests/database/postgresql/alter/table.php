@@ -8,21 +8,12 @@
  */
 class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		if ( ! extension_loaded('pgsql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
-
-		if ( ! Database::factory() instanceof Database_PostgreSQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
-	}
-
 	/**
 	 * @covers  Database_PostgreSQL_Alter_Table::drop_column
 	 */
 	public function test_drop_column()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
@@ -41,7 +32,7 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_drop_constraint()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
@@ -60,7 +51,7 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_rename_column()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
@@ -73,7 +64,7 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_set_not_null()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
@@ -92,7 +83,7 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_type()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Alter_Table('a');
 		$table = $db->quote_table('a');
 

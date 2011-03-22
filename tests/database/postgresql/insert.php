@@ -8,15 +8,6 @@
  */
 class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		if ( ! extension_loaded('pgsql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
-
-		if ( ! Database::factory() instanceof Database_PostgreSQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
-	}
-
 	/**
 	 * @covers  Database_PostgreSQL_Insert::as_assoc
 	 */
@@ -80,7 +71,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity($value, $column, $expected)
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Insert;
 
 		$this->assertSame($command, $command->identity($value), 'Chainable');
@@ -141,7 +132,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning($value, $expected)
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Insert;
 
 		$this->assertSame($command, $command->returning($value), 'Chainable');

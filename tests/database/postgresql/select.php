@@ -8,15 +8,6 @@
  */
 class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		if ( ! extension_loaded('pgsql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
-
-		if ( ! Database::factory() instanceof Database_PostgreSQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
-	}
-
 	public function provider_distinct()
 	{
 		return array
@@ -37,7 +28,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_distinct($value, $expected)
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_PostgreSQL_Select;
 
 		$this->assertSame($query, $query->distinct($value), 'Chainable');
@@ -49,7 +40,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_distinct_void()
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$query = new Database_PostgreSQL_Select;
 
 		$this->assertSame($query, $query->distinct(), 'Chainable (void)');

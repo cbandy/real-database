@@ -8,15 +8,6 @@
  */
 class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		if ( ! extension_loaded('pgsql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('PostgreSQL extension not installed');
-
-		if ( ! Database::factory() instanceof Database_PostgreSQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for PostgreSQL');
-	}
-
 	/**
 	 * @covers  Database_PostgreSQL_Delete::as_assoc
 	 */
@@ -72,7 +63,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit($value, $expected)
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Delete;
 
 		$this->assertSame($command, $command->limit($value), 'Chainable');
@@ -87,7 +78,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit_reset($value)
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Delete;
 		$command->limit($value);
 
@@ -206,7 +197,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning($value, $expected)
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Delete;
 
 		$this->assertSame($command, $command->returning($value), 'Chainable');
@@ -221,7 +212,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning_reset($value)
 	{
-		$db = Database::factory();
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$command = new Database_PostgreSQL_Delete;
 		$command->returning($value);
 
