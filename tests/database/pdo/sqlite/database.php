@@ -191,7 +191,7 @@ class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 		$statement = new Database_SQLite_Insert($this->_table, array('value'));
 		$statement->identity('id')->values(array('65'), array('70'));
 
-		$this->assertEquals(array(1,5), $statement->execute($db), 'Count is always one. Identity is INTEGER PRIMARY KEY of the last row');
+		$this->assertEquals(array(1,5), $db->execute($statement), 'Count is always one. Identity is INTEGER PRIMARY KEY of the last row');
 	}
 
 	public function provider_table_columns()

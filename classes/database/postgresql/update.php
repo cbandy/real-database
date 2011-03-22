@@ -14,7 +14,7 @@
  * @link http://www.postgresql.org/docs/current/static/sql-update.html
  */
 class Database_PostgreSQL_Update extends SQL_DML_Update
-	implements Database_iExecutable, Database_PostgreSQL_iReturning
+	implements Database_PostgreSQL_iReturning
 {
 	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
@@ -57,22 +57,6 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 		$this->as_object = $class;
 
 		return $this;
-	}
-
-	/**
-	 * Execute the UPDATE on a Database. Returns a result set when returning()
-	 * is set.
-	 *
-	 * @param   Database_PostgreSQL $db Connection on which to execute
-	 * @return  integer                     Number of affected rows
-	 * @return  Database_PostgreSQL_Result  Result set
-	 */
-	public function execute($db)
-	{
-		if (empty($this->parameters[':returning']))
-			return $db->execute_command($this);
-
-		return $db->execute_query($this, $this->as_object);
 	}
 
 	public function from($reference, $table_alias = NULL)
