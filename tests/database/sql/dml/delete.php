@@ -114,18 +114,101 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('DELETE FROM "pre_a" WHERE ("pre_f"."g" = 2) = \'1\'', $db->quote($command));
 	}
 
+	public function provider_returning()
+	{
+		return array
+		(
+			array(NULL, 'DELETE FROM ""'),
+
+			array(
+				array('a'),
+				'DELETE FROM "" RETURNING "a"',
+			),
+			array(
+				array('a', 'b'),
+				'DELETE FROM "" RETURNING "a", "b"',
+			),
+			array(
+				array('a' => 'b'),
+				'DELETE FROM "" RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => 'b', 'c' => 'd'),
+				'DELETE FROM "" RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'DELETE FROM "" RETURNING "a"',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'DELETE FROM "" RETURNING "a", "b"',
+			),
+			array(
+				array('a' => new SQL_Column('b')),
+				'DELETE FROM "" RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
+				'DELETE FROM "" RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(new SQL_Expression('expr'), 'DELETE FROM "" RETURNING expr'),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DML_Delete::returning
+	 *
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_returning($value, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Delete;
+
+		$this->assertSame($statement, $statement->returning($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DML_Delete::returning
+	 *
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_returning_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Delete;
+		$statement->returning($value);
+
+		$statement->returning(NULL);
+
+		$this->assertSame('DELETE FROM ""', $db->quote($statement));
+	}
+
 	/**
 	 * @covers  SQL_DML_Delete::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new SQL_DML_Delete;
-		$command
+		$statement = new SQL_DML_Delete;
+		$statement
 			->from('a')
 			->using('b')
 			->where('c', '=', 'd')
-			->limit(1);
+			->limit(1)
+			->returning(array('e'));
 
-		$this->assertSame('DELETE FROM :table USING :using WHERE :where LIMIT :limit', (string) $command);
+		$this->assertSame(
+			'DELETE FROM :table USING :using WHERE :where LIMIT :limit RETURNING :returning',
+			(string) $statement
+		);
 	}
 }
