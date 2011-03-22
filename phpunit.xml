@@ -19,6 +19,9 @@
 		<testsuite name="Database PDO Implementations">
 			<directory suffix=".php">tests/database/pdo</directory>
 		</testsuite>
+		<testsuite name="Database SQL Server Implementations">
+			<directory suffix=".php">tests/database/sqlserver</directory>
+		</testsuite>
 		<testsuite name="Database SQLite Implementations">
 			<directory suffix=".php">tests/database/pdo/sqlite</directory>
 			<directory suffix=".php">tests/database/sqlite</directory>
