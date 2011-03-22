@@ -364,15 +364,19 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 
 	/**
 	 * Execute an INSERT statement, returning the number of affected rows and
-	 * the identity of the first row.
+	 * the AUTO_INCREMENT of the first row.
 	 *
+	 * @throws  Database_Exception
 	 * @param   string|SQL_Expression   $statement  SQL insert
 	 * @param   mixed                   $identity   Ignored
-	 * @return  array   List including number of affected rows and an identity value
+	 * @return  array   List including number of affected rows and the AUTO_INCREMENT of the first row
 	 */
 	public function execute_insert($statement, $identity)
 	{
-		return array($this->execute_command($statement), mysql_insert_id($this->_connection));
+		$rows = $this->execute_command($statement);
+		$result = $this->_connection ? mysql_insert_id($this->_connection) : 0;
+
+		return array($rows, $result);
 	}
 
 	public function execute_query($statement, $as_object = FALSE)

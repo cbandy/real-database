@@ -31,9 +31,8 @@ class Database_MySQL_Result extends Database_Result
 	 */
 	public function __construct($result, $as_object)
 	{
-		parent::__construct($as_object);
+		parent::__construct($as_object, mysql_num_rows($result));
 
-		$this->_count = mysql_num_rows($result);
 		$this->_result = $result;
 	}
 

@@ -27,7 +27,7 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 	public function test_delete()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE));
+		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE, 1));
 		$array = array(array('kohana'));
 
 		$db->expects($this->exactly(2))
@@ -54,7 +54,7 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 	public function test_execute()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE));
+		$result = $this->getMock('Database_Result', array('as_array', 'current'), array(FALSE, 1));
 		$array = array(array('kohana'));
 
 		$db->expects($this->once())

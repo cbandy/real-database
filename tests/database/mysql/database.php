@@ -179,6 +179,31 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * @covers  Database_MySQL::execute_insert
+	 */
+	public function test_execute_insert_empty_disconnected()
+	{
+		$db = Database::factory();
+
+		$result = $db->execute_insert('', NULL);
+
+		$this->assertSame(array(0,0), $result);
+	}
+
+	/**
+	 * @covers  Database_MySQL::execute_insert
+	 */
+	public function test_execute_insert_empty_first()
+	{
+		$db = Database::factory();
+		$db->connect();
+
+		$result = $db->execute_insert('', NULL);
+
+		$this->assertSame(array(0,0), $result, 'No prior INSERT');
+	}
+
+	/**
 	 * @covers  Database_MySQL::execute_query
 	 */
 	public function test_execute_query_expression()
