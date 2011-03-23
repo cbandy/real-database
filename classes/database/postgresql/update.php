@@ -23,21 +23,17 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 
 	public function __toString()
 	{
-		if (isset($this->parameters[':limit']))
-		{
-			$value = 'UPDATE :table SET :values WHERE ctid IN (SELECT ctid FROM :table';
+		if ( ! isset($this->parameters[':limit']))
+			return parent::__toString();
 
-			if ( ! empty($this->parameters[':where']))
-			{
-				$value .= ' WHERE :where';
-			}
+		$value = 'UPDATE :table SET :values WHERE ctid IN (SELECT ctid FROM :table';
 
-			$value .= ' LIMIT :limit)';
-		}
-		else
+		if ( ! empty($this->parameters[':where']))
 		{
-			$value = parent::__toString();
+			$value .= ' WHERE :where';
 		}
+
+		$value .= ' LIMIT :limit)';
 
 		if ( ! empty($this->parameters[':returning']))
 		{
@@ -73,37 +69,5 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 			throw new Kohana_Exception('PostgreSQL UPDATE does not support LIMIT with FROM');
 
 		return parent::limit($count);
-	}
-
-	public function returning($columns)
-	{
-		if (is_array($columns))
-		{
-			foreach ($columns as $alias => $column)
-			{
-				if ( ! $column instanceof SQL_Expression
-					AND ! $column instanceof SQL_Identifier)
-				{
-					$column = new SQL_Column($column);
-				}
-
-				if (is_string($alias) AND $alias !== '')
-				{
-					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
-				}
-
-				$this->parameters[':returning'][] = $column;
-			}
-		}
-		elseif ($columns === NULL)
-		{
-			unset($this->parameters[':returning']);
-		}
-		else
-		{
-			$this->parameters[':returning'] = $columns;
-		}
-
-		return $this;
 	}
 }
