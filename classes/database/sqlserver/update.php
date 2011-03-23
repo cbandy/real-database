@@ -26,6 +26,11 @@ class Database_SQLServer_Update extends SQL_DML_Update
 
 		$value .= ' :table SET :values';
 
+		if ( ! empty($this->parameters[':returning']))
+		{
+			$value .= ' OUTPUT :returning';
+		}
+
 		if ( ! empty($this->parameters[':from']))
 		{
 			$value .= ' FROM :from';
