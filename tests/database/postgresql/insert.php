@@ -79,76 +79,15 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($column, $command->identity);
 	}
 
-	public function provider_returning()
-	{
-		return array
-		(
-			array(NULL, 'INSERT INTO "" DEFAULT VALUES'),
-
-			array(
-				array('a'),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "a"',
-			),
-			array(
-				array('a', 'b'),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "a", "b"',
-			),
-			array(
-				array('a' => 'b'),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a"',
-			),
-			array(
-				array('a' => 'b', 'c' => 'd'),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a", "d" AS "c"',
-			),
-
-			array(
-				array(new SQL_Column('a')),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "a"',
-			),
-			array(
-				array(new SQL_Column('a'), new SQL_Column('b')),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "a", "b"',
-			),
-			array(
-				array('a' => new SQL_Column('b')),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a"',
-			),
-			array(
-				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
-				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a", "d" AS "c"',
-			),
-
-			array(new SQL_Expression('expr'), 'INSERT INTO "" DEFAULT VALUES RETURNING expr'),
-		);
-	}
-
 	/**
 	 * @covers  Database_PostgreSQL_Insert::returning
-	 * @dataProvider    provider_returning
-	 *
-	 * @param   mixed   $value
-	 * @param   string  $expected
 	 */
-	public function test_returning($value, $expected)
+	public function test_returning()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Insert;
+		$statement = new Database_PostgreSQL_Insert;
 
-		$this->assertSame($command, $command->returning($value), 'Chainable');
-		$this->assertSame($expected, $db->quote($command));
-		$this->assertNull($command->identity);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Insert::__toString
-	 */
-	public function test_toString()
-	{
-		$command = new Database_PostgreSQL_Insert;
-		$command
-			->returning(array('a'));
-
-		$this->assertSame('INSERT INTO :table DEFAULT VALUES RETURNING :returning', (string) $command);
+		$this->assertSame($statement, $statement->returning('a'), 'Chainable');
+		$this->assertSame(NULL, $statement->identity);
 	}
 }

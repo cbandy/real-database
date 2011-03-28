@@ -21,18 +21,6 @@ class Database_PostgreSQL_Insert extends Database_Insert
 	 */
 	public $as_object = FALSE;
 
-	public function __toString()
-	{
-		$value = parent::__toString();
-
-		if ( ! empty($this->parameters[':returning']))
-		{
-			$value .= ' RETURNING :returning';
-		}
-
-		return $value;
-	}
-
 	public function as_assoc()
 	{
 		return $this->as_object(FALSE);
@@ -71,33 +59,6 @@ class Database_PostgreSQL_Insert extends Database_Insert
 	{
 		$this->identity = NULL;
 
-		if (is_array($columns))
-		{
-			foreach ($columns as $alias => $column)
-			{
-				if ( ! $column instanceof SQL_Expression
-					AND ! $column instanceof SQL_Identifier)
-				{
-					$column = new SQL_Column($column);
-				}
-
-				if (is_string($alias) AND $alias !== '')
-				{
-					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
-				}
-
-				$this->parameters[':returning'][] = $column;
-			}
-		}
-		elseif ($columns === NULL)
-		{
-			unset($this->parameters[':returning']);
-		}
-		else
-		{
-			$this->parameters[':returning'] = $columns;
-		}
-
-		return $this;
+		return parent::returning($columns);
 	}
 }

@@ -54,6 +54,14 @@ class SQL_DML_Insert extends SQL_Expression
 			$value .= ':values';
 		}
 
+		if ( ! empty($this->parameters[':returning']))
+		{
+			// Not allowed by MSSQL
+			// Not allowed by MySQL
+			// Not allowed by SQLite
+			$value .= ' RETURNING :returning';
+		}
+
 		return $value;
 	}
 
@@ -97,6 +105,47 @@ class SQL_DML_Insert extends SQL_Expression
 		}
 
 		$this->parameters[':table'] = $table;
+
+		return $this;
+	}
+
+	/**
+	 * Append multiple columns or expressions to be returned when executed.
+	 *
+	 * [!!] Not supported by MySQL
+	 * [!!] Not supported by SQLite
+	 *
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @return  $this
+	 */
+	public function returning($columns)
+	{
+		if (is_array($columns))
+		{
+			foreach ($columns as $alias => $column)
+			{
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				if (is_string($alias) AND $alias !== '')
+				{
+					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
+				}
+
+				$this->parameters[':returning'][] = $column;
+			}
+		}
+		elseif ($columns === NULL)
+		{
+			$this->parameters[':returning'] = array();
+		}
+		else
+		{
+			$this->parameters[':returning'] = $columns;
+		}
 
 		return $this;
 	}
