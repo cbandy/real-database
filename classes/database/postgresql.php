@@ -797,8 +797,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * Execute a SQL statement returning the number of affected rows.
 	 *
 	 * Returns a result set when the statement is [Database_iQuery] or
-	 * [Database_PostgreSQL_iReturning] and has returning() set. Returns an
-	 * array when the statement is [Database_iInsert] and has an identity set.
+	 * [Database_iReturning] and has returning() set. Returns an array when the
+	 * statement is [Database_iInsert] and has an identity set.
 	 *
 	 * @see Database_PostgreSQL::execute_command()
 	 * @see Database_PostgreSQL::execute_insert()
@@ -824,9 +824,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				);
 			}
 
-			if ($statement instanceof Database_PostgreSQL_iReturning)
+			if ($statement instanceof Database_iReturning)
 			{
-				if ( ! empty($statement->parameters[':returning']))
+				if ( ! empty($statement->returning))
 				{
 					return $this->execute_query(
 						$statement,
@@ -878,7 +878,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$identity = new SQL_Column($identity);
 		}
 
-		if ($statement instanceof Database_PostgreSQL_iReturning
+		if ($statement instanceof Database_iReturning
 			AND ! empty($statement->parameters[':returning']))
 		{
 			$result = $this->_evaluate_query(

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * UPDATE statement for PostgreSQL. Allows a result set from the updated rows to be returned.
+ * UPDATE statement for PostgreSQL.
  *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
@@ -13,14 +13,8 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-update.html
  */
-class Database_PostgreSQL_Update extends SQL_DML_Update
-	implements Database_PostgreSQL_iReturning
+class Database_PostgreSQL_Update extends Database_Update
 {
-	/**
-	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 */
-	public $as_object = FALSE;
-
 	public function __toString()
 	{
 		if ( ! isset($this->parameters[':limit']))
@@ -41,18 +35,6 @@ class Database_PostgreSQL_Update extends SQL_DML_Update
 		}
 
 		return $value;
-	}
-
-	public function as_assoc()
-	{
-		return $this->as_object(FALSE);
-	}
-
-	public function as_object($class = TRUE)
-	{
-		$this->as_object = $class;
-
-		return $this;
 	}
 
 	public function from($reference, $table_alias = NULL)

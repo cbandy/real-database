@@ -8,41 +8,6 @@
  */
 class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers  Database_PostgreSQL_Insert::as_assoc
-	 */
-	public function test_as_assoc()
-	{
-		$command = new Database_PostgreSQL_Insert;
-
-		$this->assertSame($command, $command->as_assoc(), 'Chainable');
-		$this->assertSame(FALSE, $command->as_object);
-	}
-
-	public function provider_as_object()
-	{
-		return array
-		(
-			array(FALSE),
-			array(TRUE),
-			array('a'),
-		);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Insert::as_object
-	 * @dataProvider    provider_as_object
-	 *
-	 * @param   string|boolean  $as_object  Expected value
-	 */
-	public function test_as_object($as_object)
-	{
-		$command = new Database_PostgreSQL_Insert;
-
-		$this->assertSame($command, $command->as_object($as_object), 'Chainable');
-		$this->assertSame($as_object, $command->as_object);
-	}
-
 	public function provider_identity()
 	{
 		return array
@@ -77,17 +42,82 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($command, $command->identity($value), 'Chainable');
 		$this->assertSame($expected, $db->quote($command));
 		$this->assertEquals($column, $command->identity);
+		$this->assertNull($command->returning);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Insert::identity
+	 *
+	 * @dataProvider    provider_identity
+	 *
+	 * @param   mixed   $value
+	 */
+	public function test_identity_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new Database_PostgreSQL_Insert;
+		$statement->identity($value);
+
+		$this->assertSame($statement, $statement->identity(NULL), 'Chainable');
+		$this->assertSame('INSERT INTO "" DEFAULT VALUES', $db->quote($statement));
+		$this->assertNull($statement->identity);
+		$this->assertNull($statement->returning);
+	}
+
+	public function provider_identity_returning()
+	{
+		return array
+		(
+			array(NULL, NULL, NULL, NULL, 'INSERT INTO "" DEFAULT VALUES'),
+			array(NULL, 'a', NULL, new SQL_Column('a'), 'INSERT INTO "" DEFAULT VALUES RETURNING "a"'),
+
+			array(
+				array('a'), NULL,
+				array(new SQL_Column('a')), NULL,
+				'INSERT INTO "" DEFAULT VALUES RETURNING "a"',
+			),
+
+			array(
+				array('a'), 'b',
+				NULL, new SQL_Column('b'),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "b"',
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Insert::identity
+	 *
+	 * @dataProvider    provider_identity_returning
+	 *
+	 * @param   mixed                           $returning
+	 * @param   mixed                           $identity
+	 * @param   mixed                           $expected_returning
+	 * @param   SQL_Expression|SQL_Identifier   $expected_identity
+	 * @param   string                          $expected_sql
+	 */
+	public function test_identity_returning($returning, $identity, $expected_returning, $expected_identity, $expected_sql)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new Database_PostgreSQL_Insert;
+		$statement->returning($returning);
+
+		$this->assertSame($statement, $statement->identity($identity), 'Chainable');
+		$this->assertSame($expected_sql, $db->quote($statement));
+		$this->assertEquals($expected_identity, $statement->identity);
+		$this->assertEquals($expected_returning, $statement->returning);
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL_Insert::returning
 	 */
-	public function test_returning()
+	public function test_returning_identity()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$statement = new Database_PostgreSQL_Insert;
+		$statement->identity('a');
 
-		$this->assertSame($statement, $statement->returning('a'), 'Chainable');
-		$this->assertSame(NULL, $statement->identity);
+		$this->assertSame($statement, $statement->returning(array('b')), 'Chainable');
+		$this->assertNull($statement->identity);
+		$this->assertEquals(array(new SQL_Column('b')), $statement->returning);
 	}
 }

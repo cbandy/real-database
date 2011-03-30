@@ -8,41 +8,6 @@
  */
 class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers  Database_PostgreSQL_Delete::as_assoc
-	 */
-	public function test_as_assoc()
-	{
-		$command = new Database_PostgreSQL_Delete;
-
-		$this->assertSame($command, $command->as_assoc(), 'Chainable');
-		$this->assertSame(FALSE, $command->as_object);
-	}
-
-	public function provider_as_object()
-	{
-		return array
-		(
-			array(FALSE),
-			array(TRUE),
-			array('a'),
-		);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Delete::as_object
-	 * @dataProvider    provider_as_object
-	 *
-	 * @param   string|boolean  $as_object  Expected value
-	 */
-	public function test_as_object($as_object)
-	{
-		$command = new Database_PostgreSQL_Delete;
-
-		$this->assertSame($command, $command->as_object($as_object), 'Chainable');
-		$this->assertSame($as_object, $command->as_object);
-	}
-
 	public function provider_limit()
 	{
 		return array
@@ -184,7 +149,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 * @param   mixed   $limit
 	 * @param   mixed   $using
 	 */
-	public function test_from_limit_reset($limit, $using)
+	public function test_using_limit_reset($limit, $using)
 	{
 		$command = new Database_PostgreSQL_Delete;
 		$command->limit($limit);

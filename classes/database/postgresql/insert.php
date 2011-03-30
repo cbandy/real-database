@@ -1,7 +1,7 @@
 <?php
 
 /**
- * INSERT statement for PostgreSQL. Allows a result set from the inserted rows to be returned.
+ * INSERT statement for PostgreSQL.
  *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
@@ -14,25 +14,7 @@
  * @link http://www.postgresql.org/docs/current/static/sql-insert.html
  */
 class Database_PostgreSQL_Insert extends Database_Insert
-	implements Database_PostgreSQL_iReturning
 {
-	/**
-	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 */
-	public $as_object = FALSE;
-
-	public function as_assoc()
-	{
-		return $this->as_object(FALSE);
-	}
-
-	public function as_object($class = TRUE)
-	{
-		$this->as_object = $class;
-
-		return $this;
-	}
-
 	/**
 	 * Set the name of the column to return from the first row when executed
 	 *
@@ -41,14 +23,20 @@ class Database_PostgreSQL_Insert extends Database_Insert
 	 */
 	public function identity($column)
 	{
-		parent::identity($column);
-
-		if (empty($this->identity))
+		if (empty($column))
 		{
-			unset($this->parameters[':returning']);
+			if (isset($this->parameters[':returning'])
+				AND $this->parameters[':returning'] === $this->identity)
+			{
+				$this->parameters[':returning'] = array();
+			}
+
+			parent::identity($column);
 		}
 		else
 		{
+			parent::identity($column);
+
 			$this->parameters[':returning'] = $this->identity;
 		}
 
@@ -57,7 +45,10 @@ class Database_PostgreSQL_Insert extends Database_Insert
 
 	public function returning($columns)
 	{
-		$this->identity = NULL;
+		if ( ! empty($this->identity))
+		{
+			$this->parameters[':returning'] = array();
+		}
 
 		return parent::returning($columns);
 	}

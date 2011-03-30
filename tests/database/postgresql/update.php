@@ -8,41 +8,6 @@
  */
 class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers  Database_PostgreSQL_Update::as_assoc
-	 */
-	public function test_as_assoc()
-	{
-		$command = new Database_PostgreSQL_Update;
-
-		$this->assertSame($command, $command->as_assoc(), 'Chainable');
-		$this->assertSame(FALSE, $command->as_object);
-	}
-
-	public function provider_as_object()
-	{
-		return array
-		(
-			array(FALSE),
-			array(TRUE),
-			array('a'),
-		);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Update::as_object
-	 * @dataProvider    provider_as_object
-	 *
-	 * @param   string|boolean  $as_object  Expected value
-	 */
-	public function test_as_object($as_object)
-	{
-		$command = new Database_PostgreSQL_Update;
-
-		$this->assertSame($command, $command->as_object($as_object), 'Chainable');
-		$this->assertSame($as_object, $command->as_object);
-	}
-
 	public function provider_from_limit()
 	{
 		return array

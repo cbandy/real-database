@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DELETE statement for PostgreSQL. Allows a result set from the deleted rows to be returned.
+ * DELETE statement for PostgreSQL.
  *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
@@ -13,14 +13,8 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-delete.html
  */
-class Database_PostgreSQL_Delete extends SQL_DML_Delete
-	implements Database_PostgreSQL_iReturning
+class Database_PostgreSQL_Delete extends Database_Delete
 {
-	/**
-	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 */
-	public $as_object = FALSE;
-
 	public function __toString()
 	{
 		if ( ! isset($this->parameters[':limit']))
@@ -41,18 +35,6 @@ class Database_PostgreSQL_Delete extends SQL_DML_Delete
 		}
 
 		return $value;
-	}
-
-	public function as_assoc()
-	{
-		return $this->as_object(FALSE);
-	}
-
-	public function as_object($class = TRUE)
-	{
-		$this->as_object = $class;
-
-		return $this;
 	}
 
 	public function limit($count)
