@@ -590,8 +590,9 @@ abstract class Database
 	/**
 	 * Execute a SQL statement returning the number of affected rows.
 	 *
-	 * Returns a result set when the statement is [Database_iQuery]. Returns an
-	 * array when the statement is [Database_iInsert] and has an identity set.
+	 * Returns a result set when the statement is [Database_iQuery] or is
+	 * [Database_iReturning] and has returning set. Returns an array when the
+	 * statement is [Database_iInsert] and has an identity set.
 	 *
 	 * @see Database::execute_command()
 	 * @see Database::execute_insert()
@@ -614,6 +615,9 @@ abstract class Database
 
 			if ($statement instanceof Database_iInsert AND $statement->identity)
 				return $this->execute_insert($statement, $statement->identity);
+
+			if ($statement instanceof Database_iReturning AND $statement->returning)
+				return $this->execute_query($statement, $statement->as_object);
 		}
 
 		return $this->execute_command($statement);

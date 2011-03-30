@@ -199,6 +199,40 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers  Database::execute
 	 */
+	public function test_execute_returning()
+	{
+		$statement = new Database_Delete;
+
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_command')
+			->with($this->equalTo($statement));
+
+		$mock->execute($statement);
+	}
+
+	/**
+	 * @covers  Database::execute
+	 */
+	public function test_execute_returning_returning()
+	{
+		$statement = new Database_Delete;
+		$statement->returning(array('a'));
+
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_query')
+			->with(
+				$this->equalTo($statement),
+				$this->equalTo($statement->as_object)
+			);
+
+		$mock->execute($statement);
+	}
+
+	/**
+	 * @covers  Database::execute
+	 */
 	public function test_execute_string()
 	{
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
