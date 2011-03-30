@@ -597,6 +597,8 @@ abstract class Database
 	 * @see Database::execute_insert()
 	 * @see Database::execute_query()
 	 *
+	 * @throws  Database_Exception
+	 *
 	 * @param   string|SQL_Expression   $statement
 	 *
 	 * @return  integer         Number of affected rows
