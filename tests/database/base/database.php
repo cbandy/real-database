@@ -18,6 +18,30 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('name', (string) $mock);
 	}
 
+	public function provider_constructor_quote()
+	{
+		return array
+		(
+			array('$', '$$'),
+			array(array('a', 'b'), 'ab'),
+		);
+	}
+
+	/**
+	 * @covers  Database::__construct
+	 *
+	 * @dataProvider    provider_constructor_quote
+	 *
+	 * @param   string|array    $quote      Argument
+	 * @param   string          $expected
+	 */
+	public function test_constructor_quote($quote, $expected)
+	{
+		$mock = $this->getMockForAbstractClass('Database', array('name', array(), $quote));
+
+		$this->assertSame($expected, $mock->quote_identifier(''));
+	}
+
 	/**
 	 * @covers  Database::__destruct
 	 */
