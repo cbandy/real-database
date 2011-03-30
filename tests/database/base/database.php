@@ -147,11 +147,64 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers  Database::execute
 	 */
-	public function test_execute()
+	public function test_execute_insert()
+	{
+		$statement = new Database_Insert;
+
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_command')
+			->with($this->equalTo($statement));
+
+		$mock->execute($statement);
+	}
+
+	/**
+	 * @covers  Database::execute
+	 */
+	public function test_execute_insert_identity()
+	{
+		$statement = new Database_Insert;
+		$statement->identity('a');
+
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_insert')
+			->with(
+				$this->equalTo($statement),
+				$this->equalTo($statement->identity)
+			);
+
+		$mock->execute($statement);
+	}
+
+	/**
+	 * @covers  Database::execute
+	 */
+	public function test_execute_query()
+	{
+		$statement = new Database_Select;
+
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_query')
+			->with(
+				$this->equalTo($statement),
+				$this->equalTo($statement->as_object)
+			);
+
+		$mock->execute($statement);
+	}
+
+	/**
+	 * @covers  Database::execute
+	 */
+	public function test_execute_string()
 	{
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
 		$mock->expects($this->once())
-			->method('execute_command');
+			->method('execute_command')
+			->with($this->identicalTo('SELECT 1'));
 
 		$mock->execute('SELECT 1');
 	}
