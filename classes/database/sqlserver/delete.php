@@ -13,7 +13,7 @@
  *
  * @link http://msdn.microsoft.com/en-us/library/ms189835.aspx
  */
-class Database_SQLServer_Delete extends SQL_DML_Delete
+class Database_SQLServer_Delete extends Database_Delete
 {
 	public function __toString()
 	{
@@ -25,6 +25,11 @@ class Database_SQLServer_Delete extends SQL_DML_Delete
 		}
 
 		$value .= ' FROM :table';
+
+		if ( ! empty($this->parameters[':returning']))
+		{
+			$value .= ' OUTPUT :returning';
+		}
 
 		if ( ! empty($this->parameters[':using']))
 		{

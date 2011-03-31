@@ -199,6 +199,40 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers  Database::execute
 	 */
+	public function test_execute_returning()
+	{
+		$statement = new Database_Delete;
+
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_command')
+			->with($this->equalTo($statement));
+
+		$mock->execute($statement);
+	}
+
+	/**
+	 * @covers  Database::execute
+	 */
+	public function test_execute_returning_returning()
+	{
+		$statement = new Database_Delete;
+		$statement->returning(array('a'));
+
+		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
+		$mock->expects($this->once())
+			->method('execute_query')
+			->with(
+				$this->equalTo($statement),
+				$this->equalTo($statement->as_object)
+			);
+
+		$mock->execute($statement);
+	}
+
+	/**
+	 * @covers  Database::execute
+	 */
 	public function test_execute_string()
 	{
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
@@ -275,9 +309,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('ddl_constraint', array('primary'), new SQL_DDL_Constraint_Primary),
 			array('ddl_constraint', array('unique'), new SQL_DDL_Constraint_Unique),
 
-			array('delete', array(), new SQL_DML_Delete),
-			array('delete', array('a'), new SQL_DML_Delete('a')),
-			array('delete', array('a', 'b'), new SQL_DML_Delete('a', 'b')),
+			array('delete', array(), new Database_Delete),
+			array('delete', array('a'), new Database_Delete('a')),
+			array('delete', array('a', 'b'), new Database_Delete('a', 'b')),
 
 			array('drop', array('index'), new SQL_DDL_Drop('index')),
 			array('drop', array('index', 'a'), new SQL_DDL_Drop('index', 'a')),
@@ -309,10 +343,10 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 			array('table', array('a'), new SQL_Table('a')),
 
-			array('update', array(), new SQL_DML_Update),
-			array('update', array('a'), new SQL_DML_Update('a')),
-			array('update', array('a', 'b'), new SQL_DML_Update('a', 'b')),
-			array('update', array('a', 'b', array('c' => 'd')), new SQL_DML_Update('a', 'b', array('c' => 'd'))),
+			array('update', array(), new Database_Update),
+			array('update', array('a'), new Database_Update('a')),
+			array('update', array('a', 'b'), new Database_Update('a', 'b')),
+			array('update', array('a', 'b', array('c' => 'd')), new Database_Update('a', 'b', array('c' => 'd'))),
 		);
 
 		$constraint = new SQL_DDL_Constraint_Check;

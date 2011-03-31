@@ -95,24 +95,104 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('INSERT INTO "pre_a" ("b", "c") VALUES (0, 1), (2, 3), (4, 5)', $db->quote($command));
 	}
 
+	public function provider_returning()
+	{
+		return array
+		(
+			array(NULL, 'INSERT INTO "" DEFAULT VALUES'),
+
+			array(
+				array('a'),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "a"',
+			),
+			array(
+				array('a', 'b'),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "a", "b"',
+			),
+			array(
+				array('a' => 'b'),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => 'b', 'c' => 'd'),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "a"',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "a", "b"',
+			),
+			array(
+				array('a' => new SQL_Column('b')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(new SQL_Expression('expr'), 'INSERT INTO "" DEFAULT VALUES RETURNING expr'),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DML_Insert::returning
+	 *
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_returning($value, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Insert;
+
+		$this->assertSame($statement, $statement->returning($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DML_Insert::returning
+	 *
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_returning_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Insert;
+		$statement->returning($value);
+
+		$statement->returning(NULL);
+
+		$this->assertSame('INSERT INTO "" DEFAULT VALUES', $db->quote($statement));
+	}
+
 	/**
 	 * @covers  SQL_DML_Insert::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new SQL_DML_Insert;
-		$command
+		$statement = new SQL_DML_Insert;
+		$statement
 			->into('a')
-			->columns(array('b'));
+			->columns(array('b'))
+			->returning(array('c'));
 
-		$this->assertSame('INSERT INTO :table (:columns) DEFAULT VALUES', (string) $command);
+		$this->assertSame('INSERT INTO :table (:columns) DEFAULT VALUES RETURNING :returning', (string) $statement);
 
-		$command->values(array('c'));
+		$statement->values(array('d'));
 
-		$this->assertSame('INSERT INTO :table (:columns) VALUES :values', (string) $command);
+		$this->assertSame('INSERT INTO :table (:columns) VALUES :values RETURNING :returning', (string) $statement);
 
-		$command->values(new SQL_Expression('d'));
+		$statement->values(new SQL_Expression('e'));
 
-		$this->assertSame('INSERT INTO :table (:columns) :values', (string) $command);
+		$this->assertSame('INSERT INTO :table (:columns) :values RETURNING :returning', (string) $statement);
 	}
 }

@@ -13,7 +13,7 @@
  *
  * @link http://msdn.microsoft.com/en-us/library/ms177523.aspx
  */
-class Database_SQLServer_Update extends SQL_DML_Update
+class Database_SQLServer_Update extends Database_Update
 {
 	public function __toString()
 	{
@@ -25,6 +25,11 @@ class Database_SQLServer_Update extends SQL_DML_Update
 		}
 
 		$value .= ' :table SET :values';
+
+		if ( ! empty($this->parameters[':returning']))
+		{
+			$value .= ' OUTPUT :returning';
+		}
 
 		if ( ! empty($this->parameters[':from']))
 		{

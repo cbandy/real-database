@@ -142,11 +142,11 @@ abstract class Database
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
-	 * @return  SQL_DML_Delete
+	 * @return  Database_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
 	{
-		return new SQL_DML_Delete($table, $alias);
+		return new Database_Delete($table, $alias);
 	}
 
 	/**
@@ -314,11 +314,11 @@ abstract class Database
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @param   array   $values Hash of (column => value) assignments
-	 * @return  SQL_DML_Update
+	 * @return  Database_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
 	{
-		return new SQL_DML_Update($table, $alias, $values);
+		return new Database_Update($table, $alias, $values);
 	}
 
 	/**
@@ -590,8 +590,9 @@ abstract class Database
 	/**
 	 * Execute a SQL statement returning the number of affected rows.
 	 *
-	 * Returns a result set when the statement is [Database_iQuery]. Returns an
-	 * array when the statement is [Database_iInsert] and has an identity set.
+	 * Returns a result set when the statement is [Database_iQuery] or is
+	 * [Database_iReturning] and has returning set. Returns an array when the
+	 * statement is [Database_iInsert] and has an identity set.
 	 *
 	 * @see Database::execute_command()
 	 * @see Database::execute_insert()
@@ -614,6 +615,9 @@ abstract class Database
 
 			if ($statement instanceof Database_iInsert AND $statement->identity)
 				return $this->execute_insert($statement, $statement->identity);
+
+			if ($statement instanceof Database_iReturning AND $statement->returning)
+				return $this->execute_query($statement, $statement->as_object);
 		}
 
 		return $this->execute_command($statement);

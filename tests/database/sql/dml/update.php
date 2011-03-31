@@ -158,19 +158,99 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('UPDATE "pre_a" AS "b" SET "c" = 0 LIMIT 0', $db->quote($command));
 	}
 
+	public function provider_returning()
+	{
+		return array
+		(
+			array(NULL, 'UPDATE "" SET '),
+
+			array(
+				array('a'),
+				'UPDATE "" SET  RETURNING "a"',
+			),
+			array(
+				array('a', 'b'),
+				'UPDATE "" SET  RETURNING "a", "b"',
+			),
+			array(
+				array('a' => 'b'),
+				'UPDATE "" SET  RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => 'b', 'c' => 'd'),
+				'UPDATE "" SET  RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'UPDATE "" SET  RETURNING "a"',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'UPDATE "" SET  RETURNING "a", "b"',
+			),
+			array(
+				array('a' => new SQL_Column('b')),
+				'UPDATE "" SET  RETURNING "b" AS "a"',
+			),
+			array(
+				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
+				'UPDATE "" SET  RETURNING "b" AS "a", "d" AS "c"',
+			),
+
+			array(new SQL_Expression('expr'), 'UPDATE "" SET  RETURNING expr'),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DML_Update::returning
+	 *
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_returning($value, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Update;
+
+		$this->assertSame($statement, $statement->returning($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DML_Update::returning
+	 *
+	 * @dataProvider    provider_returning
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_returning_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Update;
+		$statement->returning($value);
+
+		$statement->returning(NULL);
+
+		$this->assertSame('UPDATE "" SET ', $db->quote($statement));
+	}
+
 	/**
 	 * @covers  SQL_DML_Update::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new SQL_DML_Update;
-		$command
+		$statement = new SQL_DML_Update;
+		$statement
 			->table('a')
 			->set(array('b' => 0))
 			->from('c')
 			->where('d', '=', 1)
-			->limit(2);
+			->limit(2)
+			->returning(array('e'));
 
-		$this->assertSame('UPDATE :table SET :values FROM :from WHERE :where LIMIT :limit', (string) $command);
+		$this->assertSame('UPDATE :table SET :values FROM :from WHERE :where LIMIT :limit RETURNING :returning', (string) $statement);
 	}
 }
