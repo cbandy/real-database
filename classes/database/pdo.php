@@ -88,7 +88,7 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if (isset($benchmark))
@@ -122,7 +122,7 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if (isset($benchmark))
@@ -143,7 +143,7 @@ class Database_PDO extends Database
 		}
 		catch (PDOException $e)
 		{
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if ( ! empty($this->_config['charset']))
@@ -201,7 +201,7 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if (isset($benchmark))
@@ -256,7 +256,7 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if (isset($benchmark))
@@ -311,7 +311,7 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if (isset($benchmark))
@@ -376,7 +376,7 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if (isset($benchmark))

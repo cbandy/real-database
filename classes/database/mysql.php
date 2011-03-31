@@ -160,7 +160,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if ($result === FALSE)
@@ -240,7 +240,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		catch (Exception $e)
 		{
 			// @codeCoverageIgnoreStart
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 			// @codeCoverageIgnoreEnd
 		}
 

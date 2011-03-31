@@ -576,7 +576,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		catch (Exception $e)
 		{
 			// @codeCoverageIgnoreStart
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 			// @codeCoverageIgnoreEnd
 		}
 
@@ -629,7 +629,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 		catch (Exception $e)
 		{
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 		}
 
 		if ( ! $result)
@@ -687,7 +687,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 			catch (Exception $e)
 			{
-				throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+				throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 			}
 		}
 		else
@@ -699,7 +699,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 			catch (Exception $e)
 			{
-				throw new Database_Exception(':error', array(':error' => $e->getMessage()));
+				throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
 			}
 		}
 
