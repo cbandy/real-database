@@ -242,7 +242,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		else
 		{
 			if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
-				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+				throw new Database_PostgreSQL_Exception($result);
 
 			if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
 			{
@@ -275,7 +275,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			return new Database_PostgreSQL_Result($result, $as_object);
 
 		if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
-			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+			throw new Database_PostgreSQL_Exception($result);
 
 		if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
 		{
@@ -541,7 +541,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		$result = $this->_execute("BEGIN $mode");
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+			throw new Database_PostgreSQL_Exception($result);
 
 		pg_free_result($result);
 	}
@@ -559,7 +559,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		$result = $this->_execute('COMMIT');
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+			throw new Database_PostgreSQL_Exception($result);
 
 		pg_free_result($result);
 	}
@@ -595,7 +595,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$result = $this->_execute('SET search_path = '.$this->_config['search_path']);
 
 			if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+				throw new Database_PostgreSQL_Exception($result);
 
 			pg_free_result($result);
 		}
@@ -1006,7 +1006,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+			throw new Database_PostgreSQL_Exception($result);
 
 		pg_free_result($result);
 
@@ -1066,7 +1066,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		$result = $this->_execute($savepoint ? "ROLLBACK TO $savepoint" : 'ROLLBACK');
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+			throw new Database_PostgreSQL_Exception($result);
 
 		pg_free_result($result);
 	}
@@ -1083,7 +1083,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		$result = $this->_execute("SAVEPOINT $name");
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+			throw new Database_PostgreSQL_Exception($result);
 
 		pg_free_result($result);
 	}
@@ -1101,7 +1101,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$result = $this->_execute('SELECT current_schemas(FALSE)');
 
 			if (pg_result_status($result) !== PGSQL_TUPLES_OK)
-				throw new Database_Exception(':error', array(':error' => pg_result_error($result)));
+				throw new Database_PostgreSQL_Exception($result);
 
 			// Default schema is first in the array
 			list($this->_schema) = explode(',', trim(pg_fetch_result($result, 0), '{}'), 2);
