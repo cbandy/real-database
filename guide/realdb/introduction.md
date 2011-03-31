@@ -23,7 +23,7 @@ Each database system has different features, different data types and different 
 syntaxes.
 
 Four common systems targeted: MySQL, PostgreSQL, Microsoft SQL Server and SQLite. The [generic
-builders](realdb.building) and driver interface support features implemented by two or more of
+builders](building) and driver interface support features implemented by two or more of
 these systems.
 
 The Database library intends to support any SQL system for which PHP has a driver.
