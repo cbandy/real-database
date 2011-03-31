@@ -6,10 +6,10 @@ statements:
 
  SQL    | Class
  ---    | -----
- DELETE | [Database_Command_Delete]
- INSERT | [Database_Command_Insert]
- UPDATE | [Database_Command_Update]
- SELECT | [Database_Query_Select] <br /> [Database_Query_Set]
+ DELETE | [Database_Delete]
+ INSERT | [Database_Insert]
+ UPDATE | [Database_Update]
+ SELECT | [Database_Select] <br /> [Database_Query_Set]
 
 *[DML]: Data Manipulation Language
 [Fluent Interface]: http://martinfowler.com/bliki/FluentInterface.html
@@ -17,14 +17,15 @@ statements:
 
 ## Conditions
 
-[Database_Command_Delete], [Database_Command_Update] and [Database_Query_Select] filter the rows
-they affect by some criteria, and these criteria are built using the [Database_Conditions] class.
+[Database_Delete], [Database_Update] and [Database_Select] filter the rows they
+affect by some criteria, and these criteria are built using the [SQL_Conditions]
+class.
 
     // "id" = 10
-    new Database_Conditions(new Database_Column('id'), '=', 10)
+    new SQL_Conditions(new SQL_Column('id'), '=', 10);
 
     // "id" = 20
-    $db->conditions()->column(NULL, 'id', '=', 20)
+    $db->conditions()->column(NULL, 'id', '=', 20);
 
 It is possible to nest criteria and force operator precedence using the parentheses methods.
 
@@ -48,52 +49,61 @@ It is possible to nest criteria and force operator precedence using the parenthe
 
 ## Table References
 
-[Database_Query_Select] can return rows from multiple tables by combining them into what is called a
+[Database_Select] can return rows from multiple tables by combining them into what is called a
 table reference. Similar to criteria, these tables can be joined in a myriad of ways using the
-[Database_From] class.
+[SQL_Table_Reference] class.
 
     // Straightforward JOIN
     // "things" JOIN "sprockets" ON ("sprockets"."thing_id" = "things"."id")
-    $db->from('things')->join('sprockets')->on('sprockets.thing_id', '=', 'things.id')
+    $db->reference('things')
+        ->join('sprockets')->on('sprockets.thing_id', '=', 'things.id');
 
     // Cartesian product
     // "things", "sprockets"
-    $db->from('things')->add('sprockets')
+    $db->reference('things')->add('sprockets');
 
     // Multiple JOINs
-    $db->from('classes')
+    $db->reference('classes')
         ->join('enrollments')->on('enrollments.class_id', '=', 'classes.id')
-        ->join('students')->on('student.id', '=', 'enrollments.student_id');
+        ->join('students')->on('student.id', '=', 'enrollments.student_id')
         ->left_join('grades')->on('grades.enrollment_id', '=', 'enrollments.id');
 
 
 ## Commands
 
-[Database_Command_Delete] and [Database_Command_Update], respectively, remove and modify rows from a
+[Database_Delete] and [Database_Update], respectively, remove and modify rows from a
 table which match some criteria. When executed, these will return the number of rows they affected.
 
-    $rows = $db->delete('things')->where('id', '=', 10)->execute($db);
+    $rows = $db->execute(
+        $db->delete('things')->where('id', '=', 10)
+    );
 
-    $rows = $db->update('things')->value('name', 'effect')->where('id', '=', 20)->execute($db);
+    $rows = $db->execute(
+        $db->update('things')->value('name', 'effect')->where('id', '=', 20)
+    );
 
-[Database_Command_Insert] adds one or more rows to a table. In addition to returning the number of
+[Database_Insert] adds one or more rows to a table. In addition to returning the number of
 rows added, it can also return the primary key, or identity, of one of the rows.
 
-    $rows = $db
-        ->insert('things')->columns(array('name', 'value'))->values(array('effect', 5))
-        ->execute($db);
+    $rows = $db->execute(
+        $db->insert('things')
+            ->columns(array('name', 'value'))
+            ->values(array('effect', 5))
+    );
 
-    list($rows, $id) = $db
-        ->insert('things')->columns(array('name', 'value'))->values(array('effect', 8))
-        ->identity('id')
-        ->execute($db);
+    list($rows, $id) = $db->execute(
+        $db->insert('things')
+            ->columns(array('name', 'value'))
+            ->values(array('effect', 8))
+            ->identity('id')
+    );
 
 [!!] For some systems, fetching the identity requires extra processing.
 
 
 ## Queries
 
-SELECT queries are the most frequently used statements and the most complex. [Database_Query_Select]
+SELECT queries are the most frequently used statements and the most complex. [Database_Select]
 combines a table reference with search criteria while sorting and paging results. Basic searches are
 straightforward:
 
@@ -101,15 +111,17 @@ straightforward:
         ->from('things')
         ->where('name', '=', 'effect');
 
-More complex searches use the [Database_Conditions] and [Database_From] classes:
+More complex searches use the [SQL_Conditions] and [SQL_Table_Reference] classes:
 
     $db->select(array('things.name', 'things.value', 'sprockets.price'))
         ->from($db
-            ->from('things')
-            ->join('sprockets')->on('sprockets.thing_id', '=', 'things.id'))
+            ->reference('things')
+            ->join('sprockets')->on('sprockets.thing_id', '=', 'things.id')
+        )
         ->where($db->conditions()
             ->column(NULL, 'things.value', '=', 5)
-            ->or_column('sprockets.price', 'between', array(15, 25)))
+            ->or_column('sprockets.price', 'between', array(15, 25))
+        );
 
 Sorting can be done with Expressions or Columns:
 
@@ -117,10 +129,10 @@ Sorting can be done with Expressions or Columns:
     $select->order_by('name', 'DESC');
 
     // ORDER BY "value" ASC
-    $select->order_by(new Database_Column('value'), 'ASC');
+    $select->order_by(new SQL_Column('value'), 'ASC');
 
     // ORDER BY RAND()
-    $select->order_by(new Database_Expression('RAND()'));
+    $select->order_by(new SQL_Expression('RAND()'));
 
 Paging is accomplished with `limit()` and `offset()`:
 
@@ -136,7 +148,10 @@ Queries can be combined using the `except()`, `intersect()` and `union()` method
     // SELECT * FROM "things" WHERE "name" = 'effect'
     //   UNION
     // SELECT * FROM "others" WHERE "name" = 'reversed'
-    $db->query_set($db->select(array('*'))->from('things')->where('name', '=', 'effect'))
-        ->union($db->select(array('*'))->from('others')->where('name', '=', 'reversed'));
+    $db->query_set(
+        $db->select(array('*'))->from('things')->where('name', '=', 'effect')
+    )->union(
+        $db->select(array('*'))->from('others')->where('name', '=', 'reversed')
+    );
 
 When executed, all queries will return a [Database_Result] object.

@@ -34,12 +34,12 @@ The Database library intends to support any SQL system for which PHP has a drive
 Identifiers are the unique names which refer to tables, columns, indexes, aliases, etc. Each can be
 specified as a dot-delimited string or an array of parts.
 
-    Database_Identifier('x.y.z') == Database_Identifier(array('x','y','z'))
+    new SQL_Identifier('x.y.z') == new SQL_Identifier(array('x','y','z'))
 
 When working with table aliases, you may want to create a Column that is not affected by the
 `table_prefix`:
 
-    Database_Column(array(Database_Identifier('t1'), 'column'))
+    new SQL_Column(array(new SQL_Identifier('t1'), 'column'))
 
 
 ## Expressions
@@ -66,16 +66,19 @@ The most direct way to execute is to send raw SQL to [Database::execute_command]
         .' FROM '.$db->quote_table('things')
         .' WHERE '.$db->quote_column('name').' = '.$db->quote_literal('find'));
 
-Slightly more convenient is to use parameters with the [Database_Command] and [Database_Query]
+Slightly more convenient is to use parameters with the [SQL_Expression] and [Database_Query]
 objects. These have the added convenience of consistent caching and system-agnostic execution.
 
     // SQL with parameters
-    $db->query('SELECT ? FROM ? WHERE ? = ?', array(
-        $db->column('value'),
-        $db->table('things'),
-        $db->column('name'),
-        'find',
-    ))->execute($db);
+    $db->execute($db->query(
+        'SELECT ? FROM ? WHERE ? = ?',
+        array(
+            $db->column('value'),
+            $db->table('things'),
+            $db->column('name'),
+            'find',
+        )
+    ));
 
 
 ## Results
@@ -90,4 +93,6 @@ The simplest and most typical use is in a `foreach`:
 
 The `get()` method provides an optimized way to fetch a single column.
 
-    $count = $db->execute_query('SELECT COUNT(*) FROM '.$db->quote_table('things'))->get();
+    $count = $db->execute_query(
+        'SELECT COUNT(*) FROM '.$db->quote_table('things')
+    )->get();

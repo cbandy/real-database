@@ -12,20 +12,20 @@ specific methods [Database::quote_literal], [Database::quote_column] and
 
 ## Execution
 
-The `Database::query` method has been split into two methods, [Database::execute_command] and
-[Database::execute_query]. Use `execute_query` to retrieve a result set, from a SELECT statement for
-example, and use `execute_command` for other statements.
+The `Database::query` method has been split into three methods, [Database::execute_command],
+[Database::execute_insert] and [Database::execute_query]. Use `execute_query` to retrieve a result
+set, from a SELECT statement for example, and use `execute_command` for other statements.
 
 To retrieve the last inserted ID, build an INSERT statement and set the name of the column
 containing the ID:
 
-    list($count, $id) = $db
-        ->insert()
-        ->into('things')
-        ->columns(array('name', 'value'))
-        ->values(array('a', 'b'))
-        ->identity('id')
-        ->execute($db);
+    list($count, $id) = $db->execute(
+        $db->insert()
+            ->into('things')
+            ->columns(array('name', 'value'))
+            ->values(array('a', 'b'))
+            ->identity('id')
+    );
 
 
 ## Introspection
@@ -53,14 +53,14 @@ The `Database::count_records` and `Database::count_last_query` methods have been
 Here are two simple ways to retrieve the number of rows in a table:
 
     // Execute directly
-    $rows = $db->execute_query('SELECT COUNT(*) FROM '.$db->quote_table($table))->get();
+    $rows = $db->execute_query(
+        'SELECT COUNT(*) FROM '.$db->quote_table($table)
+    )->get();
 
     // Build a SELECT query
-    $rows = $db
-        ->select($db->expression('COUNT(*)'))
-        ->from($table)
-        ->execute($db)
-        ->get();
+    $rows = $db->execute(
+        $db->select($db->expression('COUNT(*)'))->from($table)
+    )->get();
 
 To retrieve the number of rows a query would return without paging applied, reset the `limit` and
 `offset` parameters of a SELECT query:
@@ -72,11 +72,11 @@ To retrieve the number of rows a query would return without paging applied, rese
         ->limit($number)
         ->offset($number * $page);
 
-    $results = $query->execute($db);
+    $results = $db->execute($query);
 
-    $total_rows = $query
-        ->select($db->expression('COUNT(*)'))
-        ->limit(NULL)
-        ->offset(NULL)
-        ->execute($db)
-        ->get();
+    $total_rows = $db->execute(
+        $query
+            ->select($db->expression('COUNT(*)'))
+            ->limit(NULL)
+            ->offset(NULL)
+    )->get();
