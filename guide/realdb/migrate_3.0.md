@@ -1,5 +1,5 @@
 
-# Migration
+# Migrating from Kohana 3.0
 
 
 ## Quoting
@@ -16,9 +16,19 @@ The `Database::query` method has been split into three methods, [Database::execu
 [Database::execute_insert] and [Database::execute_query]. Use `execute_query` to retrieve a result
 set, from a SELECT statement for example, and use `execute_command` for other statements.
 
-To retrieve the last inserted ID, build an INSERT statement and set the name of the column
-containing the ID:
+To retrieve the last inserted ID, pass the name of the column containing the ID
+to [Database::execute_insert] or build an INSERT statement and set the name of
+the column containing the ID:
 
+    // Execute directly
+    list($count, $id) = $db->execute_insert(
+        'INSERT INTO '.$db->quote_table('things')
+        .' ("name", "value")'
+        ." VALUES ('a', 'b')",
+        'id'
+    );
+
+    // Build an INSERT statement
     list($count, $id) = $db->execute(
         $db->insert()
             ->into('things')
