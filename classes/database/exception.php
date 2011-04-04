@@ -10,6 +10,7 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
  * @link http://bugs.php.net/39615 Exception code cannot be string
+ * @link http://bugs.php.net/51742 Notice when exception code is string
  */
 class Database_Exception extends Kohana_Exception
 {
