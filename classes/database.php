@@ -588,19 +588,20 @@ abstract class Database
 	abstract public function disconnect();
 
 	/**
-	 * Execute a SQL statement returning the number of affected rows.
+	 * Execute a SQL statement by dispatching to other execute_* methods.
 	 *
 	 * Returns a result set when the statement is [Database_iQuery] or is
 	 * [Database_iReturning] and has returning set. Returns an array when the
-	 * statement is [Database_iInsert] and has an identity set.
+	 * statement is [Database_iInsert] and has an identity set. Returns the
+	 * number of affected rows otherwise.
 	 *
-	 * @see Database::execute_command()
-	 * @see Database::execute_insert()
-	 * @see Database::execute_query()
+	 * @uses Database::execute_command()
+	 * @uses Database::execute_insert()
+	 * @uses Database::execute_query()
 	 *
 	 * @throws  Database_Exception
 	 *
-	 * @param   string|SQL_Expression   $statement
+	 * @param   string|SQL_Expression   $statement  SQL statement
 	 *
 	 * @return  integer         Number of affected rows
 	 * @return  array           List including number of affected rows and an identity value
@@ -661,7 +662,8 @@ abstract class Database
 	abstract public function execute_query($statement, $as_object = FALSE);
 
 	/**
-	 * Quote a value for inclusion in a SQL query
+	 * Quote a value for inclusion in a SQL statement. Dispatches to other
+	 * quote_* methods.
 	 *
 	 * @uses Database::quote_column()
 	 * @uses Database::quote_expression()
@@ -671,7 +673,7 @@ abstract class Database
 	 *
 	 * @param   mixed   $value  Value to quote
 	 * @param   string  $alias  Alias
-	 * @return  string
+	 * @return  string  SQL fragment
 	 */
 	public function quote($value, $alias = NULL)
 	{
