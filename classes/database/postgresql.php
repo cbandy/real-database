@@ -1064,21 +1064,26 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function schema_tables($schema = NULL)
 	{
-		if ($schema instanceof SQL_Identifier)
+		if ( ! $schema)
 		{
-			$schema = $schema->name;
-		}
-		elseif (is_array($schema))
-		{
-			$schema = array_pop($schema);
-		}
-
-		if (empty($schema))
-		{
+			// Use default schema
 			$schema = $this->schema();
 		}
+		else
+		{
+			if ( ! $schema instanceof SQL_Identifier)
+			{
+				// Convert to identifier
+				$schema = new SQL_Identifier($schema);
+			}
 
-		$sql = 'SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = '.$this->quote_literal($schema);
+			$schema = $schema->name;
+		}
+
+		$sql =
+			'SELECT table_name, table_type'
+			.' FROM information_schema.tables WHERE table_schema = '
+			.$this->quote_literal($schema);
 
 		if ( ! $prefix = $this->table_prefix())
 		{
@@ -1087,7 +1092,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 
 		// Filter on table prefix
-		$sql .= " AND table_name LIKE '".strtr($prefix, array('_' => '\_', '%' => '\%'))."%'";
+		$sql .= " AND table_name LIKE '"
+			.strtr($prefix, array('_' => '\_', '%' => '\%'))
+			."%'";
 
 		$prefix = strlen($prefix);
 		$result = array();
@@ -1104,31 +1111,30 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function table_columns($table)
 	{
-		if ($table instanceof SQL_Identifier)
+		if ( ! $table instanceof SQL_Identifier)
 		{
-			$schema = $table->namespace;
-			$table = $table->name;
-		}
-		elseif (is_array($table))
-		{
-			$schema = $table;
-			$table = array_pop($schema);
-		}
-		else
-		{
-			$schema = explode('.', $table);
-			$table = array_pop($schema);
+			// Convert to table
+			$table = new SQL_Table($table);
 		}
 
-		if (empty($schema))
+		if ( ! $schema = $table->namespace)
 		{
+			// Use default schema
 			$schema = $this->schema();
 		}
 
+		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
+		$table = ($table instanceof SQL_Table)
+			? $this->table_prefix().$table->name
+			: $table->name;
+
 		$sql =
-			'SELECT column_name, ordinal_position, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, numeric_scale, datetime_precision'
+			'SELECT column_name, ordinal_position, column_default, is_nullable,'
+			.'   data_type, character_maximum_length,'
+			.'   numeric_precision, numeric_scale, datetime_precision'
 			.' FROM information_schema.columns'
-			.' WHERE table_schema = '.$this->quote_literal($schema).' AND table_name = '.$this->quote_literal($this->table_prefix().$table);
+			.' WHERE table_schema = '.$this->quote_literal($schema)
+			.'   AND table_name = '.$this->quote_literal($table);
 
 		return $this->execute_query($sql)->as_array('column_name');
 	}
