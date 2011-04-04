@@ -28,7 +28,7 @@ interface Database_iIntrospect
 	 *       ),
 	 *     );
 	 *
-	 * @param   mixed   $schema Converted to SQL_Identifier
+	 * @param   array|string|SQL_Identifier $schema Converted to SQL_Identifier. NULL for the default schema.
 	 * @return  array
 	 */
 	public function schema_tables($schema = NULL);
@@ -72,7 +72,7 @@ interface Database_iIntrospect
 	 *       ),
 	 *     );
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Identifier $table  Converted to SQL_Table unless SQL_Identifier
 	 * @return  array
 	 */
 	public function table_columns($table);
