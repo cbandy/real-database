@@ -469,35 +469,39 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	}
 
 	/**
-	 * Retrieve the tables of a schema in a format almost identical to that of the Tables table of
-	 * the SQL-92 Information Schema. Includes four non-standard fields: `engine`, `auto_increment`,
-	 * `table_collation` and `table_comment`.
+	 * Retrieve the tables of a schema in a format almost identical to that of
+	 * the Tables table of the SQL-92 Information Schema. Includes four non-
+	 * standard fields: `engine`, `auto_increment`, `table_collation` and
+	 * `table_comment`.
 	 *
 	 * @link http://dev.mysql.com/doc/en/tables-table.html
 	 *
-	 * @param   mixed   $schema Converted to SQL_Identifier
+	 * @param   array|string|SQL_Identifier $schema Converted to SQL_Identifier. NULL for the default schema.
 	 * @return  array
 	 */
 	public function schema_tables($schema = NULL)
 	{
-		if ($schema instanceof SQL_Identifier)
+		if ( ! $schema)
 		{
-			$schema = $schema->name;
-		}
-		elseif (is_array($schema))
-		{
-			$schema = array_pop($schema);
-		}
-
-		if (empty($schema))
-		{
+			// Use default schema
 			$schema = $this->_config['connection']['database'];
+		}
+		else
+		{
+			if ( ! $schema instanceof SQL_Identifier)
+			{
+				// Convert to identifier
+				$schema = new SQL_Identifier($schema);
+			}
+
+			$schema = $schema->name;
 		}
 
 		$sql =
 			'SELECT table_name, table_type,'
 			.'   engine, auto_increment, table_collation, table_comment'
-			.' FROM information_schema.tables WHERE table_schema = '.$this->quote_literal($schema);
+			.' FROM information_schema.tables WHERE table_schema = '
+			.$this->quote_literal($schema);
 
 		if ( ! $prefix = $this->table_prefix())
 		{
@@ -506,7 +510,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		}
 
 		// Filter on table prefix
-		$sql .= " AND table_name LIKE '".strtr($prefix, array('_' => '\_', '%' => '\%'))."%'";
+		$sql .= " AND table_name LIKE '"
+			.strtr($prefix, array('_' => '\_', '%' => '\%'))
+			."%'";
 
 		$prefix = strlen($prefix);
 		$result = array();
@@ -530,43 +536,43 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	 *
 	 * @link http://dev.mysql.com/doc/en/columns-table.html
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Identifier $table  Converted to SQL_Table unless SQL_Identifier
 	 * @return  array
 	 */
 	public function table_columns($table)
 	{
-		if ($table instanceof SQL_Identifier)
+		if ( ! $table instanceof SQL_Identifier)
 		{
-			$schema = $table->namespace;
-			$table = $table->name;
-		}
-		elseif (is_array($table))
-		{
-			$schema = $table;
-			$table = array_pop($schema);
-		}
-		else
-		{
-			$schema = explode('.', $table);
-			$table = array_pop($schema);
+			// Convert to table
+			$table = new SQL_Table($table);
 		}
 
-		if (empty($schema))
+		if ( ! $schema = $table->namespace)
 		{
+			// Use default schema
 			$schema = $this->_config['connection']['database'];
 		}
 
+		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
+		$table = ($table instanceof SQL_Table)
+			? $this->table_prefix().$table->name
+			: $table->name;
+
 		$result =
-			'SELECT column_name, ordinal_position, column_default, is_nullable, data_type, character_maximum_length, numeric_precision, numeric_scale, collation_name,'
+			'SELECT column_name, ordinal_position, column_default, is_nullable,'
+			.'   data_type, character_maximum_length,'
+			.'   numeric_precision, numeric_scale, collation_name,'
 			.'   column_type, column_key, extra, privileges, column_comment'
 			.' FROM information_schema.columns'
-			.' WHERE table_schema = '.$this->quote_literal($schema).' AND table_name = '.$this->quote_literal($this->table_prefix().$table);
+			.' WHERE table_schema = '.$this->quote_literal($schema)
+			.'   AND table_name = '.$this->quote_literal($table);
 
 		$result = $this->execute_query($result)->as_array('column_name');
 
 		foreach ($result as & $column)
 		{
-			if ($column['data_type'] === 'enum' OR $column['data_type'] === 'set')
+			if ($column['data_type'] === 'enum'
+				OR $column['data_type'] === 'set')
 			{
 				$open = strpos($column['column_type'], '(');
 				$close = strpos($column['column_type'], ')', $open);
