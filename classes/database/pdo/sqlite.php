@@ -159,18 +159,37 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 	}
 
 	/**
-	 * Retrieve the tables of a schema in a format almost identical to that of the Tables table of
-	 * the SQL-92 Information Schema. Includes one non-standard field, `sql`, which contains the
-	 * text of the original CREATE command.
+	 * Retrieve the tables of a schema in a format almost identical to that of
+	 * the Tables table of the SQL-92 Information Schema. Includes one
+	 * non-standard field, `sql`, which contains the text of the original CREATE
+	 * statement.
 	 *
-	 * @param   mixed   $schema Converted to SQL_Identifier
+	 * @param   array|string|SQL_Identifier $schema Converted to SQL_Identifier. NULL for the default schema.
 	 * @return  array
 	 */
 	public function schema_tables($schema = NULL)
 	{
+		if ( ! $schema)
+		{
+			// Use default schema
+			$schema = 'main';
+		}
+		else
+		{
+			if ( ! $schema instanceof SQL_Identifier)
+			{
+				// Convert to identifier
+				$schema = new SQL_Identifier($schema);
+			}
+
+			$schema = $schema->name;
+		}
+
 		$sql =
-			"SELECT tbl_name AS table_name, CASE type WHEN 'table' THEN 'BASE TABLE' ELSE 'VIEW' END AS table_type, sql"
-			." FROM sqlite_master WHERE type IN ('table', 'view')";
+			"SELECT tbl_name AS table_name, CASE type WHEN 'table'"
+			."   THEN 'BASE TABLE' ELSE 'VIEW' END AS table_type, sql"
+			.' FROM '.$this->_quote_left.$schema.$this->_quote_right
+			.".sqlite_master WHERE type IN ('table', 'view')";
 
 		if ( ! $prefix = $this->table_prefix())
 		{
@@ -179,7 +198,9 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 		}
 
 		// Filter on table prefix
-		$sql .= " AND tbl_name LIKE '".strtr($prefix, array('_' => '\_', '%' => '\%'))."%' ESCAPE '\'";
+		$sql .= ' AND tbl_name LIKE '.$this->quote_literal(
+			strtr($prefix, array('_' => '\_', '%' => '\%')).'%'
+		)." ESCAPE '\'";
 
 		$prefix = strlen($prefix);
 		$result = array();
@@ -196,9 +217,29 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 
 	public function table_columns($table)
 	{
+		if ( ! $table instanceof SQL_Identifier)
+		{
+			// Convert to table
+			$table = new SQL_Table($table);
+		}
+
+		if ( ! $schema = $table->namespace)
+		{
+			// Use default schema
+			$schema = 'main';
+		}
+
+		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
+		$table = ($table instanceof SQL_Table)
+			? $this->table_prefix().$table->name
+			: $table->name;
+
+		$sql = 'PRAGMA '.$this->_quote_left.$schema.$this->_quote_right
+			.'.table_info('.$this->_quote_left.$table.$this->_quote_right.')';
+
 		$result = array();
 
-		if ($rows = $this->execute_query('PRAGMA table_info('.$this->quote_table($table).')'))
+		if ($rows = $this->execute_query($sql))
 		{
 			foreach ($rows as $row)
 			{
@@ -208,7 +249,10 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 				{
 					$close = strpos($type, ')', $open);
 
+					// Text between parentheses
 					$length = substr($type, $open + 1, $close - 1 - $open);
+
+					// Text before parentheses
 					$type = substr($type, 0, $open);
 				}
 				else
