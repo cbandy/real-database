@@ -208,6 +208,41 @@ class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 		$this->assertEquals(array(1,5), $db->execute($statement), 'Count is always one. Identity is INTEGER PRIMARY KEY of the last row');
 	}
 
+	public function provider_quote_literal()
+	{
+		return array
+		(
+			array(NULL, 'NULL'),
+			array(FALSE, "'0'"),
+			array(TRUE, "'1'"),
+
+			array(0, '0'),
+			array(-1, '-1'),
+			array(51678, '51678'),
+			array(12.345, '12.345000'),
+
+			array('string', "'string'"),
+			array("multiple\nlines", "'multiple\nlines'"),
+			array("single'quote", "'single''quote'"),
+			array("double\"quote", "'double\"quote'"),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::quote_literal
+	 *
+	 * @dataProvider provider_quote_literal
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_quote_literal($value, $expected)
+	{
+		$db = Database::factory();
+
+		$this->assertSame($expected, $db->quote_literal($value));
+	}
+
 	public function provider_table_columns()
 	{
 		return array
