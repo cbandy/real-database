@@ -243,7 +243,9 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 			array(12.345, '12.345000'),
 
 			array('string', "'string'"),
-			array("multiline\nstring", "'multiline\\nstring'"),
+			array("multiple\nlines", "'multiple\\nlines'"),
+			array("single'quote", "'single\\'quote'"),
+			array("double\"quote", "'double\\\"quote'"),
 		);
 	}
 
