@@ -46,6 +46,7 @@ class Database_PDO_SQLite_Statement_Test extends Database_PDO_SQLite_TestCase
 	 * @link    http://bugs.php.net/38334
 	 *
 	 * @covers  PDOStatement::bindParam
+	 *
 	 * @dataProvider    provider_bind
 	 *
 	 * @param   mixed   $initial    Value used when preparing the statement
@@ -65,7 +66,55 @@ class Database_PDO_SQLite_Statement_Test extends Database_PDO_SQLite_TestCase
 		$this->assertSame($bound, $var, 'Modified by PDO during bind');
 	}
 
-	protected function _test_bind_execute($value, $expected)
+	public function provider_bind_execute()
+	{
+		$result = array
+		(
+			array('0', '0'),
+			array('1', '1'),
+			array('a', 'a'),
+			array(new Database_Binary('b'), 'b'),
+		);
+
+		if (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			// PHP 5.2.x
+
+			$result[] = array(NULL, '0');
+			$result[] = array(FALSE, '0');
+			$result[] = array(TRUE, '1');
+			$result[] = array(0, '0');
+			$result[] = array(1, '1');
+		}
+		else
+		{
+			// PHP 5.3.x
+
+			$result[] = array(NULL, NULL);
+			$result[] = array(FALSE, 0);
+			$result[] = array(TRUE, 1);
+			$result[] = array(0, 0);
+			$result[] = array(1, 1);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Executing a statement with a bound variable can change the datatype.
+	 *
+	 * In PHP 5.2, all values are converted to string.
+	 * In PHP 5.3, values other than NULL are converted to integer or string.
+	 *
+	 * @covers  PDOStatement::bindParam
+	 * @covers  PDOStatement::execute
+	 *
+	 * @dataProvider    provider_bind_execute
+	 *
+	 * @param   mixed   $value      Value used when preparing the statement
+	 * @param   mixed   $expected   Value after the statement is executed
+	 */
+	public function test_bind_execute($value, $expected)
 	{
 		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
@@ -79,71 +128,5 @@ class Database_PDO_SQLite_Statement_Test extends Database_PDO_SQLite_TestCase
 		$statement->execute_command();
 
 		$this->assertSame($expected, $var, 'Modified by PDO during execution');
-	}
-
-	public function provider_bind_execute_52()
-	{
-		return array
-		(
-			array(NULL, '0'),
-			array(FALSE, '0'),
-			array(TRUE, '1'),
-			array(0, '0'),
-			array(1, '1'),
-			array('a', 'a'),
-			array(new Database_Binary('b'), 'b'),
-		);
-	}
-
-	/**
-	 * Executing a statement with a bound variable will convert the value to
-	 * string in PHP 5.2.
-	 *
-	 * @covers  PDOStatement::bindParam
-	 * @covers  PDOStatement::execute
-	 * @dataProvider    provider_bind_execute_52
-	 *
-	 * @param   mixed   $value      Value used when preparing the statement
-	 * @param   string  $expected   Value after the statement is executed
-	 */
-	public function test_bind_execute_52($value, $expected)
-	{
-		if (version_compare(PHP_VERSION, '5.3', '>='))
-			$this->markTestSkipped();
-
-		$this->_test_bind_execute($value, $expected);
-	}
-
-	public function provider_bind_execute()
-	{
-		return array
-		(
-			array(NULL, NULL),
-			array(FALSE, 0),
-			array(TRUE, 1),
-			array(0, 0),
-			array(1, 1),
-			array('a', 'a'),
-			array(new Database_Binary('b'), 'b'),
-		);
-	}
-
-	/**
-	 * Executing a statement with a bound variable will convert values other
-	 * than NULL to integer or string.
-	 *
-	 * @covers  PDOStatement::bindParam
-	 * @covers  PDOStatement::execute
-	 * @dataProvider    provider_bind_execute
-	 *
-	 * @param   mixed   $value      Value used when preparing the statement
-	 * @param   mixed   $expected   Value after the statement is executed
-	 */
-	public function test_bind_execute($value, $expected)
-	{
-		if (version_compare(PHP_VERSION, '5.3', '<'))
-			$this->markTestSkipped();
-
-		$this->_test_bind_execute($value, $expected);
 	}
 }
