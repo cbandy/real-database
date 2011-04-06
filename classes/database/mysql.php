@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MySQL connection and expression factory.
+ * [MySQL](http://www.mysql.com/) connection and expression factory.
  *
  * [!!] Requires MySQL >= 5.0.7
  *
@@ -14,9 +14,9 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
  * @link http://php.net/manual/book.mysql
- * @link http://www.mysql.com/
  */
-class Database_MySQL extends Database implements Database_iEscape, Database_iIntrospect
+class Database_MySQL extends Database
+	implements Database_iEscape, Database_iIntrospect
 {
 	/**
 	 * @see Database_MySQL::_select_database()
@@ -114,7 +114,8 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 
 		if ( ! empty($this->_config['connection']['port']))
 		{
-			$this->_config['connection']['hostname'] .= ':'.$this->_config['connection']['port'];
+			$this->_config['connection']['hostname'] .=
+				':'.$this->_config['connection']['port'];
 		}
 
 		if ( ! isset($this->_config['table_prefix']))
@@ -122,7 +123,10 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 			$this->_config['table_prefix'] = '';
 		}
 
-		$this->_connection_id = $this->_config['connection']['hostname'].'_'.$this->_config['connection']['username'].'_'.$this->_config['connection']['password'].'_'.$this->_config['connection']['flags'];
+		$this->_connection_id = $this->_config['connection']['hostname']
+			.'_'.$this->_config['connection']['username']
+			.'_'.$this->_config['connection']['password']
+			.'_'.$this->_config['connection']['flags'];
 	}
 
 	/**
@@ -138,7 +142,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		{
 			$this->connect();
 		}
-		elseif ( ! empty($this->_config['connection']['persistent']) AND $this->_config['connection']['database'] !== Database_MySQL::$_databases[$this->_connection_id])
+		elseif ( ! empty($this->_config['connection']['persistent'])
+			AND $this->_config['connection']['database']
+				!== Database_MySQL::$_databases[$this->_connection_id])
 		{
 			// Select database on persistent connections
 			$this->_select_database($this->_config['connection']['database']);
@@ -161,7 +167,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error',
+				array(':error' => $e->getMessage()),
+				$e->getCode()
+			);
 		}
 
 		if ($result === FALSE)
@@ -171,7 +181,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection));
+			throw new Database_Exception(
+				':error',
+				array(':error' => mysql_error($this->_connection)),
+				mysql_errno($this->_connection)
+			);
 		}
 
 		if (isset($benchmark))
@@ -192,7 +206,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	protected function _select_database($database)
 	{
 		if ( ! mysql_select_db($database, $this->_connection))
-			throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection));
+			throw new Database_Exception(
+				':error',
+				array(':error' => mysql_error($this->_connection)),
+				mysql_errno($this->_connection)
+			);
 
 		Database_MySQL::$_databases[$this->_connection_id] = $database;
 	}
@@ -207,7 +225,11 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		$this->_connection or $this->connect();
 
 		if ( ! mysql_set_charset($charset, $this->_connection))
-			throw new Database_Exception(':error', array(':error' => mysql_error($this->_connection)), mysql_errno($this->_connection));
+			throw new Database_Exception(
+				':error',
+				array(':error' => mysql_error($this->_connection)),
+				mysql_errno($this->_connection)
+			);
 	}
 
 	public function commit()
@@ -241,12 +263,19 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		catch (Exception $e)
 		{
 			// @codeCoverageIgnoreStart
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error',
+				array(':error' => $e->getMessage()),
+				$e->getCode()
+			);
 			// @codeCoverageIgnoreEnd
 		}
 
 		if ( ! is_resource($this->_connection))
-			throw new Database_Exception('Unable to connect to MySQL ":name"', array(':name' => $this->_name));
+			throw new Database_Exception(
+				'Unable to connect to MySQL ":name"',
+				array(':name' => $this->_name)
+			);
 
 		$this->_select_database($database);
 
@@ -259,7 +288,9 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 		{
 			foreach ($this->_config['variables'] as $variable => $value)
 			{
-				$this->_execute('SET SESSION '.$variable.' = '.$this->quote_literal($value));
+				$this->_execute(
+					'SET SESSION '.$variable.' = '.$this->quote_literal($value)
+				);
 			}
 		}
 	}
@@ -556,7 +587,7 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 
 		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
 		$table = ($table instanceof SQL_Table)
-			? $this->table_prefix().$table->name
+			? ($this->table_prefix().$table->name)
 			: $table->name;
 
 		$result =
@@ -579,7 +610,14 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 				$close = strpos($column['column_type'], ')', $open);
 
 				// Text between parentheses without single quotes
-				$column['options'] = explode("','", substr($column['column_type'], $open + 2, $close - 3 - $open));
+				$column['options'] = explode(
+					"','",
+					substr(
+						$column['column_type'],
+						$open + 2,
+						$close - 3 - $open
+					)
+				);
 			}
 			elseif (strlen($column['column_type']) > 8)
 			{
