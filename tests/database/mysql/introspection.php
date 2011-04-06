@@ -227,6 +227,13 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'numeric_scale' => 0,
 				'column_type' => 'bigint(20) unsigned',
 			)),
+
+			array('integer unsigned zerofill', array(
+				'data_type' => 'int unsigned',
+				'numeric_precision' => 10,
+				'numeric_scale' => 0,
+				'column_type' => 'int(10) unsigned zerofill',
+			)),
 		);
 	}
 
