@@ -35,6 +35,28 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::charset
+	 */
+	public function test_charset()
+	{
+		$db = Database::factory();
+
+		$this->assertNull($db->charset('utf8'));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::charset
+	 */
+	public function test_charset_invalid()
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'invalid value');
+
+		$db->charset('kohana-invalid-encoding');
+	}
+
+	/**
 	 * @covers  Database_PostgreSQL::copy_from
 	 * @expectedException   Database_Exception
 	 */
@@ -161,6 +183,18 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame('asdf', $db->prepare('asdf', 'SELECT * FROM '.$table));
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::prepare
+	 */
+	public function test_prepare_invalid()
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'syntax error', 42601);
+
+		$db->prepare(NULL, 'kohana-invalid-sql');
+	}
+
 	public function provider_prepare_statement()
 	{
 		return array
@@ -251,6 +285,9 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame($expected_params, $statement->parameters);
 	}
 
+	/**
+	 * @covers  Database_PostgreSQL::quote
+	 */
 	public function test_quote_binary()
 	{
 		$db = Database::factory();
