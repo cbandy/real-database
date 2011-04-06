@@ -1,7 +1,7 @@
 <?php
 
 /**
- * PostgreSQL connection and expression factory.
+ * [PostgreSQL](http://www.postgresql.org/) connection and expression factory.
  *
  * [!!] Requires PostgreSQL >= 8.2
  *
@@ -14,7 +14,6 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
  * @link http://php.net/manual/book.pgsql
- * @link http://www.postgresql.org/
  */
 class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {
@@ -241,8 +240,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 		else
 		{
-			if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
+			if ($status === PGSQL_BAD_RESPONSE
+				OR $status === PGSQL_NONFATAL_ERROR
+				OR $status === PGSQL_FATAL_ERROR)
+			{
 				throw new Database_PostgreSQL_Exception($result);
+			}
 
 			if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
 			{
@@ -274,8 +277,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		if ($status === PGSQL_TUPLES_OK)
 			return new Database_PostgreSQL_Result($result, $as_object);
 
-		if ($status === PGSQL_BAD_RESPONSE OR $status === PGSQL_NONFATAL_ERROR OR $status === PGSQL_FATAL_ERROR)
+		if ($status === PGSQL_BAD_RESPONSE
+			OR $status === PGSQL_NONFATAL_ERROR
+			OR $status === PGSQL_FATAL_ERROR)
+		{
 			throw new Database_PostgreSQL_Exception($result);
+		}
 
 		if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
 		{
@@ -311,7 +318,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
 			// @codeCoverageIgnoreEnd
 		}
 
@@ -323,7 +333,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
 			// @codeCoverageIgnoreEnd
 		}
 
@@ -349,17 +362,25 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", "Prepared: $name");
+			$benchmark = Profiler::start(
+				"Database ($this->_name)",
+				"Prepared: $name"
+			);
 		}
 
 		if ( ! pg_send_execute($this->_connection, $name, $parameters))
 		{
+			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
 			{
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
+			// @codeCoverageIgnoreEnd
 		}
 
 		if ( ! $result = pg_get_result($this->_connection))
@@ -370,7 +391,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
 			// @codeCoverageIgnoreEnd
 		}
 
@@ -439,7 +463,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			{
 				// Named parameter
 				$offset = $prev[1] + strlen($prev[0]);
-				$placeholder = substr($statement, $offset, $chunks[$i][1] - $offset);
+				$placeholder = substr(
+					$statement,
+					$offset,
+					$chunks[$i][1] - $offset
+				);
 
 				if ( ! isset($fragments[$placeholder]))
 				{
@@ -551,7 +579,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		$this->_connection or $this->connect();
 
 		if (pg_set_client_encoding($this->_connection, $charset) !== 0)
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
 	}
 
 	public function commit()
@@ -576,14 +607,24 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		catch (Exception $e)
 		{
 			// @codeCoverageIgnoreStart
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error',
+				array(':error' => $e->getMessage()),
+				$e->getCode()
+			);
 			// @codeCoverageIgnoreEnd
 		}
 
 		if ( ! is_resource($this->_connection))
-			throw new Database_Exception('Unable to connect to PostgreSQL ":name"', array(':name' => $this->_name));
+			throw new Database_Exception(
+				'Unable to connect to PostgreSQL ":name"',
+				array(':name' => $this->_name)
+			);
 
-		$this->_version = pg_parameter_status($this->_connection, 'server_version');
+		$this->_version = pg_parameter_status(
+			$this->_connection,
+			'server_version'
+		);
 
 		if ( ! empty($this->_config['charset']))
 		{
@@ -592,7 +633,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($this->_config['search_path']))
 		{
-			$result = $this->_execute('SET search_path = '.$this->_config['search_path']);
+			$result = $this->_execute(
+				'SET search_path = '.$this->_config['search_path']
+			);
 
 			if (pg_result_status($result) !== PGSQL_COMMAND_OK)
 				throw new Database_PostgreSQL_Exception($result);
@@ -625,15 +668,28 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		try
 		{
 			// Raises E_WARNING on error
-			$result = pg_copy_from($this->_connection, $table, $rows, addslashes($delimiter), addslashes($null));
+			$result = pg_copy_from(
+				$this->_connection,
+				$table,
+				$rows,
+				addslashes($delimiter),
+				addslashes($null)
+			);
 		}
 		catch (Exception $e)
 		{
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error',
+				array(':error' => $e->getMessage()),
+				$e->getCode()
+			);
 		}
 
 		if ( ! $result)
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
 	}
 
 	/**
@@ -678,16 +734,26 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		if (Database_PostgreSQL::$bug_copy_to_null)
 		{
 			if ($null !== '\\N')
-				throw new Kohana_Exception('Setting the NULL representation is broken before PHP 5.2.14 and 5.3.3');
+				throw new Kohana_Exception(
+					'Setting the NULL representation is broken before PHP 5.2.14 and 5.3.3'
+				);
 
 			try
 			{
 				// Raises E_WARNING on error
-				$result = pg_copy_to($this->_connection, $table, addslashes($delimiter));
+				$result = pg_copy_to(
+					$this->_connection,
+					$table,
+					addslashes($delimiter)
+				);
 			}
 			catch (Exception $e)
 			{
-				throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+				throw new Database_Exception(
+					':error',
+					array(':error' => $e->getMessage()),
+					$e->getCode()
+				);
 			}
 		}
 		else
@@ -695,16 +761,28 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			try
 			{
 				// Raises E_WARNING on error
-				$result = pg_copy_to($this->_connection, $table, addslashes($delimiter), addslashes($null));
+				$result = pg_copy_to(
+					$this->_connection,
+					$table,
+					addslashes($delimiter),
+					addslashes($null)
+				);
 			}
 			catch (Exception $e)
 			{
-				throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+				throw new Database_Exception(
+					':error',
+					array(':error' => $e->getMessage()),
+					$e->getCode()
+				);
 			}
 		}
 
 		if ($result === FALSE)
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
 
 		return $result;
 	}
@@ -779,8 +857,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$this->_connection or $this->connect();
 
-		// PHP >= 6.0.0
-		//if (is_binary($value))
 		if ($value instanceof Database_Binary)
 		{
 			$value = pg_escape_bytea($this->_connection, $value);
@@ -844,7 +920,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 
 			$result = $this->_evaluate_query(
-				$this->_execute($statement.' RETURNING '.$this->quote($identity)),
+				$this->_execute(
+					$statement.' RETURNING '.$this->quote($identity)
+				),
 				$as_object
 			);
 		}
@@ -867,7 +945,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	public function execute_prepared_command($name, $parameters = array())
 	{
-		return $this->_evaluate_command($this->_execute_prepared($name, $parameters));
+		return $this->_evaluate_command(
+			$this->_execute_prepared($name, $parameters)
+		);
 	}
 
 	/**
@@ -914,7 +994,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	public function execute_prepared_query($name, $parameters = array(), $as_object = FALSE)
 	{
-		return $this->_evaluate_query($this->_execute_prepared($name, $parameters), $as_object);
+		return $this->_evaluate_query(
+			$this->_execute_prepared($name, $parameters),
+			$as_object
+		);
 	}
 
 	public function execute_query($statement, $as_object = FALSE)
@@ -950,10 +1033,24 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		$this->_connection or $this->connect();
 
 		if ( ! pg_send_prepare($this->_connection, $name, $statement))
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		{
+			// @codeCoverageIgnoreStart
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
+			// @codeCoverageIgnoreEnd
+		}
 
 		if ( ! $result = pg_get_result($this->_connection))
-			throw new Database_Exception(':error', array(':error' => pg_last_error($this->_connection)));
+		{
+			// @codeCoverageIgnoreStart
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
+			// @codeCoverageIgnoreEnd
+		}
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
 			throw new Database_PostgreSQL_Exception($result);
@@ -1013,7 +1110,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	public function rollback($savepoint = NULL)
 	{
-		$result = $this->_execute($savepoint ? "ROLLBACK TO $savepoint" : 'ROLLBACK');
+		$result = $this->_execute(
+			$savepoint ? ('ROLLBACK TO '.$savepoint) : 'ROLLBACK'
+		);
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
 			throw new Database_PostgreSQL_Exception($result);
@@ -1030,7 +1129,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	public function savepoint($name)
 	{
-		$result = $this->_execute("SAVEPOINT $name");
+		$result = $this->_execute('SAVEPOINT '.$name);
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
 			throw new Database_PostgreSQL_Exception($result);
@@ -1054,7 +1153,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				throw new Database_PostgreSQL_Exception($result);
 
 			// Default schema is first in the array
-			list($this->_schema) = explode(',', trim(pg_fetch_result($result, 0), '{}'), 2);
+			list($this->_schema) = explode(
+				',',
+				trim(pg_fetch_result($result, 0), '{}'),
+				2
+			);
 
 			pg_free_result($result);
 		}
@@ -1125,7 +1228,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
 		$table = ($table instanceof SQL_Table)
-			? $this->table_prefix().$table->name
+			? ($this->table_prefix().$table->name)
 			: $table->name;
 
 		$sql =
