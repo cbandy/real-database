@@ -90,13 +90,14 @@ class Database_MySQL extends Database implements Database_iEscape, Database_iInt
 	 *  variables             | array   | [System variables][] as "key => value" pairs
 	 *  connection.database   | string  |
 	 *  connection.flags      | integer | Combination of [client constants][], e.g. MYSQL_CLIENT_SSL
-	 *  connection.hostname   | string  | Server address or path to a local socket
+	 *  connection.hostname   | string  | Server address or path to a local socket. Use `'127.0.0.1'` to [connect locally using TCP/IP][loopback]
 	 *  connection.password   | string  |
 	 *  connection.persistent | boolean | Use the PHP connection pool
 	 *  connection.port       | integer | Server port
 	 *  connection.username   | string  |
 	 *
 	 * [Client constants]: http://php.net/manual/mysql.constants
+	 * [Loopback]:         http://dev.mysql.com/doc/en/can-not-connect-to-server.html
 	 * [System variables]: http://dev.mysql.com/doc/en/dynamic-system-variables.html
 	 *
 	 * @param   string  $name   Connection name
