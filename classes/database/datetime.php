@@ -23,9 +23,9 @@ class Database_DateTime extends DateTime
 	protected $_format;
 
 	/**
-	 * @param   integer|string  $time       Unix timestamp or time in a format accepted by strtotime()
-	 * @param   mixed           $timezone   Fallback timezone, converted to DateTimeZone
-	 * @param   string          $format     Format accepted by date(), defaults to Database_DateTime::SQL
+	 * @param   integer|string      $time       Unix timestamp or time in a format accepted by strtotime()
+	 * @param   string|DateTimeZone $timezone   Fallback timezone, converted to DateTimeZone
+	 * @param   string              $format     Format accepted by date(), defaults to Database_DateTime::SQL
 	 */
 	public function __construct($time = 'now', $timezone = NULL, $format = Database_DateTime::SQL)
 	{
@@ -36,7 +36,7 @@ class Database_DateTime extends DateTime
 
 		if ( ! $timezone)
 		{
-			// Passing NULL as the second argument raises an Exception
+			// @link http://bugs.php.net/52063 Fixed in PHP 5.3.6
 			parent::__construct($time);
 		}
 		else
@@ -75,7 +75,7 @@ class Database_DateTime extends DateTime
 	 *
 	 * @link http://php.net/manual/datetime.settimezone
 	 *
-	 * @param   mixed   $timezone   Converted to DateTimeZone
+	 * @param   string|DateTimeZone $timezone   Converted to DateTimeZone
 	 * @return  $this
 	 */
 	public function setTimezone($timezone)

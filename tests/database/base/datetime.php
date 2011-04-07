@@ -26,6 +26,10 @@ class Database_Base_DateTime_Test extends PHPUnit_Framework_TestCase
 			// Timestamp with timezone
 			array(array('2009-11-17T12:34:56', 'US/Central'),   '2009-11-17 12:34:56-06:00'),
 
+			// Timestamp with two timezones
+			array(array('2009-11-17T12:34:56Z', 'US/Central'),  '2009-11-17 12:34:56+00:00'),
+			array(array('2009-11-17T12:34:56+7', 'US/Central'), '2009-11-17 12:34:56+07:00'),
+
 			// Timestamp with format
 			array(array('2009-11-17T12:34:56', NULL, 'Y-m-d'),              '2009-11-17'),
 			array(array('2009-11-17T12:34:56', 'Asia/Shanghai', 'Y-m-d'),   '2009-11-17'),
