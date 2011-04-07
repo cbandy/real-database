@@ -44,7 +44,9 @@ class Database_Query_Cached
 	 */
 	public function delete()
 	{
-		Kohana::cache($this->key(), NULL, -1);
+		// Any negative number should clear the cache, but allow for some time
+		// discrepancy on a remote file system
+		Kohana::cache($this->key(), NULL, -60);
 	}
 
 	/**
