@@ -1,7 +1,7 @@
 <?php
 
 /**
- * SQLite connection using PDO and SQLite expression factory.
+ * [SQLite](http://www.sqlite.org/) connection and expression factory using PDO.
  *
  * *[PDO]: PHP Data Objects
  *
@@ -14,9 +14,9 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
  * @link http://php.net/manual/ref.pdo-sqlite
- * @link http://www.sqlite.org/
  */
-class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Database_iIntrospect
+class Database_PDO_SQLite extends Database_PDO
+	implements Database_iEscape, Database_iIntrospect
 {
 	public static function create($type, $name = NULL)
 	{
@@ -231,7 +231,7 @@ class Database_PDO_SQLite extends Database_PDO implements Database_iEscape, Data
 
 		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
 		$table = ($table instanceof SQL_Table)
-			? $this->table_prefix().$table->name
+			? ($this->table_prefix().$table->name)
 			: $table->name;
 
 		$sql = 'PRAGMA '.$this->_quote_left.$schema.$this->_quote_right
