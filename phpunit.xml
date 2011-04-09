@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="../../application/test_bootstrap.php">
+<phpunit colors="true" bootstrap="../unittest/bootstrap.php">
 	<filter>
-		<whitelist addUncoveredFilesFromWhitelist="false">
+		<whitelist addUncoveredFilesFromWhitelist="true">
 			<directory suffix=".php">./classes/</directory>
 		</whitelist>
 	</filter>
