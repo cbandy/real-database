@@ -63,7 +63,7 @@ class Database_PDO_Result_Test extends Database_PDO_TestCase
 	 * @param   string|boolean  $as_object
 	 * @param   array           $expected
 	 */
-	public function test_current($query, $as_object, $expected)
+	public function test_construct($query, $as_object, $expected)
 	{
 		$db = Database::factory();
 		$statement = $db->prepare($db->quote_expression($query));

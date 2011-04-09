@@ -323,11 +323,11 @@ class Database_PDO extends Database
 	}
 
 	/**
-	 * Created a prepared statement from a SQL expression object.
+	 * Create a prepared statement from a SQL expression object.
 	 *
 	 * @throws  Database_Exception
 	 * @param   SQL_Expression  $statement  SQL statement
-	 * @return  Database_PostgreSQL_Statement
+	 * @return  Database_PDO_Statement
 	 */
 	public function prepare_statement($statement)
 	{
