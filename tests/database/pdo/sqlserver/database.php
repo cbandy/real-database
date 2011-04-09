@@ -22,6 +22,9 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_charset()
 	{
+		if ( ! extension_loaded('pdo_sqlsrv'))
+			return;
+
 		return array
 		(
 			array(PDO::SQLSRV_ENCODING_DEFAULT),
