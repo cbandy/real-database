@@ -68,6 +68,30 @@ class Database_PDO extends Database
 		}
 	}
 
+	/**
+	 * Replace array, expression and identifier parameters until all parameters
+	 * are 1-indexed, positional literals.
+	 *
+	 * @param   SQL_Expression  $statement  SQL statement
+	 * @return  array   List including the SQL string and parameter array
+	 */
+	protected function _parse_statement($statement)
+	{
+		// PDOStatement parameters are 1-indexed, pad the array with a value
+		$parameters = array(NULL);
+
+		$statement = $this->_parse(
+			(string) $statement,
+			$statement->parameters,
+			$parameters
+		);
+
+		// Remove padding
+		unset($parameters[0]);
+
+		return array($statement, $parameters);
+	}
+
 	public function begin()
 	{
 		$this->_connection or $this->connect();
@@ -177,7 +201,11 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! is_string($statement))
+		if ($statement instanceof SQL_Expression)
+		{
+			list($statement, $parameters) = $this->_parse_statement($statement);
+		}
+		elseif ( ! is_string($statement))
 		{
 			$statement = $this->quote($statement);
 		}
@@ -192,7 +220,16 @@ class Database_PDO extends Database
 
 		try
 		{
-			$result = $this->_connection->exec($statement);
+			if (empty($parameters))
+			{
+				$result = $this->_connection->exec($statement);
+			}
+			else
+			{
+				$result = $this->_connection->prepare($statement);
+				$result->execute($parameters);
+				$result = $result->rowCount();
+			}
 		}
 		catch (PDOException $e)
 		{
@@ -232,7 +269,11 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! is_string($statement))
+		if ($statement instanceof SQL_Expression)
+		{
+			list($statement, $parameters) = $this->_parse_statement($statement);
+		}
+		elseif ( ! is_string($statement))
 		{
 			$statement = $this->quote($statement);
 		}
@@ -247,7 +288,15 @@ class Database_PDO extends Database
 
 		try
 		{
-			$statement = $this->_connection->query($statement);
+			if (empty($parameters))
+			{
+				$statement = $this->_connection->query($statement);
+			}
+			else
+			{
+				$statement = $this->_connection->prepare($statement);
+				$statement->execute($parameters);
+			}
 		}
 		catch (PDOException $e)
 		{
@@ -331,19 +380,13 @@ class Database_PDO extends Database
 	 */
 	public function prepare_statement($statement)
 	{
-		// PDOStatement parameters are 1-indexed, pad the array with a value
-		$parameters = array(NULL);
+		list($statement, $parameters) = $this->_parse_statement($statement);
 
-		$statement = $this->prepare($this->_parse(
-			(string) $statement,
-			$statement->parameters,
+		return new Database_PDO_Statement(
+			$this,
+			$this->prepare($statement),
 			$parameters
-		));
-
-		// Remove padding
-		unset($parameters[0]);
-
-		return new Database_PDO_Statement($this, $statement, $parameters);
+		);
 	}
 
 	/**
