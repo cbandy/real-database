@@ -18,7 +18,7 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 
 		$cached = new Database_Query_Cached(5, $db, new Database_Query('query'));
 
-		$this->assertSame('Database_Query_Cached(db,query,a:0:{},)', $cached->key());
+		$this->assertSame('Database_Query_Cached(db,query,a:0:{},,N;)', $cached->key());
 	}
 
 	/**
