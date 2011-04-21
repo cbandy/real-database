@@ -69,8 +69,63 @@ class Database_PDO_Result_Test extends Database_PDO_TestCase
 		$statement = $db->prepare($db->quote_expression($query));
 		$statement->execute();
 
-		$result = new Database_PDO_Result($statement, $as_object);
+		$result = new Database_PDO_Result($statement, $as_object, array());
 
 		$this->assertEquals($expected, $result->as_array());
+	}
+
+	public function provider_construct_object_arguments()
+	{
+		return array
+		(
+			array(array()),
+			array(array(1)),
+			array(array('a', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO_Result::__construct
+	 *
+	 * @dataProvider    provider_construct_object_arguments
+	 *
+	 * @todo This test would be better using a mocked constructor
+	 *
+	 * @param   array   $arguments
+	 */
+	public function test_construct_object_arguments($arguments)
+	{
+		$db = Database::factory();
+		$statement = $db->prepare($db->quote_expression(
+			$db->select(array('value'))->from($this->_table)
+		));
+		$statement->execute();
+
+		$result = new Database_PDO_Result(
+			$statement,
+			'Database_PDO_Result_Test_Constructor',
+			$arguments
+		);
+
+		$this->assertSame($arguments, $result->current()->arguments());
+	}
+}
+
+/**
+ * Class to expose the arguments passed to a constructor. Remove if/when
+ * constructors can be mocked.
+ */
+class Database_PDO_Result_Test_Constructor
+{
+	protected $_arguments;
+
+	public function __construct()
+	{
+		$this->_arguments = func_get_args();
+	}
+
+	public function arguments()
+	{
+		return $this->_arguments;
 	}
 }

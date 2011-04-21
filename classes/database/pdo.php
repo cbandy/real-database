@@ -265,7 +265,7 @@ class Database_PDO extends Database
 		return array($this->execute_command($statement), $this->last_insert_id());
 	}
 
-	public function execute_query($statement, $as_object = FALSE)
+	public function execute_query($statement, $as_object = FALSE, $arguments = array())
 	{
 		$this->_connection or $this->connect();
 
@@ -316,7 +316,7 @@ class Database_PDO extends Database
 		if ($statement->columnCount() === 0)
 			return NULL;
 
-		return new Database_PDO_Result($statement, $as_object);
+		return new Database_PDO_Result($statement, $as_object, $arguments);
 	}
 
 	/**
