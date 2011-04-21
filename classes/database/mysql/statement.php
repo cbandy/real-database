@@ -133,12 +133,13 @@ class Database_MySQL_Statement
 	 * statement is not a query (e.g., a DELETE statement).
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the row class constructor
 	 * @return  Database_Result Result set or NULL
 	 */
-	public function execute_query($as_object = FALSE)
+	public function execute_query($as_object = FALSE, $arguments = array())
 	{
-		return $this->_db->execute_query($this->_set_variables(), $as_object);
+		return $this->_db->execute_query($this->_set_variables(), $as_object, $arguments);
 	}
 
 	/**

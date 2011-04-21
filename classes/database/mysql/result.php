@@ -16,6 +16,11 @@
 class Database_MySQL_Result extends Database_Result
 {
 	/**
+	 * @var array   Arguments to pass to the class constructor
+	 */
+	protected $_arguments;
+
+	/**
 	 * @var integer Position of the result resource
 	 */
 	protected $_internal_position = 0;
@@ -27,12 +32,14 @@ class Database_MySQL_Result extends Database_Result
 
 	/**
 	 * @param   resource        $result     From mysql_query()
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the class constructor
 	 */
-	public function __construct($result, $as_object)
+	public function __construct($result, $as_object, $arguments)
 	{
 		parent::__construct($as_object, mysql_num_rows($result));
 
+		$this->_arguments = $arguments;
 		$this->_result = $result;
 	}
 
@@ -64,13 +71,20 @@ class Database_MySQL_Result extends Database_Result
 			++$this->_internal_position;
 		}
 
-		if ($this->_as_object)
-		{
-			// Raises E_WARNING when class does not exist
-			return mysql_fetch_object($this->_result, $this->_as_object);
-		}
+		// Associative array
+		if ( ! $this->_as_object)
+			return mysql_fetch_assoc($this->_result);
 
-		return mysql_fetch_assoc($this->_result);
+		// Object without constructor arguments
+		if ( ! $this->_arguments)
+			return mysql_fetch_object($this->_result, $this->_as_object);
+
+		// Object with constructor arguments
+		return mysql_fetch_object(
+			$this->_result,
+			$this->_as_object,
+			$this->_arguments
+		);
 	}
 
 	public function get($name = NULL, $default = NULL)
