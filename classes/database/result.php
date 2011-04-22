@@ -22,7 +22,8 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Database_Result implements ArrayAccess, Countable, Iterator, SeekableIterator
+abstract class Database_Result
+	implements ArrayAccess, Countable, Iterator, SeekableIterator
 {
 	/**
 	 * @var string|boolean  Row object class or FALSE for associative array
@@ -40,7 +41,7 @@ abstract class Database_Result implements ArrayAccess, Countable, Iterator, Seek
 	protected $_position = 0;
 
 	/**
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 * @param   integer         $count      Number of rows
 	 */
 	public function __construct($as_object, $count)

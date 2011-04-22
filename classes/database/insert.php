@@ -16,6 +16,11 @@ class Database_Insert extends SQL_DML_Insert
 	implements Database_iInsert, Database_iReturning
 {
 	/**
+	 * @var array   Arguments to pass to the class constructor
+	 */
+	public $arguments;
+
+	/**
 	 * @var string|boolean  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 */
 	public $as_object = FALSE;
@@ -35,9 +40,10 @@ class Database_Insert extends SQL_DML_Insert
 		return $this->as_object(FALSE);
 	}
 
-	public function as_object($class = TRUE)
+	public function as_object($class = TRUE, $arguments = array())
 	{
 		$this->as_object = $class;
+		$this->arguments = $arguments;
 
 		return $this;
 	}

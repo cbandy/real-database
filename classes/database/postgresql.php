@@ -267,15 +267,16 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 *
 	 * @throws  Database_Exception
 	 * @param   resource        $result     Result resource
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the row class constructor
 	 * @return  Database_Result Result set or NULL
 	 */
-	protected function _evaluate_query($result, $as_object)
+	protected function _evaluate_query($result, $as_object, $arguments)
 	{
 		$status = pg_result_status($result);
 
 		if ($status === PGSQL_TUPLES_OK)
-			return new Database_PostgreSQL_Result($result, $as_object);
+			return new Database_PostgreSQL_Result($result, $as_object, $arguments);
 
 		if ($status === PGSQL_BAD_RESPONSE
 			OR $status === PGSQL_NONFATAL_ERROR
@@ -893,10 +894,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @throws  Database_Exception
 	 * @param   string|SQL_Expression   $statement  SQL insert
 	 * @param   mixed                   $identity   Converted to SQL_Column
-	 * @param   string|boolean          $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean          $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array                   $arguments  Arguments to pass to the row class constructor
 	 * @return  array   List including number of affected rows and a value from the first row
 	 */
-	public function execute_insert($statement, $identity, $as_object = FALSE)
+	public function execute_insert($statement, $identity, $as_object = FALSE, $arguments = array())
 	{
 		if ( ! $identity instanceof SQL_Expression
 			AND ! $identity instanceof SQL_Identifier)
@@ -909,7 +911,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		{
 			$result = $this->_evaluate_query(
 				$this->_execute($this->quote($statement)),
-				$as_object
+				$as_object,
+				$arguments
 			);
 		}
 		else
@@ -923,7 +926,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				$this->_execute(
 					$statement.' RETURNING '.$this->quote($identity)
 				),
-				$as_object
+				$as_object,
+				$arguments
 			);
 		}
 
@@ -957,11 +961,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @throws  Database_Exception
 	 * @param   string          $name       Statement name
 	 * @param   mixed           $identity   Converted to SQL_Column
-	 * @param   array           $parameters Unquoted parameters
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $parameters Unquoted statement parameters
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the row class constructor
 	 * @return  array   List including number of affected rows and a value from the first row
 	 */
-	public function execute_prepared_insert($name, $identity, $parameters = array(), $as_object = FALSE)
+	public function execute_prepared_insert($name, $identity, $parameters = array(), $as_object = FALSE, $arguments = array())
 	{
 		if ( ! $identity instanceof SQL_Expression
 			AND ! $identity instanceof SQL_Identifier)
@@ -971,7 +976,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		$result = $this->_evaluate_query(
 			$this->_execute_prepared($name, $parameters),
-			$as_object
+			$as_object,
+			$arguments
 		);
 
 		$rows = $result->count();
@@ -989,18 +995,20 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @throws  Database_Exception
 	 * @param   string          $name       Statement name
 	 * @param   array           $parameters Unquoted parameters
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the row class constructor
 	 * @return  Database_Result Result set or NULL
 	 */
-	public function execute_prepared_query($name, $parameters = array(), $as_object = FALSE)
+	public function execute_prepared_query($name, $parameters = array(), $as_object = FALSE, $arguments = array())
 	{
 		return $this->_evaluate_query(
 			$this->_execute_prepared($name, $parameters),
-			$as_object
+			$as_object,
+			$arguments
 		);
 	}
 
-	public function execute_query($statement, $as_object = FALSE)
+	public function execute_query($statement, $as_object = FALSE, $arguments = array())
 	{
 		if (empty($statement))
 			return NULL;
@@ -1010,7 +1018,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$statement = $this->quote($statement);
 		}
 
-		return $this->_evaluate_query($this->_execute($statement), $as_object);
+		return $this->_evaluate_query($this->_execute($statement), $as_object, $arguments);
 	}
 
 	/**

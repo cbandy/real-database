@@ -23,23 +23,28 @@ class Database_Base_Query_Set_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(FALSE),
-			array(TRUE),
-			array('b'),
+			array(array(FALSE), FALSE, array()),
+			array(array(TRUE), TRUE, array()),
+			array(array('b'), 'b', array()),
+			array(array('b', array('c')), 'b', array('c')),
 		);
 	}
 
 	/**
 	 * @covers  Database_Query_Set::as_object
+	 *
 	 * @dataProvider    provider_as_object
 	 *
-	 * @param   string|boolean  $as_object  Expected value
+	 * @param   array           $arguments  Arguments to the method
+	 * @param   string|boolean  $as_object  Expected $as_object value
+	 * @param   array           $expected   Expected $arguments value
 	 */
-	public function test_as_object($as_object)
+	public function test_as_object($arguments, $as_object, $expected)
 	{
 		$query = new Database_Query_Set;
 
-		$this->assertSame($query, $query->as_object($as_object), 'Chainable');
+		$this->assertSame($query, call_user_func_array(array($query, 'as_object'), $arguments), 'Chainable');
 		$this->assertSame($as_object, $query->as_object);
+		$this->assertSame($expected, $query->arguments);
 	}
 }

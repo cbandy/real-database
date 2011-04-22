@@ -80,6 +80,12 @@ class Database_Query_Cached
 	 */
 	public function key()
 	{
-		return 'Database_Query_Cached('.$this->_db.','.$this->_query.','.serialize($this->_query->parameters).','.$this->_query->as_object.')';
+		return 'Database_Query_Cached('
+			.$this->_db.','
+			.$this->_query.','
+			.serialize($this->_query->parameters).','
+			.$this->_query->as_object.','
+			.serialize($this->_query->arguments)
+			.')';
 	}
 }

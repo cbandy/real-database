@@ -411,7 +411,7 @@ class Database_MySQL extends Database
 		return array($rows, $result);
 	}
 
-	public function execute_query($statement, $as_object = FALSE)
+	public function execute_query($statement, $as_object = FALSE, $arguments = array())
 	{
 		if ( ! is_string($statement))
 		{
@@ -426,7 +426,7 @@ class Database_MySQL extends Database
 		if (is_bool($result))
 			return NULL;
 
-		return new Database_MySQL_Result($result, $as_object);
+		return new Database_MySQL_Result($result, $as_object, $arguments);
 	}
 
 	/**

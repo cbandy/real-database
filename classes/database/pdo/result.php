@@ -22,9 +22,10 @@ class Database_PDO_Result extends Database_Result_Array
 {
 	/**
 	 * @param   PDOStatement    $statement  Executed statement
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the class constructor
 	 */
-	public function __construct($statement, $as_object)
+	public function __construct($statement, $as_object, $arguments)
 	{
 		if ( ! $as_object)
 		{
@@ -32,9 +33,11 @@ class Database_PDO_Result extends Database_Result_Array
 		}
 		else
 		{
+			// The objects returned by PDO::FETCH_OBJ differ between drivers
 			$statement->setFetchMode(
 				PDO::FETCH_CLASS,
-				($as_object === TRUE) ? 'stdClass' : $as_object
+				($as_object === TRUE) ? 'stdClass' : $as_object,
+				$arguments
 			);
 		}
 

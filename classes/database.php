@@ -656,10 +656,11 @@ abstract class Database
 	 *
 	 * @throws  Database_Exception
 	 * @param   string|SQL_Expression   $statement  SQL query
-	 * @param   string|boolean          $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean          $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array                   $arguments  Arguments to pass to the class constructor
 	 * @return  Database_Result Result set or NULL
 	 */
-	abstract public function execute_query($statement, $as_object = FALSE);
+	abstract public function execute_query($statement, $as_object = FALSE, $arguments = array());
 
 	/**
 	 * Quote a value for inclusion in a SQL statement. Dispatches to other

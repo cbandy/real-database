@@ -140,10 +140,11 @@ class Database_PDO_Statement
 	 * statement is not a query (e.g., a DELETE statement).
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the row class constructor
 	 * @return  Database_Result Result set or NULL
 	 */
-	public function execute_query($as_object = FALSE)
+	public function execute_query($as_object = FALSE, $arguments = array())
 	{
 		if (empty($this->_statement->queryString))
 			return NULL;
@@ -153,7 +154,7 @@ class Database_PDO_Statement
 		if ($this->_statement->columnCount() === 0)
 			return NULL;
 
-		return new Database_PDO_Result($this->_statement, $as_object);
+		return new Database_PDO_Result($this->_statement, $as_object, $arguments);
 	}
 
 	/**

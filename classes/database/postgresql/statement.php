@@ -100,16 +100,18 @@ class Database_PostgreSQL_Statement
 	 *
 	 * @throws  Database_Exception
 	 * @param   mixed           $identity   Converted to SQL_Column
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the row class constructor
 	 * @return  array   List including number of affected rows and a value from the first row
 	 */
-	public function execute_insert($identity, $as_object = FALSE)
+	public function execute_insert($identity, $as_object = FALSE, $arguments = array())
 	{
 		return $this->_db->execute_prepared_insert(
 			$this->_name,
 			$identity,
 			$this->parameters,
-			$as_object
+			$as_object,
+			$arguments
 		);
 	}
 
@@ -118,15 +120,17 @@ class Database_PostgreSQL_Statement
 	 * statement is not a query (e.g., a DELETE statement).
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|boolean  $as_object  Row object class, TRUE for stdClass or FALSE for associative array
+	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array           $arguments  Arguments to pass to the row class constructor
 	 * @return  Database_Result Result set or NULL
 	 */
-	public function execute_query($as_object = FALSE)
+	public function execute_query($as_object = FALSE, $arguments = array())
 	{
 		return $this->_db->execute_prepared_query(
 			$this->_name,
 			$this->parameters,
-			$as_object
+			$as_object,
+			$arguments
 		);
 	}
 
