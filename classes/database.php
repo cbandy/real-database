@@ -673,47 +673,33 @@ abstract class Database
 	 * @uses Database::quote_table()
 	 *
 	 * @param   mixed   $value  Value to quote
-	 * @param   string  $alias  Alias
 	 * @return  string  SQL fragment
 	 */
-	public function quote($value, $alias = NULL)
+	public function quote($value)
 	{
 		if (is_array($value))
 		{
-			$value = empty($value) ? '' : implode(', ', array_map(array($this, __FUNCTION__), $value));
+			return $value
+				? implode(', ', array_map(array($this, __FUNCTION__), $value))
+				: '';
 		}
-		elseif (is_object($value))
+
+		if (is_object($value))
 		{
 			if ($value instanceof SQL_Expression)
-			{
-				$value = $this->quote_expression($value);
-			}
-			elseif ($value instanceof SQL_Column)
-			{
-				$value = $this->quote_column($value);
-			}
-			elseif ($value instanceof SQL_Table)
-			{
-				$value = $this->quote_table($value);
-			}
-			elseif ($value instanceof SQL_Identifier)
-			{
-				$value = $this->quote_identifier($value);
-			}
-			else
-			{
-				$value = $this->quote_literal($value);
-			}
-		}
-		else
-		{
-			$value = $this->quote_literal($value);
+				return $this->quote_expression($value);
+
+			if ($value instanceof SQL_Column)
+				return $this->quote_column($value);
+
+			if ($value instanceof SQL_Table)
+				return $this->quote_table($value);
+
+			if ($value instanceof SQL_Identifier)
+				return $this->quote_identifier($value);
 		}
 
-		if (isset($alias))
-			return $value.' AS '.$this->_quote_left.$alias.$this->_quote_right;
-
-		return $value;
+		return $this->quote_literal($value);
 	}
 
 	/**

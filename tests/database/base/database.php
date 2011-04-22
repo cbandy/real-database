@@ -718,58 +718,39 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		return array
 		(
 			// Literals
-			array(array(NULL), 'NULL'),
-			array(array(1),    '1'),
-			array(array('a'),  "'a'"),
-
-			// Literals with aliases
-			array(array(NULL, 'alias'), 'NULL AS "alias"'),
-			array(array(1, 'alias'),    '1 AS "alias"'),
-			array(array('a', 'alias'),  "'a'".' AS "alias"'),
+			array(NULL, 'NULL'),
+			array(1,    '1'),
+			array('a',  "'a'"),
 
 			// Expression
-			array(array(new SQL_Expression('expr')),           'expr'),
-			array(array(new SQL_Expression('expr'), 'alias'),  'expr AS "alias"'),
+			array(new SQL_Expression('expr'), 'expr'),
 
 			// Identifiers
-			array(array(new SQL_Identifier('one.two')),    '"one"."two"'),
-			array(array(new SQL_Column('one.two')),        '"pre_one"."two"'),
-			array(array(new SQL_Table('one.two')),         '"one"."pre_two"'),
-
-			// Identifiers with aliases
-			array(array(new SQL_Identifier('one.two'), 'alias'),   '"one"."two" AS "alias"'),
-			array(array(new SQL_Column('one.two'), 'alias'),       '"pre_one"."two" AS "alias"'),
-			array(array(new SQL_Table('one.two'), 'alias'),        '"one"."pre_two" AS "alias"'),
+			array(new SQL_Identifier('one.two'),    '"one"."two"'),
+			array(new SQL_Column('one.two'),        '"pre_one"."two"'),
+			array(new SQL_Table('one.two'),         '"one"."pre_two"'),
 
 			// Array
-			array(array(array(NULL, 1 ,'a')), "NULL, 1, 'a'"),
+			array(array(NULL, 1 ,'a'), "NULL, 1, 'a'"),
 		);
 	}
 
 	/**
 	 * @covers  Database::quote
+	 *
 	 * @dataProvider    provider_quote
 	 *
-	 * @param   array   $arguments  Arguments to the method
+	 * @param   mixed   $value      Argument to the method
 	 * @param   string  $expected   Expected result
 	 */
-	public function test_quote($arguments, $expected)
+	public function test_quote($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		if (count($arguments) === 1)
-		{
-			$result = $db->quote(reset($arguments));
-		}
-		elseif (count($arguments) === 2)
-		{
-			$result = $db->quote(reset($arguments), next($arguments));
-		}
-
-		$this->assertSame($expected, $result);
+		$this->assertSame($expected, $db->quote($value));
 	}
 
 	/**
@@ -782,12 +763,11 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
 		$object = $this->getMock('stdClass', array('__toString'));
-		$object->expects($this->exactly(4))
+		$object->expects($this->exactly(3))
 			->method('__toString')
 			->will($this->returnValue('object__toString'));
 
 		$this->assertSame("'object__toString'", $db->quote($object));
-		$this->assertSame("'object__toString'".' AS "alias"', $db->quote($object, 'alias'));
 		$this->assertSame("'object__toString', 'object__toString'", $db->quote(array($object, $object)));
 	}
 }

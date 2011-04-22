@@ -81,9 +81,12 @@ class SQL_DML_Update extends SQL_Expression
 			$table = new SQL_Table($table);
 		}
 
-		$this->parameters[':table'] = empty($alias)
-			? $table
-			: new SQL_Expression('? AS ?', array($table, new SQL_Identifier($alias)));
+		if ($alias)
+		{
+			$table = new SQL_Alias($table, $alias);
+		}
+
+		$this->parameters[':table'] = $table;
 
 		return $this;
 	}
@@ -222,7 +225,7 @@ class SQL_DML_Update extends SQL_Expression
 
 				if (is_string($alias) AND $alias !== '')
 				{
-					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
+					$column = new SQL_Alias($column, $alias);
 				}
 
 				$this->parameters[':returning'][] = $column;

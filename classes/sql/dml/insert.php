@@ -132,7 +132,7 @@ class SQL_DML_Insert extends SQL_Expression
 
 				if (is_string($alias) AND $alias !== '')
 				{
-					$column = new SQL_Expression('? AS ?', array($column, new SQL_Identifier($alias)));
+					$column = new SQL_Alias($column, $alias);
 				}
 
 				$this->parameters[':returning'][] = $column;
