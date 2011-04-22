@@ -184,8 +184,7 @@ abstract class Database
 	 * @throws  Kohana_Exception
 	 * @param   string          $name   Connection name
 	 * @param   array           $config Configuration
-	 * @param   string|array    $quote  Character used to quote identifiers or
-	 *                                  array of the left and right characters
+	 * @param   string|array    $quote  Character used to quote identifiers or an array of the left and right characters
 	 * @return  Database
 	 */
 	public static function factory($name = 'default', $config = NULL, $quote = NULL)
@@ -237,8 +236,7 @@ abstract class Database
 	 * @throws  Kohana_Exception
 	 * @param   string          $name   Instance name
 	 * @param   array           $config Configuration
-	 * @param   string|array    $quote  Character used to quote identifiers or
-	 *                                  array of the left and right characters
+	 * @param   string|array    $quote  Character used to quote identifiers or an array of the left and right characters
 	 * @return  Database
 	 */
 	public static function instance($name = 'default', $config = NULL, $quote = NULL)
@@ -351,8 +349,7 @@ abstract class Database
 	 *
 	 * @param   string          $name   Connection name
 	 * @param   array           $config Configuration
-	 * @param   string|array    $quote  Character used to quote identifiers or
-	 *                                  array of the left and right characters
+	 * @param   string|array    $quote  Character used to quote identifiers or an array of the left and right characters
 	 */
 	public function __construct($name, $config, $quote = NULL)
 	{
