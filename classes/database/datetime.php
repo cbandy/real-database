@@ -4,7 +4,7 @@
  * A DateTime literal that is converted to the appropriate format when escaped.
  *
  * @package     RealDatabase
- * @category    Data Types
+ * @category    Literals
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy

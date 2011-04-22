@@ -4,7 +4,7 @@
  * A literal that is treated as binary when escaped.
  *
  * @package     RealDatabase
- * @category    Data Types
+ * @category    Literals
  *
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
