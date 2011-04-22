@@ -91,6 +91,59 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 		$this->assertEquals($expected, $result->current(), 'Do not move pointer');
 	}
 
+	public function provider_current_object_arguments()
+	{
+		$entire = Database::factory()
+			->select(array('*'))
+			->from($this->_table);
+
+		return array
+		(
+			array($entire, array()),
+			array($entire, array(1)),
+			array($entire, array('a', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::__construct
+	 * @covers  Database_PostgreSQL_Result::current
+	 *
+	 * @dataProvider    provider_current_object_arguments
+	 *
+	 * @todo This test would be better using a mocked constructor
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   array           $arguments
+	 */
+	public function test_current_object_arguments($query, $arguments)
+	{
+		$result = Database::factory()
+			->execute_query($query, 'Database_PostgreSQL_Result_Test_Constructor', $arguments)
+			->current();
+
+		$this->assertSame($arguments, $result->arguments());
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::__construct
+	 * @covers  Database_PostgreSQL_Result::current
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   array           $arguments
+	 */
+	public function test_current_object_arguments_no_constructor()
+	{
+		$db = Database::factory();
+
+		// No errors about missing constructor
+		$db->execute_query(
+			$db->select(array('*'))->from($this->_table),
+			'stdClass',
+			array()
+		)->current();
+	}
+
 	public function provider_get()
 	{
 		$entire = Database::factory()
@@ -388,5 +441,24 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 		$result = Database::factory()->execute_query($query, $as_object);
 
 		$this->assertEquals($expected, $result->as_array($key, $value));
+	}
+}
+
+/**
+ * Class to expose the arguments passed to a constructor. Remove if/when
+ * constructors can be mocked.
+ */
+class Database_PostgreSQL_Result_Test_Constructor
+{
+	protected $_arguments;
+
+	public function __construct()
+	{
+		$this->_arguments = func_get_args();
+	}
+
+	public function arguments()
+	{
+		return $this->_arguments;
 	}
 }
