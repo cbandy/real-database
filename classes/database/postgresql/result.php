@@ -48,19 +48,18 @@ class Database_PostgreSQL_Result extends Database_Result
 		if ($this->_count === 0)
 			return array();
 
-		if ( ! $this->_as_object AND $key === NULL)
-		{
-			if ($value === NULL)
-			{
-				// Indexed rows
-				return pg_fetch_all($this->_result);
-			}
+		if ($this->_as_object OR $key !== NULL)
+			return parent::as_array($key, $value);
 
-			// Indexed columns
-			return pg_fetch_all_columns($this->_result, pg_field_num($this->_result, $value));
-		}
+		// Indexed rows
+		if ($value === NULL)
+			return pg_fetch_all($this->_result);
 
-		return parent::as_array($key, $value);
+		// Indexed columns
+		return pg_fetch_all_columns(
+			$this->_result,
+			pg_field_num($this->_result, $value)
+		);
 	}
 
 	public function current()
