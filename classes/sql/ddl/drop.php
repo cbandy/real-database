@@ -74,6 +74,8 @@ class SQL_DDL_Drop extends SQL_Expression
 	/**
 	 * Set whether or not dependent objects should be dropped
 	 *
+	 * [!!] Not supported by MySQL, SQLite or SQL Server
+	 *
 	 * @param   boolean $value
 	 * @return  $this
 	 */
