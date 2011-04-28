@@ -125,6 +125,17 @@ abstract class Database
 	}
 
 	/**
+	 * Create a CHECK constraint.
+	 *
+	 * @param   SQL_Conditions  $conditions
+	 * @return  SQL_DDL_Constraint_Check
+	 */
+	public static function ddl_check($conditions = NULL)
+	{
+		return new SQL_DDL_Constraint_Check($conditions);
+	}
+
+	/**
 	 * Create a column expression
 	 *
 	 * @param   mixed   $name   Converted to SQL_Column
@@ -137,23 +148,37 @@ abstract class Database
 	}
 
 	/**
-	 * Create a constraint expression
+	 * Create a FOREIGN KEY constraint.
 	 *
-	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
-	 * @param   mixed   $name   Converted to SQL_Identifier
-	 * @return  SQL_DDL_Constraint
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @return  SQL_DDL_Constraint_Foreign
 	 */
-	public static function ddl_constraint($type, $name = NULL)
+	public static function ddl_foreign($table = NULL, $columns = array())
 	{
-		$result = "SQL_DDL_Constraint_$type";
-		$result = new $result;
+		return new SQL_DDL_Constraint_Foreign($table, $columns);
+	}
 
-		if ($name !== NULL)
-		{
-			$result->name($name);
-		}
+	/**
+	 * Create a PRIMARY KEY constraint.
+	 *
+	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @return  SQL_DDL_Constraint_Primary
+	 */
+	public static function ddl_primary($columns = array())
+	{
+		return new SQL_DDL_Constraint_Primary($columns);
+	}
 
-		return $result;
+	/**
+	 * Create a UNIQUE constraint.
+	 *
+	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @return  SQL_DDL_Constraint_Unique
+	 */
+	public static function ddl_unique($columns = array())
+	{
+		return new SQL_DDL_Constraint_Unique($columns);
 	}
 
 	/**

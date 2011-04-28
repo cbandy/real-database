@@ -122,29 +122,6 @@ abstract class Database_Abstract_Database_Test extends PHPUnit_Framework_TestCas
 		);
 	}
 
-	public function provider_ddl_constraint()
-	{
-		return array
-		(
-			array(array('check'), 'SQL_DDL_Constraint_Check'),
-			array(array('foreign'), 'SQL_DDL_Constraint_Foreign'),
-			array(array('primary'), 'SQL_DDL_Constraint_Primary'),
-			array(array('unique'), 'SQL_DDL_Constraint_Unique'),
-		);
-	}
-
-	/**
-	 * @covers  Database::ddl_constraint
-	 * @dataProvider    provider_ddl_constraint
-	 *
-	 * @param   array   $arguments
-	 * @param   string  $expected
-	 */
-	public function test_ddl_constraint($arguments, $expected)
-	{
-		$this->_test_method_type('ddl_constraint', $arguments, $expected);
-	}
-
 	/**
 	 * @covers  Database::delete
 	 * @dataProvider    provider_delete

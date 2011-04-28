@@ -235,6 +235,95 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
 
+	public function provider_ddl_check()
+	{
+		return array(
+			array(array(), new SQL_DDL_Constraint_Check),
+			array(array(new SQL_Conditions), new SQL_DDL_Constraint_Check(new SQL_Conditions)),
+		);
+	}
+
+	/**
+	 * @covers  Database::ddl_check
+	 *
+	 * @dataProvider    provider_ddl_check
+	 *
+	 * @param   array                       $arguments
+	 * @param   SQL_DDL_Constraint_Check    $expected
+	 */
+	public function test_ddl_check($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::ddl_check', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_ddl_foreign()
+	{
+		return array(
+			array(array(), new SQL_DDL_Constraint_Foreign),
+			array(array('a'), new SQL_DDL_Constraint_Foreign('a')),
+			array(array('a', array('b')), new SQL_DDL_Constraint_Foreign('a', array('b'))),
+		);
+	}
+
+	/**
+	 * @covers  Database::ddl_foreign
+	 *
+	 * @dataProvider    provider_ddl_foreign
+	 *
+	 * @param   array                       $arguments
+	 * @param   SQL_DDL_Constraint_Foreign  $expected
+	 */
+	public function test_ddl_foreign($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::ddl_foreign', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_ddl_primary()
+	{
+		return array(
+			array(array(), new SQL_DDL_Constraint_Primary),
+			array(array(array('a')), new SQL_DDL_Constraint_Primary(array('a'))),
+		);
+	}
+
+	/**
+	 * @covers  Database::ddl_primary
+	 *
+	 * @dataProvider    provider_ddl_primary
+	 *
+	 * @param   array                       $arguments
+	 * @param   SQL_DDL_Constraint_Primary  $expected
+	 */
+	public function test_ddl_primary($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::ddl_primary', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_ddl_unique()
+	{
+		return array(
+			array(array(), new SQL_DDL_Constraint_Unique),
+			array(array(array('a')), new SQL_DDL_Constraint_Unique(array('a'))),
+		);
+	}
+
+	/**
+	 * @covers  Database::ddl_unique
+	 *
+	 * @dataProvider    provider_ddl_unique
+	 *
+	 * @param   array                       $arguments
+	 * @param   SQL_DDL_Constraint_Unique  $expected
+	 */
+	public function test_ddl_unique($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::ddl_unique', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
 	public function provider_drop()
 	{
 		return array(
@@ -387,7 +476,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 * @covers  Database::conditions
 	 * @covers  Database::datetime
 	 * @covers  Database::ddl_column
-	 * @covers  Database::ddl_constraint
 	 * @covers  Database::delete
 	 * @covers  Database::expression
 	 * @covers  Database::identifier
@@ -408,8 +496,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_factories()
 	{
-		$result = array
-		(
+		return array(
 			array('binary', array('a'), new Database_Binary('a')),
 
 			array('column', array('a'), new SQL_Column('a')),
@@ -426,11 +513,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('ddl_column', array(), new SQL_DDL_Column),
 			array('ddl_column', array('a'), new SQL_DDL_Column('a')),
 			array('ddl_column', array('a', 'b'), new SQL_DDL_Column('a', 'b')),
-
-			array('ddl_constraint', array('check'), new SQL_DDL_Constraint_Check),
-			array('ddl_constraint', array('foreign'), new SQL_DDL_Constraint_Foreign),
-			array('ddl_constraint', array('primary'), new SQL_DDL_Constraint_Primary),
-			array('ddl_constraint', array('unique'), new SQL_DDL_Constraint_Unique),
 
 			array('delete', array(), new Database_Delete),
 			array('delete', array('a'), new Database_Delete('a')),
@@ -465,24 +547,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('update', array('a', 'b'), new Database_Update('a', 'b')),
 			array('update', array('a', 'b', array('c' => 'd')), new Database_Update('a', 'b', array('c' => 'd'))),
 		);
-
-		$constraint = new SQL_DDL_Constraint_Check;
-		$constraint->name('a');
-		$result[] = array('ddl_constraint', array('check', 'a'), $constraint);
-
-		$constraint = new SQL_DDL_Constraint_Foreign;
-		$constraint->name('a');
-		$result[] = array('ddl_constraint', array('foreign', 'a'), $constraint);
-
-		$constraint = new SQL_DDL_Constraint_Primary;
-		$constraint->name('a');
-		$result[] = array('ddl_constraint', array('primary', 'a'), $constraint);
-
-		$constraint = new SQL_DDL_Constraint_Unique;
-		$constraint->name('a');
-		$result[] = array('ddl_constraint', array('unique', 'a'), $constraint);
-
-		return $result;
 	}
 
 	public function provider_quote_literal()
