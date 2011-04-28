@@ -163,6 +163,8 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Set the join columns
 	 *
+	 * [!!] Not supported by SQL Server
+	 *
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  $this
 	 */
@@ -235,6 +237,8 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Naturally full join a table or query
 	 *
+	 * [!!] Not supported by SQL Server
+	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  $this
@@ -246,6 +250,8 @@ class SQL_Table_Reference extends SQL_Expression
 
 	/**
 	 * Naturally inner join a table or query
+	 *
+	 * [!!] Not supported by SQL Server
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
@@ -259,6 +265,8 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Naturally left join a table or query
 	 *
+	 * [!!] Not supported by SQL Server
+	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  $this
@@ -270,6 +278,8 @@ class SQL_Table_Reference extends SQL_Expression
 
 	/**
 	 * Naturally right join a table or query
+	 *
+	 * [!!] Not supported by SQL Server
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
