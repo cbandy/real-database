@@ -18,12 +18,15 @@
 class Database_PDO_SQLite extends Database_PDO
 	implements Database_iEscape, Database_iIntrospect
 {
-	public static function create($type, $name = NULL)
+	/**
+	 * Create a CREATE TABLE statement.
+	 *
+	 * @param   mixed   $name   Converted to SQL_Table
+	 * @return  Database_SQLite_Create_Table
+	 */
+	public static function create_table($name = NULL)
 	{
-		if (strtoupper($type) === 'TABLE')
-			return new Database_SQLite_Create_Table($name);
-
-		return parent::create($type, $name);
+		return new Database_SQLite_Create_Table($name);
 	}
 
 	/**

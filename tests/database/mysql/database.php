@@ -44,37 +44,74 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertEquals($expected, $statement);
 	}
 
+
+	public function provider_create_index()
+	{
+		return array(
+			array(array(), new Database_MySQL_Create_Index),
+			array(array('a'), new Database_MySQL_Create_Index('a')),
+			array(array('a', 'b'), new Database_MySQL_Create_Index('a', 'b')),
+			array(array('a', 'b', array('c')), new Database_MySQL_Create_Index('a', 'b', array('c'))),
+		);
+	}
+
 	/**
-	 * @covers  Database_MySQL::create
+	 * @covers  Database_MySQL::create_index
+	 *
 	 * @dataProvider    provider_create_index
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_Create_Index $expected
 	 */
-	public function test_create_index($arguments)
+	public function test_create_index($arguments, $expected)
 	{
-		$this->_test_method_type('create', $arguments, 'Database_MySQL_Create_Index');
+		$statement = call_user_func_array('Database_MySQL::create_index', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_create_table()
+	{
+		return array(
+			array(array(), new Database_MySQL_Create_Table),
+			array(array('a'), new Database_MySQL_Create_Table('a')),
+		);
 	}
 
 	/**
-	 * @covers  Database_MySQL::create
+	 * @covers  Database_MySQL::create_table
+	 *
 	 * @dataProvider    provider_create_table
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_Create_Table $expected
 	 */
-	public function test_create_table($arguments)
+	public function test_create_table($arguments, $expected)
 	{
-		$this->_test_method_type('create', $arguments, 'Database_MySQL_Create_Table');
+		$statement = call_user_func_array('Database_MySQL::create_table', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_create_view()
+	{
+		return array(
+			array(array(), new Database_MySQL_Create_View),
+			array(array('a'), new Database_MySQL_Create_View('a')),
+			array(array('a', new SQL_Expression('b')), new Database_MySQL_Create_View('a', new SQL_Expression('b'))),
+		);
 	}
 
 	/**
-	 * @covers  Database_MySQL::create
+	 * @covers  Database_MySQL::create_view
+	 *
 	 * @dataProvider    provider_create_view
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_Create_View  $expected
 	 */
-	public function test_create_view($arguments)
+	public function test_create_view($arguments, $expected)
 	{
-		$this->_test_method_type('create', $arguments, 'Database_MySQL_Create_View');
+		$statement = call_user_func_array('Database_MySQL::create_view', $arguments);
+		$this->assertEquals($expected, $statement);
 	}
 
 	public function provider_datatype()

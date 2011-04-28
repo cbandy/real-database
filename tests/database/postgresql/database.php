@@ -89,37 +89,28 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$db->copy_to('kohana-nonexistent-table');
 	}
 
+	public function provider_create_index()
+	{
+		return array(
+			array(array(), new Database_PostgreSQL_Create_Index),
+			array(array('a'), new Database_PostgreSQL_Create_Index('a')),
+			array(array('a', 'b'), new Database_PostgreSQL_Create_Index('a', 'b')),
+			array(array('a', 'b', array('c')), new Database_PostgreSQL_Create_Index('a', 'b', array('c'))),
+		);
+	}
+
 	/**
-	 * @covers  Database_PostgreSQL::create
+	 * @covers  Database_PostgreSQL::create_index
+	 *
 	 * @dataProvider    provider_create_index
 	 *
-	 * @param   array   $arguments
+	 * @param   array                               $arguments
+	 * @param   Database_PostgreSQL_Create_Index    $expected
 	 */
-	public function test_create_index($arguments)
+	public function test_create_index($arguments, $expected)
 	{
-		$this->_test_method_type('create', $arguments, 'Database_PostgreSQL_Create_Index');
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::create
-	 * @dataProvider    provider_create_table
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_create_table($arguments)
-	{
-		return parent::test_create_table($arguments);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL::create
-	 * @dataProvider    provider_create_view
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_create_view($arguments)
-	{
-		return parent::test_create_view($arguments);
+		$statement = call_user_func_array('Database_PostgreSQL::create_index', $arguments);
+		$this->assertEquals($expected, $statement);
 	}
 
 	public function provider_datatype()

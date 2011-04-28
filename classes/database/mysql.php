@@ -25,27 +25,51 @@ class Database_MySQL extends Database
 	 */
 	protected static $_databases;
 
+	/**
+	 * Create an ALTER TABLE statement.
+	 *
+	 * @param   mixed   $name   Converted to SQL_Table
+	 * @return  Database_MySQL_Alter_Table
+	 */
 	public static function alter_table($name = NULL)
 	{
 		return new Database_MySQL_Alter_Table($name);
 	}
 
-	public static function create($type, $name = NULL)
+	/**
+	 * Create a CREATE INDEX statement.
+	 *
+	 * @param   mixed   $name       Converted to SQL_Identifier
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @return  Database_MySQL_Create_Index
+	 */
+	public static function create_index($name = NULL, $table = NULL, $columns = array())
 	{
-		$type = strtoupper($type);
+		return new Database_MySQL_Create_Index($name, $table, $columns);
+	}
 
-		if ($type === 'INDEX')
-			return new Database_MySQL_Create_Index($name);
+	/**
+	 * Create a CREATE TABLE statement.
+	 *
+	 * @param   mixed   $name   Converted to SQL_Table
+	 * @return  Database_MySQL_Create_Table
+	 */
+	public static function create_table($name = NULL)
+	{
+		return new Database_MySQL_Create_Table($name);
+	}
 
-		if ($type === 'TABLE')
-			return new Database_MySQL_Create_Table($name);
-
-		if ($type === 'VIEW')
-			return new Database_MySQL_Create_View($name);
-
-		// @codeCoverageIgnoreStart
-		return parent::create($type, $name);
-		// @codeCoverageIgnoreEnd
+	/**
+	 * Create a CREATE VIEW statement.
+	 *
+	 * @param   mixed           $name   Converted to SQL_Table
+	 * @param   SQL_Expression  $query
+	 * @return  Database_MySQL_Create_View
+	 */
+	public static function create_view($name = NULL, $query = NULL)
+	{
+		return new Database_MySQL_Create_View($name, $query);
 	}
 
 	/**

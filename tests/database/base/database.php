@@ -139,6 +139,75 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $statement);
 	}
 
+	public function provider_create_index()
+	{
+		return array(
+			array(array(), new SQL_DDL_Create_Index),
+			array(array('a'), new SQL_DDL_Create_Index('a')),
+			array(array('a', 'b'), new SQL_DDL_Create_Index('a', 'b')),
+			array(array('a', 'b', array('c')), new SQL_DDL_Create_Index('a', 'b', array('c'))),
+		);
+	}
+
+	/**
+	 * @covers  Database::create_index
+	 *
+	 * @dataProvider    provider_create_index
+	 *
+	 * @param   array                   $arguments
+	 * @param   SQL_DDL_Create_Index    $expected
+	 */
+	public function test_create_index($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::create_index', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_create_table()
+	{
+		return array(
+			array(array(), new SQL_DDL_Create_Table),
+			array(array('a'), new SQL_DDL_Create_Table('a')),
+		);
+	}
+
+	/**
+	 * @covers  Database::create_table
+	 *
+	 * @dataProvider    provider_create_table
+	 *
+	 * @param   array                   $arguments
+	 * @param   SQL_DDL_Create_Table    $expected
+	 */
+	public function test_create_table($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::create_table', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_create_view()
+	{
+		return array(
+			array(array(), new SQL_DDL_Create_View),
+			array(array('a'), new SQL_DDL_Create_View('a')),
+			array(array('a', new SQL_Expression('b')), new SQL_DDL_Create_View('a', new SQL_Expression('b'))),
+		);
+	}
+
+	/**
+	 * @covers  Database::create_view
+	 *
+	 * @dataProvider    provider_create_view
+	 *
+	 * @param   array               $arguments
+	 * @param   SQL_DDL_Create_View $expected
+	 */
+	public function test_create_view($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::create_view', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
 	public function provider_datatype()
 	{
 		return array
@@ -269,7 +338,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 * @covers  Database::binary
 	 * @covers  Database::column
 	 * @covers  Database::conditions
-	 * @covers  Database::create
 	 * @covers  Database::datetime
 	 * @covers  Database::ddl_column
 	 * @covers  Database::ddl_constraint
@@ -304,15 +372,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('conditions', array('a'), new SQL_Conditions('a')),
 			array('conditions', array('a', '='), new SQL_Conditions('a', '=')),
 			array('conditions', array('a', '=', 'b'), new SQL_Conditions('a', '=', 'b')),
-
-			array('create', array('index'), new SQL_DDL_Create_Index),
-			array('create', array('index', 'a'), new SQL_DDL_Create_Index('a')),
-
-			array('create', array('table'), new SQL_DDL_Create_Table),
-			array('create', array('table', 'a'), new SQL_DDL_Create_Table('a')),
-
-			array('create', array('view'), new SQL_DDL_Create_View),
-			array('create', array('view', 'a'), new SQL_DDL_Create_View('a')),
 
 			array('datetime', array(1258461296), new Database_DateTime(1258461296)),
 			array('datetime', array(1258461296, 'UTC'), new Database_DateTime(1258461296, 'UTC')),

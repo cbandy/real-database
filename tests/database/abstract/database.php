@@ -69,66 +69,6 @@ abstract class Database_Abstract_Database_Test extends PHPUnit_Framework_TestCas
 		$this->_test_method_type('conditions', $arguments, 'SQL_Conditions');
 	}
 
-	public function provider_create_index()
-	{
-		return array
-		(
-			array(array('index')),
-			array(array('index', 'a')),
-		);
-	}
-
-	/**
-	 * @covers  Database::create
-	 * @dataProvider    provider_create_index
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_create_index($arguments)
-	{
-		$this->_test_method_type('create', $arguments, 'SQL_DDL_Create_Index');
-	}
-
-	public function provider_create_table()
-	{
-		return array
-		(
-			array(array('table')),
-			array(array('table', 'a')),
-		);
-	}
-
-	/**
-	 * @covers  Database::create
-	 * @dataProvider    provider_create_table
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_create_table($arguments)
-	{
-		$this->_test_method_type('create', $arguments, 'SQL_DDL_Create_Table');
-	}
-
-	public function provider_create_view()
-	{
-		return array
-		(
-			array(array('view')),
-			array(array('view', 'a')),
-		);
-	}
-
-	/**
-	 * @covers  Database::create
-	 * @dataProvider    provider_create_view
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_create_view($arguments)
-	{
-		$this->_test_method_type('create', $arguments, 'SQL_DDL_Create_View');
-	}
-
 	public function provider_datetime()
 	{
 		return array

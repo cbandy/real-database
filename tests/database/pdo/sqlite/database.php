@@ -22,37 +22,26 @@ class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 
 	protected $_table = 'kohana_test_table';
 
-	/**
-	 * @covers  Database_PDO_SQLite::create
-	 * @dataProvider    provider_create_index
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_create_index($arguments)
+	public function provider_create_table()
 	{
-		return parent::test_create_index($arguments);
+		return array(
+			array(array(), new Database_SQLite_Create_Table),
+			array(array('a'), new Database_SQLite_Create_Table('a')),
+		);
 	}
 
 	/**
-	 * @covers  Database_PDO_SQLite::create
+	 * @covers  Database_PDO_SQLite::create_table
+	 *
 	 * @dataProvider    provider_create_table
 	 *
-	 * @param   array   $arguments
+	 * @param   array                           $arguments
+	 * @param   Database_SQLite_Create_Table    $expected
 	 */
-	public function test_create_table($arguments)
+	public function test_create_table($arguments, $expected)
 	{
-		$this->_test_method_type('create', $arguments, 'Database_SQLite_Create_Table');
-	}
-
-	/**
-	 * @covers  Database_PDO_SQLite::create
-	 * @dataProvider    provider_create_view
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_create_view($arguments)
-	{
-		return parent::test_create_view($arguments);
+		$statement = call_user_func_array('Database_PDO_SQLite::create_table', $arguments);
+		$this->assertEquals($expected, $statement);
 	}
 
 	public function provider_datatype()

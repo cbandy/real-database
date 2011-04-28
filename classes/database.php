@@ -76,17 +76,39 @@ abstract class Database
 	}
 
 	/**
-	 * Create a CREATE command
+	 * Create a CREATE INDEX statement.
 	 *
-	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
-	 * @param   mixed   $name   Converted to SQL_Identifier
-	 * @return  SQL_Expression
+	 * @param   mixed   $name       Converted to SQL_Identifier
+	 * @param   mixed   $table      Converted to SQL_Table
+	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @return  SQL_DDL_Create_Index
 	 */
-	public static function create($type, $name = NULL)
+	public static function create_index($name = NULL, $table = NULL, $columns = array())
 	{
-		$class = "SQL_DDL_Create_$type";
+		return new SQL_DDL_Create_Index($name, $table, $columns);
+	}
 
-		return new $class($name);
+	/**
+	 * Create a CREATE TABLE statement.
+	 *
+	 * @param   mixed   $name   Converted to SQL_Table
+	 * @return  SQL_DDL_Create_Table
+	 */
+	public static function create_table($name = NULL)
+	{
+		return new SQL_DDL_Create_Table($name);
+	}
+
+	/**
+	 * Create a CREATE VIEW statement.
+	 *
+	 * @param   mixed           $name   Converted to SQL_Table
+	 * @param   SQL_Expression  $query
+	 * @return  SQL_DDL_Create_View
+	 */
+	public static function create_view($name = NULL, $query = NULL)
+	{
+		return new SQL_DDL_Create_View($name, $query);
 	}
 
 	/**
