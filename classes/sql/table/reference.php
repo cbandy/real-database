@@ -201,6 +201,8 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Full join a table or query
 	 *
+	 * [!!] Not supported by MySQL or SQLite
+	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
 	 * @return  $this
@@ -237,7 +239,7 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Naturally full join a table or query
 	 *
-	 * [!!] Not supported by SQL Server
+	 * [!!] Not supported by MySQL, SQLite or SQL Server
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
@@ -259,6 +261,7 @@ class SQL_Table_Reference extends SQL_Expression
 	 */
 	public function natural_inner_join($table, $alias = NULL)
 	{
+		// Should be 'NATURAL' in MySQL
 		return $this->join($table, $alias, 'NATURAL INNER');
 	}
 
@@ -279,7 +282,7 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Naturally right join a table or query
 	 *
-	 * [!!] Not supported by SQL Server
+	 * [!!] Not supported by SQLite or SQL Server
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
@@ -292,6 +295,8 @@ class SQL_Table_Reference extends SQL_Expression
 
 	/**
 	 * Right join a table or query
+	 *
+	 * [!!] Not supported by SQLite
 	 *
 	 * @param   mixed   $table  Converted to SQL_Table
 	 * @param   string  $alias  Table alias
