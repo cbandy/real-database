@@ -169,18 +169,26 @@ abstract class Database
 	}
 
 	/**
-	 * Create a DROP command
+	 * Create a DROP statement.
 	 *
-	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
+	 * @param   string  $type   INDEX, SCHEMA, VIEW, etc.
 	 * @param   mixed   $name   Converted to SQL_Identifier
 	 * @return  SQL_DDL_Drop
 	 */
 	public static function drop($type, $name = NULL)
 	{
-		if (strtoupper($type) === 'TABLE')
-			return new SQL_DDL_Drop_Table($name);
-
 		return new SQL_DDL_Drop($type, $name);
+	}
+
+	/**
+	 * Create a DROP TABLE statement.
+	 *
+	 * @param   mixed   $name   Converted to SQL_Table
+	 * @return  SQL_DDL_Drop_Table
+	 */
+	public static function drop_table($name = NULL)
+	{
+		return new SQL_DDL_Drop_Table($name);
 	}
 
 	/**

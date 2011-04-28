@@ -235,6 +235,53 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
 
+	public function provider_drop()
+	{
+		return array(
+			array(array('index'), new SQL_DDL_Drop('index')),
+			array(array('index', 'a'), new SQL_DDL_Drop('index', 'a')),
+
+			array(array('table'), new SQL_DDL_Drop('table')),
+			array(array('table', 'a'), new SQL_DDL_Drop('table', 'a')),
+		);
+	}
+
+	/**
+	 * @covers  Database::drop
+	 *
+	 * @dataProvider    provider_drop
+	 *
+	 * @param   array           $arguments
+	 * @param   SQL_DDL_Drop    $expected
+	 */
+	public function test_drop($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::drop', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_drop_table()
+	{
+		return array(
+			array(array(), new SQL_DDL_Drop_Table),
+			array(array('a'), new SQL_DDL_Drop_Table('a')),
+		);
+	}
+
+	/**
+	 * @covers  Database::drop_table
+	 *
+	 * @dataProvider    provider_drop_table
+	 *
+	 * @param   array               $arguments
+	 * @param   SQL_DDL_Drop_Table  $expected
+	 */
+	public function test_drop_table($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::drop_table', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
 	/**
 	 * @covers  Database::execute
 	 */
@@ -342,7 +389,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 * @covers  Database::ddl_column
 	 * @covers  Database::ddl_constraint
 	 * @covers  Database::delete
-	 * @covers  Database::drop
 	 * @covers  Database::expression
 	 * @covers  Database::identifier
 	 * @covers  Database::insert
@@ -389,12 +435,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 			array('delete', array(), new Database_Delete),
 			array('delete', array('a'), new Database_Delete('a')),
 			array('delete', array('a', 'b'), new Database_Delete('a', 'b')),
-
-			array('drop', array('index'), new SQL_DDL_Drop('index')),
-			array('drop', array('index', 'a'), new SQL_DDL_Drop('index', 'a')),
-
-			array('drop', array('table'), new SQL_DDL_Drop_Table),
-			array('drop', array('table', 'a'), new SQL_DDL_Drop_Table('a')),
 
 			array('expression', array('a'), new SQL_Expression('a')),
 			array('expression', array('a', array('b')), new SQL_Expression('a', array('b'))),

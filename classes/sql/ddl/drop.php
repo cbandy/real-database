@@ -29,7 +29,7 @@ class SQL_DDL_Drop extends SQL_Expression
 	 * @uses SQL_DDL_Drop::name()
 	 * @uses SQL_DDL_Drop::cascade()
 	 *
-	 * @param   string  $type       SCHEMA, TABLE, VIEW, etc
+	 * @param   string  $type       INDEX, SCHEMA, VIEW, etc.
 	 * @param   mixed   $name       Converted to SQL_Identifier
 	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
 	 */

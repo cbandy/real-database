@@ -156,30 +156,6 @@ abstract class Database_Abstract_Database_Test extends PHPUnit_Framework_TestCas
 		$this->_test_method_type('delete', $arguments, 'SQL_DML_Delete');
 	}
 
-	public function provider_drop()
-	{
-		return array
-		(
-			array(array('index'), 'SQL_DDL_Drop'),
-			array(array('index', 'a'), 'SQL_DDL_Drop'),
-
-			array(array('table'), 'SQL_DDL_Drop_Table'),
-			array(array('table', 'a'), 'SQL_DDL_Drop_Table'),
-		);
-	}
-
-	/**
-	 * @covers  Database::drop
-	 * @dataProvider    provider_drop
-	 *
-	 * @param   array   $arguments
-	 * @param   string  $expected
-	 */
-	public function test_drop($arguments, $expected)
-	{
-		$this->_test_method_type('drop', $arguments, $expected);
-	}
-
 	public function provider_execute_command_empty()
 	{
 		return array
