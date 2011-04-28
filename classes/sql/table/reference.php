@@ -259,10 +259,9 @@ class SQL_Table_Reference extends SQL_Expression
 	 * @param   string  $alias  Table alias
 	 * @return  $this
 	 */
-	public function natural_inner_join($table, $alias = NULL)
+	public function natural_join($table, $alias = NULL)
 	{
-		// Should be 'NATURAL' in MySQL
-		return $this->join($table, $alias, 'NATURAL INNER');
+		return $this->join($table, $alias, 'NATURAL');
 	}
 
 	/**

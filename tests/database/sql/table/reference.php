@@ -128,11 +128,11 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  SQL_Table_Reference::natural_inner_join
+	 * @covers  SQL_Table_Reference::natural_join
 	 */
-	public function test_natural_inner_join()
+	public function test_natural_join()
 	{
-		$this->_test_join_helper('natural_inner_join', 'NATURAL INNER');
+		$this->_test_join_helper('natural_join', 'NATURAL');
 	}
 
 	/**
