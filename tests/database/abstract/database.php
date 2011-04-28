@@ -20,26 +20,6 @@ abstract class Database_Abstract_Database_Test extends PHPUnit_Framework_TestCas
 		$this->assertType($expected, $result);
 	}
 
-	public function provider_alter_table()
-	{
-		return array
-		(
-			array(array('table')),
-			array(array('table', 'a')),
-		);
-	}
-
-	/**
-	 * @covers  Database::alter
-	 * @dataProvider    provider_alter_table
-	 *
-	 * @param   array   $arguments
-	 */
-	public function test_alter_table($arguments)
-	{
-		$this->_test_method_type('alter', $arguments, 'SQL_DDL_Alter_Table');
-	}
-
 	public function provider_binary()
 	{
 		return array

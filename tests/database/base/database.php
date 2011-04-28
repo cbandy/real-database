@@ -117,6 +117,28 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($result, Database::instance($name));
 	}
 
+	public function provider_alter_table()
+	{
+		return array(
+			array(array(), new SQL_DDL_Alter_Table()),
+			array(array('a'), new SQL_DDL_Alter_Table('a')),
+		);
+	}
+
+	/**
+	 * @covers  Database::alter_table
+	 *
+	 * @dataProvider    provider_alter_table
+	 *
+	 * @param   array               $arguments
+	 * @param   SQL_DDL_Alter_Table $expected
+	 */
+	public function test_alter_table($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database::alter_table', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
 	public function provider_datatype()
 	{
 		return array
@@ -244,7 +266,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database::alter
 	 * @covers  Database::binary
 	 * @covers  Database::column
 	 * @covers  Database::conditions
@@ -275,9 +296,6 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$result = array
 		(
-			array('alter', array('table'), new SQL_DDL_Alter_Table),
-			array('alter', array('table', 'a'), new SQL_DDL_Alter_Table('a')),
-
 			array('binary', array('a'), new Database_Binary('a')),
 
 			array('column', array('a'), new SQL_Column('a')),

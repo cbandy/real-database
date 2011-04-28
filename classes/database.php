@@ -30,17 +30,14 @@ abstract class Database
 	protected static $_instances;
 
 	/**
-	 * Create an ALTER command
+	 * Create an ALTER TABLE statement.
 	 *
-	 * @param   string  $type   INDEX, TABLE, VIEW, etc.
-	 * @param   mixed   $name   Converted to SQL_Identifier
-	 * @return  SQL_Expression
+	 * @param   mixed   $name   Converted to SQL_Table
+	 * @return  SQL_DDL_Alter_Table
 	 */
-	public static function alter($type, $name = NULL)
+	public static function alter_table($name = NULL)
 	{
-		$class = "SQL_DDL_Alter_$type";
-
-		return new $class($name);
+		return new SQL_DDL_Alter_Table($name);
 	}
 
 	/**

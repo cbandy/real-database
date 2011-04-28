@@ -23,15 +23,26 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 
 	protected $_table = 'kohana_test_table';
 
+	public function provider_alter_table()
+	{
+		return array(
+			array(array(), new Database_PostgreSQL_Alter_Table()),
+			array(array('a'), new Database_PostgreSQL_Alter_Table('a')),
+		);
+	}
+
 	/**
-	 * @covers  Database_PostgreSQL::alter
+	 * @covers  Database_PostgreSQL::alter_table
+	 *
 	 * @dataProvider    provider_alter_table
 	 *
-	 * @param   array   $arguments
+	 * @param   array                           $arguments
+	 * @param   Database_PostgreSQL_Alter_Table $expected
 	 */
-	public function test_alter_table($arguments)
+	public function test_alter_table($arguments, $expected)
 	{
-		$this->_test_method_type('alter', $arguments, 'Database_PostgreSQL_Alter_Table');
+		$statement = call_user_func_array('Database_PostgreSQL::alter_table', $arguments);
+		$this->assertEquals($expected, $statement);
 	}
 
 	/**

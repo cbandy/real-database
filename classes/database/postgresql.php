@@ -35,14 +35,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	public static $bug_copy_to_schema;
 
-	public static function alter($type, $name = NULL)
+	public static function alter_table($name = NULL)
 	{
-		if (strtoupper($type) === 'TABLE')
-			return new Database_PostgreSQL_Alter_Table($name);
-
-		// @codeCoverageIgnoreStart
-		return parent::alter($type, $name);
-		// @codeCoverageIgnoreEnd
+		return new Database_PostgreSQL_Alter_Table($name);
 	}
 
 	public static function create($type, $name = NULL)

@@ -25,14 +25,9 @@ class Database_MySQL extends Database
 	 */
 	protected static $_databases;
 
-	public static function alter($type, $name = NULL)
+	public static function alter_table($name = NULL)
 	{
-		if (strtoupper($type) === 'TABLE')
-			return new Database_MySQL_Alter_Table($name);
-
-		// @codeCoverageIgnoreStart
-		return parent::alter($type, $name);
-		// @codeCoverageIgnoreEnd
+		return new Database_MySQL_Alter_Table($name);
 	}
 
 	public static function create($type, $name = NULL)
