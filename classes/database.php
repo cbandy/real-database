@@ -712,6 +712,29 @@ abstract class Database
 	abstract public function execute_query($statement, $as_object = FALSE, $arguments = array());
 
 	/**
+	 * Convert a generic [SQL_Expression] into a natively parameterized
+	 * [SQL_Statement]. Parameter names are driver-specific, but the default
+	 * implementation replaces all [SQL_Expression] and [SQL_Identifier]
+	 * parameters so that the remaining parameters are a 0-indexed array of
+	 * literals.
+	 *
+	 * @param   SQL_Expression  $statement  SQL statement
+	 * @return  Database_Statement
+	 */
+	public function parse_statement($statement)
+	{
+		$parameters = array();
+
+		$statement = $this->_parse(
+			(string) $statement,
+			$statement->parameters,
+			$parameters
+		);
+
+		return new Database_Statement($statement, $parameters);
+	}
+
+	/**
 	 * Quote a value for inclusion in a SQL statement. Dispatches to other
 	 * quote_* methods.
 	 *
