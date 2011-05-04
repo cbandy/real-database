@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Prepared statement for [Database_PDO].
+ * Prepared statement for [Database_PDO]. Parameters are named or 1-indexed
+ * positional literals (not both).
  *
  * @package     RealDatabase
  * @subpackage  PDO
@@ -11,7 +12,7 @@
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_PDO_Statement
+class Database_PDO_Statement extends Database_Statement
 {
 	/**
 	 * @var Database_PDO
@@ -33,6 +34,7 @@ class Database_PDO_Statement
 	public function __construct($db, $statement, $parameters = array())
 	{
 		$this->_db = $db;
+		$this->_parameters = array();
 		$this->_statement = $statement;
 
 		$this->parameters($parameters);
@@ -102,7 +104,7 @@ class Database_PDO_Statement
 			$this->_statement->bindParam($param, $var);
 		}
 
-		return $this;
+		return parent::bind($param, $var);
 	}
 
 	/**
@@ -183,22 +185,25 @@ class Database_PDO_Statement
 			$this->_statement->bindValue($param, $value);
 		}
 
-		return $this;
+		return parent::param($param, $value);
 	}
 
 	/**
-	 * Add multiple parameter values.
+	 * Set multiple parameter values or return the current parameter values.
 	 *
-	 * @param   array   $params Literal values to assign
-	 * @return  $this
+	 * @param   array   $params Values to assign or NULL to return the current values
+	 * @return  $this|array
 	 */
-	public function parameters($params)
+	public function parameters($params = NULL)
 	{
-		foreach ($params as $param => $value)
+		if ($params !== NULL)
 		{
-			$this->param($param, $value);
+			foreach ($params as $param => $value)
+			{
+				$this->param($param, $value);
+			}
 		}
 
-		return $this;
+		return parent::parameters($params);
 	}
 }
