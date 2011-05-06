@@ -1028,6 +1028,26 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Convert a generic [SQL_Expression] into a [Database_Statement] with an
+	 * array of literal parameters that map to named positions: $1, $2, etc.
+	 *
+	 * @param   SQL_Expression  $statement  SQL statement
+	 * @return  Database_Statement
+	 */
+	public function parse_statement($statement)
+	{
+		$parameters = array();
+
+		$statement = $this->_parse(
+			(string) $statement,
+			$statement->parameters,
+			$parameters
+		);
+
+		return new Database_Statement($statement, $parameters);
+	}
+
+	/**
 	 * Create a prepared statement after connecting
 	 *
 	 * @link http://php.net/manual/function.pg-prepare
@@ -1075,26 +1095,24 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Created a prepared statement from a SQL expression object.
+	 * Created a prepared statement from a PostgreSQL-compatible
+	 * [Database_Statement] or a generic [SQL_Expression].
 	 *
 	 * @throws  Database_Exception
-	 * @param   SQL_Expression  $statement  SQL statement
+	 * @param   Database_Statement|SQL_Expression   $statement  SQL statement
 	 * @return  Database_PostgreSQL_Statement
 	 */
 	public function prepare_statement($statement)
 	{
-		$parameters = array();
+		if ( ! $statement instanceof Database_Statement)
+		{
+			$statement = $this->parse_statement($statement);
+		}
 
-		$statement = $this->_parse(
-			(string) $statement,
-			$statement->parameters,
-			$parameters
-		);
+		$name = $this->prepare(NULL, (string) $statement);
 
-		$name = $this->prepare(NULL, $statement);
-
-		$result = new Database_PostgreSQL_Statement($this, $name, $parameters);
-		$result->statement = $statement;
+		$result = new Database_PostgreSQL_Statement($this, $name, $statement->parameters());
+		$result->statement = (string) $statement;
 
 		return $result;
 	}

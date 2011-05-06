@@ -166,6 +166,98 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->_test_method_type('insert', $arguments, 'Database_PostgreSQL_Insert');
 	}
 
+	public function provider_parse_statement()
+	{
+		return array(
+			array(new SQL_Expression(''), new Database_Statement('')),
+
+			// data set #1
+			array(
+				new SQL_Expression('?', array('a')),
+				new Database_Statement('$1', array('a'))
+			),
+			array(
+				new SQL_Expression('?', array(new SQL_Expression('a'))),
+				new Database_Statement('a')
+			),
+			array(
+				new SQL_Expression('?', array(new SQL_Identifier('a'))),
+				new Database_Statement('"a"')
+			),
+
+			// data set #4
+			array(
+				new SQL_Expression(':a', array(':a' => 'b')),
+				new Database_Statement('$1', array('b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => new SQL_Expression('b'))),
+				new Database_Statement('b')
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => new SQL_Identifier('b'))),
+				new Database_Statement('"b"')
+			),
+
+			// data set #7
+			array(
+				new SQL_Expression('?', array(array())),
+				new Database_Statement('')
+			),
+			array(
+				new SQL_Expression('?', array(array('a', 'b'))),
+				new Database_Statement('$1, $2', array('a', 'b'))
+			),
+
+			// data set #9
+			array(
+				new SQL_Expression('?', array(array(new SQL_Expression('a'), 'b'))),
+				new Database_Statement('a, $1', array('b'))
+			),
+			array(
+				new SQL_Expression('?', array(array(new SQL_Identifier('a'), 'b'))),
+				new Database_Statement('"a", $1', array('b'))
+			),
+
+			// data set #11
+			array(
+				new SQL_Expression(':a', array(':a' => array('b', new SQL_Expression('c')))),
+				new Database_Statement('$1, c', array('b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => array('b', new SQL_Identifier('c')))),
+				new Database_Statement('$1, "c"', array('b'))
+			),
+
+			// data set #13
+			array(
+				new SQL_Expression('?', array(array(array('a', 'b')))),
+				new Database_Statement('$1, $2', array('a', 'b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => array(array('b', 'c')))),
+				new Database_Statement('$1, $2', array('b', 'c'))
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::_parse
+	 * @covers  Database_PostgreSQL::_parse_array
+	 * @covers  Database_PostgreSQL::parse_statement
+	 *
+	 * @dataProvider    provider_parse_statement
+	 *
+	 * @param   SQL_Expression      $argument   Argument to the method
+	 * @param   Database_Statement  $expected   Expected result
+	 */
+	public function test_parse_statement($argument, $expected)
+	{
+		$db = Database::factory();
+
+		$this->assertEquals($expected, $db->parse_statement($argument));
+	}
+
 	/**
 	 * @covers  Database_PostgreSQL::prepare
 	 */
@@ -199,92 +291,74 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 
 	public function provider_prepare_statement()
 	{
-		return array
-		(
+		return array(
 			array(
-				'DELETE FROM $table', array(),
-				'DELETE FROM $table', array(),
+				new Database_Statement('SELECT $1::integer', array(60)),
+				'kohana_6fcb347b3bead4838be84ef13f21a1b11dabb73c',
+				'SELECT $1::integer',
+				array(60)
 			),
+
 			array(
-				'DELETE FROM ?', array(new SQL_Table($this->_table)),
-				'DELETE FROM $table', array(),
+				new SQL_Expression('DELETE FROM ?', array(
+					new SQL_Table($this->_table)
+				)),
+				'kohana_1ef3611cce5cf227d7967ce4f80d67b715b8089b',
+				'DELETE FROM $table',
+				array()
 			),
+
 			array(
-				'DELETE FROM :table', array(':table' => new SQL_Table($this->_table)),
-				'DELETE FROM $table', array(),
+				new SQL_Expression('DELETE FROM ? WHERE ?', array(
+					new SQL_Table($this->_table),
+					new SQL_Conditions(new SQL_Column('value'), '=', 60)
+				)),
+				'kohana_9a6297e41a9edf4ae48684a1d92db8e2b365e0d8',
+				'DELETE FROM $table WHERE "value" = $1',
+				array(60)
 			),
+
 			array(
-				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE "value" = $1', array(60),
+				new SQL_Expression('DELETE FROM ? WHERE :a', array(
+					new SQL_Table($this->_table),
+					':a' => new SQL_Conditions(new SQL_Column('value'), '=', 60)
+				)),
+				'kohana_9a6297e41a9edf4ae48684a1d92db8e2b365e0d8',
+				'DELETE FROM $table WHERE "value" = $1',
+				array(60)
 			),
+
 			array(
-				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE "value" = $1', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" = ?', array(60),
-				'DELETE FROM $table WHERE "value" = $1', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" = :value', array(':value' => 60),
-				'DELETE FROM $table WHERE "value" = $1', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" = :value AND "value" = :value', array(':value' => 60),
-				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, 70, 80)),
-				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, 70, array(80))),
-				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
-				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
-				'DELETE FROM $table WHERE "value" IN ("value", $1, $2)', array(70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" IN (:list)', array(':list' => array(60, 70, 80)),
-				'DELETE FROM $table WHERE "value" IN ($1, $2, $3)', array(60, 70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE "value" IN (:list) OR "value" IN (:list)', array(':list' => array(60, 70, 80)),
-				'DELETE FROM $table WHERE "value" IN ($1, $2, $3) OR "value" IN ($1, $2, $3)', array(60, 70, 80),
+				new SQL_Expression('DELETE FROM ? WHERE :a AND :a', array(
+					new SQL_Table($this->_table),
+					':a' => new SQL_Conditions(new SQL_Column('value'), '=', 60)
+				)),
+				'kohana_9b6ddef92a7087faca26fbe06bda018711c012d1',
+				'DELETE FROM $table WHERE "value" = $1 AND "value" = $1',
+				array(60)
 			),
 		);
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL::_parse
-	 * @covers  Database_PostgreSQL::_parse_array
 	 * @covers  Database_PostgreSQL::prepare_statement
+	 *
 	 * @dataProvider    provider_prepare_statement
+	 *
+	 * @param   Database_Statement|SQL_Expression   $argument   Argument to the method
+	 * @param   string  $name   Expected name
+	 * @param   string  $sql    Expected sql
+	 * @param   array   $params Expected parameters
 	 */
-	public function test_prepare_statement($input_sql, $input_params, $expected_sql, $expected_params)
+	public function test_prepare_statement($argument, $name, $sql, $params)
 	{
 		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
 
-		$input_sql = str_replace('$table', $table, $input_sql);
-		$expected_sql = str_replace('$table', $table, $expected_sql);
+		$expected = new Database_PostgreSQL_Statement($db, $name, $params);
+		$expected->statement = strtr($sql, array('$table' => $table));
 
-		$statement = $db->prepare_statement(
-			new SQL_Expression($input_sql, $input_params)
-		);
-
-		$this->assertType('Database_PostgreSQL_Statement', $statement);
-		$this->assertSame($expected_sql, $statement->statement);
-		$this->assertSame($expected_params, $statement->parameters());
+		$this->assertEquals($expected, $db->prepare_statement($argument));
 	}
 
 	/**
