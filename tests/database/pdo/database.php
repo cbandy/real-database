@@ -32,6 +32,88 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 		$this->assertNull($db->execute_query('DELETE FROM '.$db->quote_table($this->_table)));
 	}
 
+	public function provider_parse_statement()
+	{
+		$result = array(
+			array(new SQL_Expression(''), new Database_Statement('')),
+
+			// data set #1
+			array(
+				new SQL_Expression('?', array('a')),
+				new Database_Statement('?', array(1 => 'a'))
+			),
+			array(
+				new SQL_Expression('?', array(new SQL_Expression('a'))),
+				new Database_Statement('a')
+			),
+			array(
+				new SQL_Expression('?', array(new SQL_Identifier('a'))),
+				new Database_Statement('"a"')
+			),
+
+			// data set #4
+			array(
+				new SQL_Expression(':a', array(':a' => 'b')),
+				new Database_Statement('?', array(1 => 'b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => new SQL_Expression('b'))),
+				new Database_Statement('b')
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => new SQL_Identifier('b'))),
+				new Database_Statement('"b"')
+			),
+
+			// data set #7
+			array(
+				new SQL_Expression('?', array(array())),
+				new Database_Statement('')
+			),
+			array(
+				new SQL_Expression('?', array(array('a', 'b'))),
+				new Database_Statement('?, ?', array(1 => 'a', 'b'))
+			),
+
+			// data set #9
+			array(
+				new SQL_Expression('?', array(array(new SQL_Expression('a'), 'b'))),
+				new Database_Statement('a, ?', array(1 => 'b'))
+			),
+			array(
+				new SQL_Expression('?', array(array(new SQL_Identifier('a'), 'b'))),
+				new Database_Statement('"a", ?', array(1 => 'b'))
+			),
+
+			// data set #11
+			array(
+				new SQL_Expression(':a', array(':a' => array('b', new SQL_Expression('c')))),
+				new Database_Statement('?, c', array(1 => 'b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => array('b', new SQL_Identifier('c')))),
+				new Database_Statement('?, "c"', array(1 => 'b'))
+			),
+		);
+
+		return $result;
+	}
+
+	/**
+	 * @covers  Database_PDO::parse_statement
+	 *
+	 * @dataProvider    provider_parse_statement
+	 *
+	 * @param   SQL_Expression      $argument   Argument to the method
+	 * @param   Database_Statement  $expected   Expected result
+	 */
+	public function test_parse_statement($argument, $expected)
+	{
+		$db = Database::factory();
+
+		$this->assertEquals($expected, $db->parse_statement($argument));
+	}
+
 	/**
 	 * @covers  Database_PDO::prepare
 	 */
@@ -45,82 +127,43 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 
 	public function provider_prepare_statement()
 	{
-		return array
-		(
+		return array(
 			array(
-				'DELETE FROM $table', array(),
-				'DELETE FROM $table',
+				new SQL_Expression('SELECT 1', array()),
+				'SELECT 1', array()
 			),
 			array(
-				'DELETE FROM ?', array(new SQL_Table($this->_table)),
-				'DELETE FROM $table',
+				new SQL_Expression('SELECT ?', array('a')),
+				'SELECT ?', array(1 => 'a')
 			),
 			array(
-				'DELETE FROM :table', array(':table' => new SQL_Table($this->_table)),
-				'DELETE FROM $table',
+				new SQL_Expression('SELECT :a', array(':a' => 'b')),
+				'SELECT ?', array(1 => 'b')
+			),
+
+			array(
+				new Database_Statement('SELECT 1', array()),
+				'SELECT 1', array()
 			),
 			array(
-				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE $column = ?',
-			),
-			array(
-				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE $column = ?',
-			),
-			array(
-				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE $column = ? AND $column = ?', array(1 => 60, 60),
-			),
-			array(
-				'DELETE FROM $table WHERE $column = ?', array(60),
-				'DELETE FROM $table WHERE $column = ?',
-			),
-			array(
-				'DELETE FROM $table WHERE $column = :value', array(':value' => 60),
-				'DELETE FROM $table WHERE $column = ?',
-			),
-			array(
-				'DELETE FROM $table WHERE $column = :value AND $column = :value', array(':value' => 60),
-				'DELETE FROM $table WHERE $column = ? AND $column = ?',
-			),
-			array(
-				'DELETE FROM $table WHERE $column IN (?)', array(array(60, 70, 80)),
-				'DELETE FROM $table WHERE $column IN (?, ?, ?)',
-			),
-			array(
-				'DELETE FROM $table WHERE $column IN (?)', array(array(60, 70, array(80))),
-				'DELETE FROM $table WHERE $column IN (?, ?, ?)',
-			),
-			array(
-				'DELETE FROM $table WHERE $column IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
-				'DELETE FROM $table WHERE $column IN (?, ?, ?)',
-			),
-			array(
-				'DELETE FROM $table WHERE $column IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
-				'DELETE FROM $table WHERE $column IN ($column, ?, ?)',
+				new Database_Statement('SELECT ?', array(1 => 'a')),
+				'SELECT ?', array(1 => 'a'),
 			),
 		);
 	}
 
 	/**
-	 * @covers  Database::_parse
-	 * @covers  Database::_parse_value
-	 * @covers  Database_PDO::_parse_statement
 	 * @covers  Database_PDO::prepare_statement
+	 *
 	 * @dataProvider    provider_prepare_statement
 	 */
-	public function test_prepare_statement($input_sql, $input_params, $expected_sql)
+	public function test_prepare_statement($argument, $sql, $parameters)
 	{
 		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
-		$column = $db->quote_column('value');
-
-		$input_sql = strtr($input_sql, array('$table' => $table, '$column' => $column));
-		$expected_sql = strtr($expected_sql, array('$table' => $table, '$column' => $column));
-
-		$prepared = $db->prepare_statement(new SQL_Expression($input_sql, $input_params));
+		$prepared = $db->prepare_statement($argument);
 
 		$this->assertType('Database_PDO_Statement', $prepared);
-		$this->assertSame($expected_sql, (string) $prepared);
+		$this->assertSame($sql, (string) $prepared);
+		$this->assertSame($parameters, $prepared->parameters());
 	}
 }

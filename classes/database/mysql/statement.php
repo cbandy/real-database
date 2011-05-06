@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Prepared statement for [Database_MySQL].
+ * Prepared statement for [Database_MySQL]. Parameters are positional literals.
  *
  * @package     RealDatabase
  * @subpackage  MySQL
@@ -11,7 +11,7 @@
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_MySQL_Statement
+class Database_MySQL_Statement extends Database_Statement
 {
 	/**
 	 * @var Database_MySQL
@@ -22,11 +22,6 @@ class Database_MySQL_Statement
 	 * @var string  Quoted statement name
 	 */
 	protected $_name;
-
-	/**
-	 * @var array   Unquoted parameters
-	 */
-	public $parameters;
 
 	/**
 	 * @var string  Original SQL of this statement
@@ -42,7 +37,8 @@ class Database_MySQL_Statement
 	{
 		$this->_db = $db;
 		$this->_name = $db->quote_identifier($name);
-		$this->parameters = $parameters;
+		$this->_parameters = $parameters;
+		$this->_statement =& $this->statement;
 	}
 
 	public function __toString()
@@ -61,9 +57,9 @@ class Database_MySQL_Statement
 	{
 		$result = 'EXECUTE '.$this->_name;
 
-		if ( ! empty($this->parameters))
+		if ( ! empty($this->_parameters))
 		{
-			foreach ($this->parameters as $key => $value)
+			foreach ($this->_parameters as $key => $value)
 			{
 				$set[] = '@kohana_'.$key.' = '.$this->_db->quote_literal($value);
 				$variables[] = '@kohana_'.$key;
@@ -75,20 +71,6 @@ class Database_MySQL_Statement
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Bind a variable to a parameter.
-	 *
-	 * @param   integer $param  Parameter index
-	 * @param   mixed   $var    Variable to bind
-	 * @return  $this
-	 */
-	public function bind($param, & $var)
-	{
-		$this->parameters[$param] =& $var;
-
-		return $this;
 	}
 
 	/**
@@ -140,32 +122,5 @@ class Database_MySQL_Statement
 	public function execute_query($as_object = FALSE, $arguments = array())
 	{
 		return $this->_db->execute_query($this->_set_variables(), $as_object, $arguments);
-	}
-
-	/**
-	 * Set the value of a parameter.
-	 *
-	 * @param   integer $param  Parameter index
-	 * @param   mixed   $value  Literal value to assign
-	 * @return  $this
-	 */
-	public function param($param, $value)
-	{
-		$this->parameters[$param] = $value;
-
-		return $this;
-	}
-
-	/**
-	 * Add multiple parameter values.
-	 *
-	 * @param   array   $params Literal values to assign
-	 * @return  $this
-	 */
-	public function parameters($params)
-	{
-		$this->parameters = $params + $this->parameters;
-
-		return $this;
 	}
 }

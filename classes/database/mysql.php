@@ -474,26 +474,24 @@ class Database_MySQL extends Database
 	}
 
 	/**
-	 * Created a prepared statement from a SQL expression object.
+	 * Created a prepared statement from a MySQL-compatible [Database_Statement]
+	 * or a generic [SQL_Expression].
 	 *
 	 * @throws  Database_Exception
-	 * @param   SQL_Expression  $statement  SQL statement
+	 * @param   Database_Statement|SQL_Expression   $statement  SQL statement
 	 * @return  Database_MySQL_Statement
 	 */
 	public function prepare_statement($statement)
 	{
-		$parameters = array();
+		if ( ! $statement instanceof Database_Statement)
+		{
+			$statement = $this->parse_statement($statement);
+		}
 
-		$statement = $this->_parse(
-			(string) $statement,
-			$statement->parameters,
-			$parameters
-		);
+		$name = $this->prepare(NULL, (string) $statement);
 
-		$name = $this->prepare(NULL, $statement);
-
-		$result = new Database_MySQL_Statement($this, $name, $parameters);
-		$result->statement = $statement;
+		$result = new Database_MySQL_Statement($this, $name, $statement->parameters());
+		$result->statement = (string) $statement;
 
 		return $result;
 	}

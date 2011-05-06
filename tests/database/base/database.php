@@ -951,4 +951,107 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("'object__toString'", $db->quote($object));
 		$this->assertSame("'object__toString', 'object__toString'", $db->quote(array($object, $object)));
 	}
+
+	public function provider_parse_statement()
+	{
+		$result = array(
+			array(new SQL_Expression(''), new Database_Statement('')),
+
+			// data set #1
+			array(
+				new SQL_Expression('?', array('a')),
+				new Database_Statement('?', array('a'))
+			),
+			array(
+				new SQL_Expression('?', array(new SQL_Expression('a'))),
+				new Database_Statement('a')
+			),
+			array(
+				new SQL_Expression('?', array(new SQL_Identifier('a'))),
+				new Database_Statement('"a"')
+			),
+			array(
+				new SQL_Expression('?', array(new SQL_Table('a'))),
+				new Database_Statement('"pre_a"')
+			),
+
+			// data set #5
+			array(
+				new SQL_Expression(':a', array(':a' => 'b')),
+				new Database_Statement('?', array('b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => new SQL_Expression('b'))),
+				new Database_Statement('b')
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => new SQL_Identifier('b'))),
+				new Database_Statement('"b"')
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => new SQL_Table('b'))),
+				new Database_Statement('"pre_b"')
+			),
+
+			// data set #9
+			array(
+				new SQL_Expression('?', array(array())),
+				new Database_Statement('')
+			),
+			array(
+				new SQL_Expression('?', array(array('a', 'b'))),
+				new Database_Statement('?, ?', array('a', 'b'))
+			),
+
+			// data set #11
+			array(
+				new SQL_Expression('?', array(array(new SQL_Expression('a'), 'b'))),
+				new Database_Statement('a, ?', array('b'))
+			),
+			array(
+				new SQL_Expression('?', array(array(new SQL_Identifier('a'), 'b'))),
+				new Database_Statement('"a", ?', array('b'))
+			),
+			array(
+				new SQL_Expression('?', array(array(new SQL_Table('a'), 'b'))),
+				new Database_Statement('"pre_a", ?', array('b'))
+			),
+
+			// data set #14
+			array(
+				new SQL_Expression(':a', array(':a' => array('b', new SQL_Expression('c')))),
+				new Database_Statement('?, c', array('b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => array('b', new SQL_Identifier('c')))),
+				new Database_Statement('?, "c"', array('b'))
+			),
+			array(
+				new SQL_Expression(':a', array(':a' => array('b', new SQL_Table('c')))),
+				new Database_Statement('?, "pre_c"', array('b'))
+			),
+		);
+
+		return $result;
+	}
+
+	/**
+	 * @covers  Database::_parse
+	 * @covers  Database::_parse_value
+	 * @covers  Database::parse_statement
+	 *
+	 * @dataProvider    provider_parse_statement
+	 *
+	 * @param   SQL_Expression      $argument   Argument to the method
+	 * @param   Database_Statement  $expected   Expected result
+	 */
+	public function test_parse_statement($argument, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
+		$this->assertEquals($expected, $db->parse_statement($argument));
+	}
 }

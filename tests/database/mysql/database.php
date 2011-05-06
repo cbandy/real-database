@@ -197,84 +197,74 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 
 	public function provider_prepare_statement()
 	{
-		return array
-		(
+		return array(
 			array(
-				'DELETE FROM $table', array(),
-				'DELETE FROM $table', array(),
+				new Database_Statement('SELECT ?', array(60)),
+				'kohana_d41673f80456e40552a6a2e81e99e85efa487721',
+				'SELECT ?',
+				array(60)
 			),
+
 			array(
-				'DELETE FROM ?', array(new SQL_Table($this->_table)),
-				'DELETE FROM $table', array(),
+				new SQL_Expression('DELETE FROM ?', array(
+					new SQL_Table($this->_table)
+				)),
+				'kohana_e27e457b646db1d9aa7f6b5a2c014408d5f43c73',
+				'DELETE FROM $table',
+				array()
 			),
+
 			array(
-				'DELETE FROM :table', array(':table' => new SQL_Table($this->_table)),
-				'DELETE FROM $table', array(),
+				new SQL_Expression('DELETE FROM ? WHERE ?', array(
+					new SQL_Table($this->_table),
+					new SQL_Conditions(new SQL_Column('value'), '=', 60)
+				)),
+				'kohana_84d89cb534a118f8b879af39a27a27e06a62fcb5',
+				'DELETE FROM $table WHERE `value` = ?',
+				array(60)
 			),
+
 			array(
-				'DELETE FROM $table WHERE ?', array(new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE `value` = ?', array(60),
+				new SQL_Expression('DELETE FROM ? WHERE :a', array(
+					new SQL_Table($this->_table),
+					':a' => new SQL_Conditions(new SQL_Column('value'), '=', 60)
+				)),
+				'kohana_84d89cb534a118f8b879af39a27a27e06a62fcb5',
+				'DELETE FROM $table WHERE `value` = ?',
+				array(60)
 			),
+
 			array(
-				'DELETE FROM $table WHERE :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE `value` = ?', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE :condition AND :condition', array(':condition' => new SQL_Conditions(new SQL_Column('value'), '=', 60)),
-				'DELETE FROM $table WHERE `value` = ? AND `value` = ?', array(60, 60),
-			),
-			array(
-				'DELETE FROM $table WHERE `value` = ?', array(60),
-				'DELETE FROM $table WHERE `value` = ?', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE `value` = :value', array(':value' => 60),
-				'DELETE FROM $table WHERE `value` = ?', array(60),
-			),
-			array(
-				'DELETE FROM $table WHERE `value` = :value AND `value` = :value', array(':value' => 60),
-				'DELETE FROM $table WHERE `value` = ? AND `value` = ?', array(60, 60),
-			),
-			array(
-				'DELETE FROM $table WHERE `value` IN (?)', array(array(60, 70, 80)),
-				'DELETE FROM $table WHERE `value` IN (?, ?, ?)', array(60, 70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE `value` IN (?)', array(array(60, 70, array(80))),
-				'DELETE FROM $table WHERE `value` IN (?, ?, ?)', array(60, 70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE `value` IN (?)', array(array(60, new SQL_Expression(':name', array(':name' => 70)), 80)),
-				'DELETE FROM $table WHERE `value` IN (?, ?, ?)', array(60, 70, 80),
-			),
-			array(
-				'DELETE FROM $table WHERE `value` IN (?)', array(array(new SQL_Identifier('value'), 70, 80)),
-				'DELETE FROM $table WHERE `value` IN (`value`, ?, ?)', array(70, 80),
+				new SQL_Expression('DELETE FROM ? WHERE :a AND :a', array(
+					new SQL_Table($this->_table),
+					':a' => new SQL_Conditions(new SQL_Column('value'), '=', 60)
+				)),
+				'kohana_7b91fbba52445c2254274e800d93f907cb11b33c',
+				'DELETE FROM $table WHERE `value` = ? AND `value` = ?',
+				array(60, 60)
 			),
 		);
 	}
 
 	/**
-	 * @covers  Database::_parse
-	 * @covers  Database::_parse_value
 	 * @covers  Database_MySQL::prepare_statement
+	 *
 	 * @dataProvider    provider_prepare_statement
+	 *
+	 * @param   Database_Statement|SQL_Expression   $argument   Argument to the method
+	 * @param   string  $name   Expected name
+	 * @param   string  $sql    Expected sql
+	 * @param   array   $params Expected parameters
 	 */
-	public function test_prepare_statement($input_sql, $input_params, $expected_sql, $expected_params)
+	public function test_prepare_statement($argument, $name, $sql, $params)
 	{
 		$db = Database::factory();
 		$table = $db->quote_table($this->_table);
 
-		$input_sql = strtr($input_sql, array('$table' => $table));
-		$expected_sql = strtr($expected_sql, array('$table' => $table));
+		$expected = new Database_MySQL_Statement($db, $name, $params);
+		$expected->statement = strtr($sql, array('$table' => $table));
 
-		$statement = $db->prepare_statement(
-			new SQL_Expression($input_sql, $input_params)
-		);
-
-		$this->assertType('Database_MySQL_Statement', $statement);
-		$this->assertSame($expected_sql, $statement->statement);
-		$this->assertSame($expected_params, $statement->parameters);
+		$this->assertEquals($expected, $db->prepare_statement($argument));
 	}
 
 	public function provider_quote_literal()

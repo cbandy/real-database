@@ -72,38 +72,7 @@ class Database_PostgreSQL_Statement_Test extends Database_PostgreSQL_TestCase
 		$db = Database::factory();
 		$statement = new Database_PostgreSQL_Statement($db, 'name', $value);
 
-		$this->assertSame($value, $statement->parameters);
-	}
-
-	public function provider_bind()
-	{
-		return array
-		(
-			array(FALSE, TRUE),
-			array('a', 'b'),
-			array(1, 2),
-		);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Statement::bind
-	 * @dataProvider    provider_bind
-	 *
-	 * @param   mixed   $initial    Value used when first binding
-	 * @param   mixed   $changed    Value used to alter the bound variable
-	 */
-	public function test_bind($initial, $changed)
-	{
-		$db = Database::factory();
-		$statement = new Database_PostgreSQL_Statement($db, 'name');
-
-		$var = $initial;
-		$this->assertSame($statement, $statement->bind('$1', $var), 'Chainable');
-		$this->assertSame($initial, $var, 'Not modified during bind');
-		$this->assertSame($initial, $statement->parameters['$1'], 'Parameter visible');
-
-		$var = $changed;
-		$this->assertSame($changed, $statement->parameters['$1'], 'Changed by reference');
+		$this->assertSame($value, $statement->parameters());
 	}
 
 	/**
@@ -226,55 +195,5 @@ class Database_PostgreSQL_Statement_Test extends Database_PostgreSQL_TestCase
 
 		$this->assertType('Database_PostgreSQL_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
-	}
-
-	public function provider_param()
-	{
-		return array
-		(
-			array(NULL),
-			array(FALSE),
-			array(TRUE),
-			array(0),
-			array(1),
-			array('a'),
-			array('b'),
-		);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Statement::param
-	 * @dataProvider    provider_param
-	 *
-	 * @param   mixed   $value  Value to assign
-	 */
-	public function test_param($value)
-	{
-		$db = Database::factory();
-		$statement = new Database_PostgreSQL_Statement($db, 'name');
-
-		$this->assertSame($statement, $statement->param('$1', $value), 'Chainable');
-		$this->assertSame($value, $statement->parameters['$1'], 'Parameter visible');
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Statement::parameters
-	 */
-	public function test_parameters()
-	{
-		$db = Database::factory();
-		$statement = new Database_PostgreSQL_Statement($db, 'name');
-
-		$this->assertSame($statement, $statement->parameters(array('a', 'b')), 'Chainable (1)');
-		$this->assertSame(array('a', 'b'), $statement->parameters);
-
-		$this->assertSame($statement, $statement->parameters(array('c' => 'd')), 'Chainable (2)');
-		$this->assertSame(array('c' => 'd', 'a', 'b'), $statement->parameters);
-
-		$this->assertSame($statement, $statement->parameters(array(1 => 'e')), 'Chainable (3)');
-		$this->assertSame(array(1 => 'e', 'c' => 'd', 0 => 'a'), $statement->parameters);
-
-		$this->assertSame($statement, $statement->parameters(array('c' => 'f')), 'Chainable (4)');
-		$this->assertSame(array('c' => 'f', 1 => 'e', 0 => 'a'), $statement->parameters);
 	}
 }
