@@ -68,30 +68,6 @@ class Database_PDO extends Database
 		}
 	}
 
-	/**
-	 * Replace array, expression and identifier parameters until all parameters
-	 * are 1-indexed, positional literals.
-	 *
-	 * @param   SQL_Expression  $statement  SQL statement
-	 * @return  array   List including the SQL string and parameter array
-	 */
-	protected function _parse_statement($statement)
-	{
-		// PDOStatement parameters are 1-indexed, pad the array with a value
-		$parameters = array(NULL);
-
-		$statement = $this->_parse(
-			(string) $statement,
-			$statement->parameters,
-			$parameters
-		);
-
-		// Remove padding
-		unset($parameters[0]);
-
-		return array($statement, $parameters);
-	}
-
 	public function begin()
 	{
 		$this->_connection or $this->connect();
@@ -201,13 +177,14 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
-		if ($statement instanceof SQL_Expression)
+		if ( ! is_string($statement))
 		{
-			list($statement, $parameters) = $this->_parse_statement($statement);
-		}
-		elseif ( ! is_string($statement))
-		{
-			$statement = $this->quote($statement);
+			// Parse the statement
+			$statement = $this->parse_statement($statement);
+
+			// Extract the SQL and parameters
+			$parameters = $statement->parameters();
+			$statement = (string) $statement;
 		}
 
 		if (empty($statement))
@@ -269,13 +246,14 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
-		if ($statement instanceof SQL_Expression)
+		if ( ! is_string($statement))
 		{
-			list($statement, $parameters) = $this->_parse_statement($statement);
-		}
-		elseif ( ! is_string($statement))
-		{
-			$statement = $this->quote($statement);
+			// Parse the statement
+			$statement = $this->parse_statement($statement);
+
+			// Extract the SQL and parameters
+			$parameters = $statement->parameters();
+			$statement = (string) $statement;
 		}
 
 		if (empty($statement))
@@ -333,6 +311,30 @@ class Database_PDO extends Database
 	}
 
 	/**
+	 * Convert a generic [SQL_Expression] into a [Database_Statement] with a
+	 * 1-indexed array of literal parameters.
+	 *
+	 * @param   SQL_Expression  $statement  SQL statement
+	 * @return  Database_Statement
+	 */
+	public function parse_statement($statement)
+	{
+		// Pad the array so the next value has an index of one
+		$parameters = array(NULL);
+
+		$statement = $this->_parse(
+			(string) $statement,
+			$statement->parameters,
+			$parameters
+		);
+
+		// Remove padding
+		unset($parameters[0]);
+
+		return new Database_Statement($statement, $parameters);
+	}
+
+	/**
 	 * Create a prepared statement after connecting
 	 *
 	 * @throws  Database_Exception
@@ -372,20 +374,24 @@ class Database_PDO extends Database
 	}
 
 	/**
-	 * Create a prepared statement from a SQL expression object.
+	 * Created a prepared statement from a PDO-compatible [Database_Statement]
+	 * or a generic [SQL_Expression].
 	 *
 	 * @throws  Database_Exception
-	 * @param   SQL_Expression  $statement  SQL statement
+	 * @param   Database_Statement|SQL_Expression   $statement  SQL statement
 	 * @return  Database_PDO_Statement
 	 */
 	public function prepare_statement($statement)
 	{
-		list($statement, $parameters) = $this->_parse_statement($statement);
+		if ( ! $statement instanceof Database_Statement)
+		{
+			$statement = $this->parse_statement($statement);
+		}
 
 		return new Database_PDO_Statement(
 			$this,
-			$this->prepare($statement),
-			$parameters
+			$this->prepare( (string) $statement),
+			$statement->parameters()
 		);
 	}
 
