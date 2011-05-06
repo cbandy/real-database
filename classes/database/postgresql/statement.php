@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Prepared statement for [Database_PostgreSQL].
+ * Prepared statement for [Database_PostgreSQL]. Parameters are positional
+ * literals that map to named positions: $1, $2, etc.
  *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
@@ -10,8 +11,10 @@
  * @author      Chris Bandy
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @link http://www.postgresql.org/docs/current/static/libpq-exec.html#LIBPQ-PQPREPARE
  */
-class Database_PostgreSQL_Statement
+class Database_PostgreSQL_Statement extends Database_Statement
 {
 	/**
 	 * @var Database_PostgreSQL
@@ -22,11 +25,6 @@ class Database_PostgreSQL_Statement
 	 * @var string  Statement name
 	 */
 	protected $_name;
-
-	/**
-	 * @var array   Unquoted parameters
-	 */
-	public $parameters;
 
 	/**
 	 * @var string  Original SQL of this statement
@@ -42,26 +40,13 @@ class Database_PostgreSQL_Statement
 	{
 		$this->_db = $db;
 		$this->_name = $name;
-		$this->parameters = $parameters;
+		$this->_parameters = $parameters;
+		$this->_statement =& $this->statement;
 	}
 
 	public function __toString()
 	{
 		return $this->_name;
-	}
-
-	/**
-	 * Bind a variable to a parameter.
-	 *
-	 * @param   string  $param  Parameter index, e.g., '$1'
-	 * @param   mixed   $var    Variable to bind
-	 * @return  $this
-	 */
-	public function bind($param, & $var)
-	{
-		$this->parameters[$param] =& $var;
-
-		return $this;
 	}
 
 	/**
@@ -90,7 +75,7 @@ class Database_PostgreSQL_Statement
 	{
 		return $this->_db->execute_prepared_command(
 			$this->_name,
-			$this->parameters
+			$this->_parameters
 		);
 	}
 
@@ -109,7 +94,7 @@ class Database_PostgreSQL_Statement
 		return $this->_db->execute_prepared_insert(
 			$this->_name,
 			$identity,
-			$this->parameters,
+			$this->_parameters,
 			$as_object,
 			$arguments
 		);
@@ -128,36 +113,9 @@ class Database_PostgreSQL_Statement
 	{
 		return $this->_db->execute_prepared_query(
 			$this->_name,
-			$this->parameters,
+			$this->_parameters,
 			$as_object,
 			$arguments
 		);
-	}
-
-	/**
-	 * Set the value of a parameter.
-	 *
-	 * @param   string  $param  Parameter index, e.g., '$1'
-	 * @param   mixed   $value  Literal value to assign
-	 * @return  $this
-	 */
-	public function param($param, $value)
-	{
-		$this->parameters[$param] = $value;
-
-		return $this;
-	}
-
-	/**
-	 * Add multiple parameter values.
-	 *
-	 * @param   array   $params Literal values to assign
-	 * @return  $this
-	 */
-	public function parameters($params)
-	{
-		$this->parameters = $params + $this->parameters;
-
-		return $this;
 	}
 }
