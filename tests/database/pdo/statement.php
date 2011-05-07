@@ -152,6 +152,59 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(array(1 => $var), $statement->parameters());
 	}
 
+	public function provider_bind_type()
+	{
+		return array(
+			array(
+				1, 2, PDO::PARAM_INT, array(1 => 2),
+				3, array(1 => 3)
+			),
+			array(
+				4, 5, PDO::PARAM_STR, array(4 => 5),
+				6, array(4 => 6)
+			),
+			array(
+				7, 8, PDO::PARAM_BOOL, array(7 => 8),
+				9, array(7 => 9)
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO_Statement::bind
+	 *
+	 * @dataProvider    provider_bind_type
+	 *
+	 * @param   integer $param          First argument to the method
+	 * @param   mixed   $var            Second argument to the method
+	 * @para    integer $type           Third argument to the method
+	 * @param   array   $params_before  Expected parameters
+	 * @param   mixed   $after          Value to assign to bound variable
+	 * @param   array   $params_after   Expected paramters after assigning to bound variable
+	 */
+	public function test_bind_type($param, $var, $type, $params_before, $next, $params_after)
+	{
+		$db = new Database_PDO('name', array());
+		$statement = $this->getMock('PDOStatement', array('bindParam'));
+
+		$statement
+			->expects($this->once())
+			->method('bindParam')
+			->with(
+				$this->identicalTo($param),
+				$this->identicalTo($var),
+				$this->identicalTo($type)
+			);
+
+		$statement = new Database_PDO_Statement($db, $statement);
+
+		$this->assertSame($statement, $statement->bind($param, $var, $type), 'Chainable');
+		$this->assertSame($params_before, $statement->parameters());
+
+		$var = $next;
+		$this->assertSame($params_after, $statement->parameters());
+	}
+
 	public function provider_execute_query()
 	{
 		return array
@@ -250,6 +303,45 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($statement, $statement->param(1, $value), 'Chainable');
 		$this->assertSame(array(1 => $value), $statement->parameters());
+	}
+
+	public function provider_param_type()
+	{
+		return array(
+			array(1, 2, PDO::PARAM_INT, array(1 => 2)),
+			array(3, 4, PDO::PARAM_STR, array(3 => 4)),
+			array(5, 6, PDO::PARAM_BOOL, array(5 => 6)),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO_Statement::param
+	 *
+	 * @dataProvider    provider_param_type
+	 *
+	 * @param   integer $param      First argument to the method
+	 * @param   mixed   $value      Second argument to the method
+	 * @para    integer $type       Third argument to the method
+	 * @param   array   $parameters Expected parameters
+	 */
+	public function test_param_type($param, $value, $type, $parameters)
+	{
+		$db = new Database_PDO('name', array());
+		$statement = $this->getMock('PDOStatement', array('bindValue'));
+
+		$statement
+			->expects($this->once())
+			->method('bindValue')
+			->with(
+				$this->identicalTo($param),
+				$this->identicalTo($value),
+				$this->identicalTo($type)
+			);
+
+		$statement = new Database_PDO_Statement($db, $statement);
+
+		$this->assertSame($statement, $statement->param($param, $value, $type), 'Chainable');
+		$this->assertSame($parameters, $statement->parameters());
 	}
 
 	public function provider_parameters()

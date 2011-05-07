@@ -79,15 +79,21 @@ class Database_PDO_Statement extends Database_Statement
 	}
 
 	/**
-	 * Bind a variable to a parameter.
+	 * Bind a variable to a parameter, optionally specifying the data type using
+	 * a [PDO::PARAM constant](http://php.net/manual/pdo.constants).
 	 *
 	 * @param   integer $param  Parameter index
 	 * @param   mixed   $var    Variable to bind
+	 * @param   integer $type   Parameter type, PDO::PARAM_* constant
 	 * @return  $this
 	 */
-	public function bind($param, & $var)
+	public function bind($param, & $var, $type = NULL)
 	{
-		if (is_string($var))
+		if ($type !== NULL)
+		{
+			$this->_statement->bindParam($param, $var, $type);
+		}
+		elseif (is_string($var))
 		{
 			$this->_statement->bindParam($param, $var, PDO::PARAM_STR);
 		}
@@ -160,15 +166,21 @@ class Database_PDO_Statement extends Database_Statement
 	}
 
 	/**
-	 * Set the value of a parameter.
+	 * Set the value of a parameter, optionally specifying the data type using
+	 * a [PDO::PARAM constant](http://php.net/manual/pdo.constants).
 	 *
 	 * @param   integer $param  Parameter index
 	 * @param   mixed   $value  Literal value to assign
+	 * @param   integer $type   Parameter type, PDO::PARAM_* constant
 	 * @return  $this
 	 */
-	public function param($param, $value)
+	public function param($param, $value, $type = NULL)
 	{
-		if (is_string($value))
+		if ($type !== NULL)
+		{
+			$this->_statement->bindValue($param, $value, $type);
+		}
+		elseif (is_string($value))
 		{
 			$this->_statement->bindValue($param, $value, PDO::PARAM_STR);
 		}
