@@ -167,13 +167,14 @@ abstract class Database_Abstract_Database_Test extends PHPUnit_Framework_TestCas
 	/**
 	 * @covers  Database::execute_command
 	 * @dataProvider  provider_execute_command_error
-	 * @expectedException Database_Exception
 	 *
 	 * @param   string|SQL_Expression   $value  Bad SQL statement
 	 */
 	public function test_execute_command_error($value)
 	{
 		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception');
 
 		$db->execute_command($value);
 	}
@@ -212,13 +213,14 @@ abstract class Database_Abstract_Database_Test extends PHPUnit_Framework_TestCas
 	/**
 	 * @covers  Database::execute_query
 	 * @dataProvider  provider_execute_query_error
-	 * @expectedException Database_Exception
 	 *
 	 * @param   string|SQL_Expression   $value  Bad SQL statement
 	 */
 	public function test_execute_query_error($value)
 	{
 		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception');
 
 		$db->execute_query($value);
 	}

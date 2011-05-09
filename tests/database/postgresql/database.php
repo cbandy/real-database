@@ -68,23 +68,29 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * Throws an exception when the table does not exist.
+	 *
 	 * @covers  Database_PostgreSQL::copy_from
-	 * @expectedException   Database_Exception
 	 */
 	public function test_copy_from_error()
 	{
 		$db = Database::factory();
 
+		$this->setExpectedException('Database_Exception', 'does not exist', E_WARNING);
+
 		$db->copy_from('kohana-nonexistent-table', array("8\t70"));
 	}
 
 	/**
+	 * Throws an exception when the table does not exist.
+	 *
 	 * @covers  Database_PostgreSQL::copy_to
-	 * @expectedException   Database_Exception
 	 */
 	public function test_copy_to_error()
 	{
 		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'does not exist', E_WARNING);
 
 		$db->copy_to('kohana-nonexistent-table');
 	}

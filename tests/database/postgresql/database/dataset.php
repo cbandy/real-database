@@ -208,9 +208,10 @@ class Database_PostgreSQL_Database_Dataset_Test extends Database_PostgreSQL_Test
 	}
 
 	/**
+	 * Throws an exception when executed without the right number of parameters.
+	 *
 	 * @covers  Database_PostgreSQL::_execute_prepared
 	 * @covers  Database_PostgreSQL::execute_prepared_command
-	 * @expectedException   Database_Exception
 	 */
 	public function test_execute_prepared_command_error()
 	{
@@ -218,6 +219,8 @@ class Database_PostgreSQL_Database_Dataset_Test extends Database_PostgreSQL_Test
 		$table = $db->quote_table($this->_table);
 
 		$name = $db->prepare(NULL, 'UPDATE '.$table.' SET "value" = $1 WHERE "value" = $2');
+
+		$this->setExpectedException('Database_Exception', 'parameters', '08P01');
 
 		// Lacking parameters
 		$db->execute_prepared_command($name);
@@ -276,9 +279,10 @@ class Database_PostgreSQL_Database_Dataset_Test extends Database_PostgreSQL_Test
 	}
 
 	/**
+	 * Throws an exception when executed without the right number of parameters.
+	 *
 	 * @covers  Database_PostgreSQL::_execute_prepared
 	 * @covers  Database_PostgreSQL::execute_prepared_query
-	 * @expectedException   Database_Exception
 	 */
 	public function test_execute_prepared_query_error()
 	{
@@ -286,6 +290,8 @@ class Database_PostgreSQL_Database_Dataset_Test extends Database_PostgreSQL_Test
 		$table = $db->quote_table($this->_table);
 
 		$name = $db->prepare(NULL, 'SELECT * FROM '.$table.' WHERE "value" = $1');
+
+		$this->setExpectedException('Database_Exception', 'parameters', '08P01');
 
 		// Lacking parameters
 		$db->execute_prepared_query($name);

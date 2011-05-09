@@ -58,12 +58,15 @@ class Database_MySQL_Database_DataSet_Test extends Database_MySQL_TestCase
 	}
 
 	/**
+	 * Throws an exception when executing a compound statement.
+	 *
 	 * @covers  Database_MySQL::execute_command
-	 * @expectedException Database_Exception
 	 */
 	public function test_execute_compound_command()
 	{
 		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'SQL syntax', 1064);
 
 		$db->execute_command(
 			'DELETE FROM '.$db->quote_table($this->_table).';'
@@ -72,12 +75,15 @@ class Database_MySQL_Database_DataSet_Test extends Database_MySQL_TestCase
 	}
 
 	/**
+	 * Throws an exception when executing a compound statement.
+	 *
 	 * @covers  Database_MySQL::execute_query
-	 * @expectedException Database_Exception
 	 */
 	public function test_execute_compound_query()
 	{
 		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'SQL syntax', 1064);
 
 		$db->execute_query(
 			'SELECT * FROM '.$db->quote_table($this->_table).';'

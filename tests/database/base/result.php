@@ -89,8 +89,8 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_Result::seek
+	 *
 	 * @dataProvider    provider_count
-	 * @expectedException   OutOfBoundsException
 	 *
 	 * @param   integer $count
 	 */
@@ -100,6 +100,8 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			'Database_Result',
 			array(FALSE, $count)
 		);
+
+		$this->setExpectedException('OutOfBoundsException');
 
 		$result->seek(-1);
 	}
@@ -119,8 +121,8 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_Result::seek
+	 *
 	 * @dataProvider    provider_seek_error_high
-	 * @expectedException   OutOfBoundsException
 	 *
 	 * @param   integer $count
 	 * @param   integer $position
@@ -131,6 +133,8 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			'Database_Result',
 			array(FALSE, $count)
 		);
+
+		$this->setExpectedException('OutOfBoundsException');
 
 		$result->seek($position);
 	}
@@ -297,8 +301,8 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_Result::offsetGet
+	 *
 	 * @dataProvider    provider_count
-	 * @expectedException   OutOfBoundsException
 	 *
 	 * @param   integer $count
 	 */
@@ -309,13 +313,15 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			array(FALSE, $count)
 		);
 
+		$this->setExpectedException('OutOfBoundsException');
+
 		$result->offsetGet(-1);
 	}
 
 	/**
 	 * @covers  Database_Result::offsetGet
+	 *
 	 * @dataProvider    provider_seek_error_high
-	 * @expectedException   OutOfBoundsException
 	 *
 	 * @param   integer $count
 	 * @param   integer $position
@@ -327,12 +333,15 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			array(FALSE, $count)
 		);
 
+		$this->setExpectedException('OutOfBoundsException');
+
 		$result->offsetGet($position);
 	}
 
 	/**
+	 * Always throws an exception.
+	 *
 	 * @covers  Database_Result::offsetSet
-	 * @expectedException Kohana_Exception
 	 */
 	public function test_offset_set()
 	{
@@ -341,12 +350,15 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			array(FALSE, 1)
 		);
 
+		$this->setExpectedException('Kohana_Exception');
+
 		$result->offsetSet(0, TRUE);
 	}
 
 	/**
+	 * Always throws an exception.
+	 *
 	 * @covers  Database_Result::offsetUnset
-	 * @expectedException Kohana_Exception
 	 */
 	public function test_offset_unset()
 	{
@@ -354,6 +366,8 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			'Database_Result',
 			array(FALSE, 1)
 		);
+
+		$this->setExpectedException('Kohana_Exception');
 
 		$result->offsetUnset(0);
 	}

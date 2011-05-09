@@ -145,16 +145,29 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$this->_test_method_type('ddl_column', $arguments, 'Database_MySQL_DDL_Column');
 	}
 
+	public function provider_execute_command_error()
+	{
+		return array(
+			array('kohana invalid command'),
+			array(new SQL_Expression('kohana invalid command')),
+		);
+	}
+
 	/**
 	 * @covers  Database_MySQL::_execute
+	 * @covers  Database_MySQL::execute_command
+	 *
 	 * @dataProvider  provider_execute_command_error
-	 * @expectedException Database_Exception
 	 *
 	 * @param   string|SQL_Expression   $value  Bad SQL statement
 	 */
 	public function test_execute_command_error($value)
 	{
-		parent::test_execute_command_error($value);
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'SQL syntax', 1064);
+
+		$db->execute_command($value);
 	}
 
 	/**
@@ -180,6 +193,32 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$result = $db->execute_insert('', NULL);
 
 		$this->assertSame(array(0,0), $result, 'No prior INSERT');
+	}
+
+	public function provider_execute_query_error()
+	{
+		return array
+		(
+			array('kohana invalid query'),
+			array(new SQL_Expression('kohana invalid query')),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::_execute
+	 * @covers  Database_MySQL::execute_query
+	 *
+	 * @dataProvider  provider_execute_query_error
+	 *
+	 * @param   string|SQL_Expression   $value  Bad SQL statement
+	 */
+	public function test_execute_query_error($value)
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'SQL syntax', 1064);
+
+		$db->execute_query($value);
 	}
 
 	/**

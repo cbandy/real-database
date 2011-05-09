@@ -55,11 +55,14 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * An exception is thrown when the configuration lacks a driver type.
+	 *
 	 * @covers  Database::factory
-	 * @expectedException   Kohana_Exception
 	 */
 	public function test_factory_incomplete_config()
 	{
+		$this->setExpectedException('Kohana_Exception');
+
 		Database::factory('any', array());
 	}
 
@@ -884,12 +887,14 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database::quote_expression
+	 *
 	 * @dataProvider    provider_quote_expression_lacking_parameter
-	 * @expectedException   PHPUnit_Framework_Error
 	 */
 	public function test_quote_expression_lacking_parameter($value)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+
+		$this->setExpectedException('PHPUnit_Framework_Error', 'Undefined', E_NOTICE);
 
 		$db->quote_expression($value);
 	}
