@@ -197,6 +197,18 @@ class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 		$this->assertEquals(array(1,5), $db->execute($statement), 'Count is always one. Identity is INTEGER PRIMARY KEY of the last row');
 	}
 
+	/**
+	 * @covers  Database_PDO::prepare
+	 */
+	public function test_prepare_error()
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'syntax error', 'HY000');
+
+		$db->prepare('kohana invalid sql');
+	}
+
 	public function provider_quote_literal()
 	{
 		return array
