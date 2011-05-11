@@ -34,6 +34,8 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 
 	public function provider_parse_statement()
 	{
+		$db = Database::factory();
+
 		$result = array(
 			array(new SQL_Expression(''), new Database_Statement('')),
 
@@ -48,7 +50,7 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 			),
 			array(
 				new SQL_Expression('?', array(new SQL_Identifier('a'))),
-				new Database_Statement('"a"')
+				new Database_Statement($db->quote_identifier('a'))
 			),
 
 			// data set #4
@@ -62,7 +64,7 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 			),
 			array(
 				new SQL_Expression(':a', array(':a' => new SQL_Identifier('b'))),
-				new Database_Statement('"b"')
+				new Database_Statement($db->quote_identifier('b'))
 			),
 
 			// data set #7
@@ -82,7 +84,7 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 			),
 			array(
 				new SQL_Expression('?', array(array(new SQL_Identifier('a'), 'b'))),
-				new Database_Statement('"a", ?', array(1 => 'b'))
+				new Database_Statement($db->quote_identifier('a').', ?', array(1 => 'b'))
 			),
 
 			// data set #11
@@ -92,7 +94,7 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 			),
 			array(
 				new SQL_Expression(':a', array(':a' => array('b', new SQL_Identifier('c')))),
-				new Database_Statement('?, "c"', array(1 => 'b'))
+				new Database_Statement('?, '.$db->quote_identifier('c'), array(1 => 'b'))
 			),
 		);
 
