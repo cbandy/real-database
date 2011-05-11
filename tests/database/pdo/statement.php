@@ -67,7 +67,7 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 		$db = Database::factory();
 
 		$statement = new Database_PDO_Statement(
-			$db, $db->prepare(''), $parameters
+			$db, $db->prepare('SELECT 1'), $parameters
 		);
 
 		$this->assertSame($parameters, $statement->parameters());
