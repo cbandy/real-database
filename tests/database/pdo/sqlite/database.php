@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(dirname(dirname(__FILE__))).'/abstract/database'.EXT;
-
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -9,7 +7,7 @@ require_once dirname(dirname(dirname(__FILE__))).'/abstract/database'.EXT;
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
+class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 {
 	public static function setUpBeforeClass()
 	{
@@ -71,15 +69,27 @@ class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
 
+	public function provider_ddl_column()
+	{
+		return array(
+			array(array(), new Database_SQLite_DDL_Column),
+			array(array('a'), new Database_SQLite_DDL_Column('a')),
+			array(array('a', 'b'), new Database_SQLite_DDL_Column('a', 'b')),
+		);
+	}
+
 	/**
 	 * @covers  Database_PDO_SQLite::ddl_column
+	 *
 	 * @dataProvider    provider_ddl_column
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_SQLite_DDL_Column  $expected
 	 */
-	public function test_ddl_column($arguments)
+	public function test_ddl_column($arguments, $expected)
 	{
-		$this->_test_method_type('ddl_column', $arguments, 'Database_SQLite_DDL_Column');
+		$column = call_user_func_array('Database_PDO_SQLite::ddl_column', $arguments);
+		$this->assertEquals($expected, $column);
 	}
 
 	/**
@@ -174,15 +184,30 @@ class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 		$this->assertEquals(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)', NULL));
 	}
 
+	public function provider_insert()
+	{
+		return array(
+			array(array(), new Database_SQLite_Insert),
+			array(array('a'), new Database_SQLite_Insert('a')),
+			array(
+				array('a', array('b')),
+				new Database_SQLite_Insert('a', array('b'))
+			),
+		);
+	}
+
 	/**
 	 * @covers  Database_PDO_SQLite::insert
+	 *
 	 * @dataProvider    provider_insert
 	 *
-	 * @param   array   $arguments
+	 * @param   array                   $arguments
+	 * @param   Database_SQLite_Insert  $expected
 	 */
-	public function test_insert($arguments)
+	public function test_insert($arguments, $expected)
 	{
-		$this->_test_method_type('insert', $arguments, 'Database_SQLite_Insert');
+		$statement = call_user_func_array('Database_PDO_SQLite::insert', $arguments);
+		$this->assertEquals($expected, $statement);
 	}
 
 	public function test_insert_execute()
@@ -329,5 +354,15 @@ class Database_PDO_SQLite_Database_Test extends Database_Abstract_Database_Test
 		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::table_columns
+	 */
+	public function test_table_columns_no_table()
+	{
+		$db = Database::factory();
+
+		$this->assertSame(array(), $db->table_columns('kohana-table-does-not-exist'));
 	}
 }
