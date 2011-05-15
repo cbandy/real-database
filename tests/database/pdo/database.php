@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
-
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -9,7 +7,7 @@ require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
  * @group   database
  * @group   database.pdo
  */
-class Database_PDO_Database_Test extends Database_Abstract_Database_Test
+class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 {
 	public static function setUpBeforeClass()
 	{
@@ -22,6 +20,55 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 
 	protected $_table = 'kohana_test_table';
 
+	public function provider_execute_command_empty()
+	{
+		return array(
+			array(''),
+			array(new SQL_Expression('')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO::execute_command
+	 *
+	 * @dataProvider  provider_execute_command_empty
+	 *
+	 * @param   string|SQL_Expression   $value  Empty statement
+	 */
+	public function test_execute_command_empty($value)
+	{
+		$db = Database::factory();
+
+		$this->assertSame(0, $db->execute_command($value));
+	}
+
+	public function provider_execute_command_error()
+	{
+		return array(
+			array('kohana invalid command'),
+			array(new SQL_Expression('kohana invalid command')),
+
+			// FIXME MySQL, invalid parameter number
+			array(new SQL_Expression('kohana ? invalid command', array(1))),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO::execute_command
+	 *
+	 * @dataProvider  provider_execute_command_error
+	 *
+	 * @param   string|SQL_Expression   $value  Bad SQL statement
+	 */
+	public function test_execute_command_error($value)
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'syntax', 'HY000');
+
+		$db->execute_command($value);
+	}
+
 	/**
 	 * @covers  Database_PDO::execute_query
 	 */
@@ -30,6 +77,55 @@ class Database_PDO_Database_Test extends Database_Abstract_Database_Test
 		$db = Database::factory();
 
 		$this->assertNull($db->execute_query('DELETE FROM '.$db->quote_table($this->_table)));
+	}
+
+	public function provider_execute_query_empty()
+	{
+		return array(
+			array(''),
+			array(new SQL_Expression('')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO::execute_query
+	 *
+	 * @dataProvider  provider_execute_query_empty
+	 *
+	 * @param   string|SQL_Expression   $value  Empty statement
+	 */
+	public function test_execute_query_empty($value)
+	{
+		$db = Database::factory();
+
+		$this->assertNull($db->execute_query($value));
+	}
+
+	public function provider_execute_query_error()
+	{
+		return array(
+			array('kohana invalid query'),
+			array(new SQL_Expression('kohana invalid query')),
+
+			// FIXME MySQL, invalid parameter number
+			array(new SQL_Expression('kohana ? invalid query', array(1))),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO::execute_query
+	 *
+	 * @dataProvider  provider_execute_query_error
+	 *
+	 * @param   string|SQL_Expression   $value  Bad SQL statement
+	 */
+	public function test_execute_query_error($value)
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'syntax', 'HY000');
+
+		$db->execute_query($value);
 	}
 
 	public function provider_parse_statement()
