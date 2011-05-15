@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
-
 /**
  * @package     RealDatabase
  * @subpackage  PostgreSQL
@@ -10,7 +8,7 @@ require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
+class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 {
 	public static function setUpBeforeClass()
 	{
@@ -139,37 +137,136 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
 
+	public function provider_ddl_column()
+	{
+		return array(
+			array(array(), new Database_PostgreSQL_DDL_Column),
+			array(array('a'), new Database_PostgreSQL_DDL_Column('a')),
+			array(
+				array('a', 'b'),
+				new Database_PostgreSQL_DDL_Column('a', 'b')
+			),
+		);
+	}
+
 	/**
 	 * @covers  Database_PostgreSQL::ddl_column
+	 *
 	 * @dataProvider    provider_ddl_column
 	 *
-	 * @param   array   $arguments
+	 * @param   array                           $arguments
+	 * @param   Database_PostgreSQL_DDL_Column  $expected
 	 */
-	public function test_ddl_column($arguments)
+	public function test_ddl_column($arguments, $expected)
 	{
-		$this->_test_method_type('ddl_column', $arguments, 'Database_PostgreSQL_DDL_Column');
+		$column = call_user_func_array('Database_PostgreSQL::ddl_column', $arguments);
+		$this->assertEquals($expected, $column);
+	}
+
+	public function provider_delete()
+	{
+		return array(
+			array(array(), new Database_PostgreSQL_Delete),
+			array(array('a'), new Database_PostgreSQL_Delete('a')),
+			array(array('a', 'b'), new Database_PostgreSQL_Delete('a', 'b')),
+		);
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL::delete
+	 *
 	 * @dataProvider    provider_delete
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_PostgreSQL_Delete  $expected
 	 */
-	public function test_delete($arguments)
+	public function test_delete($arguments, $expected)
 	{
-		$this->_test_method_type('delete', $arguments, 'Database_PostgreSQL_Delete');
+		$statement = call_user_func_array('Database_PostgreSQL::delete', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::_evaluate_command
+	 */
+	public function test_execute_command_empty()
+	{
+		$db = Database::factory();
+
+		$this->assertSame(0, $db->execute_command(''));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::_evaluate_command
+	 */
+	public function test_execute_command_error()
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'syntax error', 42601);
+
+		$db->execute_command('kohana invalid command');
+	}
+
+	public function provider_execute_query_empty()
+	{
+		return array
+		(
+			array(''),
+			array(new SQL_Expression('')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::execute_query
+	 *
+	 * @dataProvider  provider_execute_query_empty
+	 *
+	 * @param   string|SQL_Expression   $value  Empty statement
+	 */
+	public function test_execute_query_empty($value)
+	{
+		$db = Database::factory();
+
+		$this->assertNull($db->execute_query($value));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::_evaluate_query
+	 */
+	public function test_execute_query_error()
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'syntax error', 42601);
+
+		$db->execute_query('kohana invalid query');
+	}
+
+	public function provider_insert()
+	{
+		return array(
+			array(array(), new Database_PostgreSQL_Insert),
+			array(array('a'), new Database_PostgreSQL_Insert('a')),
+			array(
+				array('a', array('b')),
+				new Database_PostgreSQL_Insert('a', array('b'))
+			),
+		);
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL::insert
+	 *
 	 * @dataProvider    provider_insert
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_PostgreSQL_Insert  $expected
 	 */
-	public function test_insert($arguments)
+	public function test_insert($arguments, $expected)
 	{
-		$this->_test_method_type('insert', $arguments, 'Database_PostgreSQL_Insert');
+		$statement = call_user_func_array('Database_PostgreSQL::insert', $arguments);
+		$this->assertEquals($expected, $statement);
 	}
 
 	public function provider_parse_statement()
@@ -417,6 +514,8 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 			array("multiple\nlines", "'multiple\nlines'"),
 			array("single'quote", "'single''quote'"),
 			array("double\"quote", "'double\"quote'"),
+
+			array(new Database_Binary("\x0"), "'\\\\000'"),
 		);
 	}
 
@@ -436,24 +535,64 @@ class Database_PostgreSQL_Database_Test extends Database_Abstract_Database_Test
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::connect
+	 * @covers  Database_PostgreSQL::disconnect
+	 */
+	public function test_reconnect()
+	{
+		$db = Database::factory();
+
+		$db->connect();
+		$db->disconnect();
+		$db->connect();
+	}
+
+	public function provider_select()
+	{
+		return array(
+			array(array(), new Database_PostgreSQL_Select),
+			array(array(array('a')), new Database_PostgreSQL_Select(array('a'))),
+		);
+	}
+
+	/**
 	 * @covers  Database_PostgreSQL::select
+	 *
 	 * @dataProvider    provider_select
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_PostgreSQL_Select  $expected
 	 */
-	public function test_select($arguments)
+	public function test_select($arguments, $expected)
 	{
-		$this->_test_method_type('select', $arguments, 'Database_PostgreSQL_Select');
+		$statement = call_user_func_array('Database_PostgreSQL::select', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
+	public function provider_update()
+	{
+		return array(
+			array(array(), new Database_PostgreSQL_Update),
+			array(array('a'), new Database_PostgreSQL_Update('a')),
+			array(array('a', 'b'), new Database_PostgreSQL_Update('a', 'b')),
+			array(
+				array('a', 'b', array('c' => 'd')),
+				new Database_PostgreSQL_Update('a', 'b', array('c' => 'd'))
+			),
+		);
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL::update
+	 *
 	 * @dataProvider    provider_update
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_PostgreSQL_Update  $expected
 	 */
-	public function test_update($arguments)
+	public function test_update($arguments, $expected)
 	{
-		$this->_test_method_type('update', $arguments, 'Database_PostgreSQL_Update');
+		$statement = call_user_func_array('Database_PostgreSQL::update', $arguments);
+		$this->assertEquals($expected, $statement);
 	}
 }

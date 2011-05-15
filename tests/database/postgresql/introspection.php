@@ -284,4 +284,14 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expected, $result['field']);
 	}
+
+	/**
+	 * @covers  Database_PostgreSQL::table_columns
+	 */
+	public function test_table_columns_no_table()
+	{
+		$db = Database::factory();
+
+		$this->assertSame(array(), $db->table_columns('kohana-table-does-not-exist'));
+	}
 }
