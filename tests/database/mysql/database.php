@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
-
 /**
  * @package RealDatabase
  * @author  Chris Bandy
@@ -9,7 +7,7 @@ require_once dirname(dirname(__FILE__)).'/abstract/database'.EXT;
  * @group   database
  * @group   database.mysql
  */
-class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
+class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 {
 	public static function setUpBeforeClass()
 	{
@@ -44,6 +42,27 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertEquals($expected, $statement);
 	}
 
+	/**
+	 * @covers  Database_MySQL::charset
+	 */
+	public function test_charset()
+	{
+		$db = Database::factory();
+
+		$this->assertNull($db->charset('ascii'));
+	}
+
+	/**
+	 * @covers  Database_MySQL::charset
+	 */
+	public function test_charset_error()
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException('Database_Exception', 'character set', 2019);
+
+		$this->assertNull($db->charset('kohana-invalid-charset'));
+	}
 
 	public function provider_create_index()
 	{
@@ -134,15 +153,49 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame($expected, $db->datatype($type, $attribute));
 	}
 
+	public function provider_ddl_column()
+	{
+		return array(
+			array(array(), new Database_MySQL_DDL_Column),
+			array(array('a'), new Database_MySQL_DDL_Column('a')),
+			array(array('a', 'b'), new Database_MySQL_DDL_Column('a', 'b')),
+		);
+	}
+
 	/**
 	 * @covers  Database_MySQL::ddl_column
+	 *
 	 * @dataProvider    provider_ddl_column
 	 *
-	 * @param   array   $arguments
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_DDL_Column   $expected
 	 */
-	public function test_ddl_column($arguments)
+	public function test_ddl_column($arguments, $expected)
 	{
-		$this->_test_method_type('ddl_column', $arguments, 'Database_MySQL_DDL_Column');
+		$column = call_user_func_array('Database_MySQL::ddl_column', $arguments);
+		$this->assertEquals($expected, $column);
+	}
+
+	public function provider_execute_command_empty()
+	{
+		return array(
+			array(''),
+			array(new SQL_Expression('')),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::execute_command
+	 *
+	 * @dataProvider  provider_execute_command_empty
+	 *
+	 * @param   string|SQL_Expression   $value  Empty statement
+	 */
+	public function test_execute_command_empty($value)
+	{
+		$db = Database::factory();
+
+		$this->assertSame(0, $db->execute_command($value));
 	}
 
 	public function provider_execute_command_error()
@@ -195,6 +248,28 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame(array(0,0), $result, 'No prior INSERT');
 	}
 
+	public function provider_execute_query_empty()
+	{
+		return array(
+			array(''),
+			array(new SQL_Expression('')),
+		);
+	}
+
+	/**
+	 * @covers  Database::execute_query
+	 *
+	 * @dataProvider  provider_execute_query_empty
+	 *
+	 * @param   string|SQL_Expression   $value  Empty statement
+	 */
+	public function test_execute_query_empty($value)
+	{
+		$db = Database::factory();
+
+		$this->assertNull($db->execute_query($value));
+	}
+
 	public function provider_execute_query_error()
 	{
 		return array
@@ -234,8 +309,35 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 		$this->assertSame(1, count($result));
 	}
 
+	public function provider_prepare()
+	{
+		return array(
+			array(NULL, 'SELECT ?', 'kohana_d41673f80456e40552a6a2e81e99e85efa487721'),
+			array('kohana-stmt', 'SELECT ?', 'kohana-stmt'),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::prepare
+	 *
+	 * @dataProvider    provider_prepare
+	 *
+	 * @param   string  $name       First argument to the method
+	 * @param   string  $statement  Second argument to the method
+	 * @param   string  $expected   Expected
+	 */
+	public function test_prepare($name, $statement, $expected)
+	{
+		$db = Database::factory();
+
+		$this->assertSame($expected, $db->prepare($name, $statement));
+	}
+
 	public function provider_prepare_statement()
 	{
+		$db = Database::factory();
+		$table = $db->quote_table($this->_table);
+
 		return array(
 			array(
 				new Database_Statement('SELECT ?', array(60)),
@@ -249,7 +351,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 					new SQL_Table($this->_table)
 				)),
 				'kohana_e27e457b646db1d9aa7f6b5a2c014408d5f43c73',
-				'DELETE FROM $table',
+				'DELETE FROM '.$table,
 				array()
 			),
 
@@ -259,7 +361,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 					new SQL_Conditions(new SQL_Column('value'), '=', 60)
 				)),
 				'kohana_84d89cb534a118f8b879af39a27a27e06a62fcb5',
-				'DELETE FROM $table WHERE `value` = ?',
+				'DELETE FROM '.$table.' WHERE `value` = ?',
 				array(60)
 			),
 
@@ -269,7 +371,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 					':a' => new SQL_Conditions(new SQL_Column('value'), '=', 60)
 				)),
 				'kohana_84d89cb534a118f8b879af39a27a27e06a62fcb5',
-				'DELETE FROM $table WHERE `value` = ?',
+				'DELETE FROM '.$table.' WHERE `value` = ?',
 				array(60)
 			),
 
@@ -279,7 +381,7 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 					':a' => new SQL_Conditions(new SQL_Column('value'), '=', 60)
 				)),
 				'kohana_7b91fbba52445c2254274e800d93f907cb11b33c',
-				'DELETE FROM $table WHERE `value` = ? AND `value` = ?',
+				'DELETE FROM '.$table.' WHERE `value` = ? AND `value` = ?',
 				array(60, 60)
 			),
 		);
@@ -298,10 +400,9 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 	public function test_prepare_statement($argument, $name, $sql, $params)
 	{
 		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
 
 		$expected = new Database_MySQL_Statement($db, $name, $params);
-		$expected->statement = strtr($sql, array('$table' => $table));
+		$expected->statement = $sql;
 
 		$this->assertEquals($expected, $db->prepare_statement($argument));
 	}
@@ -323,6 +424,8 @@ class Database_MySQL_Database_Test extends Database_Abstract_Database_Test
 			array("multiple\nlines", "'multiple\\nlines'"),
 			array("single'quote", "'single\\'quote'"),
 			array("double\"quote", "'double\\\"quote'"),
+
+			array(new Database_Binary("\x0"), "'\\0'"),
 		);
 	}
 
