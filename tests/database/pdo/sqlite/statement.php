@@ -76,12 +76,22 @@ class Database_PDO_SQLite_Statement_Test extends Database_PDO_SQLite_TestCase
 			array(new Database_Binary('b'), 'b'),
 		);
 
-		if (version_compare(PHP_VERSION, '5.3', '<'))
+		if (version_compare(PHP_VERSION, '5.2.17', '<'))
 		{
 			// PHP 5.2.x
 
 			$result[] = array(NULL, '0');
 			$result[] = array(FALSE, '0');
+			$result[] = array(TRUE, '1');
+			$result[] = array(0, '0');
+			$result[] = array(1, '1');
+		}
+		elseif (version_compare(PHP_VERSION, '5.3', '<'))
+		{
+			// PHP 5.2.17 - 5.2.x
+
+			$result[] = array(NULL, NULL);
+			$result[] = array(FALSE, '');
 			$result[] = array(TRUE, '1');
 			$result[] = array(0, '0');
 			$result[] = array(1, '1');
@@ -103,8 +113,9 @@ class Database_PDO_SQLite_Statement_Test extends Database_PDO_SQLite_TestCase
 	/**
 	 * Executing a statement with a bound variable can change the datatype.
 	 *
-	 * In PHP 5.2, all values are converted to string.
-	 * In PHP 5.3, values other than NULL are converted to integer or string.
+	 * In PHP 5.2,    all values are converted to string.
+	 * in PHP 5.2.17, values other than NULL are converted to string.
+	 * In PHP 5.3,    values other than NULL are converted to integer or string.
 	 *
 	 * @covers  PDOStatement::bindParam
 	 * @covers  PDOStatement::execute
