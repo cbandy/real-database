@@ -47,8 +47,6 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array('kohana invalid command'),
 			array(new SQL_Expression('kohana invalid command')),
-
-			// FIXME MySQL, invalid parameter number
 			array(new SQL_Expression('kohana ? invalid command', array(1))),
 		);
 	}
@@ -67,6 +65,42 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		$this->setExpectedException('Database_Exception', 'syntax', 'HY000');
 
 		$db->execute_command($value);
+	}
+
+	public function provider_execute_query()
+	{
+		return array
+		(
+			array('SELECT 1 AS value', array(
+				array('value' => 1),
+			)),
+			array(new SQL_Expression('SELECT 1 AS value'), array(
+				array('value' => 1),
+			)),
+
+			// PostgreSQL: addition operator implies integer type
+			array(new SQL_Expression('SELECT ? + 0 AS value', array(2)), array(
+				array('value' => 2),
+			)),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO::execute_query
+	 *
+	 * @dataProvider    provider_execute_query
+	 *
+	 * @param   string|SQL_Expression   $statement  SQL statement
+	 * @param   array                   $expected   Expected result
+	 */
+	public function test_execute_query($statement, $expected)
+	{
+		$db = Database::factory();
+
+		$result = $db->execute_query($statement);
+
+		$this->assertType('Database_PDO_Result', $result);
+		$this->assertEquals($expected, $result->as_array());
 	}
 
 	/**
@@ -106,8 +140,6 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array('kohana invalid query'),
 			array(new SQL_Expression('kohana invalid query')),
-
-			// FIXME MySQL, invalid parameter number
 			array(new SQL_Expression('kohana ? invalid query', array(1))),
 		);
 	}

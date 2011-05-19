@@ -179,12 +179,12 @@ class Database_PDO extends Database
 
 		if ( ! is_string($statement))
 		{
-			// Parse the statement
-			$statement = $this->parse_statement($statement);
-
-			// Extract the SQL and parameters
-			$parameters = $statement->parameters();
-			$statement = (string) $statement;
+			$parameters = array();
+			$statement = $this->_parse(
+				(string) $statement,
+				$statement->parameters,
+				$parameters
+			);
 		}
 
 		if (empty($statement))
@@ -248,12 +248,12 @@ class Database_PDO extends Database
 
 		if ( ! is_string($statement))
 		{
-			// Parse the statement
-			$statement = $this->parse_statement($statement);
-
-			// Extract the SQL and parameters
-			$parameters = $statement->parameters();
-			$statement = (string) $statement;
+			$parameters = array();
+			$statement = $this->_parse(
+				(string) $statement,
+				$statement->parameters,
+				$parameters
+			);
 		}
 
 		if (empty($statement))
