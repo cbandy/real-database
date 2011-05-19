@@ -50,7 +50,7 @@ class Database_PDO_SQLite_TestCase_Truncate
 				$table->getTableMetaData()->getTableName()
 			);
 
-			$sql .= '; UPDATE sqlite_sequence SET seq = 1 WHERE'
+			$sql .= '; UPDATE sqlite_sequence SET seq = 0 WHERE'
 				." name = '".$table->getTableMetaData()->getTableName()."'";
 
 			try
