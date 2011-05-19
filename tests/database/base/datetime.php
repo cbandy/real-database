@@ -45,18 +45,8 @@ class Database_Base_DateTime_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		if (count($arguments) === 1)
-		{
-			$datetime = new Database_DateTime(reset($arguments));
-		}
-		elseif (count($arguments) === 2)
-		{
-			$datetime = new Database_DateTime(reset($arguments), next($arguments));
-		}
-		elseif (count($arguments) === 3)
-		{
-			$datetime = new Database_DateTime(reset($arguments), next($arguments), next($arguments));
-		}
+		$class = new ReflectionClass('Database_DateTime');
+		$datetime = $class->newInstanceArgs($arguments);
 
 		$this->assertSame($expected, (string) $datetime);
 	}

@@ -33,14 +33,8 @@ class Database_SQL_Expression_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $value, $parameters)
 	{
-		if (count($arguments) === 1)
-		{
-			$expression = new SQL_Expression(reset($arguments));
-		}
-		elseif (count($arguments) === 2)
-		{
-			$expression = new SQL_Expression(reset($arguments), next($arguments));
-		}
+		$class = new ReflectionClass('SQL_Expression');
+		$expression = $class->newInstanceArgs($arguments);
 
 		$this->assertSame($value, (string) $expression);
 		$this->assertSame($parameters, $expression->parameters);

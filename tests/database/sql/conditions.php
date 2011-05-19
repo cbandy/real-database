@@ -40,18 +40,8 @@ class Database_SQL_Conditions_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
-		if (count($arguments) === 1)
-		{
-			$conditions = new SQL_Conditions(reset($arguments));
-		}
-		elseif (count($arguments) === 2)
-		{
-			$conditions = new SQL_Conditions(reset($arguments), next($arguments));
-		}
-		elseif (count($arguments) === 3)
-		{
-			$conditions = new SQL_Conditions(reset($arguments), next($arguments), next($arguments));
-		}
+		$class = new ReflectionClass('SQL_Conditions');
+		$conditions = $class->newInstanceArgs($arguments);
 
 		$this->assertSame($expected, $db->quote($conditions));
 	}
