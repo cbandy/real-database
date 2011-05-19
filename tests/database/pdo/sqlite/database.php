@@ -92,98 +92,6 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $column);
 	}
 
-	/**
-	 * @covers  Database_PDO::execute_command
-	 */
-	public function test_execute_command_query()
-	{
-		$this->markTestSkipped();
-
-		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$this->assertSame(1, $db->execute_command('SELECT * FROM '.$table), 'Always one');
-		$this->assertSame(2, $db->execute_command('DELETE FROM '.$table.' WHERE value < 60; SELECT * FROM '.$table), 'Count of first statement');
-	}
-
-	/**
-	 * @covers  Database_PDO::execute_command
-	 */
-	public function test_execute_compound_command()
-	{
-		$this->markTestSkipped();
-
-		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		// All statements executed
-		$this->assertSame(2, $db->execute_command('DELETE FROM '.$table.' WHERE "id" = 1; DELETE FROM '.$table), 'Count of last statement');
-	}
-
-	/**
-	 * @covers  Database_PDO::execute_command
-	 */
-	public function test_execute_compound_command_mixed()
-	{
-		$this->markTestSkipped();
-
-		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$this->assertSame(3, $db->execute_command('SELECT * FROM '.$table.' WHERE value < 60; DELETE FROM '.$table), 'Count of last statement');
-	}
-
-	/**
-	 * @covers  Database_PDO::execute_query
-	 */
-	public function test_execute_compound_query()
-	{
-		$this->markTestSkipped();
-
-		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$result = $db->execute_query('SELECT * FROM '.$table.' WHERE value < 60; SELECT * FROM '.$table.' WHERE value < 70');
-
-		$this->assertType('Database_Result', $result);
-		$this->assertSame(2, count($result), 'First result');
-		$this->assertEquals(array(50, 55), $result->as_array(NULL, 'value'), 'First result');
-
-		$this->assertType('Database_Result', $db->execute_query('SELECT * FROM '.$table.' WHERE value < 60; DELETE FROM '.$table));
-		$this->assertEquals(3, $db->execute_query('SELECT COUNT(*) FROM '.$table)->get(), 'Second statement is not executed');
-
-		$this->assertNull($db->execute_query('DELETE FROM '.$table.' WHERE value = 50; DELETE FROM '.$table.' WHERE value = 55; SELECT * FROM '.$table));
-		$this->assertEquals(2, $db->execute_query('SELECT COUNT(*) FROM '.$table)->get(), 'Only the first statement is executed');
-	}
-
-	/**
-	 * @covers  Database_PDO::execute_query
-	 */
-	public function test_execute_compound_query_mixed()
-	{
-		$this->markTestSkipped();
-
-		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
-
-		$this->assertType('Database_Result', $db->execute_query('SELECT * FROM '.$table.' WHERE value < 60; DELETE FROM '.$table));
-
-		$this->assertEquals(3, $db->execute_query('SELECT COUNT(*) FROM '.$table)->get(), 'Second statement is not executed');
-	}
-
-	/**
-	 * @covers  Database_PDO::execute_insert
-	 */
-	public function test_execute_insert()
-	{
-		$this->markTestSkipped();
-
-		$db = Database::factory();
-
-		$this->assertEquals(array(0,3), $db->execute_insert('', NULL), 'Prior identity');
-		$this->assertEquals(array(1,4), $db->execute_insert('INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (65)', NULL));
-	}
-
 	public function provider_insert()
 	{
 		return array(
@@ -208,18 +116,6 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$statement = call_user_func_array('Database_PDO_SQLite::insert', $arguments);
 		$this->assertEquals($expected, $statement);
-	}
-
-	public function test_insert_execute()
-	{
-		$this->markTestSkipped();
-
-		$db = Database::factory();
-
-		$statement = new Database_SQLite_Insert($this->_table, array('value'));
-		$statement->identity('id')->values(array('65'), array('70'));
-
-		$this->assertEquals(array(1,5), $db->execute($statement), 'Count is always one. Identity is INTEGER PRIMARY KEY of the last row');
 	}
 
 	/**
@@ -251,6 +147,9 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 			array("multiple\nlines", "'multiple\nlines'"),
 			array("single'quote", "'single''quote'"),
 			array("double\"quote", "'double\"quote'"),
+
+			array(new Database_Binary("\x0"), "''"),
+			array(new Database_Binary("\x1"), "'\x1'"),
 		);
 	}
 
