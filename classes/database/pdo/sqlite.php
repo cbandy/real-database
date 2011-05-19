@@ -145,6 +145,20 @@ class Database_PDO_SQLite extends Database_PDO
 		return $result;
 	}
 
+	public function execute_command($statement)
+	{
+		$this->_connection or $this->connect();
+
+		if ( ! is_string($statement))
+		{
+			// Bypass the parsing done by PDO to allow SQLite to execute
+			// compound statements
+			$statement = $this->quote($statement);
+		}
+
+		return parent::execute_command($statement);
+	}
+
 	/**
 	 * Quote a literal value for inclusion in a SQL query
 	 *
