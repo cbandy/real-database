@@ -133,17 +133,55 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('CREATE INDEX "a" ON '.$table.' () WHERE 1', $db->quote($command));
 	}
 
+	public function provider_with()
+	{
+		return array(
+			array(NULL, 'CREATE INDEX "" ON "" ()'),
+
+			array(
+				array('a' => 'b'),
+				'CREATE INDEX "" ON "" () WITH (a = \'b\')',
+			),
+			array(
+				array('FILLFACTOR' => 50),
+				'CREATE INDEX "" ON "" () WITH (FILLFACTOR = 50)',
+			),
+		);
+	}
+
 	/**
 	 * @covers  Database_PostgreSQL_Create_Index::with
+	 *
+	 * @dataProvider    provider_with
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_with()
+	public function test_with($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Create_Index('a', 'b');
-		$table = $db->quote_table('b');
+		$statement = new Database_PostgreSQL_Create_Index;
 
-		$this->assertSame($command, $command->with(array('FILLFACTOR' => 50)));
-		$this->assertSame('CREATE INDEX "a" ON '.$table.' () WITH (FILLFACTOR = 50)', $db->quote($command));
+		$this->assertSame($statement, $statement->with($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Create_Index::with
+	 *
+	 * @dataProvider    provider_with
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_with_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new Database_PostgreSQL_Create_Index;
+		$statement->with($value);
+
+		$statement->with(NULL);
+
+		$this->assertSame('CREATE INDEX "" ON "" ()', $db->quote($statement));
 	}
 
 	/**

@@ -152,21 +152,27 @@ class Database_PostgreSQL_Create_Index extends SQL_DDL_Create_Index
 	}
 
 	/**
-	 * Set the storage parameters for the index method
+	 * Append storage parameters for the index method.
 	 *
-	 * @param   array   Hash of (parameter => value) pairs
+	 * @param   array   Hash of (parameter => value) pairs or NULL to reset
 	 * @return  $this
 	 */
 	public function with($parameters)
 	{
-		$result = array();
-
-		foreach ($parameters as $param => $value)
+		if ($parameters === NULL)
 		{
-			$result[] = new SQL_Expression("$param = ?", array($value));
+			$this->parameters[':with'] = array();
 		}
-
-		$this->parameters[':with'] = $result;
+		else
+		{
+			foreach ($parameters as $param => $value)
+			{
+				$this->parameters[':with'][] = new SQL_Expression(
+					$param.' = ?',
+					array($value)
+				);
+			}
+		}
 
 		return $this;
 	}
