@@ -57,44 +57,51 @@ class Database_PostgreSQL_Create_Index extends SQL_DDL_Create_Index
 	}
 
 	/**
-	 * Append one column or expression to be included in the index
+	 * Append one column or expression to be included in the index.
 	 *
-	 * @param   mixed   $column     Converted to SQL_Column
-	 * @param   string  $direction  Direction to sort, ASC or DESC
-	 * @param   string  $nulls      Position to which NULL values should sort, FIRST or LAST
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column     Converted to SQL_Column or NULL to reset
+	 * @param   string                                      $direction  Direction to sort, ASC or DESC
+	 * @param   string                                      $nulls      Position to which NULL values should sort, FIRST or LAST
 	 * @return  $this
 	 */
 	public function column($column, $direction = NULL, $nulls = NULL)
 	{
-		if ($column instanceof SQL_Expression)
+		if ($column === NULL)
 		{
-			// Wrap expression in parentheses
-			$column = new SQL_Expression('(?)', array($column));
+			$this->parameters[':columns'] = array();
 		}
-		elseif ( ! $column instanceof SQL_Identifier)
+		else
 		{
-			$column = new SQL_Column($column);
-		}
-
-		if ($direction OR $nulls)
-		{
-			if ( ! $column instanceof SQL_Expression)
+			if ($column instanceof SQL_Expression)
 			{
-				$column = new SQL_Expression('?', array($column));
+				// Wrap expression in parentheses
+				$column = new SQL_Expression('(?)', array($column));
+			}
+			elseif ( ! $column instanceof SQL_Identifier)
+			{
+				$column = new SQL_Column($column);
 			}
 
-			if ($direction)
+			if ($direction OR $nulls)
 			{
-				$column->_value .= ' '.strtoupper($direction);
+				if ( ! $column instanceof SQL_Expression)
+				{
+					$column = new SQL_Expression('?', array($column));
+				}
+
+				if ($direction)
+				{
+					$column->_value .= ' '.strtoupper($direction);
+				}
+
+				if ($nulls)
+				{
+					$column->_value .= ' NULLS '.strtoupper($nulls);
+				}
 			}
 
-			if ($nulls)
-			{
-				$column->_value .= ' NULLS '.strtoupper($nulls);
-			}
+			$this->parameters[':columns'][] = $column;
 		}
-
-		$this->parameters[':columns'][] = $column;
 
 		return $this;
 	}
