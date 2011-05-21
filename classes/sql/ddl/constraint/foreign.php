@@ -37,15 +37,11 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	 * @param   mixed   $table      Converted to SQL_Table
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 */
-	public function __construct($table = NULL, $columns = array())
+	public function __construct($table = NULL, $columns = NULL)
 	{
 		parent::__construct('REFERENCES :table');
 
-		if ($table !== NULL)
-		{
-			$this->table($table);
-		}
-
+		$this->table($table);
 		$this->columns($columns);
 	}
 
@@ -105,23 +101,30 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	}
 
 	/**
-	 * Set the referenced columns
+	 * Append multiple referenced columns.
 	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
-		foreach ($columns as & $column)
+		if ($columns === NULL)
 		{
-			if ( ! $column instanceof SQL_Expression
-				AND ! $column instanceof SQL_Identifier)
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
 			{
-				$column = new SQL_Column($column);
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				$this->parameters[':columns'][] = $column;
 			}
 		}
-
-		$this->parameters[':columns'] = $columns;
 
 		return $this;
 	}
@@ -167,23 +170,30 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	}
 
 	/**
-	 * Set the referencing columns
+	 * Append multiple referencing columns.
 	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function referencing($columns)
 	{
-		foreach ($columns as & $column)
+		if ($columns === NULL)
 		{
-			if ( ! $column instanceof SQL_Expression
-				AND ! $column instanceof SQL_Identifier)
+			$this->parameters[':referencing'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
 			{
-				$column = new SQL_Column($column);
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				$this->parameters[':referencing'][] = $column;
 			}
 		}
-
-		$this->parameters[':referencing'] = $columns;
 
 		return $this;
 	}

@@ -154,7 +154,7 @@ abstract class Database
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Foreign
 	 */
-	public static function ddl_foreign($table = NULL, $columns = array())
+	public static function ddl_foreign($table = NULL, $columns = NULL)
 	{
 		return new SQL_DDL_Constraint_Foreign($table, $columns);
 	}
