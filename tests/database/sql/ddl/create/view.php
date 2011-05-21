@@ -8,17 +8,34 @@
  */
 class Database_SQL_DDL_Create_View_Test extends PHPUnit_Framework_TestCase
 {
+	public function provider_constructor()
+	{
+		return array(
+			array(array(), 'CREATE VIEW "pre_" AS NULL'),
+			array(array('a'), 'CREATE VIEW "pre_a" AS NULL'),
+			array(array('a', new SQL_Expression('b')), 'CREATE VIEW "pre_a" AS b'),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DDL_Create_View::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_constructor()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->once())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('CREATE VIEW "pre_a" AS b', $db->quote(new SQL_DDL_Create_View('a', new Database_Query('b'))));
+		$class = new ReflectionClass('SQL_DDL_Create_View');
+		$statement = $class->newInstanceArgs($arguments);
+
+		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**

@@ -36,15 +36,8 @@ class SQL_DDL_Create_View extends SQL_Expression
 	{
 		parent::__construct('');
 
-		if ($name !== NULL)
-		{
-			$this->name($name);
-		}
-
-		if ($query !== NULL)
-		{
-			$this->query($query);
-		}
+		$this->name($name);
+		$this->query($query);
 	}
 
 	public function __toString()
