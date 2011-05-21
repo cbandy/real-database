@@ -8,22 +8,34 @@
  */
 class Database_SQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 {
+	public function provider_constructor()
+	{
+		return array(
+			array(array(), 'CREATE TABLE "pre_" ()'),
+			array(array('a'), 'CREATE TABLE "pre_a" ()'),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DDL_Create_Table::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_constructor()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->once())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('CREATE TABLE :name (:columns)', $db->quote(new SQL_DDL_Create_Table));
+		$class = new ReflectionClass('SQL_DDL_Create_Table');
+		$statement = $class->newInstanceArgs($arguments);
+		$statement->parameters[':columns'] = array();
 
-		$command = new SQL_DDL_Create_Table('a');
-		$command->parameters[':columns'] = array();
-
-		$this->assertSame('CREATE TABLE "pre_a" ()', $db->quote($command));
+		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**

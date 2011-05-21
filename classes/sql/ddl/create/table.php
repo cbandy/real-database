@@ -29,10 +29,7 @@ class SQL_DDL_Create_Table extends SQL_Expression
 	{
 		parent::__construct('');
 
-		if ($name !== NULL)
-		{
-			$this->name($name);
-		}
+		$this->name($name);
 	}
 
 	public function __toString()
