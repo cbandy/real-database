@@ -103,21 +103,27 @@ class Database_MySQL_Create_Table extends SQL_DDL_Create_Table
 	}
 
 	/**
-	 * Set the table options
+	 * Append table options.
 	 *
-	 * @param   array   $options    Hash of (option => value) pairs
+	 * @param   array   $options    Hash of (option => value) pairs or NULL to reset
 	 * @return  $this
 	 */
 	public function options($options)
 	{
-		$result = array();
-
-		foreach ($options as $option => $value)
+		if ($options === NULL)
 		{
-			$result[] = new SQL_Expression("$option ?", array($value));
+			$this->parameters[':options'] = array();
 		}
-
-		$this->parameters[':options'] = $result;
+		else
+		{
+			foreach ($options as $option => $value)
+			{
+				$this->parameters[':options'][] = new SQL_Expression(
+					$option.' ?',
+					array($value)
+				);
+			}
+		}
 
 		return $this;
 	}
