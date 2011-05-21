@@ -165,7 +165,7 @@ abstract class Database
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Primary
 	 */
-	public static function ddl_primary($columns = array())
+	public static function ddl_primary($columns = NULL)
 	{
 		return new SQL_DDL_Constraint_Primary($columns);
 	}
