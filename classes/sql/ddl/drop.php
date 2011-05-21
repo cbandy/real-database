@@ -37,15 +37,8 @@ class SQL_DDL_Drop extends SQL_Expression
 	{
 		parent::__construct('DROP '.strtoupper($type));
 
-		if ($name !== NULL)
-		{
-			$this->name($name);
-		}
-
-		if ($cascade !== NULL)
-		{
-			$this->cascade($cascade);
-		}
+		$this->name($name);
+		$this->cascade($cascade);
 	}
 
 	public function __toString()
@@ -58,7 +51,7 @@ class SQL_DDL_Drop extends SQL_Expression
 			$value .= ' IF EXISTS';
 		}
 
-		$value .= ' :name';
+		$value .= ' :names';
 
 		if (isset($this->_cascade))
 		{
@@ -101,46 +94,61 @@ class SQL_DDL_Drop extends SQL_Expression
 	}
 
 	/**
-	 * Set the name of the object to be dropped
+	 * Append the name of an object to be dropped.
 	 *
-	 * @param   mixed   $value  Converted to SQL_Identifier
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Identifier or NULL to reset
 	 * @return  $this
 	 */
-	public function name($value)
+	public function name($name)
 	{
-		if ( ! $value instanceof SQL_Expression
-			AND ! $value instanceof SQL_Identifier)
+		if ($name === NULL)
 		{
-			$value = new SQL_Identifier($value);
+			$this->parameters[':names'] = array();
 		}
+		else
+		{
+			if ( ! $name instanceof SQL_Expression
+				AND ! $name instanceof SQL_Identifier)
+			{
+				$name = new SQL_Identifier($name);
+			}
 
-		$this->parameters[':name'] = $value;
+			$this->parameters[':names'][] = $name;
+		}
 
 		return $this;
 	}
 
 	/**
-	 * Set the names of multiple objects to be dropped
+	 * Append the names of multiple objects to be dropped.
 	 *
-	 * @param   mixed   $values Each element converted to SQL_Identifier
+	 * @param   array|SQL_Expression    $names  List of names converted to SQL_Identifier or NULL to reset
 	 * @return  $this
 	 */
-	public function names($values)
+	public function names($names)
 	{
-		if (is_array($values))
+		if (is_array($names))
 		{
 			// SQLite allows only one
-			foreach ($values as & $value)
+			foreach ($names as $name)
 			{
-				if ( ! $value instanceof SQL_Expression
-					AND ! $value instanceof SQL_Identifier)
+				if ( ! $name instanceof SQL_Expression
+					AND ! $name instanceof SQL_Identifier)
 				{
-					$value = new SQL_Identifier($value);
+					$name = new SQL_Identifier($name);
 				}
+
+				$this->parameters[':names'][] = $name;
 			}
 		}
-
-		$this->parameters[':name'] = $values;
+		elseif ($names === NULL)
+		{
+			$this->parameters[':names'] = array();
+		}
+		else
+		{
+			$this->parameters[':names'] = $names;
+		}
 
 		return $this;
 	}

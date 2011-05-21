@@ -8,16 +8,33 @@
  */
 class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 {
+	public function provider_constructor()
+	{
+		return array(
+			array(array('a'), 'DROP A '),
+			array(array('a', 'b'), 'DROP A "b"'),
+
+			array(array('a', 'b', FALSE), 'DROP A "b" RESTRICT'),
+			array(array('a', 'b', TRUE), 'DROP A "b" CASCADE'),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DDL_Drop::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_constructor()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 
-		$this->assertSame('DROP A "b"', $db->quote(new SQL_DDL_Drop('a', 'b')));
-		$this->assertSame('DROP A "b" CASCADE', $db->quote(new SQL_DDL_Drop('a', 'b', TRUE)));
-		$this->assertSame('DROP A "b" RESTRICT', $db->quote(new SQL_DDL_Drop('a', 'b', FALSE)));
+		$class = new ReflectionClass('SQL_DDL_Drop');
+		$statement = $class->newInstanceArgs($arguments);
+
+		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**
@@ -59,28 +76,114 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('DROP A IF EXISTS "b"', $db->quote($command));
 	}
 
+	public function provider_name()
+	{
+		return array(
+			array(NULL, 'DROP X '),
+			array('a', 'DROP X "a"'),
+			array(new SQL_Identifier('b'), 'DROP X "b"'),
+			array(new SQL_Expression('expr'), 'DROP X expr'),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DDL_Drop::name
+	 *
+	 * @dataProvider    provider_name
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_name()
+	public function test_name($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new SQL_DDL_Drop('a', 'b');
+		$statement = new SQL_DDL_Drop('x');
 
-		$this->assertSame($command, $command->name('c'));
-		$this->assertSame('DROP A "c"', $db->quote($command));
+		$this->assertSame($statement, $statement->name($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DDL_Drop::name
+	 *
+	 * @dataProvider    provider_name
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_name_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DDL_Drop('x');
+		$statement->name($value);
+
+		$statement->name(NULL);
+
+		$this->assertSame('DROP X ', $db->quote($statement));
+	}
+
+	public function provider_names()
+	{
+		return array(
+			array(NULL, 'DROP X '),
+
+			array(array('a'), 'DROP X "a"'),
+			array(array('a', 'b'), 'DROP X "a", "b"'),
+
+			array(
+				array(new SQL_Identifier('a')),
+				'DROP X "a"',
+			),
+			array(
+				array(new SQL_Identifier('a'), new SQL_Identifier('b')),
+				'DROP X "a", "b"',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'DROP X a',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'DROP X a, b',
+			),
+
+			array(new SQL_Expression('expr'), 'DROP X expr'),
+		);
 	}
 
 	/**
 	 * @covers  SQL_DDL_Drop::names
+	 *
+	 * @dataProvider    provider_names
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_names()
+	public function test_names($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new SQL_DDL_Drop('a');
+		$statement = new SQL_DDL_Drop('x');
 
-		$this->assertSame($command, $command->names(array('b', 'c')));
-		$this->assertSame('DROP A "b", "c"', $db->quote($command));
+		$this->assertSame($statement, $statement->names($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DDL_Drop::names
+	 *
+	 * @dataProvider    provider_names
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_names_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DDL_Drop('x');
+		$statement->names($value);
+
+		$statement->names(NULL);
+
+		$this->assertSame('DROP X ', $db->quote($statement));
 	}
 
 	/**
@@ -91,12 +194,11 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 		$command = new SQL_DDL_Drop('a');
 		$command
 			->if_exists()
-			->name('b')
 			->cascade();
 
-		$this->assertSame('DROP A IF EXISTS :name CASCADE', (string) $command);
+		$this->assertSame('DROP A IF EXISTS :names CASCADE', (string) $command);
 
 		$command->cascade(FALSE);
-		$this->assertSame('DROP A IF EXISTS :name RESTRICT', (string) $command);
+		$this->assertSame('DROP A IF EXISTS :names RESTRICT', (string) $command);
 	}
 }

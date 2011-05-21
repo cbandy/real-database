@@ -8,50 +8,161 @@
  */
 class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 {
+	public function provider_constructor()
+	{
+		return array(
+			array(array(), 'DROP TABLE '),
+			array(array('a'), 'DROP TABLE "pre_a"'),
+
+			array(array('a', FALSE), 'DROP TABLE "pre_a" RESTRICT'),
+			array(array('a', TRUE), 'DROP TABLE "pre_a" CASCADE'),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DDL_Drop_Table::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_constructor()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('DROP TABLE "pre_a"', $db->quote(new SQL_DDL_Drop_Table('a')));
-		$this->assertSame('DROP TABLE "pre_a" CASCADE', $db->quote(new SQL_DDL_Drop_Table('a', TRUE)));
-		$this->assertSame('DROP TABLE "pre_a" RESTRICT', $db->quote(new SQL_DDL_Drop_Table('a', FALSE)));
+		$class = new ReflectionClass('SQL_DDL_Drop_Table');
+		$statement = $class->newInstanceArgs($arguments);
+
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	public function provider_name()
+	{
+		return array(
+			array(NULL, 'DROP TABLE '),
+			array('a', 'DROP TABLE "pre_a"'),
+			array(new SQL_Identifier('b'), 'DROP TABLE "b"'),
+			array(new SQL_Expression('expr'), 'DROP TABLE expr'),
+		);
 	}
 
 	/**
 	 * @covers  SQL_DDL_Drop_Table::name
+	 *
+	 * @dataProvider    provider_name
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_name()
-	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
-		$command = new SQL_DDL_Drop_Table('a');
-
-		$this->assertSame($command, $command->name('b'));
-		$this->assertSame('DROP TABLE "pre_b"', $db->quote($command));
-	}
-
-	/**
-	 * @covers  SQL_DDL_Drop_Table::names
-	 */
-	public function test_names()
+	public function test_name($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$command = new SQL_DDL_Drop_Table;
+		$statement = new SQL_DDL_Drop_Table;
 
-		$this->assertSame($command, $command->names(array('a', 'b')));
-		$this->assertSame('DROP TABLE "pre_a", "pre_b"', $db->quote($command));
+		$this->assertSame($statement, $statement->name($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DDL_Drop_Table::name
+	 *
+	 * @dataProvider    provider_name
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_name_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
+		$statement = new SQL_DDL_Drop_Table;
+		$statement->name($value);
+
+		$statement->name(NULL);
+
+		$this->assertSame('DROP TABLE ', $db->quote($statement));
+	}
+
+	public function provider_names()
+	{
+		return array(
+			array(NULL, 'DROP TABLE '),
+
+			array(array('a'), 'DROP TABLE "pre_a"'),
+			array(array('a', 'b'), 'DROP TABLE "pre_a", "pre_b"'),
+
+			array(
+				array(new SQL_Identifier('a')),
+				'DROP TABLE "a"',
+			),
+			array(
+				array(new SQL_Identifier('a'), new SQL_Identifier('b')),
+				'DROP TABLE "a", "b"',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'DROP TABLE a',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'DROP TABLE a, b',
+			),
+
+			array(new SQL_Expression('expr'), 'DROP TABLE expr'),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DDL_Drop_Table::names
+	 *
+	 * @dataProvider    provider_names
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_names($value, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
+		$statement = new SQL_DDL_Drop_Table;
+
+		$this->assertSame($statement, $statement->names($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DDL_Drop_Table::names
+	 *
+	 * @dataProvider    provider_names
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_names_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db->expects($this->any())
+			->method('table_prefix')
+			->will($this->returnValue('pre_'));
+
+		$statement = new SQL_DDL_Drop_Table;
+		$statement->names($value);
+
+		$statement->names(NULL);
+
+		$this->assertSame('DROP TABLE ', $db->quote($statement));
 	}
 }
