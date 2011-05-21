@@ -38,6 +38,128 @@ class Database_SQL_DDL_Create_View_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->quote($statement));
 	}
 
+	public function provider_column()
+	{
+		return array(
+			array(array(NULL), 'CREATE VIEW "" AS NULL'),
+
+			array(
+				array('a'),
+				'CREATE VIEW "" ("a") AS NULL',
+			),
+
+			array(
+				array(new SQL_Column('b')),
+				'CREATE VIEW "" ("b") AS NULL',
+			),
+
+			array(
+				array(new SQL_Expression('expr')),
+				'CREATE VIEW "" (expr) AS NULL'
+			),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DDL_Create_View::column
+	 *
+	 * @dataProvider    provider_column
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
+	 */
+	public function test_column($arguments, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DDL_Create_View;
+
+		$result = call_user_func_array(array($statement, 'column'), $arguments);
+
+		$this->assertSame($statement, $result, 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DDL_Create_View::column
+	 *
+	 * @dataProvider    provider_column
+	 *
+	 * @param   array   $arguments  Arguments
+	 */
+	public function test_column_reset($arguments)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DDL_Create_View;
+
+		call_user_func_array(array($statement, 'column'), $arguments);
+
+		$statement->column(NULL);
+
+		$this->assertSame('CREATE VIEW "" AS NULL', $db->quote($statement));
+	}
+
+	public function provider_columns()
+	{
+		return array(
+			array(NULL, 'CREATE VIEW "" AS NULL'),
+
+			array(
+				array('a'),
+				'CREATE VIEW "" ("a") AS NULL',
+			),
+			array(
+				array('a', 'b'),
+				'CREATE VIEW "" ("a", "b") AS NULL',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'CREATE VIEW "" ("a") AS NULL',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'CREATE VIEW "" ("a", "b") AS NULL',
+			),
+
+			array(new SQL_Expression('expr'), 'CREATE VIEW "" (expr) AS NULL'),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DDL_Create_View::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_columns($value, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DDL_Create_View;
+
+		$this->assertSame($statement, $statement->columns($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DDL_Create_View::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_columns_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DDL_Create_View;
+		$statement->columns($value);
+
+		$statement->columns(NULL);
+
+		$this->assertSame('CREATE VIEW "" AS NULL', $db->quote($statement));
+	}
+
 	/**
 	 * @covers  SQL_DDL_Create_View::name
 	 */
@@ -68,41 +190,6 @@ class Database_SQL_DDL_Create_View_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($command, $command->query(new Database_Query('c')));
 		$this->assertSame('CREATE VIEW "pre_a" AS c', $db->quote($command));
-	}
-
-	/**
-	 * @covers  SQL_DDL_Create_View::column
-	 */
-	public function test_column()
-	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
-		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
-
-		$this->assertSame($command, $command->column('c'));
-		$this->assertSame('CREATE VIEW "pre_a" ("c") AS b', $db->quote($command));
-
-		$this->assertSame($command, $command->column('d'));
-		$this->assertSame('CREATE VIEW "pre_a" ("c", "d") AS b', $db->quote($command));
-	}
-
-	/**
-	 * @covers  SQL_DDL_Create_View::columns
-	 */
-	public function test_columns()
-	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
-		$command = new SQL_DDL_Create_View('a', new Database_Query('b'));
-
-		$this->assertSame($command, $command->columns(array('c')));
-		$this->assertSame('CREATE VIEW "pre_a" ("c") AS b', $db->quote($command));
 	}
 
 	/**
