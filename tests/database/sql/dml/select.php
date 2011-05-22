@@ -8,34 +8,31 @@
  */
 class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * @covers  SQL_DML_Select::__construct
-	 */
-	public function test_constructor()
+	public function provider_constructor()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-
-		$this->assertSame('SELECT ',            $db->quote(new SQL_DML_Select));
-		$this->assertSame('SELECT :columns',    $db->quote(new SQL_DML_Select(array())));
-		$this->assertSame('SELECT "b" AS "a"',  $db->quote(new SQL_DML_Select(array('a' => 'b'))));
+		return array(
+			array(array(), 'SELECT '),
+			array(array(array('a')), 'SELECT "a"'),
+			array(array(array('a', 'b')), 'SELECT "a", "b"'),
+		);
 	}
 
 	/**
-	 * @covers  SQL_DML_Select::select
+	 * @covers  SQL_DML_Select::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_select()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$query = new SQL_DML_Select;
 
-		$this->assertSame($query, $query->select(array('x')));
-		$this->assertSame('SELECT "x"', $db->quote($query));
+		$class = new ReflectionClass('SQL_DML_Select');
+		$statement = $class->newInstanceArgs($arguments);
 
-		$this->assertSame($query, $query->select(array('y' => new SQL_Expression('a'))));
-		$this->assertSame('SELECT "x", a AS "y"', $db->quote($query));
-
-		$this->assertSame($query, $query->select(new SQL_Expression('b')));
-		$this->assertSame('SELECT b', $db->quote($query));
+		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**
@@ -56,23 +53,173 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('SELECT DISTINCT ', $db->quote($query), 'Distinct (TRUE)');
 	}
 
+	public function provider_column()
+	{
+		return array(
+			array(array(NULL), 'SELECT '),
+			array(array(NULL, 'any'), 'SELECT '),
+
+			array(
+				array('a'),
+				'SELECT "a"',
+			),
+			array(
+				array('a', 'b'),
+				'SELECT "a" AS "b"',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'SELECT "a"',
+			),
+			array(
+				array(new SQL_Column('a'), 'b'),
+				'SELECT "a" AS "b"',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'SELECT a'
+			),
+			array(
+				array(new SQL_Expression('a'), 'b'),
+				'SELECT a AS "b"'
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Select::column
+	 *
+	 * @dataProvider    provider_column
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_column()
+	public function test_column($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$statement = new SQL_DML_Select;
 
-		$query = new SQL_DML_Select;
+		$result = call_user_func_array(array($statement, 'column'), $arguments);
 
-		$this->assertSame($query, $query->column('one.x', 'a'));
-		$this->assertSame('SELECT "pre_one"."x" AS "a"', $db->quote($query));
+		$this->assertSame($statement, $result, 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
 
-		$this->assertSame($query, $query->column('y'));
-		$this->assertSame('SELECT "pre_one"."x" AS "a", "y"', $db->quote($query));
+	/**
+	 * @covers  SQL_DML_Select::column
+	 *
+	 * @dataProvider    provider_column
+	 *
+	 * @param   array   $arguments  Arguments
+	 */
+	public function test_column_reset($arguments)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Select;
+
+		call_user_func_array(array($statement, 'column'), $arguments);
+
+		$statement->column(NULL);
+
+		$this->assertSame('SELECT ', $db->quote($statement));
+	}
+
+	public function provider_columns()
+	{
+		return array(
+			array(NULL, 'SELECT '),
+
+			array(
+				array('a'),
+				'SELECT "a"',
+			),
+			array(
+				array('a', 'b'),
+				'SELECT "a", "b"',
+			),
+
+			array(
+				array('a' => 'b'),
+				'SELECT "b" AS "a"',
+			),
+			array(
+				array('a' => 'b', 'c' => 'd'),
+				'SELECT "b" AS "a", "d" AS "c"',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'SELECT "a"',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'SELECT "a", "b"',
+			),
+
+			array(
+				array('a' => new SQL_Column('b')),
+				'SELECT "b" AS "a"',
+			),
+			array(
+				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
+				'SELECT "b" AS "a", "d" AS "c"',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'SELECT a',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'SELECT a, b',
+			),
+
+			array(
+				array('a' => new SQL_Expression('b')),
+				'SELECT b AS "a"',
+			),
+			array(
+				array('a' => new SQL_Expression('b'), 'c' => new SQL_Expression('d')),
+				'SELECT b AS "a", d AS "c"',
+			),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DML_Select::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_columns($value, $expected)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Select;
+
+		$this->assertSame($statement, $statement->columns($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DML_Select::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_columns_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Select;
+		$statement->columns($value);
+
+		$statement->columns(NULL);
+
+		$this->assertSame('SELECT ', $db->quote($statement));
 	}
 
 	/**
@@ -103,19 +250,19 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	public function test_where()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$query = new SQL_DML_Select(new SQL_Expression(1));
+		$query = new SQL_DML_Select;
 
 		$this->assertSame($query, $query->where(new SQL_Conditions(new SQL_Column('y'), '=', 1)), 'Chainable (conditions)');
-		$this->assertSame('SELECT 1 WHERE "y" = 1', $db->quote($query));
+		$this->assertSame('SELECT  WHERE "y" = 1', $db->quote($query));
 
 		$this->assertSame($query, $query->where('y', '=', 0), 'Chainable (operands)');
-		$this->assertSame('SELECT 1 WHERE "y" = 0', $db->quote($query));
+		$this->assertSame('SELECT  WHERE "y" = 0', $db->quote($query));
 
 		$conditions = new SQL_Conditions;
 		$conditions->open(NULL)->add(NULL, new SQL_Column('y'), '=', 0)->close();
 
 		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
-		$this->assertSame('SELECT 1 WHERE ("y" = 0) = \'1\'', $db->quote($query));
+		$this->assertSame('SELECT  WHERE ("y" = 0) = \'1\'', $db->quote($query));
 	}
 
 	/**
@@ -209,18 +356,20 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_toString()
 	{
-		$query = new SQL_DML_Select;
-		$query
+		$statement = new SQL_DML_Select;
+		$statement
 			->distinct()
-			->select(array('a'))
-			->from('b')
-			->where('c', '=', 'd')
-			->group_by(array('e'))
-			->having('f', '=', 'g')
-			->order_by('h')
+			->from('a')
+			->where('b', '=', 'c')
+			->group_by(array('d'))
+			->having('e', '=', 'f')
+			->order_by('g')
 			->limit(1)
 			->offset(1);
 
-		$this->assertSame('SELECT DISTINCT :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset', (string) $query);
+		$this->assertSame(
+			'SELECT DISTINCT :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',
+			(string) $statement
+		);
 	}
 }

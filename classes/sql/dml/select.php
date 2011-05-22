@@ -23,15 +23,15 @@ class SQL_DML_Select extends SQL_Expression
 	protected $_distinct;
 
 	/**
-	 * @uses SQL_DML_Select::select()
+	 * @uses SQL_DML_Select::columns()
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs
 	 */
 	public function __construct($columns = NULL)
 	{
 		parent::__construct('');
 
-		$this->select($columns);
+		$this->columns($columns);
 	}
 
 	public function __toString()
@@ -87,26 +87,67 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Append one column or expression to be selected
+	 * Append one column or expression to be selected.
 	 *
-	 * @param   mixed   $column Converted to SQL_Column
-	 * @param   string  $alias  Column alias
+	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column Converted to SQL_Column or NULL to reset
+	 * @param   string                                      $alias  Column alias
 	 * @return  $this
 	 */
 	public function column($column, $alias = NULL)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
+			{
+				$column = new SQL_Column($column);
+			}
+
+			if ($alias)
+			{
+				$column = new SQL_Alias($column, $alias);
+			}
+
+			$this->parameters[':columns'][] = $column;
 		}
 
-		if ($alias)
-		{
-			$column = new SQL_Alias($column, $alias);
-		}
+		return $this;
+	}
 
-		$this->parameters[':columns'][] = $column;
+	/**
+	 * Append multiple columns and/or expressions to be selected.
+	 *
+	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
+	 * @return  $this
+	 */
+	public function columns($columns)
+	{
+		if ($columns === NULL)
+		{
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			foreach ($columns as $alias => $column)
+			{
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				if (is_string($alias) AND $alias)
+				{
+					$column = new SQL_Alias($column, $alias);
+				}
+
+				$this->parameters[':columns'][] = $column;
+			}
+		}
 
 		return $this;
 	}
@@ -241,44 +282,6 @@ class SQL_DML_Select extends SQL_Expression
 		}
 
 		$this->parameters[':orderby'][] = $column;
-
-		return $this;
-	}
-
-	/**
-	 * Append multiple columns or expressions to be selected
-	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
-	 * @return  $this
-	 */
-	public function select($columns)
-	{
-		if (is_array($columns))
-		{
-			foreach ($columns as $alias => $column)
-			{
-				if ( ! $column instanceof SQL_Expression
-					AND ! $column instanceof SQL_Identifier)
-				{
-					$column = new SQL_Column($column);
-				}
-
-				if (is_string($alias) AND $alias !== '')
-				{
-					$column = new SQL_Alias($column, $alias);
-				}
-
-				$this->parameters[':columns'][] = $column;
-			}
-		}
-		elseif ($columns === NULL)
-		{
-			$this->parameters[':columns'] = array();
-		}
-		else
-		{
-			$this->parameters[':columns'] = $columns;
-		}
 
 		return $this;
 	}

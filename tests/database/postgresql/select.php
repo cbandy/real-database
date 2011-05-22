@@ -92,12 +92,11 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 		$statement = new Database_PostgreSQL_Select;
 		$statement
 			->distinct()
-			->select(array('a'))
-			->from('b')
-			->where('c', '=', 'd')
-			->group_by(array('e'))
-			->having('f', '=', 'g')
-			->order_by('h')
+			->from('a')
+			->where('b', '=', 'c')
+			->group_by(array('d'))
+			->having('e', '=', 'f')
+			->order_by('g')
 			->limit(1)
 			->offset(1);
 
@@ -106,7 +105,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 			(string) $statement
 		);
 
-		$statement->distinct(array('i'));
+		$statement->distinct(array('h'));
 
 		$this->assertSame(
 			'SELECT DISTINCT ON (:distinct) :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',
