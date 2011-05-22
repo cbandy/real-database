@@ -69,11 +69,12 @@ class Database_PostgreSQL_Select extends Database_Select
 	}
 
 	/**
-	 * Set values by which rows should be considered unique
+	 * Append multiple columns and/or expressions by which rows should be
+	 * considered unique.
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/sql-select.html#SQL-DISTINCT
 	 *
-	 * @param   mixed   $columns    Each element converted to SQL_Column
+	 * @param   array|boolean   $columns    List of columns converted to SQL_Column, TRUE for the entire row or NULL or FALSE to reset
 	 * @return  $this
 	 */
 	public function distinct($columns = TRUE)
@@ -87,19 +88,16 @@ class Database_PostgreSQL_Select extends Database_Select
 
 		$this->_distinct = NULL;
 
-		if (is_array($columns))
+		foreach ($columns as $column)
 		{
-			foreach ($columns as & $column)
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
 			{
-				if ( ! $column instanceof SQL_Expression
-					AND ! $column instanceof SQL_Identifier)
-				{
-					$column = new SQL_Column($column);
-				}
+				$column = new SQL_Column($column);
 			}
-		}
 
-		$this->parameters[':distinct'] = $columns;
+			$this->parameters[':distinct'][] = $column;
+		}
 
 		return $this;
 	}
