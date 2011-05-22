@@ -20,7 +20,7 @@ class SQL_DDL_Constraint_Unique extends SQL_DDL_Constraint
 	 *
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 */
-	public function __construct($columns = array())
+	public function __construct($columns = NULL)
 	{
 		parent::__construct('UNIQUE');
 
@@ -40,23 +40,30 @@ class SQL_DDL_Constraint_Unique extends SQL_DDL_Constraint
 	}
 
 	/**
-	 * Set the group of columns that must contain unique values
+	 * Append multiple columns that must contain unique values.
 	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
-		foreach ($columns as & $column)
+		if ($columns === NULL)
 		{
-			if ( ! $column instanceof SQL_Expression
-				AND ! $column instanceof SQL_Identifier)
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
 			{
-				$column = new SQL_Column($column);
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				$this->parameters[':columns'][] = $column;
 			}
 		}
-
-		$this->parameters[':columns'] = $columns;
 
 		return $this;
 	}

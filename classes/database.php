@@ -176,7 +176,7 @@ abstract class Database
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Unique
 	 */
-	public static function ddl_unique($columns = array())
+	public static function ddl_unique($columns = NULL)
 	{
 		return new SQL_DDL_Constraint_Unique($columns);
 	}
