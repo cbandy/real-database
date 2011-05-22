@@ -221,6 +221,6 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 			->limit(1)
 			->offset(1);
 
-		$this->assertSame('SELECT :distinct :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset', (string) $query);
+		$this->assertSame('SELECT DISTINCT :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset', (string) $query);
 	}
 }

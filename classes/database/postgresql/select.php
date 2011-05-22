@@ -15,6 +15,59 @@
  */
 class Database_PostgreSQL_Select extends Database_Select
 {
+	public function __toString()
+	{
+		$value = 'SELECT';
+
+		if ( ! empty($this->parameters[':distinct']))
+		{
+			$value .= ' DISTINCT ON (:distinct)';
+		}
+		elseif ($this->_distinct)
+		{
+			$value .= ' DISTINCT';
+		}
+
+		$value .= ' :columns';
+
+		if ( ! empty($this->parameters[':from']))
+		{
+			$value .= ' FROM :from';
+		}
+
+		if ( ! empty($this->parameters[':where']))
+		{
+			$value .= ' WHERE :where';
+		}
+
+		if ( ! empty($this->parameters[':groupby']))
+		{
+			$value .= ' GROUP BY :groupby';
+		}
+
+		if ( ! empty($this->parameters[':having']))
+		{
+			$value .= ' HAVING :having';
+		}
+
+		if ( ! empty($this->parameters[':orderby']))
+		{
+			$value .= ' ORDER BY :orderby';
+		}
+
+		if (isset($this->parameters[':limit']))
+		{
+			$value .= ' LIMIT :limit';
+		}
+
+		if ( ! empty($this->parameters[':offset']))
+		{
+			$value .= ' OFFSET :offset';
+		}
+
+		return $value;
+	}
+
 	/**
 	 * Set values by which rows should be considered unique
 	 *
@@ -26,7 +79,13 @@ class Database_PostgreSQL_Select extends Database_Select
 	public function distinct($columns = TRUE)
 	{
 		if (is_bool($columns) OR $columns === NULL)
+		{
+			$this->parameters[':distinct'] = array();
+
 			return parent::distinct($columns);
+		}
+
+		$this->_distinct = NULL;
 
 		if (is_array($columns))
 		{
@@ -40,7 +99,7 @@ class Database_PostgreSQL_Select extends Database_Select
 			}
 		}
 
-		$this->parameters[':distinct'] = new SQL_Expression('DISTINCT ON (?)', array($columns));
+		$this->parameters[':distinct'] = $columns;
 
 		return $this;
 	}

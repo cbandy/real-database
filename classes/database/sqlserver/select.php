@@ -19,9 +19,9 @@ class Database_SQLServer_Select extends Database_Select
 	{
 		$value = 'SELECT';
 
-		if ( ! empty($this->parameters[':distinct']))
+		if ($this->_distinct)
 		{
-			$value .= ' :distinct';
+			$value .= ' DISTINCT';
 		}
 
 		if (isset($this->parameters[':limit'])

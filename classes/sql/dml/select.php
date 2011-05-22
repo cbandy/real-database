@@ -18,6 +18,11 @@
 class SQL_DML_Select extends SQL_Expression
 {
 	/**
+	 * @var boolean Whether or not rows should be unique
+	 */
+	protected $_distinct;
+
+	/**
 	 * @uses SQL_DML_Select::select()
 	 *
 	 * @param   mixed   $columns    Hash of (alias => column) pairs
@@ -33,9 +38,9 @@ class SQL_DML_Select extends SQL_Expression
 	{
 		$value = 'SELECT';
 
-		if ( ! empty($this->parameters[':distinct']))
+		if ($this->_distinct)
 		{
-			$value .= ' :distinct';
+			$value .= ' DISTINCT';
 		}
 
 		$value .= ' :columns';
@@ -114,7 +119,7 @@ class SQL_DML_Select extends SQL_Expression
 	 */
 	public function distinct($value = TRUE)
 	{
-		$this->parameters[':distinct'] = $value ? new SQL_Expression('DISTINCT') : FALSE;
+		$this->_distinct = $value;
 
 		return $this;
 	}
