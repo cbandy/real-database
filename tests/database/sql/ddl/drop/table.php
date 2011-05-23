@@ -111,6 +111,15 @@ class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 			),
 
 			array(
+				array(new SQL_Table('a')),
+				'DROP TABLE "pre_a"',
+			),
+			array(
+				array(new SQL_Table('a'), new SQL_Table('b')),
+				'DROP TABLE "pre_a", "pre_b"',
+			),
+
+			array(
 				array(new SQL_Expression('a')),
 				'DROP TABLE a',
 			),
@@ -118,8 +127,6 @@ class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 				array(new SQL_Expression('a'), new SQL_Expression('b')),
 				'DROP TABLE a, b',
 			),
-
-			array(new SQL_Expression('expr'), 'DROP TABLE expr'),
 		);
 	}
 

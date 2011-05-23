@@ -53,12 +53,16 @@ class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 	/**
 	 * Append the names of multiple tables to be dropped.
 	 *
-	 * @param   array|SQL_Expression    $tables List of names converted to SQL_Table or NULL to reset
+	 * @param   array   $tables List of names converted to SQL_Table or NULL to reset
 	 * @return  $this
 	 */
 	public function names($tables)
 	{
-		if (is_array($tables))
+		if ($tables === NULL)
+		{
+			$this->parameters[':names'] = array();
+		}
+		else
 		{
 			// SQLite allows only one
 			foreach ($tables as $table)
@@ -71,14 +75,6 @@ class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 
 				$this->parameters[':names'][] = $table;
 			}
-		}
-		elseif ($tables === NULL)
-		{
-			$this->parameters[':names'] = array();
-		}
-		else
-		{
-			$this->parameters[':names'] = $tables;
 		}
 
 		return $this;
