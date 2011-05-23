@@ -190,7 +190,14 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 				'CREATE INDEX "" ON "" ("a", "b")',
 			),
 
-			array(new SQL_Expression('expr'), 'CREATE INDEX "" ON "" (expr)'),
+			array(
+				array(new SQL_Expression('a')),
+				'CREATE INDEX "" ON "" (a)',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'CREATE INDEX "" ON "" (a, b)',
+			),
 		);
 	}
 

@@ -136,12 +136,16 @@ class SQL_DDL_Create_Index extends SQL_Expression
 	/**
 	 * Append columns and/or expressions to be included in the index.
 	 *
-	 * @param   array|SQL_Expression    $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
-		if (is_array($columns))
+		if ($columns === NULL)
+		{
+			$this->parameters[':columns'] = array();
+		}
+		else
 		{
 			foreach ($columns as $column)
 			{
@@ -153,14 +157,6 @@ class SQL_DDL_Create_Index extends SQL_Expression
 
 				$this->parameters[':columns'][] = $column;
 			}
-		}
-		elseif ($columns === NULL)
-		{
-			$this->parameters[':columns'] = array();
-		}
-		else
-		{
-			$this->parameters[':columns'] = $columns;
 		}
 
 		return $this;
