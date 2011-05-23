@@ -122,12 +122,16 @@ class SQL_DDL_Drop extends SQL_Expression
 	/**
 	 * Append the names of multiple objects to be dropped.
 	 *
-	 * @param   array|SQL_Expression    $names  List of names converted to SQL_Identifier or NULL to reset
+	 * @param   array   $names  List of names converted to SQL_Identifier or NULL to reset
 	 * @return  $this
 	 */
 	public function names($names)
 	{
-		if (is_array($names))
+		if ($names === NULL)
+		{
+			$this->parameters[':names'] = array();
+		}
+		else
 		{
 			// SQLite allows only one
 			foreach ($names as $name)
@@ -140,14 +144,6 @@ class SQL_DDL_Drop extends SQL_Expression
 
 				$this->parameters[':names'][] = $name;
 			}
-		}
-		elseif ($names === NULL)
-		{
-			$this->parameters[':names'] = array();
-		}
-		else
-		{
-			$this->parameters[':names'] = $names;
 		}
 
 		return $this;

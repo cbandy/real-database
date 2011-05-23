@@ -146,8 +146,6 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 				array(new SQL_Expression('a'), new SQL_Expression('b')),
 				'DROP X a, b',
 			),
-
-			array(new SQL_Expression('expr'), 'DROP X expr'),
 		);
 	}
 
