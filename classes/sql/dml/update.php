@@ -121,21 +121,30 @@ class SQL_DML_Update extends SQL_Expression
 	}
 
 	/**
-	 * Append a column assignment
+	 * Append a column assignment.
 	 *
-	 * @param   mixed   $column Converted to SQL_Column
-	 * @param   mixed   $value  Value assigned to the column
+	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column Converted to SQL_Column or NULL to reset
+	 * @param   mixed                                       $value  Value assigned to the column
 	 * @return  $this
 	 */
 	public function value($column, $value)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
+			$this->parameters[':values'] = array();
 		}
+		else
+		{
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
+			{
+				$column = new SQL_Column($column);
+			}
 
-		$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
+			$this->parameters[':values'][] = new SQL_Expression(
+				'? = ?', array($column, $value)
+			);
+		}
 
 		return $this;
 	}

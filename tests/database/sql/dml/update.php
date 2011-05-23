@@ -67,23 +67,77 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('UPDATE "pre_a" SET ', $db->quote($command));
 	}
 
+	public function provider_value()
+	{
+		return array(
+			array(array(NULL, 'any'), 'UPDATE "" SET '),
+			array(array(NULL, new SQL_Expression('any')), 'UPDATE "" SET '),
+
+			array(
+				array('a', 'b'),
+				'UPDATE "" SET "a" = \'b\'',
+			),
+			array(
+				array('a', new SQL_Expression('b')),
+				'UPDATE "" SET "a" = b',
+			),
+
+			array(
+				array(new SQL_Column('a'), 'b'),
+				'UPDATE "" SET "a" = \'b\'',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Expression('b')),
+				'UPDATE "" SET "a" = b',
+			),
+
+			array(
+				array(new SQL_Expression('a'), 'b'),
+				'UPDATE "" SET a = \'b\''
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'UPDATE "" SET a = b'
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Update::value
+	 *
+	 * @dataProvider    provider_value
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_value()
+	public function test_value($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$statement = new SQL_DML_Update;
 
-		$command = new SQL_DML_Update('a');
+		$result = call_user_func_array(array($statement, 'value'), $arguments);
 
-		$this->assertSame($command, $command->value('b', 0));
-		$this->assertSame('UPDATE "pre_a" SET "b" = 0', $db->quote($command));
+		$this->assertSame($statement, $result, 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
 
-		$this->assertSame($command, $command->value('c', 1));
-		$this->assertSame('UPDATE "pre_a" SET "b" = 0, "c" = 1', $db->quote($command));
+	/**
+	 * @covers  SQL_DML_Update::value
+	 *
+	 * @dataProvider    provider_value
+	 *
+	 * @param   array   $arguments  Arguments
+	 */
+	public function test_value_reset($arguments)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Update;
+
+		call_user_func_array(array($statement, 'value'), $arguments);
+
+		$statement->value(NULL, NULL);
+
+		$this->assertSame('UPDATE "" SET ', $db->quote($statement));
 	}
 
 	/**
