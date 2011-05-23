@@ -355,22 +355,90 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('SELECT "x" HAVING ("x" = 0) = \'1\'', $db->quote($query));
 	}
 
+	public function provider_order_by()
+	{
+		return array(
+			array(array(NULL), 'SELECT '),
+			array(array(NULL, 'any'), 'SELECT '),
+			array(array(NULL, new SQL_Expression('any')), 'SELECT '),
+
+			array(
+				array('a'),
+				'SELECT  ORDER BY "a"',
+			),
+			array(
+				array('a', 'b'),
+				'SELECT  ORDER BY "a" B',
+			),
+			array(
+				array('a', new SQL_Expression('b')),
+				'SELECT  ORDER BY "a" b',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'SELECT  ORDER BY "a"',
+			),
+			array(
+				array(new SQL_Column('a'), 'b'),
+				'SELECT  ORDER BY "a" B',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Expression('b')),
+				'SELECT  ORDER BY "a" b',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'SELECT  ORDER BY a'
+			),
+			array(
+				array(new SQL_Expression('a'), 'b'),
+				'SELECT  ORDER BY a B'
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'SELECT  ORDER BY a b'
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Select::order_by
+	 *
+	 * @dataProvider    provider_order_by
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_order_by()
+	public function test_order_by($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$query = new SQL_DML_Select(array('x', 'y'));
+		$statement = new SQL_DML_Select;
 
-		$this->assertSame($query, $query->order_by('x'));
-		$this->assertSame('SELECT "x", "y" ORDER BY "x"', $db->quote($query));
+		$result = call_user_func_array(array($statement, 'order_by'), $arguments);
 
-		$this->assertSame($query, $query->order_by(new SQL_Expression('other'), 'asc'));
-		$this->assertSame('SELECT "x", "y" ORDER BY "x", other ASC', $db->quote($query));
+		$this->assertSame($statement, $result, 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
 
-		$this->assertSame($query, $query->order_by('y', new SQL_Expression('USING something')));
-		$this->assertSame('SELECT "x", "y" ORDER BY "x", other ASC, "y" USING something', $db->quote($query));
+	/**
+	 * @covers  SQL_DML_Select::order_by
+	 *
+	 * @dataProvider    provider_order_by
+	 *
+	 * @param   array   $arguments  Arguments
+	 */
+	public function test_order_by_reset($arguments)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Select;
+
+		call_user_func_array(array($statement, 'order_by'), $arguments);
+
+		$statement->order_by(NULL);
+
+		$this->assertSame('SELECT ', $db->quote($statement));
 	}
 
 	/**
