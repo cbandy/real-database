@@ -121,7 +121,14 @@ class Database_SQL_DDL_Create_View_Test extends PHPUnit_Framework_TestCase
 				'CREATE VIEW "" ("a", "b") AS NULL',
 			),
 
-			array(new SQL_Expression('expr'), 'CREATE VIEW "" (expr) AS NULL'),
+			array(
+				array(new SQL_Expression('a')),
+				'CREATE VIEW "" (a) AS NULL',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'CREATE VIEW "" (a, b) AS NULL',
+			),
 		);
 	}
 
