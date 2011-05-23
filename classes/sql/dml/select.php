@@ -185,23 +185,31 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Set the columns by which rows should be grouped
+	 * Append multiple columns and/or expressions by which rows should be
+	 * grouped.
 	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function group_by($columns)
 	{
-		foreach ($columns as & $column)
+		if ($columns === NULL)
 		{
-			if ( ! $column instanceof SQL_Expression
-				AND ! $column instanceof SQL_Identifier)
+			$this->parameters[':groupby'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
 			{
-				$column = new SQL_Column($column);
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				$this->parameters[':groupby'][] = $column;
 			}
 		}
-
-		$this->parameters[':groupby'] = $columns;
 
 		return $this;
 	}
