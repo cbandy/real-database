@@ -45,26 +45,73 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('UPDATE "pre_b" AS "c" SET ', $db->quote($command));
 	}
 
+	public function provider_set()
+	{
+		return array(
+			array(NULL, 'UPDATE "" SET '),
+
+			array(
+				array('a' => 'b'),
+				'UPDATE "" SET "a" = \'b\'',
+			),
+			array(
+				array('a' => 'b', 'c' => 'd'),
+				'UPDATE "" SET "a" = \'b\', "c" = \'d\'',
+			),
+
+			array(
+				array('a' => new SQL_Column('b')),
+				'UPDATE "" SET "a" = "b"',
+			),
+			array(
+				array('a' => new SQL_Column('b'), 'c' => new SQL_Column('d')),
+				'UPDATE "" SET "a" = "b", "c" = "d"',
+			),
+
+			array(
+				array('a' => new SQL_Expression('b')),
+				'UPDATE "" SET "a" = b',
+			),
+			array(
+				array('a' => new SQL_Expression('b'), 'c' => new SQL_Expression('d')),
+				'UPDATE "" SET "a" = b, "c" = d',
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Update::set
+	 *
+	 * @dataProvider    provider_set
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_set()
+	public function test_set($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$statement = new SQL_DML_Update;
 
-		$command = new SQL_DML_Update('a');
+		$this->assertSame($statement, $statement->set($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
 
-		$this->assertSame($command, $command->set(array('b' => 0, 'c' => 1)), 'Chainable (array)');
-		$this->assertSame('UPDATE "pre_a" SET "b" = 0, "c" = 1', $db->quote($command));
+	/**
+	 * @covers  SQL_DML_Update::set
+	 *
+	 * @dataProvider    provider_set
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_set_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Update;
+		$statement->set($value);
 
-		$this->assertSame($command, $command->set(new SQL_Expression('d')), 'Chainable (SQL_Expression)');
-		$this->assertSame('UPDATE "pre_a" SET d', $db->quote($command));
+		$statement->set(NULL);
 
-		$this->assertSame($command, $command->set(NULL), 'Chainable (NULL)');
-		$this->assertSame('UPDATE "pre_a" SET ', $db->quote($command));
+		$this->assertSame('UPDATE "" SET ', $db->quote($statement));
 	}
 
 	public function provider_value()

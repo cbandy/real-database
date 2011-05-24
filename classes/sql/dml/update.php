@@ -92,29 +92,27 @@ class SQL_DML_Update extends SQL_Expression
 	}
 
 	/**
-	 * Append multiple column assignments
+	 * Append multiple column assignments.
 	 *
-	 * @param   mixed   $values Hash of (column => value) assignments
+	 * @param   array   $values Hash of (column => value) assignments or NULL to reset
 	 * @return  $this
 	 */
 	public function set($values)
 	{
-		if (is_array($values))
-		{
-			foreach ($values as $column => $value)
-			{
-				$column = new SQL_Column($column);
-
-				$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
-			}
-		}
-		elseif ($values === NULL)
+		if ($values === NULL)
 		{
 			$this->parameters[':values'] = array();
 		}
 		else
 		{
-			$this->parameters[':values'] = $values;
+			foreach ($values as $column => $value)
+			{
+				$column = new SQL_Column($column);
+
+				$this->parameters[':values'][] = new SQL_Expression(
+					'? = ?', array($column, $value)
+				);
+			}
 		}
 
 		return $this;
