@@ -384,7 +384,7 @@ class Database_MySQL extends Database
 		return $types[$type];
 	}
 
-	public function escape($value)
+	public function escape_literal($value)
 	{
 		$this->_connection or $this->connect();
 
@@ -497,9 +497,9 @@ class Database_MySQL extends Database
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query
+	 * Quote a literal value for inclusion in a SQL query.
 	 *
-	 * @uses Database_MySQL::escape()
+	 * @uses Database_MySQL::escape_literal()
 	 *
 	 * @param   mixed   $value  Value to quote
 	 * @return  string
@@ -507,7 +507,7 @@ class Database_MySQL extends Database
 	public function quote_literal($value)
 	{
 		if (is_object($value) OR is_string($value))
-			return $this->escape($value);
+			return $this->escape_literal($value);
 
 		return parent::quote_literal($value);
 	}

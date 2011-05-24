@@ -158,15 +158,15 @@ class Database_PDO extends Database
 	}
 
 	/**
-	 * Quote a value while escaping characters that could cause a SQL injection
-	 * attack
+	 * Quote a literal value while escaping characters that could cause a SQL
+	 * injection attack.
 	 *
 	 * Not all drivers support this method.
 	 *
-	 * @param   mixed   $value  Value to quote
+	 * @param   mixed   $value  Literal value to quote
 	 * @return  string
 	 */
-	public function escape($value)
+	public function escape_literal($value)
 	{
 		$this->_connection or $this->connect();
 

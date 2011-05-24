@@ -160,9 +160,9 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query
+	 * Quote a literal value for inclusion in a SQL query.
 	 *
-	 * @uses Database_PDO::escape()
+	 * @uses Database_PDO::escape_literal()
 	 *
 	 * @param   mixed   $value  Value to quote
 	 * @return  string
@@ -170,7 +170,7 @@ class Database_PDO_SQLite extends Database_PDO
 	public function quote_literal($value)
 	{
 		if (is_object($value) OR is_string($value))
-			return $this->escape($value);
+			return $this->escape_literal($value);
 
 		return parent::quote_literal($value);
 	}

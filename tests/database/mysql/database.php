@@ -430,8 +430,9 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_MySQL::escape
+	 * @covers  Database_MySQL::escape_literal
 	 * @covers  Database_MySQL::quote_literal
+	 *
 	 * @dataProvider    provider_quote_literal
 	 *
 	 * @param   mixed   $value

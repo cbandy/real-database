@@ -154,6 +154,7 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_PDO::escape_literal
 	 * @covers  Database_PDO_SQLite::quote_literal
 	 *
 	 * @dataProvider provider_quote_literal

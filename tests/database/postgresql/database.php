@@ -520,8 +520,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL::escape
+	 * @covers  Database_PostgreSQL::escape_literal
 	 * @covers  Database_PostgreSQL::quote_literal
+	 *
 	 * @dataProvider    provider_quote_literal
 	 *
 	 * @param   mixed   $value

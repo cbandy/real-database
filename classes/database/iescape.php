@@ -11,11 +11,11 @@
 interface Database_iEscape
 {
 	/**
-	 * Quote a value while escaping characters that could cause a SQL injection
-	 * attack
+	 * Quote a literal value while escaping characters that could cause a SQL
+	 * injection attack.
 	 *
-	 * @param   mixed   $value  Value to quote
+	 * @param   mixed   $value  Literal value to quote
 	 * @return  string
 	 */
-	public function escape($value);
+	public function escape_literal($value);
 }

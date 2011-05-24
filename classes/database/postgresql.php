@@ -852,15 +852,15 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Quote a value while escaping characters that could cause a SQL injection
-	 * attack.
+	 * Quote a literal value while escaping characters that could cause a SQL
+	 * injection attack.
 	 *
 	 * @link http://archives.postgresql.org/pgsql-php/2007-02/msg00014.php
 	 *
-	 * @param   mixed   $value  Value to quote
+	 * @param   mixed   $value  Literal value to quote
 	 * @return  string
 	 */
-	public function escape($value)
+	public function escape_literal($value)
 	{
 		$this->_connection or $this->connect();
 
@@ -1118,9 +1118,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query
+	 * Quote a literal value for inclusion in a SQL query.
 	 *
-	 * @uses Database_PostgreSQL::escape()
+	 * @uses Database_PostgreSQL::escape_literal()
 	 *
 	 * @param   mixed   $value  Value to quote
 	 * @return  string
@@ -1128,7 +1128,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	public function quote_literal($value)
 	{
 		if (is_object($value) OR is_string($value))
-			return $this->escape($value);
+			return $this->escape_literal($value);
 
 		return parent::quote_literal($value);
 	}
