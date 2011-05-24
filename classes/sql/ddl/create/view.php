@@ -36,15 +36,8 @@ class SQL_DDL_Create_View extends SQL_Expression
 	{
 		parent::__construct('');
 
-		if ($name !== NULL)
-		{
-			$this->name($name);
-		}
-
-		if ($query !== NULL)
-		{
-			$this->query($query);
-		}
+		$this->name($name);
+		$this->query($query);
 	}
 
 	public function __toString()
@@ -79,42 +72,56 @@ class SQL_DDL_Create_View extends SQL_Expression
 	}
 
 	/**
-	 * Append one column to be included in the view
+	 * Append one column or expression to be included in the view.
 	 *
-	 * @param   mixed   $column Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column Converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function column($column)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
+			$this->parameters[':columns'] = array();
 		}
-
-		$this->parameters[':columns'][] = $column;
-
-		return $this;
-	}
-
-	/**
-	 * Set the columns to be included in the view
-	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
-	 * @return  $this
-	 */
-	public function columns($columns)
-	{
-		foreach ($columns as & $column)
+		else
 		{
 			if ( ! $column instanceof SQL_Expression
 				AND ! $column instanceof SQL_Identifier)
 			{
 				$column = new SQL_Column($column);
 			}
+
+			$this->parameters[':columns'][] = $column;
 		}
 
-		$this->parameters[':columns'] = $columns;
+		return $this;
+	}
+
+	/**
+	 * Append multiple columns and/or expressions to be included in the view.
+	 *
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @return  $this
+	 */
+	public function columns($columns)
+	{
+		if ($columns === NULL)
+		{
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
+			{
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				$this->parameters[':columns'][] = $column;
+			}
+		}
 
 		return $this;
 	}

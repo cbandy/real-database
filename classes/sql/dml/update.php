@@ -92,50 +92,57 @@ class SQL_DML_Update extends SQL_Expression
 	}
 
 	/**
-	 * Append multiple column assignments
+	 * Append multiple column assignments.
 	 *
-	 * @param   mixed   $values Hash of (column => value) assignments
+	 * @param   array   $values Hash of (column => value) assignments or NULL to reset
 	 * @return  $this
 	 */
 	public function set($values)
 	{
-		if (is_array($values))
-		{
-			foreach ($values as $column => $value)
-			{
-				$column = new SQL_Column($column);
-
-				$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
-			}
-		}
-		elseif ($values === NULL)
+		if ($values === NULL)
 		{
 			$this->parameters[':values'] = array();
 		}
 		else
 		{
-			$this->parameters[':values'] = $values;
+			foreach ($values as $column => $value)
+			{
+				$column = new SQL_Column($column);
+
+				$this->parameters[':values'][] = new SQL_Expression(
+					'? = ?', array($column, $value)
+				);
+			}
 		}
 
 		return $this;
 	}
 
 	/**
-	 * Append a column assignment
+	 * Append a column assignment.
 	 *
-	 * @param   mixed   $column Converted to SQL_Column
-	 * @param   mixed   $value  Value assigned to the column
+	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column Converted to SQL_Column or NULL to reset
+	 * @param   mixed                                       $value  Value assigned to the column
 	 * @return  $this
 	 */
 	public function value($column, $value)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
+			$this->parameters[':values'] = array();
 		}
+		else
+		{
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
+			{
+				$column = new SQL_Column($column);
+			}
 
-		$this->parameters[':values'][] = new SQL_Expression('? = ?', array($column, $value));
+			$this->parameters[':values'][] = new SQL_Expression(
+				'? = ?', array($column, $value)
+			);
+		}
 
 		return $this;
 	}
@@ -205,15 +212,18 @@ class SQL_DML_Update extends SQL_Expression
 	/**
 	 * Append multiple columns or expressions to be returned when executed.
 	 *
-	 * [!!] Not supported by MySQL
-	 * [!!] Not supported by SQLite
+	 * [!!] Not supported by MySQL or SQLite
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
 	 * @return  $this
 	 */
 	public function returning($columns)
 	{
-		if (is_array($columns))
+		if ($columns === NULL)
+		{
+			$this->parameters[':returning'] = array();
+		}
+		else
 		{
 			foreach ($columns as $alias => $column)
 			{
@@ -230,14 +240,6 @@ class SQL_DML_Update extends SQL_Expression
 
 				$this->parameters[':returning'][] = $column;
 			}
-		}
-		elseif ($columns === NULL)
-		{
-			$this->parameters[':returning'] = array();
-		}
-		else
-		{
-			$this->parameters[':returning'] = $columns;
 		}
 
 		return $this;

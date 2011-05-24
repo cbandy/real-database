@@ -141,7 +141,14 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 				array(new SQL_Column('a'), new SQL_Column('b')),
 			),
 
-			array(new SQL_Expression('expr'), new SQL_Expression('expr')),
+			array(
+				array(new SQL_Expression('a')),
+				array(new SQL_Expression('a')),
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+			),
 		);
 	}
 

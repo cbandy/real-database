@@ -66,26 +66,30 @@ class SQL_DML_Insert extends SQL_Expression
 	}
 
 	/**
-	 * Set the list of columns to be populated with values
+	 * Append multiple columns to be populated with values.
 	 *
-	 * @param   array|NULL  $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)
 	{
-		if ($columns !== NULL)
+		if ($columns === NULL)
 		{
-			foreach ($columns as & $column)
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
 			{
 				if ( ! $column instanceof SQL_Expression
 					AND ! $column instanceof SQL_Identifier)
 				{
 					$column = new SQL_Column($column);
 				}
+
+				$this->parameters[':columns'][] = $column;
 			}
 		}
-
-		$this->parameters[':columns'] = $columns;
 
 		return $this;
 	}
@@ -110,17 +114,20 @@ class SQL_DML_Insert extends SQL_Expression
 	}
 
 	/**
-	 * Append multiple columns or expressions to be returned when executed.
+	 * Append multiple columns and/or expressions to be returned when executed.
 	 *
-	 * [!!] Not supported by MySQL
-	 * [!!] Not supported by SQLite
+	 * [!!] Not supported by MySQL or SQLite
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
 	 * @return  $this
 	 */
 	public function returning($columns)
 	{
-		if (is_array($columns))
+		if ($columns === NULL)
+		{
+			$this->parameters[':returning'] = array();
+		}
+		else
 		{
 			foreach ($columns as $alias => $column)
 			{
@@ -137,14 +144,6 @@ class SQL_DML_Insert extends SQL_Expression
 
 				$this->parameters[':returning'][] = $column;
 			}
-		}
-		elseif ($columns === NULL)
-		{
-			$this->parameters[':returning'] = array();
-		}
-		else
-		{
-			$this->parameters[':returning'] = $columns;
 		}
 
 		return $this;

@@ -18,24 +18,29 @@
 class SQL_DML_Select extends SQL_Expression
 {
 	/**
-	 * @uses SQL_DML_Select::select()
+	 * @var boolean Whether or not rows should be unique
+	 */
+	protected $_distinct;
+
+	/**
+	 * @uses SQL_DML_Select::columns()
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs
 	 */
 	public function __construct($columns = NULL)
 	{
 		parent::__construct('');
 
-		$this->select($columns);
+		$this->columns($columns);
 	}
 
 	public function __toString()
 	{
 		$value = 'SELECT';
 
-		if ( ! empty($this->parameters[':distinct']))
+		if ($this->_distinct)
 		{
-			$value .= ' :distinct';
+			$value .= ' DISTINCT';
 		}
 
 		$value .= ' :columns';
@@ -82,26 +87,67 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Append one column or expression to be selected
+	 * Append one column or expression to be selected.
 	 *
-	 * @param   mixed   $column Converted to SQL_Column
-	 * @param   string  $alias  Column alias
+	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column Converted to SQL_Column or NULL to reset
+	 * @param   string                                      $alias  Column alias
 	 * @return  $this
 	 */
 	public function column($column, $alias = NULL)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
+			{
+				$column = new SQL_Column($column);
+			}
+
+			if ($alias)
+			{
+				$column = new SQL_Alias($column, $alias);
+			}
+
+			$this->parameters[':columns'][] = $column;
 		}
 
-		if ($alias)
-		{
-			$column = new SQL_Alias($column, $alias);
-		}
+		return $this;
+	}
 
-		$this->parameters[':columns'][] = $column;
+	/**
+	 * Append multiple columns and/or expressions to be selected.
+	 *
+	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
+	 * @return  $this
+	 */
+	public function columns($columns)
+	{
+		if ($columns === NULL)
+		{
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			foreach ($columns as $alias => $column)
+			{
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				if (is_string($alias) AND $alias)
+				{
+					$column = new SQL_Alias($column, $alias);
+				}
+
+				$this->parameters[':columns'][] = $column;
+			}
+		}
 
 		return $this;
 	}
@@ -114,7 +160,7 @@ class SQL_DML_Select extends SQL_Expression
 	 */
 	public function distinct($value = TRUE)
 	{
-		$this->parameters[':distinct'] = $value ? new SQL_Expression('DISTINCT') : FALSE;
+		$this->_distinct = $value;
 
 		return $this;
 	}
@@ -139,23 +185,31 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Set the columns by which rows should be grouped
+	 * Append multiple columns and/or expressions by which rows should be
+	 * grouped.
 	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
 	 * @return  $this
 	 */
 	public function group_by($columns)
 	{
-		foreach ($columns as & $column)
+		if ($columns === NULL)
 		{
-			if ( ! $column instanceof SQL_Expression
-				AND ! $column instanceof SQL_Identifier)
+			$this->parameters[':groupby'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
 			{
-				$column = new SQL_Column($column);
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				$this->parameters[':groupby'][] = $column;
 			}
 		}
-
-		$this->parameters[':groupby'] = $columns;
 
 		return $this;
 	}
@@ -214,65 +268,34 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Append a column or expression by which rows should be sorted
+	 * Append a column or expression by which rows should be sorted.
 	 *
-	 * @param   mixed   $column     Converted to SQL_Column
-	 * @param   mixed   $direction  Direction of sort
+	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column     Converted to SQL_Column or NULL to reset
+	 * @param   string|SQL_Expression                       $direction  Direction of sort
 	 * @return  $this
 	 */
 	public function order_by($column, $direction = NULL)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
-		}
-
-		if ($direction)
-		{
-			$column = ($direction instanceof SQL_Expression)
-				? new SQL_Expression('? ?', array($column, $direction))
-				: new SQL_Expression('? '.strtoupper($direction), array($column));
-		}
-
-		$this->parameters[':orderby'][] = $column;
-
-		return $this;
-	}
-
-	/**
-	 * Append multiple columns or expressions to be selected
-	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
-	 * @return  $this
-	 */
-	public function select($columns)
-	{
-		if (is_array($columns))
-		{
-			foreach ($columns as $alias => $column)
-			{
-				if ( ! $column instanceof SQL_Expression
-					AND ! $column instanceof SQL_Identifier)
-				{
-					$column = new SQL_Column($column);
-				}
-
-				if (is_string($alias) AND $alias !== '')
-				{
-					$column = new SQL_Alias($column, $alias);
-				}
-
-				$this->parameters[':columns'][] = $column;
-			}
-		}
-		elseif ($columns === NULL)
-		{
-			$this->parameters[':columns'] = array();
+			$this->parameters[':orderby'] = array();
 		}
 		else
 		{
-			$this->parameters[':columns'] = $columns;
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
+			{
+				$column = new SQL_Column($column);
+			}
+
+			if ($direction)
+			{
+				$column = ($direction instanceof SQL_Expression)
+					? new SQL_Expression('? ?', array($column, $direction))
+					: new SQL_Expression('? '.strtoupper($direction), array($column));
+			}
+
+			$this->parameters[':orderby'][] = $column;
 		}
 
 		return $this;

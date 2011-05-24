@@ -78,12 +78,12 @@ abstract class Database
 	/**
 	 * Create a CREATE INDEX statement.
 	 *
-	 * @param   mixed   $name       Converted to SQL_Identifier
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   mixed                   $name       Converted to SQL_Identifier
+	 * @param   mixed                   $table      Converted to SQL_Table
+	 * @param   array|SQL_Expression    $columns    List of columns converted to SQL_Column
 	 * @return  SQL_DDL_Create_Index
 	 */
-	public static function create_index($name = NULL, $table = NULL, $columns = array())
+	public static function create_index($name = NULL, $table = NULL, $columns = NULL)
 	{
 		return new SQL_DDL_Create_Index($name, $table, $columns);
 	}
@@ -154,7 +154,7 @@ abstract class Database
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Foreign
 	 */
-	public static function ddl_foreign($table = NULL, $columns = array())
+	public static function ddl_foreign($table = NULL, $columns = NULL)
 	{
 		return new SQL_DDL_Constraint_Foreign($table, $columns);
 	}
@@ -165,7 +165,7 @@ abstract class Database
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Primary
 	 */
-	public static function ddl_primary($columns = array())
+	public static function ddl_primary($columns = NULL)
 	{
 		return new SQL_DDL_Constraint_Primary($columns);
 	}
@@ -176,7 +176,7 @@ abstract class Database
 	 * @param   array   $columns    Each element converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Unique
 	 */
-	public static function ddl_unique($columns = array())
+	public static function ddl_unique($columns = NULL)
 	{
 		return new SQL_DDL_Constraint_Unique($columns);
 	}

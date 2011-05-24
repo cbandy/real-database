@@ -24,7 +24,7 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 			->order_by('e');
 
 		$this->assertSame(
-			'SELECT :distinct :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby',
+			'SELECT DISTINCT :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby',
 			(string) $statement
 		);
 	}

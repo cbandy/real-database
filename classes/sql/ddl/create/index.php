@@ -20,24 +20,16 @@ class SQL_DDL_Create_Index extends SQL_Expression
 	 * @uses SQL_DDL_Create_Index::name()
 	 * @uses SQL_DDL_Create_Index::on()
 	 *
-	 * @param   mixed   $name       Converted to SQL_Identifier
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   mixed                   $name       Converted to SQL_Identifier
+	 * @param   mixed                   $table      Converted to SQL_Table
+	 * @param   array|SQL_Expression    $columns    List of columns converted to SQL_Column
 	 */
-	public function __construct($name = NULL, $table = NULL, $columns = array())
+	public function __construct($name = NULL, $table = NULL, $columns = NULL)
 	{
 		parent::__construct('');
 
-		if ($name !== NULL)
-		{
-			$this->name($name);
-		}
-
-		if ($table !== NULL)
-		{
-			$this->on($table);
-		}
-
+		$this->name($name);
+		$this->on($table);
 		$this->columns($columns);
 	}
 
@@ -107,48 +99,65 @@ class SQL_DDL_Create_Index extends SQL_Expression
 	}
 
 	/**
-	 * Append one column or expression to be included in the index
+	 * Append one column or expression to be included in the index.
 	 *
-	 * @param   mixed   $column     Converted to SQL_Column
-	 * @param   string  $direction  Direction to sort, ASC or DESC
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column     Converted to SQL_Column or NULL to reset
+	 * @param   string                                      $direction  Direction to sort, ASC or DESC
 	 * @return  $this
 	 */
 	public function column($column, $direction = NULL)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
+			$this->parameters[':columns'] = array();
 		}
-
-		if ($direction)
-		{
-			$column = new SQL_Expression('? '.strtoupper($direction), array($column));
-		}
-
-		$this->parameters[':columns'][] = $column;
-
-		return $this;
-	}
-
-	/**
-	 * Set the columns and/or expressions to be included in the index
-	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
-	 * @return  $this
-	 */
-	public function columns($columns)
-	{
-		foreach ($columns as & $column)
+		else
 		{
 			if ( ! $column instanceof SQL_Expression
 				AND ! $column instanceof SQL_Identifier)
 			{
 				$column = new SQL_Column($column);
 			}
+
+			if ($direction)
+			{
+				$column = new SQL_Expression(
+					'? '.strtoupper($direction),
+					array($column)
+				);
+			}
+
+			$this->parameters[':columns'][] = $column;
 		}
 
-		$this->parameters[':columns'] = $columns;
+		return $this;
+	}
+
+	/**
+	 * Append columns and/or expressions to be included in the index.
+	 *
+	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @return  $this
+	 */
+	public function columns($columns)
+	{
+		if ($columns === NULL)
+		{
+			$this->parameters[':columns'] = array();
+		}
+		else
+		{
+			foreach ($columns as $column)
+			{
+				if ( ! $column instanceof SQL_Expression
+					AND ! $column instanceof SQL_Identifier)
+				{
+					$column = new SQL_Column($column);
+				}
+
+				$this->parameters[':columns'][] = $column;
+			}
+		}
 
 		return $this;
 	}

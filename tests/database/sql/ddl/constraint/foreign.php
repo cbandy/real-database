@@ -8,34 +8,104 @@
  */
 class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCase
 {
+	public function provider_constructor()
+	{
+		return array(
+			array(array(), 'REFERENCES "pre_"'),
+			array(array('a'), 'REFERENCES "pre_a"'),
+			array(array('a', array('b')), 'REFERENCES "pre_a" ("b")'),
+			array(array('a', array('b', 'c')), 'REFERENCES "pre_a" ("b", "c")'),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DDL_Constraint_Foreign::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_constructor()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('REFERENCES "pre_a"', $db->quote(new SQL_DDL_Constraint_Foreign('a')));
-		$this->assertSame('REFERENCES "pre_a" ("b")', $db->quote(new SQL_DDL_Constraint_Foreign('a', array('b'))));
+		$class = new ReflectionClass('SQL_DDL_Constraint_Foreign');
+		$constraint = $class->newInstanceArgs($arguments);
+
+		$this->assertSame($expected, $db->quote($constraint));
+	}
+
+	public function provider_columns()
+	{
+		return array(
+			array(NULL, 'REFERENCES ""'),
+
+			array(
+				array('a'),
+				'REFERENCES "" ("a")',
+			),
+			array(
+				array('a', 'b'),
+				'REFERENCES "" ("a", "b")',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'REFERENCES "" ("a")',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'REFERENCES "" ("a", "b")',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'REFERENCES "" (a)',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'REFERENCES "" (a, b)',
+			),
+		);
 	}
 
 	/**
 	 * @covers  SQL_DDL_Constraint_Foreign::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_columns()
+	public function test_columns($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$constraint = new SQL_DDL_Constraint_Foreign;
 
-		$constraint = new SQL_DDL_Constraint_Foreign('a');
+		$this->assertSame($constraint, $constraint->columns($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($constraint));
+	}
 
-		$this->assertSame($constraint, $constraint->columns(array('b')), 'Chainable');
-		$this->assertSame('REFERENCES "pre_a" ("b")', $db->quote($constraint));
+	/**
+	 * @covers  SQL_DDL_Constraint_Foreign::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_columns_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$constraint = new SQL_DDL_Constraint_Foreign;
+		$constraint->columns($value);
+
+		$constraint->columns(NULL);
+
+		$this->assertSame('REFERENCES ""', $db->quote($constraint));
 	}
 
 	/**
@@ -101,20 +171,73 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 		$this->assertSame('REFERENCES "pre_a" ON DELETE CASCADE ON UPDATE SET DEFAULT', $db->quote($constraint));
 	}
 
+	public function provider_referencing()
+	{
+		return array(
+			array(NULL, 'REFERENCES ""'),
+
+			array(
+				array('a'),
+				'FOREIGN KEY ("a") REFERENCES ""',
+			),
+			array(
+				array('a', 'b'),
+				'FOREIGN KEY ("a", "b") REFERENCES ""',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'FOREIGN KEY ("a") REFERENCES ""',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'FOREIGN KEY ("a", "b") REFERENCES ""',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'FOREIGN KEY (a) REFERENCES ""',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'FOREIGN KEY (a, b) REFERENCES ""',
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DDL_Constraint_Foreign::referencing
+	 *
+	 * @dataProvider    provider_referencing
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_referencing()
+	public function test_referencing($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$constraint = new SQL_DDL_Constraint_Foreign;
 
-		$constraint = new SQL_DDL_Constraint_Foreign('a');
+		$this->assertSame($constraint, $constraint->referencing($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($constraint));
+	}
 
-		$this->assertSame($constraint, $constraint->referencing(array('b')));
-		$this->assertSame('FOREIGN KEY ("b") REFERENCES "pre_a"', $db->quote($constraint));
+	/**
+	 * @covers  SQL_DDL_Constraint_Foreign::referencing
+	 *
+	 * @dataProvider    provider_referencing
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_referencing_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$constraint = new SQL_DDL_Constraint_Foreign;
+		$constraint->referencing($value);
+
+		$constraint->referencing(NULL);
+
+		$this->assertSame('REFERENCES ""', $db->quote($constraint));
 	}
 
 	/**

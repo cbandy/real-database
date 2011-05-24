@@ -39,20 +39,73 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES', $db->quote($command));
 	}
 
+	public function provider_columns()
+	{
+		return array(
+			array(NULL, 'INSERT INTO "" DEFAULT VALUES'),
+
+			array(
+				array('a'),
+				'INSERT INTO "" ("a") DEFAULT VALUES',
+			),
+			array(
+				array('a', 'b'),
+				'INSERT INTO "" ("a", "b") DEFAULT VALUES',
+			),
+
+			array(
+				array(new SQL_Column('a')),
+				'INSERT INTO "" ("a") DEFAULT VALUES',
+			),
+			array(
+				array(new SQL_Column('a'), new SQL_Column('b')),
+				'INSERT INTO "" ("a", "b") DEFAULT VALUES',
+			),
+
+			array(
+				array(new SQL_Expression('a')),
+				'INSERT INTO "" (a) DEFAULT VALUES',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'INSERT INTO "" (a, b) DEFAULT VALUES',
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Insert::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_columns()
+	public function test_columns($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$statement = new SQL_DML_Insert;
 
-		$command = new SQL_DML_Insert('a');
+		$this->assertSame($statement, $statement->columns($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
 
-		$this->assertSame($command, $command->columns(array('b', new SQL_Expression('c'), new SQL_Column('d'))), 'Chainable (array)');
-		$this->assertSame('INSERT INTO "pre_a" ("b", c, "d") DEFAULT VALUES', $db->quote($command));
+	/**
+	 * @covers  SQL_DML_Insert::columns
+	 *
+	 * @dataProvider    provider_columns
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_columns_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$statement = new SQL_DML_Insert;
+		$statement->columns($value);
+
+		$statement->columns(NULL);
+
+		$this->assertSame('INSERT INTO "" DEFAULT VALUES', $db->quote($statement));
 	}
 
 	/**
@@ -135,7 +188,22 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a", "d" AS "c"',
 			),
 
-			array(new SQL_Expression('expr'), 'INSERT INTO "" DEFAULT VALUES RETURNING expr'),
+			array(
+				array(new SQL_Expression('a')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING a',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING a, b',
+			),
+			array(
+				array('a' => new SQL_Expression('b')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING b AS "a"',
+			),
+			array(
+				array('a' => new SQL_Expression('b'), 'c' => new SQL_Expression('d')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING b AS "a", d AS "c"',
+			),
 		);
 	}
 

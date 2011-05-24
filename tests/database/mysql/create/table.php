@@ -41,17 +41,59 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame("CREATE TABLE $table LIKE $like", $db->quote($command));
 	}
 
+	public function provider_options()
+	{
+		return array(
+			array(NULL, 'CREATE TABLE ``'),
+
+			array(
+				array('a' => 'b'),
+				"CREATE TABLE `` a 'b'",
+			),
+			array(
+				array('ENGINE' => 'InnoDB'),
+				"CREATE TABLE `` ENGINE 'InnoDB'",
+			),
+			array(
+				array('AUTO_INCREMENT' => 5),
+				'CREATE TABLE `` AUTO_INCREMENT 5',
+			),
+		);
+	}
+
 	/**
 	 * @covers  Database_MySQL_Create_Table::options
+	 *
+	 * @dataProvider    provider_options
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_options()
+	public function test_options($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
-		$command = new Database_MySQL_Create_Table('a');
-		$table = $db->quote_table('a');
+		$statement = new Database_MySQL_Create_Table;
 
-		$this->assertSame($command, $command->options(array('ENGINE' => 'InnoDB', 'AUTO_INCREMENT' => 5)));
-		$this->assertSame("CREATE TABLE $table ENGINE 'InnoDB', AUTO_INCREMENT 5", $db->quote($command));
+		$this->assertSame($statement, $statement->options($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  Database_MySQL_Create_Table::options
+	 *
+	 * @dataProvider    provider_options
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_options_reset($value)
+	{
+		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$statement = new Database_MySQL_Create_Table;
+		$statement->options($value);
+
+		$statement->options(NULL);
+
+		$this->assertSame('CREATE TABLE ``', $db->quote($statement));
 	}
 
 	/**

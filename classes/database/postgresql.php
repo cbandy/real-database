@@ -49,12 +49,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	/**
 	 * Create a CREATE INDEX statement.
 	 *
-	 * @param   mixed   $name       Converted to SQL_Identifier
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   mixed                   $name       Converted to SQL_Identifier
+	 * @param   mixed                   $table      Converted to SQL_Table
+	 * @param   array|SQL_Expression    $columns    List of columns converted to SQL_Column
 	 * @return  Database_PostgreSQL_Create_Index
 	 */
-	public static function create_index($name = NULL, $table = NULL, $columns = array())
+	public static function create_index($name = NULL, $table = NULL, $columns = NULL)
 	{
 		return new Database_PostgreSQL_Create_Index($name, $table, $columns);
 	}

@@ -169,8 +169,11 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 		$command
 			->where(new SQL_Conditions)
 			->limit(1)
-			->returning('a');
+			->returning(array('a'));
 
-		$this->assertSame('UPDATE :table SET :values WHERE ctid IN (SELECT ctid FROM :table WHERE :where LIMIT :limit) RETURNING :returning', (string) $command);
+		$this->assertSame(
+			'UPDATE :table SET :values WHERE ctid IN (SELECT ctid FROM :table WHERE :where LIMIT :limit) RETURNING :returning',
+			(string) $command
+		);
 	}
 }

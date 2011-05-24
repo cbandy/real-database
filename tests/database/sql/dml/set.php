@@ -265,6 +265,9 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($query, $query->order_by('y', new SQL_Expression('USING something')), 'Chainable (string, expression)');
 		$this->assertSame('(a) ORDER BY "x", other ASC, "y" USING something', $db->quote($query));
+
+		$this->assertSame($query, $query->order_by(NULL), 'Chainable (NULL)');
+		$this->assertSame('(a)', $db->quote($query));
 	}
 
 	/**

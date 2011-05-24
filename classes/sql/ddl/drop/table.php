@@ -25,46 +25,57 @@ class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 	}
 
 	/**
-	 * Set the name of the table to be dropped
+	 * Append the name of a table to be dropped.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table or NULL to reset
 	 * @return  $this
 	 */
 	public function name($table)
 	{
-		if ( ! $table instanceof SQL_Expression
-			AND ! $table instanceof SQL_Identifier)
+		if ($table === NULL)
 		{
-			$table = new SQL_Table($table);
+			$this->parameters[':names'] = array();
 		}
+		else
+		{
+			if ( ! $table instanceof SQL_Expression
+				AND ! $table instanceof SQL_Identifier)
+			{
+				$table = new SQL_Table($table);
+			}
 
-		$this->parameters[':name'] = $table;
+			$this->parameters[':names'][] = $table;
+		}
 
 		return $this;
 	}
 
 	/**
-	 * Set the names of multiple tables to be dropped
+	 * Append the names of multiple tables to be dropped.
 	 *
-	 * @param   mixed|NULL  $tables Each element converted to SQL_Table
+	 * @param   array   $tables List of names converted to SQL_Table or NULL to reset
 	 * @return  $this
 	 */
 	public function names($tables)
 	{
-		if (is_array($tables))
+		if ($tables === NULL)
+		{
+			$this->parameters[':names'] = array();
+		}
+		else
 		{
 			// SQLite allows only one
-			foreach ($tables as & $table)
+			foreach ($tables as $table)
 			{
 				if ( ! $table instanceof SQL_Expression
 					AND ! $table instanceof SQL_Identifier)
 				{
 					$table = new SQL_Table($table);
 				}
+
+				$this->parameters[':names'][] = $table;
 			}
 		}
-
-		$this->parameters[':name'] = $tables;
 
 		return $this;
 	}
