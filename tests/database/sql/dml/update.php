@@ -8,22 +8,39 @@
  */
 class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 {
+	public function provider_constructor()
+	{
+		return array(
+			array(array(), 'UPDATE "pre_" SET '),
+			array(array('a'), 'UPDATE "pre_a" SET '),
+			array(array('a', 'b'), 'UPDATE "pre_a" AS "b" SET '),
+
+			array(
+				array('a', 'b', array('c' => 'd')),
+				'UPDATE "pre_a" AS "b" SET "c" = \'d\'',
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Update::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_constructor()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('UPDATE "pre_" SET ',                 $db->quote(new SQL_DML_Update));
-		$this->assertSame('UPDATE "pre_a" SET ',                $db->quote(new SQL_DML_Update('a')));
-		$this->assertSame('UPDATE "pre_b" AS "c" SET ',         $db->quote(new SQL_DML_Update('b', 'c')));
-		$this->assertSame('UPDATE "pre_d" AS "e" SET "f" = 0',  $db->quote(new SQL_DML_Update('d', 'e', array('f' => 0))));
-		$this->assertSame('UPDATE "pre_g" SET "h" = 1',         $db->quote(new SQL_DML_Update('g', NULL, array('h' => 1))));
-		$this->assertSame('UPDATE "pre_" SET "i" = 2',          $db->quote(new SQL_DML_Update(NULL, NULL, array('i' => 2))));
+		$class = new ReflectionClass('SQL_DML_Update');
+		$statement = $class->newInstanceArgs($arguments);
+
+		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**

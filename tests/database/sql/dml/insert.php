@@ -8,19 +8,42 @@
  */
 class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 {
+	public function provider_constructor()
+	{
+		return array(
+			array(array(), 'INSERT INTO "pre_" DEFAULT VALUES'),
+			array(array('a'), 'INSERT INTO "pre_a" DEFAULT VALUES'),
+
+			array(
+				array('a', array('b')),
+				'INSERT INTO "pre_a" ("b") DEFAULT VALUES',
+			),
+			array(
+				array('a', array('b', 'c')),
+				'INSERT INTO "pre_a" ("b", "c") DEFAULT VALUES',
+			),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Insert::__construct
+	 *
+	 * @dataProvider    provider_constructor
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
 	 */
-	public function test_constructor()
+	public function test_constructor($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
 
-		$this->assertSame('INSERT INTO "pre_" DEFAULT VALUES',          $db->quote(new SQL_DML_Insert));
-		$this->assertSame('INSERT INTO "pre_a" DEFAULT VALUES',         $db->quote(new SQL_DML_Insert('a')));
-		$this->assertSame('INSERT INTO "pre_a" ("b") DEFAULT VALUES',   $db->quote(new SQL_DML_Insert('a', array('b'))));
+		$class = new ReflectionClass('SQL_DML_Insert');
+		$statement = $class->newInstanceArgs($arguments);
+
+		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**

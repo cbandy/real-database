@@ -28,7 +28,8 @@ class SQL_DML_Insert extends SQL_Expression
 	{
 		parent::__construct('');
 
-		$this->into($table)->columns($columns);
+		$this->into($table);
+		$this->columns($columns);
 	}
 
 	public function __toString()

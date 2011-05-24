@@ -29,7 +29,8 @@ class SQL_DML_Update extends SQL_Expression
 	{
 		parent::__construct('');
 
-		$this->table($table, $alias)->set($values);
+		$this->table($table, $alias);
+		$this->set($values);
 	}
 
 	public function __toString()
