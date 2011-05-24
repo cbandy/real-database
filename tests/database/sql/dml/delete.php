@@ -154,7 +154,22 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 				'DELETE FROM "" RETURNING "b" AS "a", "d" AS "c"',
 			),
 
-			array(new SQL_Expression('expr'), 'DELETE FROM "" RETURNING expr'),
+			array(
+				array(new SQL_Expression('a')),
+				'DELETE FROM "" RETURNING a',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'DELETE FROM "" RETURNING a, b',
+			),
+			array(
+				array('a' => new SQL_Expression('b')),
+				'DELETE FROM "" RETURNING b AS "a"',
+			),
+			array(
+				array('a' => new SQL_Expression('b'), 'c' => new SQL_Expression('d')),
+				'DELETE FROM "" RETURNING b AS "a", d AS "c"',
+			),
 		);
 	}
 
