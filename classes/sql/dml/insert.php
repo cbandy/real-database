@@ -114,17 +114,20 @@ class SQL_DML_Insert extends SQL_Expression
 	}
 
 	/**
-	 * Append multiple columns or expressions to be returned when executed.
+	 * Append multiple columns and/or expressions to be returned when executed.
 	 *
-	 * [!!] Not supported by MySQL
-	 * [!!] Not supported by SQLite
+	 * [!!] Not supported by MySQL or SQLite
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
 	 * @return  $this
 	 */
 	public function returning($columns)
 	{
-		if (is_array($columns))
+		if ($columns === NULL)
+		{
+			$this->parameters[':returning'] = array();
+		}
+		else
 		{
 			foreach ($columns as $alias => $column)
 			{
@@ -141,14 +144,6 @@ class SQL_DML_Insert extends SQL_Expression
 
 				$this->parameters[':returning'][] = $column;
 			}
-		}
-		elseif ($columns === NULL)
-		{
-			$this->parameters[':returning'] = array();
-		}
-		else
-		{
-			$this->parameters[':returning'] = $columns;
 		}
 
 		return $this;

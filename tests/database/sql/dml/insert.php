@@ -188,7 +188,22 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 				'INSERT INTO "" DEFAULT VALUES RETURNING "b" AS "a", "d" AS "c"',
 			),
 
-			array(new SQL_Expression('expr'), 'INSERT INTO "" DEFAULT VALUES RETURNING expr'),
+			array(
+				array(new SQL_Expression('a')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING a',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING a, b',
+			),
+			array(
+				array('a' => new SQL_Expression('b')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING b AS "a"',
+			),
+			array(
+				array('a' => new SQL_Expression('b'), 'c' => new SQL_Expression('d')),
+				'INSERT INTO "" DEFAULT VALUES RETURNING b AS "a", d AS "c"',
+			),
 		);
 	}
 
