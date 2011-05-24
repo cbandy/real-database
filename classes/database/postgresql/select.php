@@ -28,7 +28,7 @@ class Database_PostgreSQL_Select extends Database_Select
 			$value .= ' DISTINCT';
 		}
 
-		$value .= ' :columns';
+		$value .= empty($this->parameters[':columns']) ? ' *' : ' :columns';
 
 		if ( ! empty($this->parameters[':from']))
 		{

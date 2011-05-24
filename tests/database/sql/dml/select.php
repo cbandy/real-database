@@ -11,7 +11,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	public function provider_constructor()
 	{
 		return array(
-			array(array(), 'SELECT '),
+			array(array(), 'SELECT *'),
 			array(array(array('a')), 'SELECT "a"'),
 			array(array(array('a', 'b')), 'SELECT "a", "b"'),
 		);
@@ -35,29 +35,37 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->quote($statement));
 	}
 
+	public function provider_distinct()
+	{
+		return array(
+			array(NULL, 'SELECT *'),
+			array(FALSE, 'SELECT *'),
+			array(TRUE, 'SELECT DISTINCT *'),
+		);
+	}
+
 	/**
 	 * @covers  SQL_DML_Select::distinct
+	 *
+	 * @dataProvider    provider_distinct
+	 *
+	 * @param   boolean $value      Argument
+	 * @param   string  $expected
 	 */
-	public function test_distinct()
+	public function test_distinct($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$query = new SQL_DML_Select;
+		$statement = new SQL_DML_Select;
 
-		$this->assertSame($query, $query->distinct(), 'Chainable (void)');
-		$this->assertSame('SELECT DISTINCT ', $db->quote($query), 'Distinct (void)');
-
-		$this->assertSame($query, $query->distinct(FALSE), 'Chainable (FALSE)');
-		$this->assertSame('SELECT ', $db->quote($query), 'Distinct (FALSE)');
-
-		$this->assertSame($query, $query->distinct(TRUE), 'Chainable (TRUE)');
-		$this->assertSame('SELECT DISTINCT ', $db->quote($query), 'Distinct (TRUE)');
+		$this->assertSame($statement, $statement->distinct($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	public function provider_column()
 	{
 		return array(
-			array(array(NULL), 'SELECT '),
-			array(array(NULL, 'any'), 'SELECT '),
+			array(array(NULL), 'SELECT *'),
+			array(array(NULL, 'any'), 'SELECT *'),
 
 			array(
 				array('a'),
@@ -123,13 +131,13 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 
 		$statement->column(NULL);
 
-		$this->assertSame('SELECT ', $db->quote($statement));
+		$this->assertSame('SELECT *', $db->quote($statement));
 	}
 
 	public function provider_columns()
 	{
 		return array(
-			array(NULL, 'SELECT '),
+			array(NULL, 'SELECT *'),
 
 			array(
 				array('a'),
@@ -219,7 +227,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 
 		$statement->columns(NULL);
 
-		$this->assertSame('SELECT ', $db->quote($statement));
+		$this->assertSame('SELECT *', $db->quote($statement));
 	}
 
 	/**
@@ -253,48 +261,48 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 		$query = new SQL_DML_Select;
 
 		$this->assertSame($query, $query->where(new SQL_Conditions(new SQL_Column('y'), '=', 1)), 'Chainable (conditions)');
-		$this->assertSame('SELECT  WHERE "y" = 1', $db->quote($query));
+		$this->assertSame('SELECT * WHERE "y" = 1', $db->quote($query));
 
 		$this->assertSame($query, $query->where('y', '=', 0), 'Chainable (operands)');
-		$this->assertSame('SELECT  WHERE "y" = 0', $db->quote($query));
+		$this->assertSame('SELECT * WHERE "y" = 0', $db->quote($query));
 
 		$conditions = new SQL_Conditions;
 		$conditions->open(NULL)->add(NULL, new SQL_Column('y'), '=', 0)->close();
 
 		$this->assertSame($query, $query->where($conditions, '=', TRUE), 'Chainable (conditions as operand)');
-		$this->assertSame('SELECT  WHERE ("y" = 0) = \'1\'', $db->quote($query));
+		$this->assertSame('SELECT * WHERE ("y" = 0) = \'1\'', $db->quote($query));
 	}
 
 	public function provider_group_by()
 	{
 		return array(
-			array(NULL, 'SELECT '),
+			array(NULL, 'SELECT *'),
 
 			array(
 				array('a'),
-				'SELECT  GROUP BY "a"',
+				'SELECT * GROUP BY "a"',
 			),
 			array(
 				array('a', 'b'),
-				'SELECT  GROUP BY "a", "b"',
+				'SELECT * GROUP BY "a", "b"',
 			),
 
 			array(
 				array(new SQL_Column('a')),
-				'SELECT  GROUP BY "a"',
+				'SELECT * GROUP BY "a"',
 			),
 			array(
 				array(new SQL_Column('a'), new SQL_Column('b')),
-				'SELECT  GROUP BY "a", "b"',
+				'SELECT * GROUP BY "a", "b"',
 			),
 
 			array(
 				array(new SQL_Expression('a')),
-				'SELECT  GROUP BY a',
+				'SELECT * GROUP BY a',
 			),
 			array(
 				array(new SQL_Expression('a'), new SQL_Expression('b')),
-				'SELECT  GROUP BY a, b',
+				'SELECT * GROUP BY a, b',
 			),
 		);
 	}
@@ -331,7 +339,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 
 		$statement->group_by(NULL);
 
-		$this->assertSame('SELECT ', $db->quote($statement));
+		$this->assertSame('SELECT *', $db->quote($statement));
 	}
 
 	/**
@@ -358,47 +366,47 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	public function provider_order_by()
 	{
 		return array(
-			array(array(NULL), 'SELECT '),
-			array(array(NULL, 'any'), 'SELECT '),
-			array(array(NULL, new SQL_Expression('any')), 'SELECT '),
+			array(array(NULL), 'SELECT *'),
+			array(array(NULL, 'any'), 'SELECT *'),
+			array(array(NULL, new SQL_Expression('any')), 'SELECT *'),
 
 			array(
 				array('a'),
-				'SELECT  ORDER BY "a"',
+				'SELECT * ORDER BY "a"',
 			),
 			array(
 				array('a', 'b'),
-				'SELECT  ORDER BY "a" B',
+				'SELECT * ORDER BY "a" B',
 			),
 			array(
 				array('a', new SQL_Expression('b')),
-				'SELECT  ORDER BY "a" b',
+				'SELECT * ORDER BY "a" b',
 			),
 
 			array(
 				array(new SQL_Column('a')),
-				'SELECT  ORDER BY "a"',
+				'SELECT * ORDER BY "a"',
 			),
 			array(
 				array(new SQL_Column('a'), 'b'),
-				'SELECT  ORDER BY "a" B',
+				'SELECT * ORDER BY "a" B',
 			),
 			array(
 				array(new SQL_Column('a'), new SQL_Expression('b')),
-				'SELECT  ORDER BY "a" b',
+				'SELECT * ORDER BY "a" b',
 			),
 
 			array(
 				array(new SQL_Expression('a')),
-				'SELECT  ORDER BY a'
+				'SELECT * ORDER BY a'
 			),
 			array(
 				array(new SQL_Expression('a'), 'b'),
-				'SELECT  ORDER BY a B'
+				'SELECT * ORDER BY a B'
 			),
 			array(
 				array(new SQL_Expression('a'), new SQL_Expression('b')),
-				'SELECT  ORDER BY a b'
+				'SELECT * ORDER BY a b'
 			),
 		);
 	}
@@ -438,7 +446,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 
 		$statement->order_by(NULL);
 
-		$this->assertSame('SELECT ', $db->quote($statement));
+		$this->assertSame('SELECT *', $db->quote($statement));
 	}
 
 	/**
@@ -486,6 +494,13 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 			->order_by('g')
 			->limit(1)
 			->offset(1);
+
+		$this->assertSame(
+			'SELECT DISTINCT * FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',
+			(string) $statement
+		);
+
+		$statement->column('h');
 
 		$this->assertSame(
 			'SELECT DISTINCT :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',

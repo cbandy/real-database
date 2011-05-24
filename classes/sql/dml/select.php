@@ -43,7 +43,7 @@ class SQL_DML_Select extends SQL_Expression
 			$value .= ' DISTINCT';
 		}
 
-		$value .= ' :columns';
+		$value .= empty($this->parameters[':columns']) ? ' *' : ' :columns';
 
 		if ( ! empty($this->parameters[':from']))
 		{

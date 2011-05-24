@@ -10,8 +10,8 @@ require_once 'PHPUnit/Extensions/Database/TestCase.php';
 abstract class Database_PostgreSQL_TestCase extends PHPUnit_Extensions_Database_TestCase
 {
 	/**
-	 * Return arguments to create a PDO connection based on a PostgreSQL
-	 * configuration array.
+	 * Return arguments to create a PDO connection based on a
+	 * [Database_PostgreSQL] configuration array.
 	 *
 	 * @param   array   $array  Kohana Database_PostgreSQL configuration
 	 * @return  array   Array of arguments to PDO::__construct()
