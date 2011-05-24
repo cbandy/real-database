@@ -22,7 +22,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-abstract class Database
+abstract class Database extends SQL
 {
 	/**
 	 * @var array   Singleton instances
