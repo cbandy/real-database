@@ -299,7 +299,22 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 				'UPDATE "" SET  RETURNING "b" AS "a", "d" AS "c"',
 			),
 
-			array(new SQL_Expression('expr'), 'UPDATE "" SET  RETURNING expr'),
+			array(
+				array(new SQL_Expression('a')),
+				'UPDATE "" SET  RETURNING a',
+			),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'UPDATE "" SET  RETURNING a, b',
+			),
+			array(
+				array('a' => new SQL_Expression('b')),
+				'UPDATE "" SET  RETURNING b AS "a"',
+			),
+			array(
+				array('a' => new SQL_Expression('b'), 'c' => new SQL_Expression('d')),
+				'UPDATE "" SET  RETURNING b AS "a", d AS "c"',
+			),
 		);
 	}
 

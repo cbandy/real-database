@@ -21,8 +21,11 @@ class Database_SQLServer_Update_Test extends PHPUnit_Framework_TestCase
 			->from('c')
 			->where('d', '=', 1)
 			->limit(2)
-			->returning('e');
+			->returning(array('e'));
 
-		$this->assertSame('UPDATE TOP (:limit) :table SET :values OUTPUT :returning FROM :from WHERE :where', (string) $statement);
+		$this->assertSame(
+			'UPDATE TOP (:limit) :table SET :values OUTPUT :returning FROM :from WHERE :where',
+			(string) $statement
+		);
 	}
 }
