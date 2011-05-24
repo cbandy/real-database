@@ -207,28 +207,35 @@ class SQL_DML_Set extends SQL_Expression
 	}
 
 	/**
-	 * Append a column or expression by which rows should be sorted
+	 * Append a column or expression by which rows should be sorted.
 	 *
-	 * @param   mixed   $column     Converted to SQL_Column
-	 * @param   mixed   $direction  Direction of sort
+	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column     Converted to SQL_Column or NULL to reset
+	 * @param   string|SQL_Expression                       $direction  Direction of sort
 	 * @return  $this
 	 */
 	public function order_by($column, $direction = NULL)
 	{
-		if ( ! $column instanceof SQL_Expression
-			AND ! $column instanceof SQL_Identifier)
+		if ($column === NULL)
 		{
-			$column = new SQL_Column($column);
+			$this->parameters[':orderby'] = array();
 		}
-
-		if ($direction)
+		else
 		{
-			$column = ($direction instanceof SQL_Expression)
-				? new SQL_Expression('? ?', array($column, $direction))
-				: new SQL_Expression('? '.strtoupper($direction), array($column));
-		}
+			if ( ! $column instanceof SQL_Expression
+				AND ! $column instanceof SQL_Identifier)
+			{
+				$column = new SQL_Column($column);
+			}
 
-		$this->parameters[':orderby'][] = $column;
+			if ($direction)
+			{
+				$column = ($direction instanceof SQL_Expression)
+					? new SQL_Expression('? ?', array($column, $direction))
+					: new SQL_Expression('? '.strtoupper($direction), array($column));
+			}
+
+			$this->parameters[':orderby'][] = $column;
+		}
 
 		return $this;
 	}
