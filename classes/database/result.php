@@ -240,17 +240,26 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Return the row at the specified offset
+	 * Return the row at the specified offset. Returns NULL if the offset does
+	 * not exist.
 	 *
 	 * @link http://php.net/manual/arrayaccess.offsetget ArrayAccess::offsetGet()
 	 *
-	 * @throws  OutOfBoundsException
 	 * @param   integer $offset
 	 * @return  mixed
 	 */
 	public function offsetGet($offset)
 	{
-		return $this->seek($offset)->current();
+		try
+		{
+			$this->seek($offset);
+		}
+		catch (OutOfBoundsException $e)
+		{
+			return NULL;
+		}
+
+		return $this->current();
 	}
 
 	/**

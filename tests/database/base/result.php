@@ -313,9 +313,7 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			array(FALSE, $count)
 		);
 
-		$this->setExpectedException('OutOfBoundsException');
-
-		$result->offsetGet(-1);
+		$this->assertNull($result->offsetGet(-1));
 	}
 
 	/**
@@ -333,9 +331,7 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 			array(FALSE, $count)
 		);
 
-		$this->setExpectedException('OutOfBoundsException');
-
-		$result->offsetGet($position);
+		$this->assertNull($result->offsetGet($position));
 	}
 
 	/**
