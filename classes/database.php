@@ -234,12 +234,11 @@ abstract class Database extends SQL
 	 * it is passed directly.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string          $name   Connection name
-	 * @param   array           $config Configuration
-	 * @param   string|array    $quote  Character used to quote identifiers or an array of the left and right characters
+	 * @param   string  $name   Connection name
+	 * @param   array   $config Configuration
 	 * @return  Database
 	 */
-	public static function factory($name = 'default', $config = NULL, $quote = NULL)
+	public static function factory($name = 'default', $config = NULL)
 	{
 		if ($config === NULL)
 		{
@@ -254,7 +253,7 @@ abstract class Database extends SQL
 		$driver = 'Database_'.$config['type'];
 
 		// Create the database connection
-		return new $driver($name, $config, $quote);
+		return new $driver($name, $config);
 	}
 
 	/**
@@ -286,16 +285,15 @@ abstract class Database extends SQL
 	 * unless it is passed directly.
 	 *
 	 * @throws  Kohana_Exception
-	 * @param   string          $name   Instance name
-	 * @param   array           $config Configuration
-	 * @param   string|array    $quote  Character used to quote identifiers or an array of the left and right characters
+	 * @param   string  $name   Instance name
+	 * @param   array   $config Configuration
 	 * @return  Database
 	 */
-	public static function instance($name = 'default', $config = NULL, $quote = NULL)
+	public static function instance($name = 'default', $config = NULL)
 	{
 		if ( ! isset(Database::$_instances[$name]))
 		{
-			Database::$_instances[$name] = Database::factory($name, $config, $quote);
+			Database::$_instances[$name] = Database::factory($name, $config);
 		}
 
 		return Database::$_instances[$name];
@@ -404,15 +402,14 @@ abstract class Database extends SQL
 	 *  quote_character      | array\|string | Character used to quote identifiers or an array of the left and right characters
 	 *  table_prefix         | string        | Table prefix
 	 *
-	 * @param   string          $name   Connection name
-	 * @param   array           $config Configuration
-	 * @param   string|array    $quote  Character used to quote identifiers or an array of the left and right characters
+	 * @param   string  $name   Connection name
+	 * @param   array   $config Configuration
 	 */
-	public function __construct($name, $config, $quote = NULL)
+	public function __construct($name, $config)
 	{
 		parent::__construct(
 			empty($config['table_prefix']) ? '' : $config['table_prefix'],
-			isset($config['quote_character']) ? $config['quote_character'] : $quote
+			isset($config['quote_character']) ? $config['quote_character'] : NULL
 		);
 
 		$this->_config = $config;
