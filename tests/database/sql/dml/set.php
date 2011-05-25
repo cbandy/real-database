@@ -13,7 +13,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 
 		$this->assertSame('', $db->quote(new Database_Query_Set));
 		$this->assertSame('(a)', $db->quote(new Database_Query_Set(new Database_Query('a'))));
@@ -24,7 +24,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set;
 
 		$this->assertSame($query, $query->add('a', new Database_Query('b')));
@@ -39,7 +39,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_open()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set;
 
 		$this->assertSame($query, $query->open('a'), 'Chainable (void)');
@@ -57,7 +57,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_close()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set;
 
 		$this->assertSame($query, $query->close(), 'Chainable (1)');
@@ -73,7 +73,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_close_open()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set;
 
 		$this->assertSame(') A (',      $db->quote($query->close()->open('a')));
@@ -85,7 +85,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_except()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->except(new Database_Query('b')), 'Chainable (query)');
@@ -103,7 +103,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_except_open()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->except_open(), 'Chainable (void)');
@@ -141,7 +141,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_intersect()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->intersect(new Database_Query('b')), 'Chainable (query)');
@@ -159,7 +159,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_intersect_open()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->intersect_open(), 'Chainable (void)');
@@ -197,7 +197,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_union()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->union(new Database_Query('b')), 'Chainable (query)');
@@ -215,7 +215,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_union_open()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->union_open(), 'Chainable (void)');
@@ -254,7 +254,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_order_by()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->order_by('x'), 'Chainable (string)');
@@ -276,7 +276,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->limit(5));
@@ -292,7 +292,7 @@ class Database_SQL_DML_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_offset()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new Database_Query_Set(new Database_Query('a'));
 
 		$this->assertSame($query, $query->offset(5));

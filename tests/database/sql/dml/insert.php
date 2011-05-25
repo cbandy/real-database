@@ -35,10 +35,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$class = new ReflectionClass('SQL_DML_Insert');
 		$statement = $class->newInstanceArgs($arguments);
@@ -51,11 +48,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_into()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Insert;
 
 		$this->assertSame($command, $command->into('a'), 'Chainable (string)');
@@ -106,7 +99,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Insert;
 
 		$this->assertSame($statement, $statement->columns($value), 'Chainable');
@@ -122,7 +115,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Insert;
 		$statement->columns($value);
 
@@ -136,11 +129,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_values()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Insert('a', array('b','c'));
 
 		$this->assertSame($command, $command->values(array(0,1)), 'Chainable (array)');
@@ -158,11 +147,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_values_arrays()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Insert('a', array('b','c'));
 
 		$command->values(array(0,1));
@@ -240,7 +225,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Insert;
 
 		$this->assertSame($statement, $statement->returning($value), 'Chainable');
@@ -256,7 +241,7 @@ class Database_SQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Insert;
 		$statement->returning($value);
 

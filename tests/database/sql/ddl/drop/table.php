@@ -29,10 +29,7 @@ class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$class = new ReflectionClass('SQL_DDL_Drop_Table');
 		$statement = $class->newInstanceArgs($arguments);
@@ -60,11 +57,7 @@ class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$statement = new SQL_DDL_Drop_Table;
 
 		$this->assertSame($statement, $statement->name($value), 'Chainable');
@@ -80,11 +73,7 @@ class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$statement = new SQL_DDL_Drop_Table;
 		$statement->name($value);
 
@@ -140,11 +129,7 @@ class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_names($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$statement = new SQL_DDL_Drop_Table;
 
 		$this->assertSame($statement, $statement->names($value), 'Chainable');
@@ -160,11 +145,7 @@ class Database_SQL_DDL_Drop_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_names_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$statement = new SQL_DDL_Drop_Table;
 		$statement->names($value);
 

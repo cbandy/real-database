@@ -29,10 +29,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$class = new ReflectionClass('SQL_DDL_Create_Index');
 		$statement = $class->newInstanceArgs($arguments);
@@ -45,11 +42,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->name('c'));
@@ -61,11 +54,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_unique()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->unique(), 'Chainable (void)');
@@ -83,11 +72,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_on()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Index('a', 'b');
 
 		$this->assertSame($command, $command->on('c'));
@@ -139,7 +124,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Create_Index;
 
 		$result = call_user_func_array(array($statement, 'column'), $arguments);
@@ -157,7 +142,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column_reset($arguments)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Create_Index;
 
 		call_user_func_array(array($statement, 'column'), $arguments);
@@ -211,7 +196,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Create_Index;
 
 		$this->assertSame($statement, $statement->columns($value), 'Chainable');
@@ -227,7 +212,7 @@ class Database_SQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Create_Index;
 		$statement->columns($value);
 

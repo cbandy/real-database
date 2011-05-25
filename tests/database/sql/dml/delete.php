@@ -13,10 +13,7 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$this->assertSame('DELETE FROM "pre_"',         $db->quote(new SQL_DML_Delete));
 		$this->assertSame('DELETE FROM "pre_a"',        $db->quote(new SQL_DML_Delete('a')));
@@ -28,11 +25,7 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Delete;
 
 		$this->assertSame($command, $command->from('a'), 'Chainable (string)');
@@ -47,11 +40,7 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Delete('a');
 
 		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
@@ -69,11 +58,7 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Delete('a');
 
 		$this->assertSame($command, $command->using('b'), 'Chainable (string)');
@@ -94,11 +79,7 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_where()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Delete('a');
 
 		$this->assertSame($command, $command->where(new SQL_Conditions(new SQL_Column('b.c'), '=', 0)), 'Chainable (SQL_Conditions)');
@@ -183,7 +164,7 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Delete;
 
 		$this->assertSame($statement, $statement->returning($value), 'Chainable');
@@ -199,7 +180,7 @@ class Database_SQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Delete;
 		$statement->returning($value);
 

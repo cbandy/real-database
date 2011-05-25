@@ -31,7 +31,7 @@ class Database_SQL_Alias_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($value, $alias, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 
 		$this->assertSame($expected, $db->quote(new SQL_Alias($value, $alias)));
 	}

@@ -27,7 +27,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 
 		$class = new ReflectionClass('SQL_DML_Select');
 		$statement = $class->newInstanceArgs($arguments);
@@ -54,7 +54,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_distinct($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 
 		$this->assertSame($statement, $statement->distinct($value), 'Chainable');
@@ -106,7 +106,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 
 		$result = call_user_func_array(array($statement, 'column'), $arguments);
@@ -124,7 +124,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column_reset($arguments)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 
 		call_user_func_array(array($statement, 'column'), $arguments);
@@ -205,7 +205,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 
 		$this->assertSame($statement, $statement->columns($value), 'Chainable');
@@ -221,7 +221,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_columns_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 		$statement->columns($value);
 
@@ -235,11 +235,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$query = new SQL_DML_Select(array('one.x'));
 
 		$this->assertSame($query, $query->from('one', 'a'), 'Chainable (table)');
@@ -257,7 +253,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_where()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new SQL_DML_Select;
 
 		$this->assertSame($query, $query->where(new SQL_Conditions(new SQL_Column('y'), '=', 1)), 'Chainable (conditions)');
@@ -317,7 +313,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_group_by($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 
 		$this->assertSame($statement, $statement->group_by($value), 'Chainable');
@@ -333,7 +329,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_group_by_reset($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 		$statement->group_by($value);
 
@@ -347,7 +343,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_having()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new SQL_DML_Select(array('x'));
 
 		$this->assertSame($query, $query->having(new SQL_Conditions(new SQL_Column('x'), '=', 1)), 'Chainable (conditions)');
@@ -421,7 +417,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_order_by($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 
 		$result = call_user_func_array(array($statement, 'order_by'), $arguments);
@@ -439,7 +435,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_order_by_reset($arguments)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Select;
 
 		call_user_func_array(array($statement, 'order_by'), $arguments);
@@ -454,7 +450,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new SQL_DML_Select(array('x'));
 
 		$this->assertSame($query, $query->limit(5));
@@ -469,7 +465,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_offset()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$query = new SQL_DML_Select(array('x'));
 
 		$this->assertSame($query, $query->offset(5));

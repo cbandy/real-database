@@ -28,10 +28,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$class = new ReflectionClass('SQL_DDL_Constraint_Foreign');
 		$constraint = $class->newInstanceArgs($arguments);
@@ -83,7 +80,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_columns($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$constraint = new SQL_DDL_Constraint_Foreign;
 
 		$this->assertSame($constraint, $constraint->columns($value), 'Chainable');
@@ -99,7 +96,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_columns_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$constraint = new SQL_DDL_Constraint_Foreign;
 		$constraint->columns($value);
 
@@ -113,11 +110,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_deferrable()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->deferrable(TRUE), 'Chainable (TRUE)');
@@ -141,11 +134,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_match()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->match('simple'));
@@ -157,11 +146,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_on()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$constraint = new SQL_DDL_Constraint_Foreign('a');
 
 		$this->assertSame($constraint, $constraint->on('delete', 'cascade'), 'Chainable (delete, cascade)');
@@ -215,7 +200,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_referencing($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$constraint = new SQL_DDL_Constraint_Foreign;
 
 		$this->assertSame($constraint, $constraint->referencing($value), 'Chainable');
@@ -231,7 +216,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_referencing_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$constraint = new SQL_DDL_Constraint_Foreign;
 		$constraint->referencing($value);
 
@@ -245,11 +230,7 @@ class Database_SQL_DDL_Constraint_Foreign_Test extends PHPUnit_Framework_TestCas
 	 */
 	public function test_table()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$constraint = new SQL_DDL_Constraint_Foreign;
 
 		$this->assertSame($constraint, $constraint->table('a'), 'Chainable');

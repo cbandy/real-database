@@ -32,10 +32,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$class = new ReflectionClass('SQL_DML_Update');
 		$statement = $class->newInstanceArgs($arguments);
@@ -48,11 +45,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_table()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Update;
 
 		$this->assertSame($command, $command->table('a'), 'Chainable (string)');
@@ -106,7 +99,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_set($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Update;
 
 		$this->assertSame($statement, $statement->set($value), 'Chainable');
@@ -122,7 +115,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_set_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Update;
 		$statement->set($value);
 
@@ -176,7 +169,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_value($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Update;
 
 		$result = call_user_func_array(array($statement, 'value'), $arguments);
@@ -194,7 +187,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_value_reset($arguments)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Update;
 
 		call_user_func_array(array($statement, 'value'), $arguments);
@@ -209,11 +202,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->from('d'), 'Chainable (string)');
@@ -234,11 +223,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_where()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->where(new SQL_Conditions(new SQL_Column('d'), '=', 1)), 'Chainable (SQL_Conditions)');
@@ -259,11 +244,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DML_Update('a', 'b', array('c' => 0));
 
 		$this->assertSame($command, $command->limit(5), 'Chainable (integer)');
@@ -345,7 +326,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Update;
 
 		$this->assertSame($statement, $statement->returning($value), 'Chainable');
@@ -361,7 +342,7 @@ class Database_SQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DML_Update;
 		$statement->returning($value);
 
