@@ -399,27 +399,24 @@ abstract class Database extends SQL
 	/**
 	 * Create a database connection. The database type is not verified.
 	 *
+	 *  Configuration Option | Type          | Description
+	 *  -------------------- | ----          | -----------
+	 *  quote_character      | array\|string | Character used to quote identifiers or an array of the left and right characters
+	 *  table_prefix         | string        | Table prefix
+	 *
 	 * @param   string          $name   Connection name
 	 * @param   array           $config Configuration
 	 * @param   string|array    $quote  Character used to quote identifiers or an array of the left and right characters
 	 */
 	public function __construct($name, $config, $quote = NULL)
 	{
+		parent::__construct(
+			empty($config['table_prefix']) ? '' : $config['table_prefix'],
+			isset($config['quote_character']) ? $config['quote_character'] : $quote
+		);
+
 		$this->_config = $config;
 		$this->_name = $name;
-
-		if ($quote !== NULL)
-		{
-			if (is_array($quote))
-			{
-				$this->_quote_left = reset($quote);
-				$this->_quote_right = next($quote);
-			}
-			else
-			{
-				$this->_quote_left = $this->_quote_right = $quote;
-			}
-		}
 	}
 
 	public function __destruct()
