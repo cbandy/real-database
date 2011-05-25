@@ -68,6 +68,28 @@ class SQL_Conditions extends SQL_Expression
 	}
 
 	/**
+	 * Append a unary condition using a logical operator when necessary.
+	 *
+	 * @param   string  $logic          Logical operator
+	 * @param   string  $operator       Unary operator
+	 * @param   mixed   $operand        Operand
+	 * @param   string  $placeholder    Text to use for the positional placeholder
+	 * @return  void
+	 */
+	protected function _add_unary($logic, $operator, $operand, $placeholder = '?')
+	{
+		if ( ! $this->_empty)
+		{
+			// Only append the logical operator between conditions
+			$this->_value .= ' '.strtoupper($logic).' ';
+		}
+
+		$this->_empty = FALSE;
+		$this->_value .= $operator.' '.$placeholder;
+		$this->parameters[] = $operand;
+	}
+
+	/**
 	 * Add a condition using a logical operator when necessary.
 	 *
 	 * @param   string  $logic      Logical operator
@@ -137,6 +159,25 @@ class SQL_Conditions extends SQL_Expression
 	}
 
 	/**
+	 * Add an EXISTS condition.
+	 *
+	 * @param   string                  $logic  Logical operator
+	 * @param   string|SQL_Expression   $query  Converted to SQL_Expression
+	 * @return  $this
+	 */
+	public function exists($logic, $query)
+	{
+		if ( ! $query instanceof SQL_Expression)
+		{
+			$query = new SQL_Expression($query);
+		}
+
+		$this->_add_unary($logic, 'EXISTS', $query, '(?)');
+
+		return $this;
+	}
+
+	/**
 	 * Add a negated condition using a logical operator when necessary.
 	 *
 	 * @param   string  $logic      Logical operator
@@ -203,6 +244,25 @@ class SQL_Conditions extends SQL_Expression
 		}
 
 		return $this->not_column($logic, $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Add a NOT EXISTS condition.
+	 *
+	 * @param   string                  $logic  Logical operator
+	 * @param   string|SQL_Expression   $query  Converted to SQL_Expression
+	 * @return  $this
+	 */
+	public function not_exists($logic, $query)
+	{
+		if ( ! $query instanceof SQL_Expression)
+		{
+			$query = new SQL_Expression($query);
+		}
+
+		$this->_add_unary($logic, 'NOT EXISTS', $query, '(?)');
+
+		return $this;
 	}
 
 	/**
@@ -356,6 +416,9 @@ class SQL_Conditions extends SQL_Expression
 		return $this;
 	}
 
+
+	// Helpers
+
 	/**
 	 * Add a condition using AND while converting the LHS to a column.
 	 *
@@ -380,6 +443,17 @@ class SQL_Conditions extends SQL_Expression
 	public function and_columns($left_column, $operator, $right_column)
 	{
 		return $this->columns('AND', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Add an EXISTS condition using AND.
+	 *
+	 * @param   string|SQL_Expression   $query  Converted to SQL_Expression
+	 * @return  $this
+	 */
+	public function and_exists($query)
+	{
+		return $this->exists('AND', $query);
 	}
 
 	/**
@@ -419,6 +493,17 @@ class SQL_Conditions extends SQL_Expression
 	public function and_not_columns($left_column, $operator, $right_column)
 	{
 		return $this->not_columns('AND', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Add a NOT EXISTS condition using AND.
+	 *
+	 * @param   string|SQL_Expression   $query  Converted to SQL_Expression
+	 * @return  $this
+	 */
+	public function and_not_exists($query)
+	{
+		return $this->not_exists('AND', $query);
 	}
 
 	/**
@@ -526,6 +611,17 @@ class SQL_Conditions extends SQL_Expression
 	}
 
 	/**
+	 * Add an EXISTS condition using OR.
+	 *
+	 * @param   string|SQL_Expression   $query  Converted to SQL_Expression
+	 * @return  $this
+	 */
+	public function or_exists($query)
+	{
+		return $this->exists('OR', $query);
+	}
+
+	/**
 	 * Add a negated condition using OR.
 	 *
 	 * @param   mixed   $left       Left operand
@@ -562,6 +658,17 @@ class SQL_Conditions extends SQL_Expression
 	public function or_not_columns($left_column, $operator, $right_column)
 	{
 		return $this->not_columns('OR', $left_column, $operator, $right_column);
+	}
+
+	/**
+	 * Add a NOT EXISTS condition using OR.
+	 *
+	 * @param   string|SQL_Expression   $query  Converted to SQL_Expression
+	 * @return  $this
+	 */
+	public function or_not_exists($query)
+	{
+		return $this->not_exists('OR', $query);
 	}
 
 	/**

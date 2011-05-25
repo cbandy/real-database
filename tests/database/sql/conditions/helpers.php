@@ -39,6 +39,21 @@ class Database_SQL_Conditions_Helpers_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  SQL_Conditions::and_exists
+	 */
+	public function test_and_exists()
+	{
+		$db = new SQL;
+		$conditions = new SQL_Conditions;
+
+		$this->assertSame($conditions, $conditions->and_exists('a'));
+		$this->assertSame('EXISTS (a)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->and_exists('b'));
+		$this->assertSame('EXISTS (a) AND EXISTS (b)', $db->quote($conditions));
+	}
+
+	/**
 	 * @covers  SQL_Conditions::and_not
 	 */
 	public function test_and_not()
@@ -81,6 +96,21 @@ class Database_SQL_Conditions_Helpers_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($conditions, $conditions->and_not_columns('c', '<>', 'd'));
 		$this->assertSame('NOT "a" = "b" AND NOT "c" <> "d"', $db->quote($conditions));
+	}
+
+	/**
+	 * @covers  SQL_Conditions::and_not_exists
+	 */
+	public function test_and_not_exists()
+	{
+		$db = new SQL;
+		$conditions = new SQL_Conditions;
+
+		$this->assertSame($conditions, $conditions->and_not_exists('a'));
+		$this->assertSame('NOT EXISTS (a)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->and_not_exists('b'));
+		$this->assertSame('NOT EXISTS (a) AND NOT EXISTS (b)', $db->quote($conditions));
 	}
 
 	/**
@@ -210,6 +240,21 @@ class Database_SQL_Conditions_Helpers_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  SQL_Conditions::or_exists
+	 */
+	public function test_or_exists()
+	{
+		$db = new SQL;
+		$conditions = new SQL_Conditions;
+
+		$this->assertSame($conditions, $conditions->or_exists('a'));
+		$this->assertSame('EXISTS (a)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->or_exists('b'));
+		$this->assertSame('EXISTS (a) OR EXISTS (b)', $db->quote($conditions));
+	}
+
+	/**
 	 * @covers  SQL_Conditions::or_not
 	 */
 	public function test_or_not()
@@ -252,6 +297,21 @@ class Database_SQL_Conditions_Helpers_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($conditions, $conditions->or_not_columns('c', '<>', 'd'));
 		$this->assertSame('NOT "a" = "b" OR NOT "c" <> "d"', $db->quote($conditions));
+	}
+
+	/**
+	 * @covers  SQL_Conditions::or_not_exists
+	 */
+	public function test_or_not_exists()
+	{
+		$db = new SQL;
+		$conditions = new SQL_Conditions;
+
+		$this->assertSame($conditions, $conditions->or_not_exists('a'));
+		$this->assertSame('NOT EXISTS (a)', $db->quote($conditions));
+
+		$this->assertSame($conditions, $conditions->or_not_exists('b'));
+		$this->assertSame('NOT EXISTS (a) OR NOT EXISTS (b)', $db->quote($conditions));
 	}
 
 	/**
