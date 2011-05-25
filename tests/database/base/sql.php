@@ -25,6 +25,7 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  SQL::__construct
+	 * @covers  SQL::table_prefix
 	 *
 	 * @dataProvider    provider_constructor
 	 *
@@ -39,6 +40,7 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertSame($quotes, $sql->quote_identifier(''));
 		$this->assertSame($prefix, trim($sql->quote_table(''), $quotes));
+		$this->assertSame($prefix, $sql->table_prefix());
 	}
 
 	public function provider_alias()

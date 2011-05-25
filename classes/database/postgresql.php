@@ -1220,7 +1220,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			.' FROM information_schema.tables WHERE table_schema = '
 			.$this->quote_literal($schema);
 
-		if ( ! $prefix = $this->table_prefix())
+		if ( ! $this->_table_prefix)
 		{
 			// No table prefix
 			return $this->execute_query($sql)->as_array('table_name');
@@ -1228,10 +1228,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		// Filter on table prefix
 		$sql .= " AND table_name LIKE '"
-			.strtr($prefix, array('_' => '\_', '%' => '\%'))
+			.strtr($this->_table_prefix, array('_' => '\_', '%' => '\%'))
 			."%'";
 
-		$prefix = strlen($prefix);
+		$prefix = strlen($this->_table_prefix);
 		$result = array();
 
 		foreach ($this->execute_query($sql) as $table)
@@ -1260,7 +1260,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
 		$table = ($table instanceof SQL_Table)
-			? ($this->table_prefix().$table->name)
+			? ($this->_table_prefix.$table->name)
 			: $table->name;
 
 		$sql =
@@ -1272,11 +1272,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			.'   AND table_name = '.$this->quote_literal($table);
 
 		return $this->execute_query($sql)->as_array('column_name');
-	}
-
-	public function table_prefix()
-	{
-		return $this->_config['table_prefix'];
 	}
 
 	/**

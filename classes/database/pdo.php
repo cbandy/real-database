@@ -433,9 +433,4 @@ class Database_PDO extends Database
 			Profiler::stop($benchmark);
 		}
 	}
-
-	public function table_prefix()
-	{
-		return $this->_config['table_prefix'];
-	}
 }

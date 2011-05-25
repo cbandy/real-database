@@ -208,7 +208,7 @@ class Database_PDO_SQLite extends Database_PDO
 			.' FROM '.$this->_quote_left.$schema.$this->_quote_right
 			.".sqlite_master WHERE type IN ('table', 'view')";
 
-		if ( ! $prefix = $this->table_prefix())
+		if ( ! $this->_table_prefix)
 		{
 			// No table prefix
 			return $this->execute_query($sql)->as_array('table_name');
@@ -216,10 +216,10 @@ class Database_PDO_SQLite extends Database_PDO
 
 		// Filter on table prefix
 		$sql .= ' AND tbl_name LIKE '.$this->quote_literal(
-			strtr($prefix, array('_' => '\_', '%' => '\%')).'%'
+			strtr($this->_table_prefix, array('_' => '\_', '%' => '\%')).'%'
 		)." ESCAPE '\'";
 
-		$prefix = strlen($prefix);
+		$prefix = strlen($this->_table_prefix);
 		$result = array();
 
 		foreach ($this->execute_query($sql) as $table)
@@ -248,7 +248,7 @@ class Database_PDO_SQLite extends Database_PDO
 
 		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
 		$table = ($table instanceof SQL_Table)
-			? ($this->table_prefix().$table->name)
+			? ($this->_table_prefix.$table->name)
 			: $table->name;
 
 		$sql = 'PRAGMA '.$this->_quote_left.$schema.$this->_quote_right

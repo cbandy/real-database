@@ -674,4 +674,14 @@ class SQL
 
 		return $value;
 	}
+
+	/**
+	 * Return the table prefix.
+	 *
+	 * @return  string
+	 */
+	public function table_prefix()
+	{
+		return $this->_table_prefix;
+	}
 }

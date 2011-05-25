@@ -1009,11 +1009,4 @@ abstract class Database extends SQL
 	 * @return  void
 	 */
 	abstract public function rollback();
-
-	/**
-	 * Return the table prefix
-	 *
-	 * @return  string
-	 */
-	abstract public function table_prefix();
 }
