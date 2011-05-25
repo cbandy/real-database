@@ -37,7 +37,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor_quote($quote, $expected)
 	{
-		$mock = $this->getMockForAbstractClass('Database', array('name', array(), $quote));
+		$mock = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => $quote,
+		)));
 
 		$this->assertSame($expected, $mock->quote_identifier(''));
 	}
@@ -666,7 +668,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_identifier($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('<','>')));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => array('<', '>'),
+		)));
 
 		$this->assertSame($expected, $db->quote_identifier($value));
 	}
@@ -710,7 +714,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_table($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('<','>')));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => array('<', '>'),
+		)));
 		$db->expects($this->once())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));
@@ -800,7 +806,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_quote_column($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('<','>')));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => array('<', '>'),
+		)));
 		$db->expects($this->any())
 			->method('table_prefix')
 			->will($this->returnValue('pre_'));

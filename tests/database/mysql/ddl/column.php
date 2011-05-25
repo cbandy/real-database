@@ -13,7 +13,9 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_auto_increment()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->auto_increment(), 'Chainable (void)');
@@ -31,7 +33,9 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_comment()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->comment('c'));
@@ -43,7 +47,9 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constraint()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->constraint(new SQL_DDL_Constraint_Unique), 'Chainable (unique)');
@@ -64,7 +70,9 @@ class Database_MySQL_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$column = new Database_MySQL_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->identity());

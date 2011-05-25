@@ -13,12 +13,13 @@ class Database_MySQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_type()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$command = new Database_MySQL_Create_Index('a', 'b');
-		$table = $db->quote_table('b');
 
 		$this->assertSame($command, $command->type('fulltext'));
-		$this->assertSame("CREATE FULLTEXT INDEX `a` ON $table ()", $db->quote($command));
+		$this->assertSame("CREATE FULLTEXT INDEX `a` ON `b` ()", $db->quote($command));
 	}
 
 	/**
@@ -27,11 +28,12 @@ class Database_MySQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$command = new Database_MySQL_Create_Index('a', 'b');
-		$table = $db->quote_table('b');
 
 		$this->assertSame($command, $command->using('btree'));
-		$this->assertSame("CREATE INDEX `a` ON $table () USING BTREE", $db->quote($command));
+		$this->assertSame("CREATE INDEX `a` ON `b` () USING BTREE", $db->quote($command));
 	}
 }
