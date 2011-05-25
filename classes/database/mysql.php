@@ -137,11 +137,6 @@ class Database_MySQL extends Database
 				':'.$this->_config['connection']['port'];
 		}
 
-		if ( ! isset($this->_config['table_prefix']))
-		{
-			$this->_config['table_prefix'] = '';
-		}
-
 		$this->_connection_id = $this->_config['connection']['hostname']
 			.'_'.$this->_config['connection']['username']
 			.'_'.$this->_config['connection']['password']

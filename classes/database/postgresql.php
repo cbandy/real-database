@@ -166,11 +166,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		parent::__construct($name, $config);
 
-		if (empty($this->_config['table_prefix']))
-		{
-			$this->_config['table_prefix'] = '';
-		}
-
 		if (empty($this->_config['connection']['info']))
 		{
 			// Build connection string

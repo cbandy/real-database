@@ -61,11 +61,6 @@ class Database_PDO extends Database
 		{
 			$this->_config['connection']['dsn'] = 'uri:'.$this->_config['connection']['uri'];
 		}
-
-		if (empty($this->_config['table_prefix']))
-		{
-			$this->_config['table_prefix'] = '';
-		}
 	}
 
 	public function begin()
