@@ -309,6 +309,29 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame(1, count($result));
 	}
 
+	public function provider_identical()
+	{
+		return array(
+			array(array('a', '=', 'b'), new Database_MySQL_Identical('a', '=', 'b')),
+			array(array('a', '<>', 'b'), new Database_MySQL_Identical('a', '<>', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::identical
+	 *
+	 * @dataProvider    provider_identical
+	 *
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_Identical    $expected
+	 */
+	public function test_identical($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('Database_MySQL::identical', $arguments)
+		);
+	}
+
 	public function provider_prepare()
 	{
 		return array(

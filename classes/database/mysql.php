@@ -85,6 +85,20 @@ class Database_MySQL extends Database
 	}
 
 	/**
+	 * Create an expression for comparing whether or not two values are
+	 * distinct.
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Equality operator
+	 * @param   mixed   $right      Right operand
+	 * @return  Database_MySQL_Identical
+	 */
+	public static function identical($left, $operator, $right)
+	{
+		return new Database_MySQL_Identical($left, $operator, $right);
+	}
+
+	/**
 	 * @var resource    Link identifier
 	 */
 	protected $_connection;
