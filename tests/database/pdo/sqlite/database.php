@@ -92,6 +92,29 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $column);
 	}
 
+	public function provider_identical()
+	{
+		return array(
+			array(array('a', '=', 'b'), new Database_SQLite_Identical('a', '=', 'b')),
+			array(array('a', '<>', 'b'), new Database_SQLite_Identical('a', '<>', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::identical
+	 *
+	 * @dataProvider    provider_identical
+	 *
+	 * @param   array                       $arguments
+	 * @param   Database_SQLite_Identical   $expected
+	 */
+	public function test_identical($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('Database_PDO_SQLite::identical', $arguments)
+		);
+	}
+
 	public function provider_insert()
 	{
 		return array(
