@@ -243,6 +243,29 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db->execute_query('kohana invalid query');
 	}
 
+	public function provider_identical()
+	{
+		return array(
+			array(array('a', '=', 'b'), new Database_PostgreSQL_Identical('a', '=', 'b')),
+			array(array('a', '<>', 'b'), new Database_PostgreSQL_Identical('a', '<>', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::identical
+	 *
+	 * @dataProvider    provider_identical
+	 *
+	 * @param   array                           $arguments
+	 * @param   Database_PostgreSQL_Identical   $expected
+	 */
+	public function test_identical($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('Database_PostgreSQL::identical', $arguments)
+		);
+	}
+
 	public function provider_insert()
 	{
 		return array(
