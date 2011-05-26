@@ -199,6 +199,20 @@ class SQL
 	}
 
 	/**
+	 * Create an expression for comparing whether or not two values are
+	 * distinct.
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Equality operator
+	 * @param   mixed   $right      Right operand
+	 * @return  SQL_Identical
+	 */
+	public static function identical($left, $operator, $right)
+	{
+		return new SQL_Identical($left, $operator, $right);
+	}
+
+	/**
 	 * Create an identifier.
 	 *
 	 * @param   array|string    $name

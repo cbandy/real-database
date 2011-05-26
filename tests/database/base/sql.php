@@ -453,6 +453,29 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function provider_identical()
+	{
+		return array(
+			array(array('a', '=', 'b'), new SQL_Identical('a', '=', 'b')),
+			array(array('a', '<>', 'b'), new SQL_Identical('a', '<>', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  SQL::identical
+	 *
+	 * @dataProvider    provider_identical
+	 *
+	 * @param   array           $arguments
+	 * @param   SQL_Identical   $expected
+	 */
+	public function test_identical($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('SQL::identical', $arguments)
+		);
+	}
+
 	public function provider_identifier()
 	{
 		return array(
