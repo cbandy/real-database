@@ -76,6 +76,24 @@ class Database_PostgreSQL_Statement_Test extends Database_PostgreSQL_TestCase
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL_Statement::__construct
+	 */
+	public function test_constructor_parameters_bound()
+	{
+		$db = Database::factory();
+		$name = $db->prepare(NULL, 'SELECT $1::integer');
+
+		$var;
+		$parameters[] =& $var;
+
+		$statement = new Database_PostgreSQL_Statement($db, $name, $parameters);
+
+		$var = 1;
+		$this->assertSame($parameters, $statement->parameters());
+		$this->assertEquals($var, $statement->execute_query()->get());
+	}
+
+	/**
 	 * @covers  Database_PostgreSQL_Statement::deallocate
 	 */
 	public function test_deallocate()

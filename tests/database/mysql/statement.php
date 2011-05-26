@@ -50,6 +50,23 @@ class Database_MySQL_Statement_Test extends Database_MySQL_TestCase
 	}
 
 	/**
+	 * @covers  Database_MySQL_Statement::__construct
+	 */
+	public function test_constructor_parameters_bound()
+	{
+		$db = Database::factory();
+		$name = $db->prepare(NULL, 'SELECT ?');
+
+		$var;
+		$parameters[] =& $var;
+
+		$statement = new Database_MySQL_Statement($db, $name, $parameters);
+
+		$var = 1;
+		$this->assertSame($parameters, $statement->parameters());
+		$this->assertEquals($var, $statement->execute_query()->get());
+	}
+	/**
 	 * @covers  Database_MySQL_Statement::deallocate
 	 */
 	public function test_deallocate()
