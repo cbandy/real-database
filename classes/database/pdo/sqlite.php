@@ -42,6 +42,20 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
+	 * Create an expression for comparing whether or not two values are
+	 * distinct.
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Equality operator
+	 * @param   mixed   $right      Right operand
+	 * @return  Database_SQLite_Identical
+	 */
+	public static function identical($left, $operator, $right)
+	{
+		return new Database_SQLite_Identical($left, $operator, $right);
+	}
+
+	/**
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to SQL_Table

@@ -84,6 +84,20 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Create an expression for comparing whether or not two values are
+	 * distinct.
+	 *
+	 * @param mixed     $left       Left operand
+	 * @param string    $operator   Equality operator
+	 * @param mixed     $right      Right operand
+	 * @return  Database_PostgreSQL_Identical
+	 */
+	public static function identical($left, $operator, $right)
+	{
+		return new Database_PostgreSQL_Identical($left, $operator, $right);
+	}
+
+	/**
 	 * Create an INSERT command
 	 *
 	 * @param   mixed   $table      Converted to SQL_Table
