@@ -26,10 +26,7 @@ class Database_SQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$class = new ReflectionClass('SQL_DDL_Create_Table');
 		$statement = $class->newInstanceArgs($arguments);
@@ -43,11 +40,7 @@ class Database_SQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Table;
 		$command->parameters[':columns'] = array();
 
@@ -60,11 +53,7 @@ class Database_SQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_column()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Table('a');
 
 		$this->assertSame($command, $command->column(new SQL_DDL_Column('b', 'c')));
@@ -82,11 +71,7 @@ class Database_SQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constraint()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Table('a');
 		$command->parameters[':columns'] = array();
 
@@ -105,11 +90,7 @@ class Database_SQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_query()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->once())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Table('a');
 
 		$this->assertSame($command, $command->query(new Database_Query('b')));
@@ -121,11 +102,7 @@ class Database_SQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_temporary()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$command = new SQL_DDL_Create_Table('a');
 		$command->parameters[':columns'] = array();
 

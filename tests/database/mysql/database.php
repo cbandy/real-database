@@ -457,35 +457,4 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 		$db->connect();
 	}
-
-	public function provider_table_prefix()
-	{
-		return array
-		(
-			array('asdf', 'asdf'),
-			array(NULL, ''),
-		);
-	}
-
-	/**
-	 * @covers  Database_MySQL::__construct
-	 * @covers  Database_MySQL::table_prefix
-	 * @dataProvider    provider_table_prefix
-	 *
-	 * @param   string  $value
-	 * @param   string  $expected
-	 */
-	public function test_table_prefix($value, $expected)
-	{
-		$db = new Database_MySQL('name', array(
-			'connection' => array(
-				'hostname' => '',
-				'username' => '',
-				'password' => '',
-			),
-			'table_prefix' => $value,
-		));
-
-		$this->assertSame($expected, $db->table_prefix());
-	}
 }

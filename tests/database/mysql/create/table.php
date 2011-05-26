@@ -13,18 +13,19 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_if_not_exists()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$command = new Database_MySQL_Create_Table('a');
-		$table = $db->quote_table('a');
 
 		$this->assertSame($command, $command->if_not_exists(), 'Chainable (void)');
-		$this->assertSame("CREATE TABLE IF NOT EXISTS $table", $db->quote($command));
+		$this->assertSame("CREATE TABLE IF NOT EXISTS `a`", $db->quote($command));
 
 		$this->assertSame($command, $command->if_not_exists(FALSE), 'Chainable (FALSE)');
-		$this->assertSame("CREATE TABLE $table", $db->quote($command));
+		$this->assertSame("CREATE TABLE `a`", $db->quote($command));
 
 		$this->assertSame($command, $command->if_not_exists(TRUE), 'Chainable (TRUE)');
-		$this->assertSame("CREATE TABLE IF NOT EXISTS $table", $db->quote($command));
+		$this->assertSame("CREATE TABLE IF NOT EXISTS `a`", $db->quote($command));
 	}
 
 	/**
@@ -32,13 +33,13 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_like()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$command = new Database_MySQL_Create_Table('a');
-		$table = $db->quote_table('a');
-		$like = $db->quote_table('b');
 
 		$this->assertSame($command, $command->like('b'));
-		$this->assertSame("CREATE TABLE $table LIKE $like", $db->quote($command));
+		$this->assertSame("CREATE TABLE `a` LIKE `b`", $db->quote($command));
 	}
 
 	public function provider_options()
@@ -71,7 +72,9 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_options($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$statement = new Database_MySQL_Create_Table;
 
 		$this->assertSame($statement, $statement->options($value), 'Chainable');
@@ -87,7 +90,9 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_options_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), '`'));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => '`',
+		)));
 		$statement = new Database_MySQL_Create_Table;
 		$statement->options($value);
 

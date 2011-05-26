@@ -14,7 +14,9 @@ class Database_SQLServer_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_void()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('[', ']')));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => array('[', ']'),
+		)));
 		$column = new Database_SQLServer_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->identity(), 'Chainable');
@@ -41,7 +43,9 @@ class Database_SQLServer_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_one($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('[', ']')));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => array('[', ']'),
+		)));
 		$column = new Database_SQLServer_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->identity($value), 'Chainable');
@@ -70,7 +74,9 @@ class Database_SQLServer_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_two($first, $second, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('[', ']')));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => array('[', ']'),
+		)));
 		$column = new Database_SQLServer_DDL_Column('a', 'b');
 
 		$this->assertSame($column, $column->identity($first, $second), 'Chainable');
@@ -101,7 +107,9 @@ class Database_SQLServer_DDL_Column_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_with_constraint($first, $second, $constraint, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array(), array('[', ']')));
+		$db = $this->getMockForAbstractClass('Database', array('name', array(
+			'quote_character' => array('[', ']'),
+		)));
 		$column = new Database_SQLServer_DDL_Column('a', 'b');
 
 		$column->constraint($constraint);

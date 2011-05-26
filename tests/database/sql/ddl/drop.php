@@ -29,7 +29,7 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor($arguments, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 
 		$class = new ReflectionClass('SQL_DDL_Drop');
 		$statement = $class->newInstanceArgs($arguments);
@@ -42,7 +42,7 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_cascade()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$command = new SQL_DDL_Drop('a', 'b');
 
 		$this->assertSame($command, $command->cascade(), 'Chainable (void)');
@@ -63,7 +63,7 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_if_exists()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$command = new SQL_DDL_Drop('a', 'b');
 
 		$this->assertSame($command, $command->if_exists(), 'Chainable (void)');
@@ -96,7 +96,7 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Drop('x');
 
 		$this->assertSame($statement, $statement->name($value), 'Chainable');
@@ -112,7 +112,7 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_name_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Drop('x');
 		$statement->name($value);
 
@@ -159,7 +159,7 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_names($value, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Drop('x');
 
 		$this->assertSame($statement, $statement->names($value), 'Chainable');
@@ -175,7 +175,7 @@ class Database_SQL_DDL_Drop_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_names_reset($value)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
+		$db = new SQL;
 		$statement = new SQL_DDL_Drop('x');
 		$statement->names($value);
 

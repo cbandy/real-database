@@ -14,11 +14,7 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	 */
 	protected function _test_join_helper($method, $expected)
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$from = new SQL_Table_Reference('one');
 
 		$this->assertSame($from, $from->$method('two'), 'Chainable (string)');
@@ -33,10 +29,7 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_constructor()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
+		$db = new SQL('pre_');
 
 		$this->assertSame('', $db->quote(new SQL_Table_Reference));
 		$this->assertSame('"pre_one"', $db->quote(new SQL_Table_Reference('one')));
@@ -49,11 +42,7 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_add()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$from = new SQL_Table_Reference('one');
 
 		$this->assertSame($from, $from->add('two', 'b'));
@@ -65,11 +54,7 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_join()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$from = new SQL_Table_Reference('one');
 
 		$this->assertSame($from, $from->join('two', 'b'));
@@ -156,11 +141,7 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_on()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$from = new SQL_Table_Reference('one');
 		$from->join('two');
 
@@ -182,11 +163,7 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_parentheses()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$from = new SQL_Table_Reference;
 
 		$this->assertSame($from, $from->open());
@@ -216,11 +193,7 @@ class Database_SQL_Table_Reference_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using()
 	{
-		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$db->expects($this->any())
-			->method('table_prefix')
-			->will($this->returnValue('pre_'));
-
+		$db = new SQL('pre_');
 		$from = new SQL_Table_Reference('one');
 		$from->join('two');
 
