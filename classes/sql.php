@@ -35,6 +35,18 @@ class SQL
 	}
 
 	/**
+	 * Create an expression containing a single bound variable.
+	 *
+	 * @param   mixed   $var    Variable to bind
+	 */
+	public static function bind( & $var)
+	{
+		$expression = new SQL_Expression('?');
+
+		return $expression->bind(0, $var);
+	}
+
+	/**
 	 * Create a column identifier.
 	 *
 	 * @param   array|string    $name

@@ -88,6 +88,20 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
+	/**
+	 * @covers  SQL::bind
+	 */
+	public function test_bind()
+	{
+		$db = new SQL;
+
+		$bound = SQL::bind($var);
+		$this->assertSame('NULL', $db->quote($bound));
+
+		$var = 1;
+		$this->assertSame('1', $db->quote($bound));
+	}
+
 	public function provider_column()
 	{
 		return array(
