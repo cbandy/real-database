@@ -37,7 +37,11 @@ class Database_PDO_Statement extends Database_Statement
 		$this->_parameters = array();
 		$this->_statement = $statement;
 
-		$this->parameters($parameters);
+		foreach ($parameters as $param => $value)
+		{
+			// Capture possible reference
+			$this->bind($param, $parameters[$param]);
+		}
 	}
 
 	public function __toString()

@@ -73,6 +73,26 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($parameters, $statement->parameters());
 	}
 
+	/**
+	 * @covers  Database_PDO_Statement::__construct
+	 */
+	public function test_constructor_parameters_bound()
+	{
+		$db = Database::factory();
+
+		$var;
+		$parameters[1] =& $var;
+
+		// PostgreSQL: addition operator implies integer type
+		$statement = new Database_PDO_Statement(
+			$db, $db->prepare('SELECT ? + 0'), $parameters
+		);
+
+		$var = 1;
+		$this->assertSame($parameters, $statement->parameters());
+		$this->assertEquals($var, $statement->execute_query()->get());
+	}
+
 	public function provider_bind()
 	{
 		return array(
