@@ -471,7 +471,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				}
 				else
 				{
-					$result_parameters[] = $value;
+					// Capture possible reference
+					$result_parameters[] =& $parameters[$placeholder];
 					$result .= '$'.count($result_parameters);
 				}
 			}
@@ -510,7 +511,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 					}
 					else
 					{
-						$result_parameters[] = $value;
+						// Capture possible reference
+						$result_parameters[] =& $parameters[$placeholder];
 						$fragments[$placeholder] = '$'.count($result_parameters);
 					}
 				}
@@ -540,7 +542,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		$result = '';
 
-		foreach ($array as $value)
+		foreach ($array as $key => $value)
 		{
 			if (is_array($value))
 			{
@@ -560,7 +562,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 			else
 			{
-				$result_parameters[] = $value;
+				// Capture possible reference
+				$result_parameters[] =& $array[$key];
 				$result .= '$'.count($result_parameters);
 			}
 

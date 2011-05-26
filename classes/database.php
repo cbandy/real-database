@@ -258,7 +258,8 @@ abstract class Database extends SQL
 
 			$prev = $chunks[$i];
 			$result .= $this->_parse_value(
-				$parameters[$placeholder],
+				$parameters,
+				$placeholder,
 				$result_parameters
 			).$prev[0];
 		}
@@ -270,12 +271,15 @@ abstract class Database extends SQL
 	 * Recursively expand a parameter value to a SQL fragment consisting only of
 	 * positional placeholders.
 	 *
-	 * @param   mixed   $value              Unquoted parameter
-	 * @param   array   $result_parameters  Parameters for the resulting fragment
+	 * @param   array           $array              Unquoted parameters
+	 * @param   integer|string  $key                Index of the parameter value to parse
+	 * @param   array           $result_parameters  Parameters for the resulting fragment
 	 * @return  string  SQL fragment
 	 */
-	protected function _parse_value($value, & $result_parameters)
+	protected function _parse_value($array, $key, & $result_parameters)
 	{
+		$value = $array[$key];
+
 		if (is_array($value))
 		{
 			if (empty($value))
@@ -283,9 +287,9 @@ abstract class Database extends SQL
 
 			$result = array();
 
-			foreach ($value as $v)
+			foreach ($value as $k => $v)
 			{
-				$result[] = $this->_parse_value($v, $result_parameters);
+				$result[] = $this->_parse_value($value, $k, $result_parameters);
 			}
 
 			return implode(', ', $result);
@@ -301,7 +305,8 @@ abstract class Database extends SQL
 		if ($value instanceof SQL_Identifier)
 			return $this->quote($value);
 
-		$result_parameters[] = $value;
+		// Capture possible reference
+		$result_parameters[] =& $array[$key];
 
 		return '?';
 	}

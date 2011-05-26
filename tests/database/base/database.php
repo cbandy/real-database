@@ -442,6 +442,25 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $db->parse_statement($argument));
 	}
 
+	/**
+	 * @covers  Database::_parse_value
+	 */
+	public function test_parse_statement_bound()
+	{
+		$db = $this->getMockForAbstractClass('Database', array('', array()));
+
+		$expression = new SQL_Expression('? :a');
+		$expression->bind(0, $var);
+		$expression->bind(':a', $var);
+
+		$statement = $db->parse_statement($expression);
+
+		$this->assertSame(array(0 => NULL, 1 => NULL), $statement->parameters());
+
+		$var = 1;
+		$this->assertSame(array(0 => 1, 1 => 1), $statement->parameters());
+	}
+
 	public function provider_query()
 	{
 		return array(

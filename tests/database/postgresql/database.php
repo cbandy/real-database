@@ -385,6 +385,63 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @covers  Database_PostgreSQL::_parse_array
+	 */
+	public function test_parse_statement_bound_array()
+	{
+		$db = Database::factory();
+
+		$var;
+		$array[] =& $var;
+
+		$expression = new SQL_Expression('?');
+		$expression->bind(0, $array);
+
+		$statement = $db->parse_statement($expression);
+
+		$this->assertSame(array(0 => NULL), $statement->parameters());
+
+		$var = 1;
+		$this->assertSame(array(0 => 1), $statement->parameters());
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::_parse
+	 */
+	public function test_parse_statement_bound_named()
+	{
+		$db = Database::factory();
+
+		$expression = new SQL_Expression(':a');
+		$expression->bind(':a', $var);
+
+		$statement = $db->parse_statement($expression);
+
+		$this->assertSame(array(0 => NULL), $statement->parameters());
+
+		$var = 1;
+		$this->assertSame(array(0 => 1), $statement->parameters());
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::_parse
+	 */
+	public function test_parse_statement_bound_positional()
+	{
+		$db = Database::factory();
+
+		$expression = new SQL_Expression('?');
+		$expression->bind(0, $var);
+
+		$statement = $db->parse_statement($expression);
+
+		$this->assertSame(array(0 => NULL), $statement->parameters());
+
+		$var = 1;
+		$this->assertSame(array(0 => 1), $statement->parameters());
+	}
+
+	/**
 	 * @covers  Database_PostgreSQL::prepare
 	 */
 	public function test_prepare()
