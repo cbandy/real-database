@@ -25,7 +25,7 @@ class.
     new SQL_Conditions(new SQL_Column('id'), '=', 10);
 
     // "id" = 20
-    $db->conditions()->column(NULL, 'id', '=', 20);
+    SQL::conditions()->column(NULL, 'id', '=', 20);
 
 It is possible to nest criteria and force operator precedence using the parentheses methods.
 
@@ -37,7 +37,7 @@ It is possible to nest criteria and force operator precedence using the parenthe
     //           AND "updated" BETWEEN '2000-01-01' AND '2001-01-01'
     //       )
     //   )
-    $db->conditions()
+    SQL::conditions()
         ->column(NULL, 'value', '=', 5)
         ->and_open_column('name', '=', 'effect')
             ->or_open($db->conditions()
@@ -55,15 +55,15 @@ table reference. Similar to criteria, these tables can be joined in a myriad of 
 
     // Straightforward JOIN
     // "things" JOIN "sprockets" ON ("sprockets"."thing_id" = "things"."id")
-    $db->reference('things')
+    SQL::reference('things')
         ->join('sprockets')->on('sprockets.thing_id', '=', 'things.id');
 
     // Cartesian product
     // "things", "sprockets"
-    $db->reference('things')->add('sprockets');
+    SQL::reference('things')->add('sprockets');
 
     // Multiple JOINs
-    $db->reference('classes')
+    SQL::reference('classes')
         ->join('enrollments')->on('enrollments.class_id', '=', 'classes.id')
         ->join('students')->on('student.id', '=', 'enrollments.student_id')
         ->left_join('grades')->on('grades.enrollment_id', '=', 'enrollments.id');
@@ -114,11 +114,11 @@ straightforward:
 More complex searches use the [SQL_Conditions] and [SQL_Table_Reference] classes:
 
     $db->select(array('things.name', 'things.value', 'sprockets.price'))
-        ->from($db
-            ->reference('things')
+        ->from(
+            SQL::reference('things')
             ->join('sprockets')->on('sprockets.thing_id', '=', 'things.id')
         )
-        ->where($db->conditions()
+        ->where(SQL::conditions()
             ->column(NULL, 'things.value', '=', 5)
             ->or_column('sprockets.price', 'between', array(15, 25))
         );

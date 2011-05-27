@@ -7,6 +7,9 @@
 The `Database::quote` method has been renamed to [Database::quote_literal],
 though [Database::quote] still treats built-in types as a literals.
 
+`Database::escape` has become a method of [Database_iEscape] named
+`escape_literal`.
+
 
 ## Execution
 
@@ -70,7 +73,7 @@ Here are two simple ways to retrieve the number of rows in a table:
 
     // Build a SELECT query
     $rows = $db->execute(
-        $db->select($db->expression('COUNT(*)'))->from($table)
+        $db->select(SQL::expression('COUNT(*)'))->from($table)
     )->get();
 
 To retrieve the number of rows a query would return without paging applied,
@@ -87,7 +90,7 @@ reset the `limit` and `offset` parameters of a SELECT query:
 
     $total_rows = $db->execute(
         $query
-            ->select($db->expression('COUNT(*)'))
+            ->select(SQL::expression('COUNT(*)'))
             ->limit(NULL)
             ->offset(NULL)
     )->get();
