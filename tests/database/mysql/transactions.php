@@ -84,6 +84,64 @@ class Database_MySQL_Transactions_Test extends Database_MySQL_TestCase
 		$this->assertSame($initial, $db->execute_query($query)->as_array(), 'Changes reverted');
 	}
 
+	/**
+	 * @covers  Database_MySQL::rollback
+	 * @covers  Database_MySQL::savepoint
+	 */
+	public function test_savepoint()
+	{
+		$db = Database::factory();
+
+		$command = 'INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (100)';
+		$query = 'SELECT * FROM '.$db->quote_table($this->_table);
+		$savepoint = 'kohana_savepoint';
+
+		$db->begin();
+
+		// Change the dataset
+		$db->execute_command($command);
+		$before = $db->execute_query($query)->as_array();
+
+		$this->assertSame($savepoint, $db->savepoint($savepoint));
+		$this->assertSame($before, $db->execute_query($query)->as_array(), 'No change');
+
+		// Change the dataset
+		$db->execute_command($command);
+
+		$this->assertNull($db->rollback($savepoint));
+		$this->assertSame($before, $db->execute_query($query)->as_array(), 'Reverted');
+	}
+
+	/**
+	 * Setting a savepoint outside of a transaction succeeds.
+	 *
+	 * @covers  Database_MySQL::savepoint
+	 */
+	public function test_savepoint_no_transaction()
+	{
+		$db = Database::factory();
+		$savepoint = 'kohana_savepoint';
+
+		$this->assertSame($savepoint, $db->savepoint($savepoint));
+	}
+
+	/**
+	 * Reverting a non-existent savepoint throws an exception.
+	 *
+	 * @covers  Database_MySQL::rollback
+	 */
+	public function test_rollback_invalid_savepoint()
+	{
+		$db = Database::factory();
+		$db->begin();
+
+		$this->setExpectedException(
+			'Database_Exception', 'does not exist', 1305
+		);
+
+		$db->rollback('kohana_savepoint');
+	}
+
 	public function provider_result()
 	{
 		return array(
