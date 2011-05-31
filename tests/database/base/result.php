@@ -2,6 +2,8 @@
 /**
  * @package RealDatabase
  * @author  Chris Bandy
+ *
+ * @group   database
  */
 class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 {
@@ -297,6 +299,25 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertFalse($result->offsetExists(-1));
 		$this->assertFalse($result->offsetExists($count));
+	}
+
+	/**
+	 * @covers  Database_Result::offsetGet
+	 */
+	public function test_offset_get()
+	{
+		$value = array('key' => 'value');
+
+		$result = $this->getMockForAbstractClass(
+			'Database_Result',
+			array(FALSE, 1)
+		);
+
+		$result->expects($this->once())
+			->method('current')
+			->will($this->returnValue($value));
+
+		$this->assertSame($value, $result->offsetGet(0));
 	}
 
 	/**
