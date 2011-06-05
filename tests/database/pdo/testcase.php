@@ -1,6 +1,7 @@
 <?php
 
 require_once 'PHPUnit/Extensions/Database/TestCase.php';
+require_once dirname(dirname(__FILE__)).'/sqlserver/metadata'.EXT;
 
 /**
  * @package     RealDatabase
