@@ -400,18 +400,31 @@ class Database_PDO extends Database
 		return ! empty($this->_config['profiling']);
 	}
 
-	public function rollback()
+	public function rollback($name = NULL)
 	{
 		$this->_connection or $this->connect();
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", 'rollback()');
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')',
+				'rollback('.$name.')'
+			);
 		}
 
 		try
 		{
-			$this->_connection->rollBack();
+			if ($name === NULL)
+			{
+				$this->_connection->rollBack();
+			}
+			else
+			{
+				// This SQL:1999 syntax is not supported by all drivers
+				$this->_connection->exec(
+					'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
+				);
+			}
 		}
 		catch (PDOException $e)
 		{
@@ -427,5 +440,44 @@ class Database_PDO extends Database
 		{
 			Profiler::stop($benchmark);
 		}
+	}
+
+	public function savepoint($name)
+	{
+		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')',
+				'savepoint('.$name.')'
+			);
+		}
+
+		try
+		{
+			// This SQL:1999 syntax is not supported by all drivers
+			$this->_connection->exec(
+				'SAVEPOINT '.$this->_quote_left.$name.$this->_quote_right
+			);
+		}
+		catch (PDOException $e)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return $name;
 	}
 }

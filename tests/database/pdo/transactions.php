@@ -109,6 +109,117 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 		$db->rollback();
 	}
 
+	/**
+	 * @covers  Database_PDO::rollback
+	 * @covers  Database_PDO::savepoint
+	 */
+	public function test_savepoint()
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+
+		$command = 'INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (100)';
+		$query = 'SELECT * FROM '.$db->quote_table($this->_table);
+		$savepoint = 'kohana_savepoint';
+
+		$db->begin();
+
+		// Change the dataset
+		$db->execute_command($command);
+		$before = $db->execute_query($query)->as_array();
+
+		$this->assertSame($savepoint, $db->savepoint($savepoint));
+		$this->assertSame($before, $db->execute_query($query)->as_array(), 'No change');
+
+		// Change the dataset
+		$db->execute_command($command);
+
+		$this->assertNull($db->rollback($savepoint));
+		$this->assertSame($before, $db->execute_query($query)->as_array(), 'Reverted');
+	}
+
+	/**
+	 * Setting a savepoint when not in a transaction may throw an exception.
+	 *
+	 * @covers  Database_PDO::savepoint
+	 */
+	public function test_savepoint_no_transaction()
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+
+		if ($connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql')
+		{
+			$this->setExpectedException(
+				'Database_Exception', 'only be used in transaction', '25P01'
+			);
+		}
+
+		$db->savepoint('kohana_savepoint');
+	}
+
+	/**
+	 * Reverting a non-existent savepoint throws an exception.
+	 *
+	 * @covers  Database_PDO::rollback
+	 */
+	public function test_rollback_invalid_savepoint()
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+		$db->begin();
+
+		switch ($connection->getAttribute(PDO::ATTR_DRIVER_NAME))
+		{
+			case 'mysql':
+				$this->setExpectedException(
+					'Database_Exception', 'does not exist', '42000'
+				);
+			break;
+			case 'pgsql':
+				$this->setExpectedException(
+					'Database_Exception', 'no such savepoint', '3B001'
+				);
+			break;
+			case 'sqlite':
+				$this->setExpectedException(
+					'Database_Exception', 'no such savepoint', 'HY000'
+				);
+			break;
+			default:
+				$this->setExpectedException('Database_Exception');
+		}
+
+		$db->rollback('kohana_savepoint');
+	}
+
 	public function provider_result()
 	{
 		return array(
