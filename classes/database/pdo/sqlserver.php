@@ -86,17 +86,18 @@ class Database_PDO_SQLServer extends Database_PDO
 	/**
 	 * Create a PDO connection for SQL Server
 	 *
-	 *  Configuration Option  | Type    | Description
-	 *  --------------------  | ----    | -----------
-	 *  charset               | integer | [Encoding Constant](http://msdn.microsoft.com/en-US/library/cc296183.aspx)
-	 *  profiling             | boolean | Enable execution profiling
-	 *  table_prefix          | string  | Table prefix
-	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
-	 *  connection.options    | array   | PDO options
-	 *  connection.password   | string  |
-	 *  connection.persistent | boolean | Use the PHP connection pool
-	 *  connection.uri        | string  | URI to a file containing the DSN
-	 *  connection.username   | string  |
+	 *  Configuration Option    | Type    | Description
+	 *  --------------------    | ----    | -----------
+	 *  charset                 | integer | [Encoding Constant](http://msdn.microsoft.com/en-US/library/cc296183.aspx)
+	 *  profiling               | boolean | Enable execution profiling
+	 *  release_during_rollback | boolean | Release savepoints during rollback
+	 *  table_prefix            | string  | Table prefix
+	 *  connection.dsn          | string  | Full DSN or a predefined DSN name
+	 *  connection.options      | array   | PDO options
+	 *  connection.password     | string  |
+	 *  connection.persistent   | boolean | Use the PHP connection pool
+	 *  connection.uri          | string  | URI to a file containing the DSN
+	 *  connection.username     | string  |
 	 *
 	 * *[DSN]: Data Source Name
 	 * *[URI]: Uniform Resource Identifier
@@ -203,5 +204,99 @@ class Database_PDO_SQLServer extends Database_PDO
 		$options = array(PDO::SQLSRV_ATTR_DIRECT_QUERY => FALSE) + $options;
 
 		return parent::prepare($statement, $options);
+	}
+
+	public function rollback($name = NULL)
+	{
+		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', 'rollback('.$name.')'
+			);
+		}
+
+		try
+		{
+			if ($name === NULL)
+			{
+				$this->_connection->rollBack();
+			}
+			else
+			{
+				if ( ! empty($this->_config['release_during_rollback']))
+				{
+					// Rollback and release the savepoint
+					$this->_connection->exec(
+						'ROLLBACK TRANSACTION '
+						.$this->_quote_left.$name.$this->_quote_right
+					);
+				}
+				else
+				{
+					// Reinstate the savepoint after rollback
+					$this->_connection->exec(
+						'ROLLBACK TRANSACTION '
+						.$this->_quote_left.$name.$this->_quote_right
+						.'; SAVE TRANSACTION '
+						.$this->_quote_left.$name.$this->_quote_right
+					);
+				}
+			}
+		}
+		catch (PDOException $e)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+	}
+
+	public function savepoint($name)
+	{
+		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', 'savepoint('.$name.')'
+			);
+		}
+
+		try
+		{
+			$this->_connection->exec(
+				'SAVE TRANSACTION '.$this->_quote_left.$name.$this->_quote_right
+			);
+		}
+		catch (PDOException $e)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return $name;
 	}
 }
