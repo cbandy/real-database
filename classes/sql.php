@@ -412,10 +412,10 @@ class SQL
 
 		if ($attribute !== NULL)
 		{
-			if ( ! isset($types[$type]) OR ! isset($types[$type][$attribute]))
-				return NULL;
+			if (isset($types[$type][$attribute]))
+				return $types[$type][$attribute];
 
-			return $types[$type][$attribute];
+			return NULL;
 		}
 
 		if (isset($types[$type]))
