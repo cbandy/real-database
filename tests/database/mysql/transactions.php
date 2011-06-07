@@ -26,6 +26,51 @@ class Database_MySQL_Transactions_Test extends Database_MySQL_TestCase
 		return $dataset;
 	}
 
+	/**
+	 * Verify that savepoints are replaced when reusing the same name.
+	 *
+	 * @link http://dev.mysql.com/doc/en/savepoint.html
+	 *
+	 * @covers  Database_MySQL::commit
+	 * @covers  Database_MySQL::rollback
+	 * @covers  Database_MySQL::savepoint
+	 */
+	public function test_rdbms_savepoint_names()
+	{
+		$table = new SQL_Table($this->_table);
+		$select = new SQL_Expression('SELECT value FROM ?', array($table));
+		$update = new SQL_Expression('UPDATE ? SET value = :value', array($table));
+
+		$db = Database::factory();
+
+		$db->execute($update->param(':value', 1));
+		$db->begin();
+
+		// Use the same savepoint name twice
+		$db->execute('SAVEPOINT a');
+		$db->execute($update->param(':value', 2));
+		$db->execute('SAVEPOINT a');
+		$db->execute($update->param(':value', 3));
+
+		// Rollback works
+		$db->execute('ROLLBACK TO a');
+		$this->assertEquals(2, $db->execute_query($select)->get());
+
+		// Rollback works repeatedly
+		$db->execute('ROLLBACK TO a');
+		$this->assertEquals(2, $db->execute_query($select)->get());
+
+		// Release works
+		$db->execute('RELEASE SAVEPOINT a');
+
+		$this->setExpectedException(
+			'Database_Exception', 'does not exist', 1305
+		);
+
+		// The first savepoint no longer exists
+		$db->execute('ROLLBACK TO a');
+	}
+
 	public function provider_command()
 	{
 		return array
