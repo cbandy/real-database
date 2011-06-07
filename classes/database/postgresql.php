@@ -1145,17 +1145,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		return parent::quote_literal($value);
 	}
 
-	/**
-	 * Abort the current transaction or roll back to a savepoint
-	 *
-	 * @throws  Database_Exception
-	 * @param   string  $savepoint  Savepoint name
-	 * @return  void
-	 */
-	public function rollback($savepoint = NULL)
+	public function rollback($name = NULL)
 	{
 		$result = $this->_execute(
-			$savepoint ? ('ROLLBACK TO '.$savepoint) : 'ROLLBACK'
+			($name === NULL)
+				? 'ROLLBACK'
+				: 'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
 		);
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
@@ -1164,21 +1159,18 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		pg_free_result($result);
 	}
 
-	/**
-	 * Define a new savepoint in the current transaction
-	 *
-	 * @throws  Database_Exception
-	 * @param   string  $name   Savepoint name
-	 * @return  void
-	 */
 	public function savepoint($name)
 	{
-		$result = $this->_execute('SAVEPOINT '.$name);
+		$result = $this->_execute(
+			'SAVEPOINT '.$this->_quote_left.$name.$this->_quote_right
+		);
 
 		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
 			throw new Database_PostgreSQL_Exception($result);
 
 		pg_free_result($result);
+
+		return $name;
 	}
 
 	/**

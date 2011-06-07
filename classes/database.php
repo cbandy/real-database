@@ -450,10 +450,20 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Abort the current transaction
+	 * Abort the current transaction or revert to a savepoint.
 	 *
 	 * @throws  Database_Exception
+	 * @param   string  $name   Savepoint name or NULL to abort the transaction
 	 * @return  void
 	 */
-	abstract public function rollback();
+	abstract public function rollback($name = NULL);
+
+	/**
+	 * Set a savepoint in the current transaction.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $name   Savepoint name
+	 * @return  string  Savepoint name
+	 */
+	abstract public function savepoint($name);
 }

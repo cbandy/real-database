@@ -6,7 +6,7 @@
 class Database_SQLServer_MetaData extends PHPUnit_Extensions_Database_DB_MetaData_InformationSchema
 {
 	/**
-	 * @link http://github.com/sebastianbergmann/dbunit/issues#issue/36
+	 * @link http://github.com/sebastianbergmann/dbunit/issues/36
 	 */
 	protected $truncateCommand = 'TRUNCATE TABLE';
 

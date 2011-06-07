@@ -521,9 +521,27 @@ class Database_MySQL extends Database
 		return parent::quote_literal($value);
 	}
 
-	public function rollback()
+	public function rollback($name = NULL)
 	{
-		$this->_execute('ROLLBACK');
+		if ($name === NULL)
+		{
+			$this->_execute('ROLLBACK');
+		}
+		else
+		{
+			$this->_execute(
+				'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
+			);
+		}
+	}
+
+	public function savepoint($name)
+	{
+		$this->_execute(
+			'SAVEPOINT '.$this->_quote_left.$name.$this->_quote_right
+		);
+
+		return $name;
 	}
 
 	/**
