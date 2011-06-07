@@ -26,6 +26,51 @@ class Database_PostgreSQL_Transactions_Test extends Database_PostgreSQL_TestCase
 		return $dataset;
 	}
 
+	/**
+	 * Verify that savepoint names can be reused.
+	 *
+	 * @link http://www.postgresql.org/docs/current/static/sql-savepoint.html
+	 *
+	 * @covers  Database_PostgreSQL::commit
+	 * @covers  Database_PostgreSQL::rollback
+	 * @covers  Database_PostgreSQL::savepoint
+	 */
+	public function test_rdbms_savepoint_names()
+	{
+		$table = new SQL_Table($this->_table);
+		$select = new SQL_Expression('SELECT value FROM ?', array($table));
+		$update = new SQL_Expression('UPDATE ? SET value = :value', array($table));
+
+		$db = Database::factory();
+
+		$db->execute($update->param(':value', 1));
+		$db->begin();
+
+		// Use the same savepoint name twice
+		$db->execute('SAVEPOINT a');
+		$db->execute($update->param(':value', 2));
+		$db->execute('SAVEPOINT a');
+		$db->execute($update->param(':value', 3));
+
+		// Rollback works
+		$db->execute('ROLLBACK TO a');
+		$this->assertEquals(2, $db->execute_query($select)->get());
+
+		// Rollback works repeatedly
+		$db->execute('ROLLBACK TO a');
+		$this->assertEquals(2, $db->execute_query($select)->get());
+
+		// Release works
+		$db->execute('RELEASE SAVEPOINT a');
+
+		// Rollback still works
+		$db->execute('ROLLBACK TO a');
+		$this->assertEquals(1, $db->execute_query($select)->get());
+
+		// Release still works
+		$db->execute('RELEASE SAVEPOINT a');
+	}
+
 	public function provider_command()
 	{
 		return array
