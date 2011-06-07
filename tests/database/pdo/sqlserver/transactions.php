@@ -51,6 +51,41 @@ class Database_PDO_SQLServer_Transactions_Test extends Database_PDO_SQLServer_Te
 		$db->execute('ROLLBACK TRANSACTION a');
 	}
 
+	/**
+	 * Verify that savepoint names can be reused.
+	 *
+	 * @link http://msdn.microsoft.com/en-us/library/ms178157.aspx
+	 *
+	 * @covers  Database_PDO_SQLServer::commit
+	 * @covers  Database_PDO_SQLServer::rollback
+	 * @covers  Database_PDO_SQLServer::savepoint
+	 */
+	public function test_rdbms_savepoint_names()
+	{
+		$table = new SQL_Table($this->_table);
+		$select = new SQL_Expression('SELECT value FROM ?', array($table));
+		$update = new SQL_Expression('UPDATE ? SET value = :value', array($table));
+
+		$db = Database::factory();
+
+		$db->execute($update->param(':value', 1));
+		$db->begin();
+
+		// Use the same savepoint name twice
+		$db->execute('SAVE TRANSACTION a');
+		$db->execute($update->param(':value', 2));
+		$db->execute('SAVE TRANSACTION a');
+		$db->execute($update->param(':value', 3));
+
+		// Rollback works
+		$db->execute('ROLLBACK TRANSACTION a');
+		$this->assertEquals(2, $db->execute_query($select)->get());
+
+		// Rollback still works
+		$db->execute('ROLLBACK TRANSACTION a');
+		$this->assertEquals(1, $db->execute_query($select)->get());
+	}
+
 	public function provider_command()
 	{
 		return array(
