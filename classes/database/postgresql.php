@@ -585,12 +585,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 */
 	public function begin($mode = NULL)
 	{
-		$result = $this->_execute("BEGIN $mode");
-
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
-
-		pg_free_result($result);
+		$this->execute_command_ok("BEGIN $mode");
 	}
 
 	public function charset($charset)
@@ -606,12 +601,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function commit()
 	{
-		$result = $this->_execute('COMMIT');
-
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
-
-		pg_free_result($result);
+		$this->execute_command_ok('COMMIT');
 	}
 
 	public function connect()
@@ -652,14 +642,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($this->_config['search_path']))
 		{
-			$result = $this->_execute(
+			$this->execute_command_ok(
 				'SET search_path = '.$this->_config['search_path']
 			);
-
-			if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-				throw new Database_PostgreSQL_Exception($result);
-
-			pg_free_result($result);
 		}
 	}
 
@@ -906,6 +891,24 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Execute a statement after connecting and ensure the result status is
+	 * PGSQL_COMMAND_OK.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL statement
+	 * @return  void
+	 */
+	public function execute_command_ok($statement)
+	{
+		$result = $this->_execute($statement);
+
+		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
+			throw new Database_PostgreSQL_Exception($result);
+
+		pg_free_result($result);
+	}
+
+	/**
 	 * Execute a SQL statement, returning the value of a column from the first
 	 * row.
 	 *
@@ -1147,28 +1150,23 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function rollback($name = NULL)
 	{
-		$result = $this->_execute(
-			($name === NULL)
-				? 'ROLLBACK'
-				: 'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
-		);
-
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
-
-		pg_free_result($result);
+		if ($name === NULL)
+		{
+			$this->execute_command_ok('ROLLBACK');
+		}
+		else
+		{
+			$this->execute_command_ok(
+				'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
+			);
+		}
 	}
 
 	public function savepoint($name)
 	{
-		$result = $this->_execute(
+		$this->execute_command_ok(
 			'SAVEPOINT '.$this->_quote_left.$name.$this->_quote_right
 		);
-
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
-
-		pg_free_result($result);
 
 		return $name;
 	}
