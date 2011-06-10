@@ -50,16 +50,19 @@ class Database_PDO extends Database
 		parent::__construct($name, $config);
 
 		// Use exceptions for all errors
-		$this->_config['connection']['options'][PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+		$this->_config['connection']['options'][PDO::ATTR_ERRMODE]
+			= PDO::ERRMODE_EXCEPTION;
 
 		if ( ! empty($this->_config['connection']['persistent']))
 		{
-			$this->_config['connection']['options'][PDO::ATTR_PERSISTENT] = TRUE;
+			$this->_config['connection']['options'][PDO::ATTR_PERSISTENT]
+				= TRUE;
 		}
 
 		if ( ! empty($this->_config['connection']['uri']))
 		{
-			$this->_config['connection']['dsn'] = 'uri:'.$this->_config['connection']['uri'];
+			$this->_config['connection']['dsn']
+				= 'uri:'.$this->_config['connection']['uri'];
 		}
 	}
 
@@ -83,7 +86,9 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
 		}
 
 		if (isset($benchmark))
@@ -117,7 +122,9 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
 		}
 
 		if (isset($benchmark))
@@ -138,7 +145,9 @@ class Database_PDO extends Database
 		}
 		catch (PDOException $e)
 		{
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
 		}
 
 		if ( ! empty($this->_config['charset']))
@@ -187,7 +196,9 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", $statement);
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', $statement
+			);
 		}
 
 		try
@@ -210,7 +221,9 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
 		}
 
 		if (isset($benchmark))
@@ -234,7 +247,10 @@ class Database_PDO extends Database
 	 */
 	public function execute_insert($statement, $identity)
 	{
-		return array($this->execute_command($statement), $this->last_insert_id());
+		return array(
+			$this->execute_command($statement),
+			$this->last_insert_id()
+		);
 	}
 
 	public function execute_query($statement, $as_object = FALSE, $arguments = array())
@@ -256,7 +272,9 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", $statement);
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', $statement
+			);
 		}
 
 		try
@@ -278,7 +296,9 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
 		}
 
 		if (isset($benchmark))
@@ -343,7 +363,9 @@ class Database_PDO extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", "prepare($statement)");
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', 'prepare('.$statement.')'
+			);
 		}
 
 		try
@@ -357,7 +379,9 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
 		}
 
 		if (isset($benchmark))
@@ -433,7 +457,9 @@ class Database_PDO extends Database
 				Profiler::delete($benchmark);
 			}
 
-			throw new Database_Exception(':error', array(':error' => $e->getMessage()), $e->getCode());
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
 		}
 
 		if (isset($benchmark))
