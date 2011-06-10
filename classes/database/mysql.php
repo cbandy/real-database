@@ -243,9 +243,24 @@ class Database_MySQL extends Database
 		Database_MySQL::$_databases[$this->_connection_id] = $database;
 	}
 
-	public function begin()
+	public function begin($name = NULL)
 	{
+		if (count($this->_savepoints))
+		{
+			// Nested transaction
+			return $this->savepoint($name);
+		}
+
 		$this->_execute('START TRANSACTION');
+
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
+		$this->_savepoints->push($name);
+
+		return $name;
 	}
 
 	public function charset($charset)
@@ -260,9 +275,28 @@ class Database_MySQL extends Database
 			);
 	}
 
-	public function commit()
+	public function commit($name = NULL)
 	{
-		$this->_execute('COMMIT');
+		if ($name === NULL OR $this->_savepoints->position($name) === 1)
+		{
+			$this->_execute('COMMIT');
+
+			// Reset the savepoint stack
+			$this->_savepoints->reset();
+		}
+		else
+		{
+			$this->_execute(
+				'RELEASE SAVEPOINT '
+				.$this->_quote_left.$name.$this->_quote_right
+			);
+
+			// Remove all savepoints after this one
+			$this->_savepoints->pop_until($name);
+
+			// Remove this savepoint
+			$this->_savepoints->pop();
+		}
 	}
 
 	/**
@@ -321,6 +355,9 @@ class Database_MySQL extends Database
 				);
 			}
 		}
+
+		// Initialize the savepoint stack
+		$this->_savepoints = new Database_Savepoint_Stack;
 	}
 
 	public function disconnect()
@@ -523,23 +560,36 @@ class Database_MySQL extends Database
 
 	public function rollback($name = NULL)
 	{
-		if ($name === NULL)
+		if ($name === NULL OR $this->_savepoints->position($name) === 1)
 		{
 			$this->_execute('ROLLBACK');
+
+			// Reset the savepoint stack
+			$this->_savepoints->reset();
 		}
 		else
 		{
 			$this->_execute(
 				'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
 			);
+
+			// Remove all savepoints after this one
+			$this->_savepoints->pop_until($name);
 		}
 	}
 
-	public function savepoint($name)
+	public function savepoint($name = NULL)
 	{
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
 		$this->_execute(
 			'SAVEPOINT '.$this->_quote_left.$name.$this->_quote_right
 		);
+
+		$this->_savepoints->push($name);
 
 		return $name;
 	}
