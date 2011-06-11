@@ -66,13 +66,21 @@ class Database_PDO extends Database
 		}
 	}
 
-	public function begin()
+	public function begin($name = NULL)
 	{
+		if (count($this->_savepoints))
+		{
+			// Nested transaction
+			return $this->savepoint($name);
+		}
+
 		$this->_connection or $this->connect();
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", 'begin()');
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', 'begin('.$name.')'
+			);
 		}
 
 		try
@@ -95,6 +103,15 @@ class Database_PDO extends Database
 		{
 			Profiler::stop($benchmark);
 		}
+
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
+		$this->_savepoints->push($name);
+
+		return $name;
 	}
 
 	public function charset($charset)
@@ -102,18 +119,40 @@ class Database_PDO extends Database
 		$this->execute_command("SET NAMES '$charset'");
 	}
 
-	public function commit()
+	public function commit($name = NULL)
 	{
 		$this->_connection or $this->connect();
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", 'commit()');
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', 'commit('.$name.')'
+			);
 		}
 
 		try
 		{
-			$this->_connection->commit();
+			if ($name === NULL OR $this->_savepoints->position($name) === 1)
+			{
+				$this->_connection->commit();
+
+				// Reset the savepoint stack
+				$this->_savepoints->reset();
+			}
+			else
+			{
+				// This SQL:1999 syntax is not supported by all drivers
+				$this->_connection->exec(
+					'RELEASE SAVEPOINT '
+					.$this->_quote_left.$name.$this->_quote_right
+				);
+
+				// Remove all savepoints after this one
+				$this->_savepoints->pop_until($name);
+
+				// Remove this savepoint
+				$this->_savepoints->pop();
+			}
 		}
 		catch (PDOException $e)
 		{
@@ -154,6 +193,9 @@ class Database_PDO extends Database
 		{
 			$this->charset($this->_config['charset']);
 		}
+
+		// Initialize the savepoint stack
+		$this->_savepoints = new Database_Savepoint_Stack;
 	}
 
 	public function disconnect()
@@ -431,16 +473,18 @@ class Database_PDO extends Database
 		if ( ! empty($this->_config['profiling']))
 		{
 			$benchmark = Profiler::start(
-				'Database ('.$this->_name.')',
-				'rollback('.$name.')'
+				'Database ('.$this->_name.')', 'rollback('.$name.')'
 			);
 		}
 
 		try
 		{
-			if ($name === NULL)
+			if ($name === NULL OR $this->_savepoints->position($name) === 1)
 			{
 				$this->_connection->rollBack();
+
+				// Reset the savepoint stack
+				$this->_savepoints->reset();
 			}
 			else
 			{
@@ -448,6 +492,9 @@ class Database_PDO extends Database
 				$this->_connection->exec(
 					'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
 				);
+
+				// Remove all savepoints after this one
+				$this->_savepoints->pop_until($name);
 			}
 		}
 		catch (PDOException $e)
@@ -468,15 +515,19 @@ class Database_PDO extends Database
 		}
 	}
 
-	public function savepoint($name)
+	public function savepoint($name = NULL)
 	{
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
 		$this->_connection or $this->connect();
 
 		if ( ! empty($this->_config['profiling']))
 		{
 			$benchmark = Profiler::start(
-				'Database ('.$this->_name.')',
-				'savepoint('.$name.')'
+				'Database ('.$this->_name.')', 'savepoint('.$name.')'
 			);
 		}
 
@@ -503,6 +554,8 @@ class Database_PDO extends Database
 		{
 			Profiler::stop($benchmark);
 		}
+
+		$this->_savepoints->push($name);
 
 		return $name;
 	}

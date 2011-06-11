@@ -26,16 +26,26 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 		return $dataset;
 	}
 
-	public function provider_command()
+	public function provider_begin()
 	{
+		$table = new SQL_Table($this->_table);
+
 		return array(
 			array(
-				new SQL_Expression('SELECT * FROM ?', array(new SQL_Table($this->_table))),
-				new SQL_Expression('INSERT INTO ? (value) VALUES (100)', array(new SQL_Table($this->_table))),
+				new SQL_Expression('SELECT * FROM ?', array($table)),
+				new SQL_Expression(
+					'INSERT INTO ? (value) VALUES (100)', array($table)
+				),
+				NULL,
+				'kohana_txn_0',
 			),
 			array(
-				new SQL_Expression('SELECT * FROM ?', array(new SQL_Table($this->_table))),
-				new SQL_Expression('DELETE FROM ? WHERE value = 60', array(new SQL_Table($this->_table))),
+				new SQL_Expression('SELECT * FROM ?', array($table)),
+				new SQL_Expression(
+					'DELETE FROM ? WHERE value = 60', array($table)
+				),
+				'kohana_savepoint',
+				'kohana_savepoint',
 			),
 		);
 	}
@@ -43,12 +53,14 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 	/**
 	 * @covers  Database_PDO::begin
 	 *
-	 * @dataProvider    provider_command
+	 * @dataProvider    provider_begin
 	 *
 	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
 	 * @param   SQL_Expression  $command    SQL command that alters the dataset
+	 * @param   string          $name       Transaction name
+	 * @param   string          $expected   Expected transaction name
 	 */
-	public function test_begin($query, $command)
+	public function test_begin($query, $command, $name, $expected)
 	{
 		$connection = $this->getConnection()->getConnection();
 
@@ -56,14 +68,14 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 		{
 			// This test hangs with the default isolation level, READ COMMITTED.
 			// It succeeds with READ_COMMITTED_SNAPSHOT ON.
-			$this->markTestSkipped();
+			$this->markTestIncomplete();
 		}
 
 		$db = Database::factory();
 		$initial = $db->execute_query($query)->as_array();
 
 		// Start a transaction
-		$this->assertNull($db->begin());
+		$this->assertSame($expected, $db->begin($name));
 		$this->assertSame($initial, $db->execute_query($query)->as_array(), 'No change');
 
 		// Change the dataset
@@ -71,10 +83,30 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 		$this->assertSame($initial, Database::factory()->execute_query($query)->as_array(), 'Other connection unaffected');
 	}
 
+	public function provider_rollback()
+	{
+		$table = new SQL_Table($this->_table);
+
+		return array(
+			array(
+				new SQL_Expression('SELECT * FROM ?', array($table)),
+				new SQL_Expression(
+					'INSERT INTO ? (value) VALUES (100)', array($table)
+				),
+			),
+			array(
+				new SQL_Expression('SELECT * FROM ?', array($table)),
+				new SQL_Expression(
+					'DELETE FROM ? WHERE value = 60', array($table)
+				),
+			),
+		);
+	}
+
 	/**
 	 * @covers  Database_PDO::rollback
 	 *
-	 * @dataProvider    provider_command
+	 * @dataProvider    provider_rollback
 	 *
 	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
 	 * @param   SQL_Expression  $command    SQL command that alters the dataset
@@ -109,11 +141,42 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 		$db->rollback();
 	}
 
+	public function provider_savepoint()
+	{
+		$table = new SQL_Table($this->_table);
+
+		return array(
+			array(
+				new SQL_Expression('SELECT * FROM ?', array($table)),
+				new SQL_Expression(
+					'INSERT INTO ? (value) VALUES (100)', array($table)
+				),
+				NULL,
+				'kohana_txn_1',
+			),
+			array(
+				new SQL_Expression('SELECT * FROM ?', array($table)),
+				new SQL_Expression(
+					'DELETE FROM ? WHERE value = 60', array($table)
+				),
+				'kohana_savepoint',
+				'kohana_savepoint',
+			),
+		);
+	}
+
 	/**
 	 * @covers  Database_PDO::rollback
 	 * @covers  Database_PDO::savepoint
+	 *
+	 * @dataProvider    provider_savepoint
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command    SQL command that alters the dataset
+	 * @param   string          $name       Savepoint name
+	 * @param   string          $expected   Expected savepoint name
 	 */
-	public function test_savepoint()
+	public function test_savepoint($query, $command, $name, $expected)
 	{
 		$connection = $this->getConnection()->getConnection();
 
@@ -126,24 +189,19 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 		}
 
 		$db = Database::factory();
-
-		$command = 'INSERT INTO '.$db->quote_table($this->_table).' (value) VALUES (100)';
-		$query = 'SELECT * FROM '.$db->quote_table($this->_table);
-		$savepoint = 'kohana_savepoint';
-
 		$db->begin();
 
 		// Change the dataset
 		$db->execute_command($command);
 		$before = $db->execute_query($query)->as_array();
 
-		$this->assertSame($savepoint, $db->savepoint($savepoint));
+		$this->assertSame($expected, $db->savepoint($name));
 		$this->assertSame($before, $db->execute_query($query)->as_array(), 'No change');
 
 		// Change the dataset
 		$db->execute_command($command);
 
-		$this->assertNull($db->rollback($savepoint));
+		$this->assertNull($db->rollback($expected));
 		$this->assertSame($before, $db->execute_query($query)->as_array(), 'Reverted');
 	}
 
@@ -283,5 +341,406 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 
 		$this->assertNull($db->commit());
 		$this->assertEquals($expected, $other->execute_query($query)->as_array(), 'Other connection affected');
+	}
+
+	/**
+	 * Releasing a non-existent savepoint throws an exception.
+	 *
+	 * @covers  Database_PDO::commit
+	 */
+	public function test_commit_invalid_savepoint()
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+		$db->begin();
+
+		switch ($connection->getAttribute(PDO::ATTR_DRIVER_NAME))
+		{
+			case 'mysql':
+				$this->setExpectedException(
+					'Database_Exception', 'does not exist', '42000'
+				);
+			break;
+			case 'pgsql':
+				$this->setExpectedException(
+					'Database_Exception', 'no such savepoint', '3B001'
+				);
+			break;
+			case 'sqlite':
+				$this->setExpectedException(
+					'Database_Exception', 'no such savepoint', 'HY000'
+				);
+			break;
+			default:
+				$this->setExpectedException('Database_Exception');
+		}
+
+		$db->commit('kohana_savepoint');
+	}
+
+	/**
+	 * A query that reads a dataset, two commands that alter the dataset and the
+	 * dataset after both commands are executed.
+	 */
+	public function provider_nested_transaction_both()
+	{
+		$table = new SQL_Table($this->_table);
+
+		return array(
+			array(
+				new SQL_Expression('SELECT value FROM ?', array($table)),
+				new SQL_Expression(
+					'INSERT INTO ? (value) VALUES (100)', array($table)
+				),
+				new SQL_Expression(
+					'DELETE FROM ? WHERE value = 65', array($table)
+				),
+				array(
+					array('value' => 50),
+					array('value' => 55),
+					array('value' => 60),
+					array('value' => 60),
+					array('value' => 100),
+				),
+			),
+			array(
+				new SQL_Expression('SELECT value FROM ?', array($table)),
+				new SQL_Expression(
+					'DELETE FROM ? WHERE value IN (60, 65)', array($table)
+				),
+				new SQL_Expression('UPDATE ? SET value = 10', array($table)),
+				array(
+					array('value' => 10),
+					array('value' => 10),
+				),
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO::begin
+	 * @covers  Database_PDO::commit
+	 *
+	 * @dataProvider    provider_nested_transaction_both
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command1   SQL command that alters the dataset, executed first
+	 * @param   SQL_Expression  $command2   SQL command that alters the dataset, executed second
+	 * @param   array           $expected   Expected result of the query after both commands are executed and after commit
+	 */
+	public function test_nested_transaction_commit_commit($query, $command1, $command2, $expected)
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+		$other = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		$outer = $db->begin();
+
+		// Change the dataset
+		$db->execute_command($command1);
+		$this->assertNotEquals($initial, $db->execute_query($query)->as_array());
+
+		$inner = $db->begin();
+
+		// Change the dataset again
+		$db->execute_command($command2);
+		$this->assertNotEquals($initial, $db->execute_query($query)->as_array());
+
+		// Other connection unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Commit inner transaction
+		$this->assertNull($db->commit($inner));
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection still unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Commit outer transaction
+		$this->assertNull($db->commit($outer));
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection affected
+		$this->assertEquals($expected, $other->execute_query($query)->as_array());
+	}
+
+	/**
+	 * @covers  Database_PDO::begin
+	 * @covers  Database_PDO::commit
+	 *
+	 * @dataProvider    provider_nested_transaction_both
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command1   SQL command that alters the dataset, executed first
+	 * @param   SQL_Expression  $command2   SQL command that alters the dataset, executed second
+	 * @param   array           $expected   Expected result of the query after both commands are executed
+	 */
+	public function test_nested_transaction_commit_rollback($query, $command1, $command2, $expected)
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+		$other = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		$outer = $db->begin();
+
+		// Change the dataset
+		$db->execute_command($command1);
+		$this->assertNotEquals($initial, $db->execute_query($query)->as_array());
+
+		$inner = $db->begin();
+
+		// Change the dataset again
+		$db->execute_command($command2);
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Rollback inner transaction
+		$this->assertNull($db->rollback($inner));
+		$this->assertNotEquals($expected, $db->execute_query($query)->as_array());
+		$this->assertNotEquals($initial, $db->execute_query($query)->as_array());
+
+		// Other connection still unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Rollback outer transaction
+		$this->assertNull($db->rollback($outer));
+		$this->assertSame($initial, $db->execute_query($query)->as_array());
+
+		// Other connection still unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+	}
+
+	/**
+	 * A query that reads a dataset, two commands that alter the dataset and the
+	 * dataset after the first command is executed.
+	 */
+	public function provider_nested_transaction_rollback_commit()
+	{
+		$table = new SQL_Table($this->_table);
+
+		return array(
+			array(
+				new SQL_Expression('SELECT value FROM ?', array($table)),
+				new SQL_Expression(
+					'INSERT INTO ? (value) VALUES (100)', array($table)
+				),
+				new SQL_Expression(
+					'DELETE FROM ? WHERE value = 65', array($table)
+				),
+				array(
+					array('value' => 50),
+					array('value' => 55),
+					array('value' => 60),
+					array('value' => 60),
+					array('value' => 65),
+					array('value' => 65),
+					array('value' => 65),
+					array('value' => 100),
+				),
+			),
+			array(
+				new SQL_Expression('SELECT value FROM ?', array($table)),
+				new SQL_Expression(
+					'DELETE FROM ? WHERE value IN (60, 65)', array($table)
+				),
+				new SQL_Expression('UPDATE ? SET value = 10', array($table)),
+				array(
+					array('value' => 50),
+					array('value' => 55),
+				),
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO::begin
+	 * @covers  Database_PDO::commit
+	 *
+	 * @dataProvider    provider_nested_transaction_rollback_commit
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command1   SQL command that alters the dataset, executed first
+	 * @param   SQL_Expression  $command2   SQL command that alters the dataset, executed second
+	 * @param   array           $expected   Expected result of the query after the first command is executed and after commit
+	 */
+	public function test_nested_transaction_rollback_commit($query, $command1, $command2, $expected)
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+		$other = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		$outer = $db->begin();
+
+		// Change the dataset
+		$db->execute_command($command1);
+		$this->assertNotEquals($initial, $db->execute_query($query)->as_array());
+
+		$inner = $db->begin();
+
+		// Change the dataset again
+		$db->execute_command($command2);
+		$this->assertNotEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Rollback inner transaction
+		$this->assertNull($db->rollback($inner));
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection still unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Commit outer transaction
+		$this->assertNull($db->commit($outer));
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection affected
+		$this->assertEquals($expected, $other->execute_query($query)->as_array());
+	}
+
+	/**
+	 * Commit the named outer transaction when nested.
+	 *
+	 * @covers  Database_PDO::begin
+	 * @covers  Database_PDO::commit
+	 *
+	 * @dataProvider    provider_nested_transaction_both
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command1   SQL command that alters the dataset, executed first
+	 * @param   SQL_Expression  $command2   SQL command that alters the dataset, executed second
+	 * @param   array           $expected   Expected result of the query after both commands are executed and after commit
+	 */
+	public function test_nested_transaction_short_commit($query, $command1, $command2, $expected)
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+		$other = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		$outer = $db->begin();
+
+		// Change the dataset
+		$db->execute_command($command1);
+		$this->assertNotEquals($initial, $db->execute_query($query)->as_array());
+
+		$inner = $db->begin();
+
+		// Change the dataset again
+		$db->execute_command($command2);
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Commit outer transaction
+		$this->assertNull($db->commit($outer));
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection affected
+		$this->assertEquals($expected, $other->execute_query($query)->as_array());
+	}
+
+	/**
+	 * Rollback the named outer transaction when nested.
+	 *
+	 * @covers  Database_PDO::begin
+	 * @covers  Database_PDO::commit
+	 *
+	 * @dataProvider    provider_nested_transaction_both
+	 *
+	 * @param   SQL_Expression  $query      SQL query that reads from the dataset
+	 * @param   SQL_Expression  $command1   SQL command that alters the dataset, executed first
+	 * @param   SQL_Expression  $command2   SQL command that alters the dataset, executed second
+	 * @param   array           $expected   Expected result of the query after both commands are executed
+	 */
+	public function test_nested_transaction_short_rollback($query, $command1, $command2, $expected)
+	{
+		$connection = $this->getConnection()->getConnection();
+
+		if (in_array($connection->getAttribute(PDO::ATTR_DRIVER_NAME), array(
+			'sqlsrv',
+		)))
+		{
+			// Savepoints have a different syntax in SQL Server
+			$this->markTestSkipped();
+		}
+
+		$db = Database::factory();
+		$other = Database::factory();
+		$initial = $db->execute_query($query)->as_array();
+
+		$outer = $db->begin();
+
+		// Change the dataset
+		$db->execute_command($command1);
+		$this->assertNotEquals($initial, $db->execute_query($query)->as_array());
+
+		$inner = $db->begin();
+
+		// Change the dataset again
+		$db->execute_command($command2);
+		$this->assertEquals($expected, $db->execute_query($query)->as_array());
+
+		// Other connection unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
+
+		// Rollback outer transaction
+		$this->assertNull($db->rollback($outer));
+		$this->assertSame($initial, $db->execute_query($query)->as_array());
+
+		// Other connection still unaffected
+		$this->assertSame($initial, $other->execute_query($query)->as_array());
 	}
 }
