@@ -574,18 +574,24 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		return substr($result, 0, -2);
 	}
 
-	/**
-	 * Start a transaction
-	 *
-	 * @link http://www.postgresql.org/docs/current/static/sql-set-transaction.html
-	 *
-	 * @throws  Database_Exception
-	 * @param   string  $mode   Transaction mode
-	 * @return  void
-	 */
-	public function begin($mode = NULL)
+	public function begin($name = NULL)
 	{
-		$this->execute_command_ok("BEGIN $mode");
+		if (count($this->_savepoints))
+		{
+			// Nested transaction
+			return $this->savepoint($name);
+		}
+
+		$this->execute_command_ok('START TRANSACTION');
+
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
+		$this->_savepoints->push($name);
+
+		return $name;
 	}
 
 	public function charset($charset)
@@ -599,9 +605,30 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			);
 	}
 
-	public function commit()
+	public function commit($name = NULL)
 	{
-		$this->execute_command_ok('COMMIT');
+		$this->_connection or $this->connect();
+
+		if ($name === NULL OR $this->_savepoints->position($name) === 1)
+		{
+			$this->execute_command_ok('COMMIT');
+
+			// Reset the savepoint stack
+			$this->_savepoints->reset();
+		}
+		else
+		{
+			$this->execute_command_ok(
+				'RELEASE SAVEPOINT '
+				.$this->_quote_left.$name.$this->_quote_right
+			);
+
+			// Remove all savepoints after this one
+			$this->_savepoints->pop_until($name);
+
+			// Remove this savepoint
+			$this->_savepoints->pop();
+		}
 	}
 
 	public function connect()
@@ -646,6 +673,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				'SET search_path = '.$this->_config['search_path']
 			);
 		}
+
+		// Initialize the savepoint stack
+		$this->_savepoints = new Database_Savepoint_Deep;
 	}
 
 	/**
@@ -1150,23 +1180,38 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function rollback($name = NULL)
 	{
-		if ($name === NULL)
+		$this->_connection or $this->connect();
+
+		if ($name === NULL OR $this->_savepoints->position($name) === 1)
 		{
 			$this->execute_command_ok('ROLLBACK');
+
+			// Reset the savepoint stack
+			$this->_savepoints->reset();
 		}
 		else
 		{
 			$this->execute_command_ok(
 				'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
 			);
+
+			// Remove all savepoints after this one
+			$this->_savepoints->pop_until($name);
 		}
 	}
 
-	public function savepoint($name)
+	public function savepoint($name = NULL)
 	{
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
 		$this->execute_command_ok(
 			'SAVEPOINT '.$this->_quote_left.$name.$this->_quote_right
 		);
+
+		$this->_savepoints->push($name);
 
 		return $name;
 	}
