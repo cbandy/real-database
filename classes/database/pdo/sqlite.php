@@ -114,6 +114,9 @@ class Database_PDO_SQLite extends Database_PDO
 				$this->execute_command('PRAGMA '.$pragma.' = '.$this->quote_literal($value));
 			}
 		}
+
+		// Initialize the savepoint stack
+		$this->_savepoints = new Database_Savepoint_Deep;
 	}
 
 	/**
