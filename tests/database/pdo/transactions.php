@@ -62,13 +62,14 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 	 */
 	public function test_begin($query, $command, $name, $expected)
 	{
-		$connection = $this->getConnection()->getConnection();
+		$metadata = $this->getConnection()->getMetaData();
 
-		if ($connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlsrv')
+		if ($metadata instanceof Database_SQLServer_MetaData
+			AND ! $metadata->is_read_committed_snapshot_on())
 		{
-			// This test hangs with the default isolation level, READ COMMITTED.
-			// It succeeds with READ_COMMITTED_SNAPSHOT ON.
-			$this->markTestIncomplete();
+			// This test hangs with the default isolation level, READ COMMITTED,
+			// unless READ_COMMITTED_SNAPSHOT is ON.
+			$this->markTestSkipped();
 		}
 
 		$db = Database::factory();
@@ -320,12 +321,13 @@ class Database_PDO_Transactions_Test extends Database_PDO_TestCase
 	 */
 	public function test_commit($query, $command, $expected)
 	{
-		$connection = $this->getConnection()->getConnection();
+		$metadata = $this->getConnection()->getMetaData();
 
-		if ($connection->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlsrv')
+		if ($metadata instanceof Database_SQLServer_MetaData
+			AND ! $metadata->is_read_committed_snapshot_on())
 		{
-			// This test hangs with the default isolation level, READ COMMITTED.
-			// It succeeds with READ_COMMITTED_SNAPSHOT ON.
+			// This test hangs with the default isolation level, READ COMMITTED,
+			// unless READ_COMMITTED_SNAPSHOT is ON.
 			$this->markTestSkipped();
 		}
 

@@ -11,6 +11,22 @@ class Database_SQLServer_MetaData extends PHPUnit_Extensions_Database_DB_MetaDat
 	protected $truncateCommand = 'TRUNCATE TABLE';
 
 	/**
+	 * Whether or not READ_COMMITTED_SNAPSHOT is enabled on the database in the
+	 * connection string.
+	 *
+	 * @return  boolean
+	 */
+	public function is_read_committed_snapshot_on()
+	{
+		$result = $this->pdo->query(
+			'SELECT is_read_committed_snapshot_on FROM sys.databases'
+			.' WHERE name = ORIGINAL_DB_NAME()'
+		);
+
+		return ($result AND $result->fetchColumn());
+	}
+
+	/**
 	 * Loads column info.
 	 *
 	 * Copied from [PHPUnit_Extensions_Database_DB_MetaData_InformationSchema::loadColumnInfo]
