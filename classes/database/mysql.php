@@ -113,6 +113,11 @@ class Database_MySQL extends Database
 	protected $_quote_right = '`';
 
 	/**
+	 * @var Database_Savepoint_Stack    Stack of savepoint names
+	 */
+	protected $_savepoints;
+
+	/**
 	 * Create a MySQL connection
 	 *
 	 *  Configuration Option  | Type    | Description

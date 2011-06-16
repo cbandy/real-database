@@ -23,6 +23,11 @@ class Database_PDO extends Database
 	protected $_connection;
 
 	/**
+	 * @var Database_Savepoint_Stack    Stack of savepoint names
+	 */
+	protected $_savepoints;
+
+	/**
 	 * Create a PDO connection
 	 *
 	 *  Configuration Option  | Type    | Description

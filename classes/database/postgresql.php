@@ -141,6 +141,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	protected $_placeholder = '/(?:\?|(?<=^|::|[^:]):\w++)/';
 
 	/**
+	 * @var Database_Savepoint_Deep Stack of savepoint names
+	 */
+	protected $_savepoints;
+
+	/**
 	 * @var string  Default schema
 	 */
 	protected $_schema;
