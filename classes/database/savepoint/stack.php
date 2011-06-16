@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Stack for maintaining savepoint names.
+ * Stack for maintaining savepoint names according to SQL:1999.
  *
  * Pushing an existing name onto the stack will first remove the duplicate.
  * The position of the name at the bottom of the stack is one.

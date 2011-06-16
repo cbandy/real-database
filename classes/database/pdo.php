@@ -121,7 +121,8 @@ class Database_PDO extends Database
 
 	public function charset($charset)
 	{
-		$this->execute_command("SET NAMES '$charset'");
+		// This SQL-92 syntax is not supported by all drivers
+		$this->execute_command('SET NAMES '.$this->quote_literal($charset));
 	}
 
 	public function commit($name = NULL)

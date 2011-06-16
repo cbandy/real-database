@@ -640,7 +640,8 @@ class Database_MySQL extends Database
 			return $this->execute_query($sql)->as_array('table_name');
 		}
 
-		// Filter on table prefix
+		// Filter on table prefix. Using quote_literal() would double-escape
+		// the backslash.
 		$sql .= " AND table_name LIKE '"
 			.strtr($this->_table_prefix, array('_' => '\_', '%' => '\%'))
 			."%'";
