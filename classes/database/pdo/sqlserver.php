@@ -139,6 +139,53 @@ class Database_PDO_SQLServer extends Database_PDO
 		$this->_connection->setAttribute(PDO::SQLSRV_ATTR_ENCODING, $encoding);
 	}
 
+	public function commit($name = NULL)
+	{
+		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', 'commit('.$name.')'
+			);
+		}
+
+		try
+		{
+			if ($name === NULL
+				OR $this->_savepoints->uncommitted_position($name) === 1)
+			{
+				$this->_connection->commit();
+
+				// Reset the savepoint stack
+				$this->_savepoints->reset();
+			}
+			else
+			{
+				// Remove this savepoint and all savepoints after it from the
+				// uncommitted stack. TODO: a NULL result means the savepoint is
+				// invalid
+				if ( ! $this->_savepoints->commit_to($name));
+			}
+		}
+		catch (PDOException $e)
+		{
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+	}
+
 	public function connect()
 	{
 		try
@@ -158,6 +205,9 @@ class Database_PDO_SQLServer extends Database_PDO
 				$e->getCode()
 			);
 		}
+
+		// Initialize the savepoint stack
+		$this->_savepoints = new Database_SQLServer_Savepoints;
 	}
 
 	public function datatype($type, $attribute = NULL)
@@ -219,12 +269,33 @@ class Database_PDO_SQLServer extends Database_PDO
 
 		try
 		{
-			if ($name === NULL)
+			if ($name === NULL
+				OR $this->_savepoints->uncommitted_position($name) === 1)
 			{
 				$this->_connection->rollBack();
+
+				// Reset the savepoint stack
+				$this->_savepoints->reset();
 			}
 			else
 			{
+				// Rollback any intervening committed duplicates
+				while ($this->_savepoints->position($name)
+					> $this->_savepoints->position_uncommitted($name))
+				{
+					// Rollback and release the committed savepoint
+					$this->_connection->exec(
+						'ROLLBACK TRANSACTION '
+						.$this->_quote_left.$name.$this->_quote_right
+					);
+
+					// Remove all savepoints after it
+					$this->_savepoints->pop_until($name);
+
+					// Remove the released savepoint
+					$this->_savepoints->pop();
+				}
+
 				if ( ! empty($this->_config['release_during_rollback']))
 				{
 					// Rollback and release the savepoint
@@ -232,6 +303,12 @@ class Database_PDO_SQLServer extends Database_PDO
 						'ROLLBACK TRANSACTION '
 						.$this->_quote_left.$name.$this->_quote_right
 					);
+
+					// Remove all savepoints after this one
+					$this->_savepoints->pop_until($name);
+
+					// Remove this savepoint
+					$this->_savepoints->pop();
 				}
 				else
 				{
@@ -242,6 +319,9 @@ class Database_PDO_SQLServer extends Database_PDO
 						.'; SAVE TRANSACTION '
 						.$this->_quote_left.$name.$this->_quote_right
 					);
+
+					// Remove all savepoints after this one
+					$this->_savepoints->pop_until($name);
 				}
 			}
 		}
@@ -263,8 +343,13 @@ class Database_PDO_SQLServer extends Database_PDO
 		}
 	}
 
-	public function savepoint($name)
+	public function savepoint($name = NULL)
 	{
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
 		$this->_connection or $this->connect();
 
 		if ( ! empty($this->_config['profiling']))
@@ -296,6 +381,8 @@ class Database_PDO_SQLServer extends Database_PDO
 		{
 			Profiler::stop($benchmark);
 		}
+
+		$this->_savepoints->push($name);
 
 		return $name;
 	}
