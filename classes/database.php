@@ -312,12 +312,13 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Start a transaction
+	 * Start a transaction or set a savepoint in the current transaction.
 	 *
 	 * @throws  Database_Exception
-	 * @return  void
+	 * @param   string  $name   Savepoint name or NULL to have one generated
+	 * @return  string  Savepoint name
 	 */
-	abstract public function begin();
+	abstract public function begin($name = NULL);
 
 	/**
 	 * Set the connection character set. May disconnect the session for some drivers.
@@ -329,12 +330,13 @@ abstract class Database extends SQL
 	abstract public function charset($charset);
 
 	/**
-	 * Commit the current transaction
+	 * Commit the current transaction or release a savepoint.
 	 *
 	 * @throws  Database_Exception
+	 * @param   string  $name   Savepoint name or NULL to commit the transaction
 	 * @return  void
 	 */
-	abstract public function commit();
+	abstract public function commit($name = NULL);
 
 	/**
 	 * Connect
@@ -462,8 +464,8 @@ abstract class Database extends SQL
 	 * Set a savepoint in the current transaction.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string  $name   Savepoint name
+	 * @param   string  $name   Savepoint name or NULL to have one generated
 	 * @return  string  Savepoint name
 	 */
-	abstract public function savepoint($name);
+	abstract public function savepoint($name = NULL);
 }

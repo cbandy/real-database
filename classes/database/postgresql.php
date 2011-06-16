@@ -141,6 +141,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	protected $_placeholder = '/(?:\?|(?<=^|::|[^:]):\w++)/';
 
 	/**
+	 * @var Database_Savepoint_Deep Stack of savepoint names
+	 */
+	protected $_savepoints;
+
+	/**
 	 * @var string  Default schema
 	 */
 	protected $_schema;
@@ -574,23 +579,24 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		return substr($result, 0, -2);
 	}
 
-	/**
-	 * Start a transaction
-	 *
-	 * @link http://www.postgresql.org/docs/current/static/sql-set-transaction.html
-	 *
-	 * @throws  Database_Exception
-	 * @param   string  $mode   Transaction mode
-	 * @return  void
-	 */
-	public function begin($mode = NULL)
+	public function begin($name = NULL)
 	{
-		$result = $this->_execute("BEGIN $mode");
+		if (count($this->_savepoints))
+		{
+			// Nested transaction
+			return $this->savepoint($name);
+		}
 
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
+		$this->execute_command_ok('START TRANSACTION');
 
-		pg_free_result($result);
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
+		$this->_savepoints->push($name);
+
+		return $name;
 	}
 
 	public function charset($charset)
@@ -604,14 +610,30 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			);
 	}
 
-	public function commit()
+	public function commit($name = NULL)
 	{
-		$result = $this->_execute('COMMIT');
+		$this->_connection or $this->connect();
 
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
+		if ($name === NULL OR $this->_savepoints->position($name) === 1)
+		{
+			$this->execute_command_ok('COMMIT');
 
-		pg_free_result($result);
+			// Reset the savepoint stack
+			$this->_savepoints->reset();
+		}
+		else
+		{
+			$this->execute_command_ok(
+				'RELEASE SAVEPOINT '
+				.$this->_quote_left.$name.$this->_quote_right
+			);
+
+			// Remove all savepoints after this one
+			$this->_savepoints->pop_until($name);
+
+			// Remove this savepoint
+			$this->_savepoints->pop();
+		}
 	}
 
 	public function connect()
@@ -652,15 +674,13 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($this->_config['search_path']))
 		{
-			$result = $this->_execute(
+			$this->execute_command_ok(
 				'SET search_path = '.$this->_config['search_path']
 			);
-
-			if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-				throw new Database_PostgreSQL_Exception($result);
-
-			pg_free_result($result);
 		}
+
+		// Initialize the savepoint stack
+		$this->_savepoints = new Database_Savepoint_Deep;
 	}
 
 	/**
@@ -906,6 +926,24 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Execute a statement after connecting and ensure the result status is
+	 * PGSQL_COMMAND_OK.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL statement
+	 * @return  void
+	 */
+	public function execute_command_ok($statement)
+	{
+		$result = $this->_execute($statement);
+
+		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
+			throw new Database_PostgreSQL_Exception($result);
+
+		pg_free_result($result);
+	}
+
+	/**
 	 * Execute a SQL statement, returning the value of a column from the first
 	 * row.
 	 *
@@ -1147,28 +1185,38 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function rollback($name = NULL)
 	{
-		$result = $this->_execute(
-			($name === NULL)
-				? 'ROLLBACK'
-				: 'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
-		);
+		$this->_connection or $this->connect();
 
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
+		if ($name === NULL OR $this->_savepoints->position($name) === 1)
+		{
+			$this->execute_command_ok('ROLLBACK');
 
-		pg_free_result($result);
+			// Reset the savepoint stack
+			$this->_savepoints->reset();
+		}
+		else
+		{
+			$this->execute_command_ok(
+				'ROLLBACK TO '.$this->_quote_left.$name.$this->_quote_right
+			);
+
+			// Remove all savepoints after this one
+			$this->_savepoints->pop_until($name);
+		}
 	}
 
-	public function savepoint($name)
+	public function savepoint($name = NULL)
 	{
-		$result = $this->_execute(
+		if ($name === NULL)
+		{
+			$name = 'kohana_txn_'.count($this->_savepoints);
+		}
+
+		$this->execute_command_ok(
 			'SAVEPOINT '.$this->_quote_left.$name.$this->_quote_right
 		);
 
-		if (pg_result_status($result) !== PGSQL_COMMAND_OK)
-			throw new Database_PostgreSQL_Exception($result);
-
-		pg_free_result($result);
+		$this->_savepoints->push($name);
 
 		return $name;
 	}
