@@ -96,6 +96,17 @@ class Database_MySQL extends Database
 	}
 
 	/**
+	 * Create a SET expression.
+	 *
+	 * @param   array   $values
+	 * @return  Database_MySQL_DDL_Set
+	 */
+	public static function ddl_set($values = NULL)
+	{
+		return new Database_MySQL_DDL_Set($values);
+	}
+
+	/**
 	 * Create an expression for comparing whether or not two values are
 	 * distinct.
 	 *

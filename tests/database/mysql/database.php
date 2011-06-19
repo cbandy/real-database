@@ -200,6 +200,30 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $column);
 	}
 
+	public function provider_ddl_set()
+	{
+		return array(
+			array(array(), new Database_MySQL_DDL_Set),
+			array(array(array()), new Database_MySQL_DDL_Set(array())),
+			array(array(array('a')), new Database_MySQL_DDL_Set(array('a'))),
+			array(array(array('a', 'b')), new Database_MySQL_DDL_Set(array('a', 'b'))),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::ddl_set
+	 *
+	 * @dataProvider    provider_ddl_set
+	 *
+	 * @param   array                   $arguments
+	 * @param   Database_MySQL_DDL_Set  $expected
+	 */
+	public function test_ddl_set($arguments, $expected)
+	{
+		$column = call_user_func_array('Database_MySQL::ddl_set', $arguments);
+		$this->assertEquals($expected, $column);
+	}
+
 	public function provider_execute_command_empty()
 	{
 		return array(
