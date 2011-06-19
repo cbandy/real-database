@@ -176,6 +176,30 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $column);
 	}
 
+	public function provider_ddl_enum()
+	{
+		return array(
+			array(array(), new Database_MySQL_DDL_Enum),
+			array(array(array()), new Database_MySQL_DDL_Enum(array())),
+			array(array(array('a')), new Database_MySQL_DDL_Enum(array('a'))),
+			array(array(array('a', 'b')), new Database_MySQL_DDL_Enum(array('a', 'b'))),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::ddl_enum
+	 *
+	 * @dataProvider    provider_ddl_enum
+	 *
+	 * @param   array                   $arguments
+	 * @param   Database_MySQL_DDL_Enum $expected
+	 */
+	public function test_ddl_enum($arguments, $expected)
+	{
+		$column = call_user_func_array('Database_MySQL::ddl_enum', $arguments);
+		$this->assertEquals($expected, $column);
+	}
+
 	public function provider_execute_command_empty()
 	{
 		return array(

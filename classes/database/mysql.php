@@ -85,6 +85,17 @@ class Database_MySQL extends Database
 	}
 
 	/**
+	 * Create an ENUM expression.
+	 *
+	 * @param   array   $values
+	 * @return  Database_MySQL_DDL_Enum
+	 */
+	public static function ddl_enum($values = NULL)
+	{
+		return new Database_MySQL_DDL_Enum($values);
+	}
+
+	/**
 	 * Create an expression for comparing whether or not two values are
 	 * distinct.
 	 *
