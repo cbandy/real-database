@@ -101,6 +101,48 @@ class Database_SQL_Conditions_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('))', $db->quote($conditions));
 	}
 
+	public function provider_close_empty()
+	{
+		return array(
+			array(SQL::conditions(), ''),
+			array(SQL::conditions()->and_open(), ''),
+			array(SQL::conditions()->and_open('a', '=', 'b'), "('a' = 'b')"),
+			array(SQL::conditions()->and_not_open(), ''),
+			array(
+				SQL::conditions()->and_not_open('a', '=', 'b'),
+				"NOT ('a' = 'b')"
+			),
+
+			array(SQL::conditions('a', '=', 'b'), "'a' = 'b')"),
+			array(SQL::conditions('a', '=', 'b')->and_open(), "'a' = 'b'"),
+			array(
+				SQL::conditions('a', '=', 'b')->and_open('c', '=', 'd'),
+				"'a' = 'b' AND ('c' = 'd')"
+			),
+			array(SQL::conditions('a', '=', 'b')->and_not_open(), "'a' = 'b'"),
+			array(
+				SQL::conditions('a', '=', 'b')->and_not_open('c', '=', 'd'),
+				"'a' = 'b' AND NOT ('c' = 'd')"
+			),
+		);
+	}
+
+	/**
+	 * @covers  SQL_Conditions::close_empty
+	 *
+	 * @dataProvider    provider_close_empty
+	 *
+	 * @param   SQL_Conditions  $conditions
+	 * @param   string          $expected
+	 */
+	public function test_close_empty($conditions, $expected)
+	{
+		$db = new SQL;
+
+		$this->assertSame($conditions, $conditions->close_empty());
+		$this->assertSame($expected, $db->quote($conditions));
+	}
+
 	/**
 	 * @covers  SQL_Conditions::column
 	 */

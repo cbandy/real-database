@@ -13,9 +13,14 @@
 class SQL_Conditions extends SQL_Expression
 {
 	/**
-	 * @var bool    Whether or not the (sub-)expression has just begun
+	 * @var bool    Whether or not the (sub)expression has just begun
 	 */
 	protected $_empty = TRUE;
+
+	/**
+	 * @var string  The content of the previous open() operation
+	 */
+	protected $_open = '';
 
 	/**
 	 * @param   mixed   $left       Left operand
@@ -277,14 +282,16 @@ class SQL_Conditions extends SQL_Expression
 	 */
 	public function not_open($logic, $left = NULL, $operator = NULL, $right = NULL)
 	{
+		$this->_open = 'NOT (';
+
 		if ( ! $this->_empty)
 		{
 			// Only append the logical operator between conditions
-			$this->_value .= ' '.strtoupper($logic).' ';
+			$this->_open = ' '.strtoupper($logic).' '.$this->_open;
 		}
 
 		$this->_empty = TRUE;
-		$this->_value .= 'NOT (';
+		$this->_value .= $this->_open;
 
 		if ($left !== NULL OR $operator !== NULL)
 		{
@@ -346,14 +353,16 @@ class SQL_Conditions extends SQL_Expression
 	 */
 	public function open($logic, $left = NULL, $operator = NULL, $right = NULL)
 	{
+		$this->_open = '(';
+
 		if ( ! $this->_empty)
 		{
 			// Only append the logical operator between conditions
-			$this->_value .= ' '.strtoupper($logic).' ';
+			$this->_open = ' '.strtoupper($logic).' '.$this->_open;
 		}
 
 		$this->_empty = TRUE;
-		$this->_value .= '(';
+		$this->_value .= $this->_open;
 
 		if ($left !== NULL OR $operator !== NULL)
 		{
@@ -412,6 +421,28 @@ class SQL_Conditions extends SQL_Expression
 	{
 		$this->_empty = FALSE;
 		$this->_value .= ')';
+
+		return $this;
+	}
+
+	/**
+	 * Close parenthesis or remove the previous open parenthesis when the
+	 * subexpression is empty.
+	 *
+	 * @return  $this
+	 */
+	public function close_empty()
+	{
+		if ( ! $this->_empty)
+			return $this->close();
+
+		// Remove the previous open parenthesis
+		$this->_value = substr($this->_value, 0, - strlen($this->_open));
+
+		$this->_empty = (
+			// The expression is empty or a subexpression has just begun
+			! $this->_value OR substr_compare($this->_value, '(', -1) === 0
+		);
 
 		return $this;
 	}
