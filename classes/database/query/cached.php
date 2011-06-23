@@ -65,9 +65,10 @@ class Database_Query_Cached
 		if ($result = $this->_cache->get($key))
 			return new Database_Result_Array($result, $this->_query->as_object);
 
-		$result = $this->_db->execute($this->_query);
-
-		$this->_cache->set($key, $result->as_array(), $lifetime);
+		if ($result = $this->_db->execute($this->_query))
+		{
+			$this->_cache->set($key, $result->as_array(), $lifetime);
+		}
 
 		return $result;
 	}

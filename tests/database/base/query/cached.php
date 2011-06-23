@@ -112,4 +112,31 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 		$this->assertType(get_class($result), $cached->execute(3), 'First execution not cached');
 		$this->assertType('Database_Result_Array', $cached->execute(3), 'Second execution cached');
 	}
+
+	/**
+	 * Statements that return NULL from Database::execute_query() should never
+	 * be cached.
+	 *
+	 * @covers  Database_Query_Cached::execute
+	 */
+	public function test_execute_command()
+	{
+		$cache = Cache::instance();
+
+		$db = $this->getMockForAbstractClass('Database', array('db', array()));
+
+		$db->expects($this->exactly(2))
+			->method('execute_query')
+			->will($this->returnValue(NULL));
+
+		$cached = new Database_Query_Cached(
+			$cache, $db, new Database_Query('query')
+		);
+
+		// Clear the cache
+		$cached->delete();
+
+		$this->assertNull($cached->execute(3), 'First execution not cached');
+		$this->assertNull($cached->execute(3), 'Second execution not cached');
+	}
 }
