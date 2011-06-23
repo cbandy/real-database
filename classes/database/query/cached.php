@@ -11,14 +11,14 @@
 class Database_Query_Cached
 {
 	/**
+	 * @var Cache   Cache in which to store/retrieve results
+	 */
+	protected $_cache;
+
+	/**
 	 * @var Database    Database on which to execute
 	 */
 	protected $_db;
-
-	/**
-	 * @var integer Cache lifetime
-	 */
-	protected $_lifetime;
 
 	/**
 	 * @var Database_iQuery Query to cache when executed
@@ -26,27 +26,25 @@ class Database_Query_Cached
 	protected $_query;
 
 	/**
-	 * @param   integer         $lifetime   Cache lifetime
-	 * @param   Database        $db         Database on which to execute
-	 * @param   Database_iQuery $query      Query to execute
+	 * @param   Cache           $cache  Cache in which to store/retrieve results
+	 * @param   Database        $db     Database on which to execute
+	 * @param   Database_iQuery $query  Query to execute
 	 */
-	public function __construct($lifetime, $db, $query)
+	public function __construct($cache, $db, $query)
 	{
+		$this->_cache = $cache;
 		$this->_db = $db;
-		$this->_lifetime = $lifetime;
 		$this->_query = $query;
 	}
 
 	/**
-	 * Delete this query from the cache
+	 * Delete this query from the cache.
 	 *
 	 * @return  void
 	 */
 	public function delete()
 	{
-		// Any negative number should clear the cache, but allow for some time
-		// discrepancy on a remote file system
-		Kohana::cache($this->key(), NULL, -60);
+		$this->_cache->delete($this->key());
 	}
 
 	/**
@@ -54,27 +52,28 @@ class Database_Query_Cached
 	 * NULL when the statement is not a query (e.g., a DELETE statement).
 	 *
 	 * @throws  Database_Exception
+	 * @param   integer $lifetime   Cache lifetime in seconds or NULL to use the Cache default
 	 * @return  Database_Result Result set
 	 */
-	public function execute()
+	public function execute($lifetime = NULL)
 	{
-		if ($this->_lifetime < 0)
+		if ($lifetime < 0)
 			return $this->_db->execute($this->_query);
 
 		$key = $this->key();
 
-		if ($result = Kohana::cache($key, NULL, $this->_lifetime))
+		if ($result = $this->_cache->get($key))
 			return new Database_Result_Array($result, $this->_query->as_object);
 
 		$result = $this->_db->execute($this->_query);
 
-		Kohana::cache($key, $result->as_array(), $this->_lifetime);
+		$this->_cache->set($key, $result->as_array(), $lifetime);
 
 		return $result;
 	}
 
 	/**
-	 * Generate a cache key for this query
+	 * Generate a cache key for this query.
 	 *
 	 * @return  string
 	 */
