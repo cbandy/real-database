@@ -234,6 +234,42 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'numeric_scale' => 0,
 				'column_type' => 'int(10) unsigned zerofill',
 			)),
+
+			// Spatial
+
+			array('geometry', array(
+				'data_type' => 'geometry',
+				'column_type' => 'geometry',
+			)),
+			array('linestring', array(
+				'data_type' => 'linestring',
+				'column_type' => 'linestring',
+			)),
+			array('point', array(
+				'data_type' => 'point',
+				'column_type' => 'point',
+			)),
+			array('polygon', array(
+				'data_type' => 'polygon',
+				'column_type' => 'polygon',
+			)),
+
+			array('geometrycollection', array(
+				'data_type' => 'geometrycollection',
+				'column_type' => 'geometrycollection',
+			)),
+			array('multilinestring', array(
+				'data_type' => 'multilinestring',
+				'column_type' => 'multilinestring',
+			)),
+			array('multipoint', array(
+				'data_type' => 'multipoint',
+				'column_type' => 'multipoint',
+			)),
+			array('multipolygon', array(
+				'data_type' => 'multipolygon',
+				'column_type' => 'multipolygon',
+			)),
 		);
 	}
 
