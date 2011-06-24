@@ -38,6 +38,43 @@ class Database_Query_Cached
 	}
 
 	/**
+	 * Get a result set from the cache.
+	 *
+	 * @param   string  $key    Cache key
+	 * @return  Database_Result_Array   Result set or NULL if not in the cache
+	 */
+	protected function _get($key)
+	{
+		if ($result = $this->_cache->get($key))
+			return new Database_Result_Array($result, $this->_query->as_object);
+
+		return $result;
+	}
+
+	/**
+	 * Execute this query and store its result set in the cache.
+	 *
+	 * If the query does not return a result set or if $lifetime is less than
+	 * zero, nothing is stored.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $key        Cache key
+	 * @param   integer $lifetime   Cache lifetime in seconds or NULL to use the Cache default
+	 * @return  Database_Result Result set
+	 */
+	protected function _set($key, $lifetime)
+	{
+		$result = $this->_db->execute($this->_query);
+
+		if ($result AND $lifetime >= 0)
+		{
+			$this->_cache->set($key, $result->as_array(), $lifetime);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Delete this query from the cache.
 	 *
 	 * @return  void
@@ -48,8 +85,12 @@ class Database_Query_Cached
 	}
 
 	/**
-	 * Execute this query or retrieve its result set from the cache. Returns
-	 * NULL when the statement is not a query (e.g., a DELETE statement).
+	 * Get this query's result set from the cache. If not available, execute the
+	 * query and store its result set in the cache. Returns NULL when the
+	 * statement is not a query (e.g., a DELETE statement).
+	 *
+	 * When $lifetime is less than zero, the executed result set is not stored
+	 * in the cache.
 	 *
 	 * @throws  Database_Exception
 	 * @param   integer $lifetime   Cache lifetime in seconds or NULL to use the Cache default
@@ -57,20 +98,22 @@ class Database_Query_Cached
 	 */
 	public function execute($lifetime = NULL)
 	{
-		if ($lifetime < 0)
-			return $this->_db->execute($this->_query);
-
 		$key = $this->key();
 
-		if ($result = $this->_cache->get($key))
-			return new Database_Result_Array($result, $this->_query->as_object);
+		if ($result = $this->_get($key))
+			return $result;
 
-		if ($result = $this->_db->execute($this->_query))
-		{
-			$this->_cache->set($key, $result->as_array(), $lifetime);
-		}
+		return $this->_set($key, $lifetime);
+	}
 
-		return $result;
+	/**
+	 * Get this query's result set from the cache.
+	 *
+	 * @return  Database_Result_Array   Result set or NULL if not in the cache
+	 */
+	public function get()
+	{
+		return $this->_get($this->key());
 	}
 
 	/**
@@ -87,5 +130,19 @@ class Database_Query_Cached
 			.$this->_query->as_object.','
 			.serialize($this->_query->arguments)
 			.')';
+	}
+
+	/**
+	 * Execute this query and, when $lifetime is not less than zero, store its
+	 * result set in the cache. Returns NULL when the statement is not a query
+	 * (e.g., a DELETE statement).
+	 *
+	 * @throws  Database_Exception
+	 * @param   integer $lifetime   Cache lifetime in seconds or NULL to use the Cache default
+	 * @return  Database_Result Result set
+	 */
+	public function set($lifetime = NULL)
+	{
+		return $this->_set($this->key(), $lifetime);
 	}
 }
