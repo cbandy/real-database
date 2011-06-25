@@ -38,20 +38,6 @@ class Database_Query_Cached
 	}
 
 	/**
-	 * Get a result set from the cache.
-	 *
-	 * @param   string  $key    Cache key
-	 * @return  Database_Result_Array   Result set or NULL if not in the cache
-	 */
-	protected function _get($key)
-	{
-		if ($result = $this->_cache->get($key))
-			return new Database_Result_Array($result, $this->_query->as_object);
-
-		return $result;
-	}
-
-	/**
 	 * Execute this query and store its result set in the cache.
 	 *
 	 * If the query does not return a result set or if $lifetime is less than
@@ -62,13 +48,13 @@ class Database_Query_Cached
 	 * @param   integer $lifetime   Cache lifetime in seconds or NULL to use the Cache default
 	 * @return  Database_Result Result set
 	 */
-	protected function _set($key, $lifetime)
+	protected function _execute_set($key, $lifetime)
 	{
 		$result = $this->_db->execute($this->_query);
 
 		if ($result AND $lifetime >= 0)
 		{
-			$this->_cache->set($key, $result->as_array(), $lifetime);
+			$this->_cache->set($key, $result->serializable(), $lifetime);
 		}
 
 		return $result;
@@ -100,10 +86,10 @@ class Database_Query_Cached
 	{
 		$key = $this->key();
 
-		if ($result = $this->_get($key))
+		if ($result = $this->_cache->get($key))
 			return $result;
 
-		return $this->_set($key, $lifetime);
+		return $this->_execute_set($key, $lifetime);
 	}
 
 	/**
@@ -113,7 +99,7 @@ class Database_Query_Cached
 	 */
 	public function get()
 	{
-		return $this->_get($this->key());
+		return $this->_cache->get($this->key());
 	}
 
 	/**
@@ -143,6 +129,6 @@ class Database_Query_Cached
 	 */
 	public function set($lifetime = NULL)
 	{
-		return $this->_set($this->key(), $lifetime);
+		return $this->_execute_set($this->key(), $lifetime);
 	}
 }
