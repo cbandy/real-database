@@ -329,6 +329,16 @@ abstract class Database_Result
 	}
 
 	/**
+	 * Return a serializable copy of this result set.
+	 *
+	 * @return  Database_Result_Array
+	 */
+	public function serializable()
+	{
+		return new Database_Result_Array($this->as_array(), $this->_as_object);
+	}
+
+	/**
 	 * Whether or not the next call to current() will succeed
 	 *
 	 * @link http://php.net/manual/iterator.valid Iterator::valid()

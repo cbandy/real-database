@@ -728,4 +728,81 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $result->as_array($key, $value));
 		$this->assertSame($position, $result->key(), 'Position unchanged');
 	}
+
+	public function provider_serializable()
+	{
+		$result = array();
+
+		$rows = array(
+			array('id' => 5, 'value' => 50),
+			array('id' => 6, 'value' => 60),
+			array('id' => 7, 'value' => 70),
+		);
+
+		$result[] = array(FALSE, $rows, new Database_Result_Array($rows, FALSE));
+
+		$rows = array(
+			(object) array('a' => 'A', 'b' => 'B'),
+			(object) array('a' => 'C', 'b' => 'D'),
+			(object) array('a' => 3, 'b' => 100),
+		);
+
+		$result[] = array(TRUE, $rows, new Database_Result_Array($rows, TRUE));
+
+		return $result;
+	}
+
+	/**
+	 * @covers  Database_Result::serializable
+	 *
+	 * @dataProvider    provider_serializable
+	 *
+	 * @param   string|boolean          $as_object
+	 * @param   array                   $rows       Data set
+	 * @param   Database_Result_Array   $expected
+	 */
+	public function test_serializable($as_object, $rows, $expected)
+	{
+		$result = $this->getMockForAbstractClass(
+			'Database_Result',
+			array($as_object, count($rows))
+		);
+
+		foreach ($rows as $i => $row)
+		{
+			$result->expects($this->at($i))
+				->method('current')
+				->will($this->returnValue($row));
+		}
+
+		$this->assertEquals($expected, $result->serializable());
+	}
+
+	/**
+	 * @covers  Database_Result::serializable
+	 *
+	 * @dataProvider    provider_serializable
+	 *
+	 * @param   string|boolean          $as_object
+	 * @param   array                   $rows       Data set
+	 * @param   Database_Result_Array   $expected
+	 */
+	public function test_serializable_can_serialize($as_object, $rows, $expected)
+	{
+		$result = $this->getMockForAbstractClass(
+			'Database_Result',
+			array($as_object, count($rows))
+		);
+
+		foreach ($rows as $i => $row)
+		{
+			$result->expects($this->at($i))
+				->method('current')
+				->will($this->returnValue($row));
+		}
+
+		$string = serialize($result->serializable());
+
+		$this->assertEquals($expected, unserialize($string));
+	}
 }
