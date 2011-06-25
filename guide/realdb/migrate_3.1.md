@@ -40,6 +40,15 @@ the column containing the ID:
     );
 
 
+## Query Caching
+
+`Database_Result_Cached` has been renamed to [Database_Result_Array].
+`Database_Result::cached()` has been renamed to [Database_Result::serializable].
+
+Use [Database_Query_Cached] to execute a query and get/set its result set in a
+[Cache].
+
+
 ## Introspection
 
 The `Database::list_columns` and `Database::list_tables` methods have become
