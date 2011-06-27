@@ -121,6 +121,17 @@ class Database_MySQL extends Database
 	}
 
 	/**
+	 * Create a SELECT query.
+	 *
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @return  Database_MySQL_Select
+	 */
+	public static function select($columns = NULL)
+	{
+		return new Database_MySQL_Select($columns);
+	}
+
+	/**
 	 * @var resource    Link identifier
 	 */
 	protected $_connection;

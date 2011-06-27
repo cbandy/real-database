@@ -528,4 +528,27 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db->disconnect();
 		$db->connect();
 	}
+
+	public function provider_select()
+	{
+		return array(
+			array(array(), new Database_MySQL_Select),
+			array(array(array('a' => 'b')), new Database_MySQL_Select(array('a' => 'b'))),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::select
+	 *
+	 * @dataProvider    provider_select
+	 *
+	 * @param   array                   $arguments
+	 * @param   Database_MySQL_Select   $expected
+	 */
+	public function test_select($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('Database_MySQL::select', $arguments)
+		);
+	}
 }
