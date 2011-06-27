@@ -68,6 +68,17 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
+	 * Create a SELECT query.
+	 *
+	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @return  Database_SQLite_Select
+	 */
+	public static function select($columns = NULL)
+	{
+		return new Database_SQLite_Select($columns);
+	}
+
+	/**
 	 * Create a PDO connection for SQLite
 	 *
 	 *  Configuration Option  | Type    | Description

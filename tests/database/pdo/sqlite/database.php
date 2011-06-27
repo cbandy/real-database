@@ -192,6 +192,29 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $db->quote_literal($value));
 	}
 
+	public function provider_select()
+	{
+		return array(
+			array(array(), new Database_SQLite_Select),
+			array(array(array('a' => 'b')), new Database_SQLite_Select(array('a' => 'b'))),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::select
+	 *
+	 * @dataProvider    provider_select
+	 *
+	 * @param   array                   $arguments
+	 * @param   Database_SQLite_Select  $expected
+	 */
+	public function test_select($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('Database_PDO_SQLite::select', $arguments)
+		);
+	}
+
 	public function provider_table_columns()
 	{
 		return array
