@@ -109,7 +109,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 			->distinct(array('i'));
 
 		$this->assertSame(
-			'SELECT DISTINCT ON (:distinct) :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',
+			'SELECT DISTINCT ON (:distinct) :values FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',
 			(string) $statement
 		);
 	}

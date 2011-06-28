@@ -499,7 +499,7 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 		$statement->column('h');
 
 		$this->assertSame(
-			'SELECT DISTINCT :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',
+			'SELECT DISTINCT :values FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit OFFSET :offset',
 			(string) $statement
 		);
 	}

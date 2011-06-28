@@ -43,7 +43,7 @@ class SQL_DML_Select extends SQL_Expression
 			$value .= ' DISTINCT';
 		}
 
-		$value .= empty($this->parameters[':columns']) ? ' *' : ' :columns';
+		$value .= empty($this->parameters[':values']) ? ' *' : ' :values';
 
 		if ( ! empty($this->parameters[':from']))
 		{
@@ -97,7 +97,7 @@ class SQL_DML_Select extends SQL_Expression
 	{
 		if ($column === NULL)
 		{
-			$this->parameters[':columns'] = array();
+			$this->parameters[':values'] = array();
 		}
 		else
 		{
@@ -112,7 +112,7 @@ class SQL_DML_Select extends SQL_Expression
 				$column = new SQL_Alias($column, $alias);
 			}
 
-			$this->parameters[':columns'][] = $column;
+			$this->parameters[':values'][] = $column;
 		}
 
 		return $this;
@@ -128,7 +128,7 @@ class SQL_DML_Select extends SQL_Expression
 	{
 		if ($columns === NULL)
 		{
-			$this->parameters[':columns'] = array();
+			$this->parameters[':values'] = array();
 		}
 		else
 		{
@@ -145,7 +145,7 @@ class SQL_DML_Select extends SQL_Expression
 					$column = new SQL_Alias($column, $alias);
 				}
 
-				$this->parameters[':columns'][] = $column;
+				$this->parameters[':values'][] = $column;
 			}
 		}
 

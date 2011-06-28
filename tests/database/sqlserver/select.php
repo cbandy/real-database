@@ -24,7 +24,7 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 			->order_by('e');
 
 		$this->assertSame(
-			'SELECT DISTINCT :columns FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby',
+			'SELECT DISTINCT * FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby',
 			(string) $statement
 		);
 	}
@@ -39,7 +39,7 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 			->limit(1);
 
 		$this->assertSame(
-			'SELECT TOP (:limit) :columns', (string) $statement
+			'SELECT TOP (:limit) *', (string) $statement
 		);
 	}
 
@@ -52,9 +52,9 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 		$statement
 			->offset(1);
 
-		$table = 'kohana_af8304e0ab880429910aaec9a9cbcb7b83b507bc';
+		$table = 'kohana_6663b885a82bee0d830744a6054ec8c27753103d';
 		$this->assertSame(
-			'SELECT * FROM (SELECT :columns, ROW_NUMBER() OVER(ORDER BY :orderby) AS kohana_row_number) AS '.$table.' WHERE '.$table.'.kohana_row_number > :offset',
+			'SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY :orderby) AS kohana_row_number) AS '.$table.' WHERE '.$table.'.kohana_row_number > :offset',
 			(string) $statement
 		);
 	}
@@ -69,9 +69,9 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 			->limit(1)
 			->offset(2);
 
-		$table = 'kohana_e2d27645af3bfea9612b845e11fa08f221aecf0a';
+		$table = 'kohana_a433f4765ca13efe109fdc3d82bd3093cb1bcaf4';
 		$this->assertSame(
-			'SELECT * FROM (SELECT :columns, ROW_NUMBER() OVER(ORDER BY :orderby) AS kohana_row_number) AS '.$table.' WHERE '.$table.'.kohana_row_number > :offset AND '.$table.'.kohana_row_number <= (:offset + :limit)',
+			'SELECT * FROM (SELECT *, ROW_NUMBER() OVER(ORDER BY :orderby) AS kohana_row_number) AS '.$table.' WHERE '.$table.'.kohana_row_number > :offset AND '.$table.'.kohana_row_number <= (:offset + :limit)',
 			(string) $statement
 		);
 	}
