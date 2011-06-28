@@ -33,10 +33,10 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		'numeric_scale'     => NULL,
 		'collation_name'    => NULL,
 		'column_type'       => NULL,
-		'column_key'        => NULL,
-		'extra'             => NULL,
+		'column_key'        => '',
+		'extra'             => '',
 		'privileges'        => 'select,insert,update,references',
-		'column_comment'    => NULL,
+		'column_comment'    => '',
 	);
 
 	protected $_table = 'kohana_introspect_test_table';
@@ -79,13 +79,13 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			'column_name' => 'field',
 			'column_type' => 'date',
 			'data_type' => 'date',
-			'ordinal_position' => 1,
+			'ordinal_position' => '1',
 			'is_nullable' => 'YES',
 		));
 
 		$result = $db->table_columns($input);
 
-		$this->assertEquals($expected, $result['field']);
+		$this->assertSame($expected, $result['field']);
 	}
 
 	public function provider_table_columns_constraints()
@@ -95,41 +95,41 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
 				'is_nullable' => 'YES',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 			)),
 			array('int DEFAULT 0', FALSE, array(
-				'column_default' => 0,
+				'column_default' => '0',
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
 				'is_nullable' => 'YES',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 			)),
 			array('int DEFAULT 1', FALSE, array(
-				'column_default' => 1,
+				'column_default' => '1',
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
 				'is_nullable' => 'YES',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 			)),
 
 			array('varchar(10) DEFAULT NULL', TRUE, array(
-				'character_maximum_length' => 10,
+				'character_maximum_length' => '10',
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
 				'is_nullable' => 'YES',
 			)),
 			array("varchar(10) DEFAULT ''", TRUE, array(
-				'character_maximum_length' => 10,
+				'character_maximum_length' => '10',
 				'column_default' => '',
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
 				'is_nullable' => 'YES',
 			)),
 			array("varchar(10) DEFAULT 'a'", TRUE, array(
-				'character_maximum_length' => 10,
+				'character_maximum_length' => '10',
 				'column_default' => 'a',
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
@@ -140,11 +140,11 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
 				'is_nullable' => 'NO',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 			)),
 			array('varchar(10) NOT NULL', TRUE, array(
-				'character_maximum_length' => 10,
+				'character_maximum_length' => '10',
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
 				'is_nullable' => 'NO',
@@ -177,12 +177,12 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
-			'ordinal_position' => 1,
+			'ordinal_position' => '1',
 		), $expected);
 
 		$result = $db->table_columns($this->_table);
 
-		$this->assertEquals($expected, $result['field']);
+		$this->assertSame($expected, $result['field']);
 	}
 
 	/**
@@ -211,7 +211,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
-			'ordinal_position' => 1,
+			'ordinal_position' => '1',
 			'is_nullable' => 'YES',
 			'column_default' => 'CURRENT_TIMESTAMP',
 			'is_nullable' => 'NO',
@@ -226,7 +226,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 		$result = $db->table_columns($this->_table);
 
-		$this->assertEquals($expected, $result['field']);
+		$this->assertSame($expected, $result['field']);
 	}
 
 	public function provider_table_columns_types()
@@ -237,33 +237,33 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			array('binary(50)', FALSE, array(
 				'data_type' => 'binary',
-				'character_maximum_length' => 50,
+				'character_maximum_length' => '50',
 				'column_type' => 'binary(50)',
 			)),
 			array('varbinary(30)', FALSE, array(
 				'data_type' => 'varbinary',
-				'character_maximum_length' => 30,
+				'character_maximum_length' => '30',
 				'column_type' => 'varbinary(30)',
 			)),
 
 			array('blob', FALSE, array(
 				'data_type' => 'blob',
-				'character_maximum_length' => 65535,
+				'character_maximum_length' => '65535',
 				'column_type' => 'blob',
 			)),
 			array('tinyblob', FALSE, array(
 				'data_type' => 'tinyblob',
-				'character_maximum_length' => 255,
+				'character_maximum_length' => '255',
 				'column_type' => 'tinyblob',
 			)),
 			array('mediumblob', FALSE, array(
 				'data_type' => 'mediumblob',
-				'character_maximum_length' => 16777215,
+				'character_maximum_length' => '16777215',
 				'column_type' => 'mediumblob',
 			)),
 			array('longblob', FALSE, array(
 				'data_type' => 'longblob',
-				'character_maximum_length' => 4294967295,
+				'character_maximum_length' => '4294967295',
 				'column_type' => 'longblob',
 			)),
 
@@ -271,33 +271,33 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			array('char(30)', TRUE, array(
 				'data_type' => 'char',
-				'character_maximum_length' => 30,
+				'character_maximum_length' => '30',
 				'column_type' => 'char(30)',
 			)),
 			array('varchar(40)', TRUE, array(
 				'data_type' => 'varchar',
-				'character_maximum_length' => 40,
+				'character_maximum_length' => '40',
 				'column_type' => 'varchar(40)',
 			)),
 
 			array('text', TRUE, array(
 				'data_type' => 'text',
-				'character_maximum_length' => 65535,
+				'character_maximum_length' => '65535',
 				'column_type' => 'text',
 			)),
 			array('tinytext', TRUE, array(
 				'data_type' => 'tinytext',
-				'character_maximum_length' => 255,
+				'character_maximum_length' => '255',
 				'column_type' => 'tinytext',
 			)),
 			array('mediumtext', TRUE, array(
 				'data_type' => 'mediumtext',
-				'character_maximum_length' => 16777215,
+				'character_maximum_length' => '16777215',
 				'column_type' => 'mediumtext',
 			)),
 			array('longtext', TRUE, array(
 				'data_type' => 'longtext',
-				'character_maximum_length' => 4294967295,
+				'character_maximum_length' => '4294967295',
 				'column_type' => 'longtext',
 			)),
 
@@ -320,14 +320,14 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			array("enum('a','b','c')", TRUE, array(
 				'data_type' => 'enum',
-				'character_maximum_length' => 1,
+				'character_maximum_length' => '1',
 				'column_type' => "enum('a','b','c')",
 				'options' => array('a', 'b', 'c'),
 			)),
 
 			array("set('x','y','z')", TRUE, array(
 				'data_type' => 'set',
-				'character_maximum_length' => 5,
+				'character_maximum_length' => '5',
 				'column_type' => "set('x','y','z')",
 				'options' => array('x', 'y', 'z'),
 			)),
@@ -336,20 +336,20 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			array('decimal(13,7)', FALSE, array(
 				'data_type' => 'decimal',
-				'numeric_precision' => 13,
-				'numeric_scale' => 7,
+				'numeric_precision' => '13',
+				'numeric_scale' => '7',
 				'column_type' => 'decimal(13,7)',
 			)),
 			array('decimal(5)', FALSE, array(
 				'data_type' => 'decimal',
-				'numeric_precision' => 5,
-				'numeric_scale' => 0,
+				'numeric_precision' => '5',
+				'numeric_scale' => '0',
 				'column_type' => 'decimal(5,0)',
 			)),
 			array('decimal unsigned', FALSE, array(
 				'data_type' => 'decimal unsigned',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 				'column_type' => 'decimal(10,0) unsigned',
 			)),
 
@@ -357,14 +357,14 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			array('double(50,30)', FALSE, array(
 				'data_type' => 'double',
-				'numeric_precision' => 50,
-				'numeric_scale' => 30,
+				'numeric_precision' => '50',
+				'numeric_scale' => '30',
 				'column_type' => 'double(50,30)',
 			)),
 
 			array('float', FALSE, array(
 				'data_type' => 'float',
-				'numeric_precision' => 12,
+				'numeric_precision' => '12',
 				'column_type' => 'float',
 			)),
 
@@ -372,71 +372,71 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			array('integer', FALSE, array(
 				'data_type' => 'int',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 				'column_type' => 'int(11)',
 			)),
 			array('tinyint', FALSE, array(
 				'data_type' => 'tinyint',
-				'numeric_precision' => 3,
-				'numeric_scale' => 0,
+				'numeric_precision' => '3',
+				'numeric_scale' => '0',
 				'column_type' => 'tinyint(4)',
 			)),
 			array('smallint', FALSE, array(
 				'data_type' => 'smallint',
-				'numeric_precision' => 5,
-				'numeric_scale' => 0,
+				'numeric_precision' => '5',
+				'numeric_scale' => '0',
 				'column_type' => 'smallint(6)',
 			)),
 			array('mediumint', FALSE, array(
 				'data_type' => 'mediumint',
-				'numeric_precision' => 7,
-				'numeric_scale' => 0,
+				'numeric_precision' => '7',
+				'numeric_scale' => '0',
 				'column_type' => 'mediumint(9)',
 			)),
 			array('bigint', FALSE, array(
 				'data_type' => 'bigint',
-				'numeric_precision' => 19,
-				'numeric_scale' => 0,
+				'numeric_precision' => '19',
+				'numeric_scale' => '0',
 				'column_type' => 'bigint(20)',
 			)),
 
 			array('integer unsigned', FALSE, array(
 				'data_type' => 'int unsigned',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 				'column_type' => 'int(10) unsigned',
 			)),
 			array('tinyint unsigned', FALSE, array(
 				'data_type' => 'tinyint unsigned',
-				'numeric_precision' => 3,
-				'numeric_scale' => 0,
+				'numeric_precision' => '3',
+				'numeric_scale' => '0',
 				'column_type' => 'tinyint(3) unsigned',
 			)),
 			array('smallint unsigned', FALSE, array(
 				'data_type' => 'smallint unsigned',
-				'numeric_precision' => 5,
-				'numeric_scale' => 0,
+				'numeric_precision' => '5',
+				'numeric_scale' => '0',
 				'column_type' => 'smallint(5) unsigned',
 			)),
 			array('mediumint unsigned', FALSE, array(
 				'data_type' => 'mediumint unsigned',
-				'numeric_precision' => 7,
-				'numeric_scale' => 0,
+				'numeric_precision' => '7',
+				'numeric_scale' => '0',
 				'column_type' => 'mediumint(8) unsigned',
 			)),
 			array('bigint unsigned', FALSE, array(
 				'data_type' => 'bigint unsigned',
 				// MySQL 5.1.51
-				'numeric_precision' => 20,
-				'numeric_scale' => 0,
+				'numeric_precision' => '20',
+				'numeric_scale' => '0',
 				'column_type' => 'bigint(20) unsigned',
 			)),
 
 			array('integer unsigned zerofill', FALSE, array(
 				'data_type' => 'int unsigned',
-				'numeric_precision' => 10,
-				'numeric_scale' => 0,
+				'numeric_precision' => '10',
+				'numeric_scale' => '0',
 				'column_type' => 'int(10) unsigned zerofill',
 			)),
 
@@ -503,12 +503,12 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
-			'ordinal_position' => 1,
+			'ordinal_position' => '1',
 			'is_nullable' => 'YES',
 		), $expected);
 
 		$result = $db->table_columns($this->_table);
 
-		$this->assertEquals($expected, $result['field']);
+		$this->assertSame($expected, $result['field']);
 	}
 }
