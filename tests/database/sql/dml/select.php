@@ -230,6 +230,106 @@ class Database_SQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame('SELECT *', $db->quote($statement));
 	}
 
+	public function provider_value()
+	{
+		return array(
+			array(array(NULL), 'SELECT NULL'),
+			array(array(NULL, 'a'), 'SELECT NULL AS `a`'),
+
+			array(array(0), 'SELECT 0'),
+			array(array(1), 'SELECT 1'),
+			array(array('a'), "SELECT 'a'"),
+
+			array(array(0, 'a'), 'SELECT 0 AS `a`'),
+			array(array(1, 'b'), 'SELECT 1 AS `b`'),
+			array(array('c', 'd'), "SELECT 'c' AS `d`"),
+
+			array(array(new SQL_Expression('a')), 'SELECT a'),
+			array(array(new SQL_Expression('a'), 'b'), 'SELECT a AS `b`'),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DML_Select::value
+	 *
+	 * @dataProvider    provider_value
+	 *
+	 * @param   array   $arguments  Arguments
+	 * @param   string  $expected
+	 */
+	public function test_value($arguments, $expected)
+	{
+		$db = new SQL('', '`');
+		$statement = new SQL_DML_Select;
+
+		$result = call_user_func_array(array($statement, 'value'), $arguments);
+
+		$this->assertSame($statement, $result, 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	public function provider_values()
+	{
+		return array(
+			array(NULL, 'SELECT *'),
+
+			array(array(0), 'SELECT 0'),
+			array(array(0, 1), 'SELECT 0, 1'),
+			array(array(0, 1, 'a'), "SELECT 0, 1, 'a'"),
+			array(array(0, 1, 'a', 'b'), "SELECT 0, 1, 'a', 'b'"),
+
+			array(array('a' => 0), "SELECT 0 AS `a`"),
+			array(array('a' => 0, 'b' => 'c'), "SELECT 0 AS `a`, 'c' AS `b`"),
+
+			array(array(new SQL_Expression('a')), 'SELECT a'),
+			array(
+				array(new SQL_Expression('a'), new SQL_Expression('b')),
+				'SELECT a, b',
+			),
+
+			array(array('a' => new SQL_Expression('b')), "SELECT b AS `a`"),
+			array(
+				array('a' => new SQL_Expression('b'), 'c' => new SQL_Expression('d')),
+				"SELECT b AS `a`, d AS `c`",
+			),
+		);
+	}
+
+	/**
+	 * @covers  SQL_DML_Select::values
+	 *
+	 * @dataProvider    provider_values
+	 *
+	 * @param   mixed   $value      Argument
+	 * @param   string  $expected
+	 */
+	public function test_values($value, $expected)
+	{
+		$db = new SQL('', '`');
+		$statement = new SQL_DML_Select;
+
+		$this->assertSame($statement, $statement->values($value), 'Chainable');
+		$this->assertSame($expected, $db->quote($statement));
+	}
+
+	/**
+	 * @covers  SQL_DML_Select::values
+	 *
+	 * @dataProvider    provider_values
+	 *
+	 * @param   mixed   $value  Argument
+	 */
+	public function test_values_reset($value)
+	{
+		$db = new SQL;
+		$statement = new SQL_DML_Select;
+		$statement->values($value);
+
+		$statement->values(NULL);
+
+		$this->assertSame('SELECT *', $db->quote($statement));
+	}
+
 	/**
 	 * @covers  SQL_DML_Select::from
 	 */

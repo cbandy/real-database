@@ -302,6 +302,53 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
+	 * Append one literal value or expression to be selected.
+	 *
+	 * @param   mixed|SQL_Expression    $value  Literal value to append
+	 * @param   string                  $alias  Value alias
+	 * @return  $this
+	 */
+	public function value($value, $alias = NULL)
+	{
+		if ($alias)
+		{
+			$value = new SQL_Alias($value, $alias);
+		}
+
+		$this->parameters[':values'][] = $value;
+
+		return $this;
+	}
+
+	/**
+	 * Append multiple literal values and/or expressions to be selected.
+	 *
+	 * @param   array   $values Hash of (alias => value) pairs or NULL to reset
+	 * @return  $this
+	 */
+	public function values($values)
+	{
+		if ($values === NULL)
+		{
+			$this->parameters[':values'] = array();
+		}
+		else
+		{
+			foreach ($values as $alias => $value)
+			{
+				if (is_string($alias) AND $alias)
+				{
+					$value = new SQL_Alias($value, $alias);
+				}
+
+				$this->parameters[':values'][] = $value;
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Set the search condition(s). When no operator is specified, the first
 	 * argument is used directly.
 	 *
