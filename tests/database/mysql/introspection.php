@@ -90,19 +90,15 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_table_columns_constraints()
 	{
-		$collation = Database::factory()
-			->execute_query('SELECT @@collation_database')
-			->get();
-
 		return array(
-			array('int DEFAULT NULL', array(
+			array('int DEFAULT NULL', FALSE, array(
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
 				'is_nullable' => 'YES',
 				'numeric_precision' => 10,
 				'numeric_scale' => 0,
 			)),
-			array('int DEFAULT 0', array(
+			array('int DEFAULT 0', FALSE, array(
 				'column_default' => 0,
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
@@ -110,7 +106,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'numeric_precision' => 10,
 				'numeric_scale' => 0,
 			)),
-			array('int DEFAULT 1', array(
+			array('int DEFAULT 1', FALSE, array(
 				'column_default' => 1,
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
@@ -119,40 +115,36 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'numeric_scale' => 0,
 			)),
 
-			array('varchar(10) DEFAULT NULL', array(
+			array('varchar(10) DEFAULT NULL', TRUE, array(
 				'character_maximum_length' => 10,
-				'collation_name' => $collation,
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
 				'is_nullable' => 'YES',
 			)),
-			array("varchar(10) DEFAULT ''", array(
+			array("varchar(10) DEFAULT ''", TRUE, array(
 				'character_maximum_length' => 10,
-				'collation_name' => $collation,
 				'column_default' => '',
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
 				'is_nullable' => 'YES',
 			)),
-			array("varchar(10) DEFAULT 'a'", array(
+			array("varchar(10) DEFAULT 'a'", TRUE, array(
 				'character_maximum_length' => 10,
-				'collation_name' => $collation,
 				'column_default' => 'a',
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
 				'is_nullable' => 'YES',
 			)),
 
-			array('int NOT NULL', array(
+			array('int NOT NULL', FALSE, array(
 				'column_type' => 'int(11)',
 				'data_type' => 'int',
 				'is_nullable' => 'NO',
 				'numeric_precision' => 10,
 				'numeric_scale' => 0,
 			)),
-			array('varchar(10) NOT NULL', array(
+			array('varchar(10) NOT NULL', TRUE, array(
 				'character_maximum_length' => 10,
-				'collation_name' => $collation,
 				'column_type' => 'varchar(10)',
 				'data_type' => 'varchar',
 				'is_nullable' => 'NO',
@@ -166,14 +158,22 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_table_columns_constraints
 	 *
 	 * @param   string  $column     Column definition
+	 * @param   boolean $collation  Whether or not the collation is expected
 	 * @param   array   $expected   Expected column attributes
 	 */
-	public function test_table_columns_constraints($column, $expected)
+	public function test_table_columns_constraints($column, $collation, $expected)
 	{
 		$db = Database::factory();
 		$db->execute_command(
 			'CREATE TABLE '.$db->quote_table($this->_table)." (field $column)"
 		);
+
+		if ($collation)
+		{
+			$expected['collation_name'] = $db
+				->execute_query('SELECT @@collation_database')
+				->get();
+		}
 
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
@@ -231,41 +231,37 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_table_columns_types()
 	{
-		$collation = Database::factory()
-			->execute_query('SELECT @@collation_database')
-			->get();
-
 		return array(
 
 			// Binary
 
-			array('binary(50)', array(
+			array('binary(50)', FALSE, array(
 				'data_type' => 'binary',
 				'character_maximum_length' => 50,
 				'column_type' => 'binary(50)',
 			)),
-			array('varbinary(30)', array(
+			array('varbinary(30)', FALSE, array(
 				'data_type' => 'varbinary',
 				'character_maximum_length' => 30,
 				'column_type' => 'varbinary(30)',
 			)),
 
-			array('blob', array(
+			array('blob', FALSE, array(
 				'data_type' => 'blob',
 				'character_maximum_length' => 65535,
 				'column_type' => 'blob',
 			)),
-			array('tinyblob', array(
+			array('tinyblob', FALSE, array(
 				'data_type' => 'tinyblob',
 				'character_maximum_length' => 255,
 				'column_type' => 'tinyblob',
 			)),
-			array('mediumblob', array(
+			array('mediumblob', FALSE, array(
 				'data_type' => 'mediumblob',
 				'character_maximum_length' => 16777215,
 				'column_type' => 'mediumblob',
 			)),
-			array('longblob', array(
+			array('longblob', FALSE, array(
 				'data_type' => 'longblob',
 				'character_maximum_length' => 4294967295,
 				'column_type' => 'longblob',
@@ -273,92 +269,84 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			// Character
 
-			array('char(30)', array(
+			array('char(30)', TRUE, array(
 				'data_type' => 'char',
 				'character_maximum_length' => 30,
 				'column_type' => 'char(30)',
-				'collation_name' => $collation,
 			)),
-			array('varchar(40)', array(
+			array('varchar(40)', TRUE, array(
 				'data_type' => 'varchar',
 				'character_maximum_length' => 40,
 				'column_type' => 'varchar(40)',
-				'collation_name' => $collation,
 			)),
 
-			array('text', array(
+			array('text', TRUE, array(
 				'data_type' => 'text',
 				'character_maximum_length' => 65535,
 				'column_type' => 'text',
-				'collation_name' => $collation,
 			)),
-			array('tinytext', array(
+			array('tinytext', TRUE, array(
 				'data_type' => 'tinytext',
 				'character_maximum_length' => 255,
 				'column_type' => 'tinytext',
-				'collation_name' => $collation,
 			)),
-			array('mediumtext', array(
+			array('mediumtext', TRUE, array(
 				'data_type' => 'mediumtext',
 				'character_maximum_length' => 16777215,
 				'column_type' => 'mediumtext',
-				'collation_name' => $collation,
 			)),
-			array('longtext', array(
+			array('longtext', TRUE, array(
 				'data_type' => 'longtext',
 				'character_maximum_length' => 4294967295,
 				'column_type' => 'longtext',
-				'collation_name' => $collation,
 			)),
 
 			// Date and Time
 
-			array('date', array(
+			array('date', FALSE, array(
 				'data_type' => 'date',
 				'column_type' => 'date',
 			)),
-			array('time', array(
+			array('time', FALSE, array(
 				'data_type' => 'time',
 				'column_type' => 'time',
 			)),
-			array('datetime', array(
+			array('datetime', FALSE, array(
 				'data_type' => 'datetime',
 				'column_type' => 'datetime',
 			)),
 
 			// Enum and Set
 
-			array("enum('a','b','c')", array(
+			array("enum('a','b','c')", TRUE, array(
 				'data_type' => 'enum',
 				'character_maximum_length' => 1,
 				'column_type' => "enum('a','b','c')",
 				'options' => array('a', 'b', 'c'),
-				'collation_name' => $collation,
 			)),
 
-			array("set('x','y','z')", array(
+			array("set('x','y','z')", TRUE, array(
 				'data_type' => 'set',
 				'character_maximum_length' => 5,
 				'column_type' => "set('x','y','z')",
 				'options' => array('x', 'y', 'z'),
-				'collation_name' => $collation,
 			)),
 
 			// Fixed-point
 
-			array('decimal(13,7)', array(
+			array('decimal(13,7)', FALSE, array(
 				'data_type' => 'decimal',
 				'numeric_precision' => 13,
 				'numeric_scale' => 7,
 				'column_type' => 'decimal(13,7)',
 			)),
-			array('decimal(5)', array(
+			array('decimal(5)', FALSE, array(
 				'data_type' => 'decimal',
 				'numeric_precision' => 5,
 				'numeric_scale' => 0,
 				'column_type' => 'decimal(5,0)',
 			)),
-			array('decimal unsigned', array(
+			array('decimal unsigned', FALSE, array(
 				'data_type' => 'decimal unsigned',
 				'numeric_precision' => 10,
 				'numeric_scale' => 0,
@@ -367,14 +355,14 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			// Floating-point
 
-			array('double(50,30)', array(
+			array('double(50,30)', FALSE, array(
 				'data_type' => 'double',
 				'numeric_precision' => 50,
 				'numeric_scale' => 30,
 				'column_type' => 'double(50,30)',
 			)),
 
-			array('float', array(
+			array('float', FALSE, array(
 				'data_type' => 'float',
 				'numeric_precision' => 12,
 				'column_type' => 'float',
@@ -382,62 +370,62 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			// Integer
 
-			array('integer', array(
+			array('integer', FALSE, array(
 				'data_type' => 'int',
 				'numeric_precision' => 10,
 				'numeric_scale' => 0,
 				'column_type' => 'int(11)',
 			)),
-			array('tinyint', array(
+			array('tinyint', FALSE, array(
 				'data_type' => 'tinyint',
 				'numeric_precision' => 3,
 				'numeric_scale' => 0,
 				'column_type' => 'tinyint(4)',
 			)),
-			array('smallint', array(
+			array('smallint', FALSE, array(
 				'data_type' => 'smallint',
 				'numeric_precision' => 5,
 				'numeric_scale' => 0,
 				'column_type' => 'smallint(6)',
 			)),
-			array('mediumint', array(
+			array('mediumint', FALSE, array(
 				'data_type' => 'mediumint',
 				'numeric_precision' => 7,
 				'numeric_scale' => 0,
 				'column_type' => 'mediumint(9)',
 			)),
-			array('bigint', array(
+			array('bigint', FALSE, array(
 				'data_type' => 'bigint',
 				'numeric_precision' => 19,
 				'numeric_scale' => 0,
 				'column_type' => 'bigint(20)',
 			)),
 
-			array('integer unsigned', array(
+			array('integer unsigned', FALSE, array(
 				'data_type' => 'int unsigned',
 				'numeric_precision' => 10,
 				'numeric_scale' => 0,
 				'column_type' => 'int(10) unsigned',
 			)),
-			array('tinyint unsigned', array(
+			array('tinyint unsigned', FALSE, array(
 				'data_type' => 'tinyint unsigned',
 				'numeric_precision' => 3,
 				'numeric_scale' => 0,
 				'column_type' => 'tinyint(3) unsigned',
 			)),
-			array('smallint unsigned', array(
+			array('smallint unsigned', FALSE, array(
 				'data_type' => 'smallint unsigned',
 				'numeric_precision' => 5,
 				'numeric_scale' => 0,
 				'column_type' => 'smallint(5) unsigned',
 			)),
-			array('mediumint unsigned', array(
+			array('mediumint unsigned', FALSE, array(
 				'data_type' => 'mediumint unsigned',
 				'numeric_precision' => 7,
 				'numeric_scale' => 0,
 				'column_type' => 'mediumint(8) unsigned',
 			)),
-			array('bigint unsigned', array(
+			array('bigint unsigned', FALSE, array(
 				'data_type' => 'bigint unsigned',
 				// MySQL 5.1.51
 				'numeric_precision' => 20,
@@ -445,7 +433,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'column_type' => 'bigint(20) unsigned',
 			)),
 
-			array('integer unsigned zerofill', array(
+			array('integer unsigned zerofill', FALSE, array(
 				'data_type' => 'int unsigned',
 				'numeric_precision' => 10,
 				'numeric_scale' => 0,
@@ -454,36 +442,36 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 			// Spatial
 
-			array('geometry', array(
+			array('geometry', FALSE, array(
 				'data_type' => 'geometry',
 				'column_type' => 'geometry',
 			)),
-			array('linestring', array(
+			array('linestring', FALSE, array(
 				'data_type' => 'linestring',
 				'column_type' => 'linestring',
 			)),
-			array('point', array(
+			array('point', FALSE, array(
 				'data_type' => 'point',
 				'column_type' => 'point',
 			)),
-			array('polygon', array(
+			array('polygon', FALSE, array(
 				'data_type' => 'polygon',
 				'column_type' => 'polygon',
 			)),
 
-			array('geometrycollection', array(
+			array('geometrycollection', FALSE, array(
 				'data_type' => 'geometrycollection',
 				'column_type' => 'geometrycollection',
 			)),
-			array('multilinestring', array(
+			array('multilinestring', FALSE, array(
 				'data_type' => 'multilinestring',
 				'column_type' => 'multilinestring',
 			)),
-			array('multipoint', array(
+			array('multipoint', FALSE, array(
 				'data_type' => 'multipoint',
 				'column_type' => 'multipoint',
 			)),
-			array('multipolygon', array(
+			array('multipolygon', FALSE, array(
 				'data_type' => 'multipolygon',
 				'column_type' => 'multipolygon',
 			)),
@@ -496,14 +484,22 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_table_columns_types
 	 *
 	 * @param   string  $column     Column data type
+	 * @param   boolean $collation  Whether or not the collation is expected
 	 * @param   array   $expected   Expected column attributes
 	 */
-	public function test_table_columns_types($column, $expected)
+	public function test_table_columns_types($column, $collation, $expected)
 	{
 		$db = Database::factory();
 		$db->execute_command(
 			'CREATE TABLE '.$db->quote_table($this->_table)." (field $column)"
 		);
+
+		if ($collation)
+		{
+			$expected['collation_name'] = $db
+				->execute_query('SELECT @@collation_database')
+				->get();
+		}
 
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
