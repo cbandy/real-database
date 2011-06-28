@@ -209,7 +209,7 @@ class SQL_DML_Set extends SQL_Expression
 	/**
 	 * Append a column or expression by which rows should be sorted.
 	 *
-	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column     Converted to SQL_Column or NULL to reset
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column     Converted to SQL_Column or NULL to reset
 	 * @param   string|SQL_Expression                       $direction  Direction of sort
 	 * @return  $this
 	 */

@@ -122,7 +122,7 @@ class SQL_DML_Update extends SQL_Expression
 	/**
 	 * Append a column assignment.
 	 *
-	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column Converted to SQL_Column or NULL to reset
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column Converted to SQL_Column or NULL to reset
 	 * @param   mixed                                       $value  Value assigned to the column
 	 * @return  $this
 	 */

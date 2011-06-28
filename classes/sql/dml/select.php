@@ -89,7 +89,7 @@ class SQL_DML_Select extends SQL_Expression
 	/**
 	 * Append one column or expression to be selected.
 	 *
-	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column Converted to SQL_Column or NULL to reset
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column Converted to SQL_Column or NULL to reset
 	 * @param   string                                      $alias  Column alias
 	 * @return  $this
 	 */
@@ -270,7 +270,7 @@ class SQL_DML_Select extends SQL_Expression
 	/**
 	 * Append a column or expression by which rows should be sorted.
 	 *
-	 * @param   arrray|string|SQL_Expression|SQL_Identifier $column     Converted to SQL_Column or NULL to reset
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column     Converted to SQL_Column or NULL to reset
 	 * @param   string|SQL_Expression                       $direction  Direction of sort
 	 * @return  $this
 	 */
