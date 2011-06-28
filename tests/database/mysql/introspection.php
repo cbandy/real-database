@@ -1,7 +1,8 @@
 <?php
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  MySQL
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.mysql
@@ -11,14 +12,17 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	public static function setUpBeforeClass()
 	{
 		if ( ! extension_loaded('mysql'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('MySQL extension not installed');
+			throw new PHPUnit_Framework_SkippedTestSuiteError(
+				'MySQL extension not installed'
+			);
 
 		if ( ! Database::factory() instanceof Database_MySQL)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for MySQL');
+			throw new PHPUnit_Framework_SkippedTestSuiteError(
+				'Database not configured for MySQL'
+			);
 	}
 
-	protected $_information_schema_defaults = array
-	(
+	protected $_information_schema_defaults = array(
 		'column_name'       => NULL,
 		'ordinal_position'  => NULL,
 		'column_default'    => NULL,
@@ -37,11 +41,63 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	protected $_table = 'kohana_introspect_test_table';
 
-	public function tearDown()
+	public function setUp()
 	{
 		$db = Database::factory();
 
-		$db->execute_command('DROP TABLE IF EXISTS '.$db->quote_table($this->_table));
+		$db->execute_command(
+			'DROP TABLE IF EXISTS '.$db->quote_table($this->_table)
+		);
+	}
+
+	public function provider_table_columns_argument()
+	{
+		return array(
+			array(array($this->_table)),
+			array(new SQL_Identifier($this->_table)),
+		);
+	}
+
+	/**
+	 * Test different arguments to table_columns().
+	 *
+	 * @covers  Database_MySQL::table_columns
+	 *
+	 * @dataProvider    provider_table_columns_argument
+	 *
+	 * @param   string  $column     Column data type
+	 * @param   array   $expected   Expected column attributes
+	 */
+	public function test_table_columns_argument($input)
+	{
+		$db = Database::factory();
+		$db->execute_command(
+			'CREATE TABLE '.$db->quote_table($this->_table).' (field date)'
+		);
+
+		$expected = array_merge($this->_information_schema_defaults, array(
+			'column_name' => 'field',
+			'column_type' => 'date',
+			'data_type' => 'date',
+			'ordinal_position' => 1,
+			'is_nullable' => 'YES',
+		));
+
+		$result = $db->table_columns($input);
+
+		$this->assertEquals($expected, $result['field']);
+	}
+
+	/**
+	 * @covers  Database_MySQL::table_columns
+	 */
+	public function test_table_columns_no_table()
+	{
+		$db = Database::factory();
+
+		$this->assertSame(
+			array(), $db->table_columns('kohana-table-does-not-exist')
+		);
 	}
 
 	/**
@@ -49,9 +105,13 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @covers  Database_MySQL::table_columns
 	 */
-	public function test_table_column_timestamp()
+	public function test_table_columns_timestamp()
 	{
 		$db = Database::factory();
+		$db->execute_command(
+			'CREATE TABLE '.$db->quote_table($this->_table).' (field timestamp)'
+		);
+
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
@@ -67,17 +127,15 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			$expected['extra'] = 'on update CURRENT_TIMESTAMP';
 		}
 
-		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table).' ( field timestamp )');
-
 		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
 
-	public function provider_table_column_type()
+	public function provider_table_columns_types()
 	{
-		return array
-		(
+		return array(
+
 			// Binary
 
 			array('binary(50)', array(
@@ -277,28 +335,34 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 * Test literal types. No `collation_name` is expected.
 	 *
 	 * @covers  Database_MySQL::table_columns
-	 * @dataProvider    provider_table_column_type
+	 *
+	 * @dataProvider    provider_table_columns_types
+	 *
+	 * @param   string  $column     Column data type
+	 * @param   array   $expected   Expected column attributes
 	 */
-	public function test_table_column_type($column, $expected)
+	public function test_table_columns_types($column, $expected)
 	{
 		$db = Database::factory();
+		$db->execute_command(
+			'CREATE TABLE '.$db->quote_table($this->_table)." (field $column)"
+		);
+
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
 			'is_nullable' => 'YES',
 		), $expected);
 
-		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
-
 		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
 	}
 
-	public function provider_table_column_type_collation()
+	public function provider_table_columns_types_collation()
 	{
-		return array
-		(
+		return array(
+
 			// Character
 
 			array('char(30)', array(
@@ -355,11 +419,19 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 * Test collated data types. The default collation is expected.
 	 *
 	 * @covers  Database_MySQL::table_columns
-	 * @dataProvider    provider_table_column_type_collation
+	 *
+	 * @dataProvider    provider_table_columns_types_collation
+	 *
+	 * @param   string  $column     Column data type
+	 * @param   array   $expected   Expected column attributes
 	 */
-	public function test_table_column_type_collation($column, $expected)
+	public function test_table_columns_types_collation($column, $expected)
 	{
 		$db = Database::factory();
+		$db->execute_command(
+			'CREATE TABLE '.$db->quote_table($this->_table)." (field $column)"
+		);
+
 		$expected = array_merge($this->_information_schema_defaults, array(
 			'column_name' => 'field',
 			'ordinal_position' => 1,
@@ -367,53 +439,8 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			'collation_name' => $db->execute_query('SELECT @@collation_database')->get(),
 		), $expected);
 
-		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table)." ( field $column )");
-
 		$result = $db->table_columns($this->_table);
 
 		$this->assertEquals($expected, $result['field']);
-	}
-
-	public function provider_table_columns_argument()
-	{
-		return array
-		(
-			array(array($this->_table)),
-			array(new SQL_Identifier($this->_table)),
-		);
-	}
-
-	/**
-	 * Test different arguments to table_columns()
-	 *
-	 * @covers  Database_MySQL::table_columns
-	 * @dataProvider    provider_table_columns_argument
-	 */
-	public function test_table_columns_argument($input)
-	{
-		$db = Database::factory();
-		$db->execute_command('CREATE TABLE '.$db->quote_table($this->_table).' ( field date )');
-
-		$expected = array_merge($this->_information_schema_defaults, array(
-			'column_name' => 'field',
-			'column_type' => 'date',
-			'data_type' => 'date',
-			'ordinal_position' => 1,
-			'is_nullable' => 'YES',
-		));
-
-		$result = $db->table_columns($input);
-
-		$this->assertEquals($expected, $result['field']);
-	}
-
-	/**
-	 * @covers  Database_MySQL::table_columns
-	 */
-	public function test_table_columns_no_table()
-	{
-		$db = Database::factory();
-
-		$this->assertSame(array(), $db->table_columns('kohana-table-does-not-exist'));
 	}
 }
