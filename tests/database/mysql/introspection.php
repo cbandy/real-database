@@ -101,7 +101,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Results for the TIMESTAMP type vary between MySQL versions
+	 * Results for the TIMESTAMP type vary between MySQL versions.
 	 *
 	 * @covers  Database_MySQL::table_columns
 	 */
@@ -134,6 +134,10 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_table_columns_types()
 	{
+		$collation = Database::factory()
+			->execute_query('SELECT @@collation_database')
+			->get();
+
 		return array(
 
 			// Binary
@@ -170,6 +174,46 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'column_type' => 'longblob',
 			)),
 
+			// Character
+
+			array('char(30)', array(
+				'data_type' => 'char',
+				'character_maximum_length' => 30,
+				'column_type' => 'char(30)',
+				'collation_name' => $collation,
+			)),
+			array('varchar(40)', array(
+				'data_type' => 'varchar',
+				'character_maximum_length' => 40,
+				'column_type' => 'varchar(40)',
+				'collation_name' => $collation,
+			)),
+
+			array('text', array(
+				'data_type' => 'text',
+				'character_maximum_length' => 65535,
+				'column_type' => 'text',
+				'collation_name' => $collation,
+			)),
+			array('tinytext', array(
+				'data_type' => 'tinytext',
+				'character_maximum_length' => 255,
+				'column_type' => 'tinytext',
+				'collation_name' => $collation,
+			)),
+			array('mediumtext', array(
+				'data_type' => 'mediumtext',
+				'character_maximum_length' => 16777215,
+				'column_type' => 'mediumtext',
+				'collation_name' => $collation,
+			)),
+			array('longtext', array(
+				'data_type' => 'longtext',
+				'character_maximum_length' => 4294967295,
+				'column_type' => 'longtext',
+				'collation_name' => $collation,
+			)),
+
 			// Date and Time
 
 			array('date', array(
@@ -185,7 +229,25 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'column_type' => 'datetime',
 			)),
 
-			// Decimal
+			// Enum and Set
+
+			array("enum('a','b','c')", array(
+				'data_type' => 'enum',
+				'character_maximum_length' => 1,
+				'column_type' => "enum('a','b','c')",
+				'options' => array('a', 'b', 'c'),
+				'collation_name' => $collation,
+			)),
+
+			array("set('x','y','z')", array(
+				'data_type' => 'set',
+				'character_maximum_length' => 5,
+				'column_type' => "set('x','y','z')",
+				'options' => array('x', 'y', 'z'),
+				'collation_name' => $collation,
+			)),
+
+			// Fixed-point
 
 			array('decimal(13,7)', array(
 				'data_type' => 'decimal',
@@ -206,7 +268,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'column_type' => 'decimal(10,0) unsigned',
 			)),
 
-			// Float
+			// Floating-point
 
 			array('double(50,30)', array(
 				'data_type' => 'double',
@@ -332,8 +394,6 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * Test literal types. No `collation_name` is expected.
-	 *
 	 * @covers  Database_MySQL::table_columns
 	 *
 	 * @dataProvider    provider_table_columns_types
@@ -352,91 +412,6 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 			'column_name' => 'field',
 			'ordinal_position' => 1,
 			'is_nullable' => 'YES',
-		), $expected);
-
-		$result = $db->table_columns($this->_table);
-
-		$this->assertEquals($expected, $result['field']);
-	}
-
-	public function provider_table_columns_types_collation()
-	{
-		return array(
-
-			// Character
-
-			array('char(30)', array(
-				'data_type' => 'char',
-				'character_maximum_length' => 30,
-				'column_type' => 'char(30)',
-			)),
-			array('varchar(40)', array(
-				'data_type' => 'varchar',
-				'character_maximum_length' => 40,
-				'column_type' => 'varchar(40)',
-			)),
-
-			array('text', array(
-				'data_type' => 'text',
-				'character_maximum_length' => 65535,
-				'column_type' => 'text',
-			)),
-			array('tinytext', array(
-				'data_type' => 'tinytext',
-				'character_maximum_length' => 255,
-				'column_type' => 'tinytext',
-			)),
-			array('mediumtext', array(
-				'data_type' => 'mediumtext',
-				'character_maximum_length' => 16777215,
-				'column_type' => 'mediumtext',
-			)),
-			array('longtext', array(
-				'data_type' => 'longtext',
-				'character_maximum_length' => 4294967295,
-				'column_type' => 'longtext',
-			)),
-
-			// Enum and Set
-
-			array("enum('a','b','c')", array(
-				'data_type' => 'enum',
-				'character_maximum_length' => 1,
-				'column_type' => "enum('a','b','c')",
-				'options' => array('a', 'b', 'c'),
-			)),
-
-			array("set('x','y','z')", array(
-				'data_type' => 'set',
-				'character_maximum_length' => 5,
-				'column_type' => "set('x','y','z')",
-				'options' => array('x', 'y', 'z'),
-			)),
-		);
-	}
-
-	/**
-	 * Test collated data types. The default collation is expected.
-	 *
-	 * @covers  Database_MySQL::table_columns
-	 *
-	 * @dataProvider    provider_table_columns_types_collation
-	 *
-	 * @param   string  $column     Column data type
-	 * @param   array   $expected   Expected column attributes
-	 */
-	public function test_table_columns_types_collation($column, $expected)
-	{
-		$db = Database::factory();
-		$db->execute_command(
-			'CREATE TABLE '.$db->quote_table($this->_table)." (field $column)"
-		);
-
-		$expected = array_merge($this->_information_schema_defaults, array(
-			'column_name' => 'field',
-			'ordinal_position' => 1,
-			'is_nullable' => 'YES',
-			'collation_name' => $db->execute_query('SELECT @@collation_database')->get(),
 		), $expected);
 
 		$result = $db->table_columns($this->_table);
