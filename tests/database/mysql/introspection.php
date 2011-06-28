@@ -88,6 +88,103 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $result['field']);
 	}
 
+	public function provider_table_columns_constraints()
+	{
+		$collation = Database::factory()
+			->execute_query('SELECT @@collation_database')
+			->get();
+
+		return array(
+			array('int DEFAULT NULL', array(
+				'column_type' => 'int(11)',
+				'data_type' => 'int',
+				'is_nullable' => 'YES',
+				'numeric_precision' => 10,
+				'numeric_scale' => 0,
+			)),
+			array('int DEFAULT 0', array(
+				'column_default' => 0,
+				'column_type' => 'int(11)',
+				'data_type' => 'int',
+				'is_nullable' => 'YES',
+				'numeric_precision' => 10,
+				'numeric_scale' => 0,
+			)),
+			array('int DEFAULT 1', array(
+				'column_default' => 1,
+				'column_type' => 'int(11)',
+				'data_type' => 'int',
+				'is_nullable' => 'YES',
+				'numeric_precision' => 10,
+				'numeric_scale' => 0,
+			)),
+
+			array('varchar(10) DEFAULT NULL', array(
+				'character_maximum_length' => 10,
+				'collation_name' => $collation,
+				'column_type' => 'varchar(10)',
+				'data_type' => 'varchar',
+				'is_nullable' => 'YES',
+			)),
+			array("varchar(10) DEFAULT ''", array(
+				'character_maximum_length' => 10,
+				'collation_name' => $collation,
+				'column_default' => '',
+				'column_type' => 'varchar(10)',
+				'data_type' => 'varchar',
+				'is_nullable' => 'YES',
+			)),
+			array("varchar(10) DEFAULT 'a'", array(
+				'character_maximum_length' => 10,
+				'collation_name' => $collation,
+				'column_default' => 'a',
+				'column_type' => 'varchar(10)',
+				'data_type' => 'varchar',
+				'is_nullable' => 'YES',
+			)),
+
+			array('int NOT NULL', array(
+				'column_type' => 'int(11)',
+				'data_type' => 'int',
+				'is_nullable' => 'NO',
+				'numeric_precision' => 10,
+				'numeric_scale' => 0,
+			)),
+			array('varchar(10) NOT NULL', array(
+				'character_maximum_length' => 10,
+				'collation_name' => $collation,
+				'column_type' => 'varchar(10)',
+				'data_type' => 'varchar',
+				'is_nullable' => 'NO',
+			)),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::table_columns
+	 *
+	 * @dataProvider    provider_table_columns_constraints
+	 *
+	 * @param   string  $column     Column definition
+	 * @param   array   $expected   Expected column attributes
+	 */
+	public function test_table_columns_constraints($column, $expected)
+	{
+		$db = Database::factory();
+		$db->execute_command(
+			'CREATE TABLE '.$db->quote_table($this->_table)." (field $column)"
+		);
+
+		$expected = array_merge($this->_information_schema_defaults, array(
+			'column_name' => 'field',
+			'ordinal_position' => 1,
+		), $expected);
+
+		$result = $db->table_columns($this->_table);
+
+		$this->assertEquals($expected, $result['field']);
+	}
+
 	/**
 	 * @covers  Database_MySQL::table_columns
 	 */
