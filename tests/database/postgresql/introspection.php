@@ -81,6 +81,114 @@ class Database_PostgresSQL_Introspection_Test extends PHPUnit_Framework_TestCase
 		$this->assertSame($expected, $result['field']);
 	}
 
+	public function provider_table_columns_constraints()
+	{
+		return array(
+			array('boolean DEFAULT NULL', array(
+				'data_type' => 'boolean',
+				'is_nullable' => 'YES',
+			)),
+			array('boolean DEFAULT false', array(
+				'column_default' => 'false',
+				'data_type' => 'boolean',
+				'is_nullable' => 'YES',
+			)),
+			array('boolean DEFAULT true', array(
+				'column_default' => 'true',
+				'data_type' => 'boolean',
+				'is_nullable' => 'YES',
+			)),
+
+			array('integer DEFAULT NULL', array(
+				'data_type' => 'integer',
+				'is_nullable' => 'YES',
+				'numeric_precision' => '32',
+				'numeric_scale' => '0',
+			)),
+			array('integer DEFAULT 0', array(
+				'column_default' => '0',
+				'data_type' => 'integer',
+				'is_nullable' => 'YES',
+				'numeric_precision' => '32',
+				'numeric_scale' => '0',
+			)),
+			array('integer DEFAULT 1', array(
+				'column_default' => '1',
+				'data_type' => 'integer',
+				'is_nullable' => 'YES',
+				'numeric_precision' => '32',
+				'numeric_scale' => '0',
+			)),
+
+			array('real DEFAULT random()', array(
+				'column_default' => "random()",
+				'data_type' => 'real',
+				'is_nullable' => 'YES',
+				'numeric_precision' => '24',
+			)),
+
+			array("varchar(1) DEFAULT NULL", array(
+				'character_maximum_length' => '1',
+				'column_default' => 'NULL::character varying',
+				'data_type' => 'character varying',
+				'is_nullable' => 'YES',
+			)),
+			array("varchar(1) DEFAULT ''", array(
+				'character_maximum_length' => '1',
+				'column_default' => "''::character varying",
+				'data_type' => 'character varying',
+				'is_nullable' => 'YES',
+			)),
+			array("varchar(1) DEFAULT 'a'", array(
+				'character_maximum_length' => '1',
+				'column_default' => "'a'::character varying",
+				'data_type' => 'character varying',
+				'is_nullable' => 'YES',
+			)),
+
+			array('boolean NOT NULL', array(
+				'data_type' => 'boolean',
+				'is_nullable' => 'NO',
+			)),
+			array('integer NOT NULL', array(
+				'data_type' => 'integer',
+				'is_nullable' => 'NO',
+				'numeric_precision' => '32',
+				'numeric_scale' => '0',
+			)),
+			array("varchar(1) NOT NULL", array(
+				'character_maximum_length' => '1',
+				'data_type' => 'character varying',
+				'is_nullable' => 'NO',
+			)),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::table_columns
+	 *
+	 * @dataProvider    provider_table_columns_constraints
+	 *
+	 * @param   string  $column     Column definition
+	 * @param   array   $expected   Expected column attributes
+	 */
+	public function test_table_columns_constraints($column, $expected)
+	{
+		$db = Database::factory();
+		$db->execute_command(
+			'CREATE TABLE '.$db->quote_table($this->_table)." (field $column)"
+		);
+
+		$expected = array_merge($this->_information_schema_defaults, array(
+			'column_name' => 'field',
+			'ordinal_position' => '1',
+		), $expected);
+
+		$result = $db->table_columns($this->_table);
+
+		$this->assertSame($expected, $result['field']);
+	}
+
 	/**
 	 * @covers  Database_PostgreSQL::table_columns
 	 */
