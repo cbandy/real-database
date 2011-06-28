@@ -64,13 +64,19 @@ interface Database_iIntrospect
 	 *       'score' => array(
 	 *         'column_name'        => 'score',
 	 *         'ordinal_position'   => 3,
-	 *         'column_default'     => 0,
+	 *         'column_default'     => '0',
 	 *         'is_nullable'        => 'YES',
 	 *         'data_type'          => 'numeric',
 	 *         'numeric_precision'  => 7,
 	 *         'numeric_scale'      => 2,
 	 *       ),
 	 *     );
+	 *
+	 * [!!] The contents of `column_default` vary between drivers.
+	 *
+	 * Typically, `column_default` is the SQL following the DEFAULT portion of a
+	 * column definition. A NULL (or unset) value indicates that no DEFAULT
+	 * portion is defined.
 	 *
 	 * @param   array|string|SQL_Identifier $table  Converted to SQL_Table unless SQL_Identifier
 	 * @return  array

@@ -1296,6 +1296,18 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		return $result;
 	}
 
+	/**
+	 * Retrieve the columns of a table in a format almost identical to that of
+	 * the Columns table of the SQL-92 Information Schema.
+	 *
+	 * PostgreSQL does not return consistent results in `column_default` for
+	 * columns with a DEFAULT value of NULL. It is not possible to reliably
+	 * distinguish between a column without a DEFAULT definition and a column
+	 * with a DEFAULT value of NULL.
+	 *
+	 * @param   array|string|SQL_Identifier $table  Converted to SQL_Table unless SQL_Identifier
+	 * @return  array
+	 */
 	public function table_columns($table)
 	{
 		if ( ! $table instanceof SQL_Identifier)

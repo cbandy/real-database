@@ -701,12 +701,20 @@ class Database_MySQL extends Database
 
 	/**
 	 * Retrieve the columns of a table in a format almost identical to that of
-	 * the SQL-92 Information Schema. Includes five non-standard fields:
-	 * `column_type`, `column_key`, `extra`, `privileges` and `column_comment`.
+	 * the Columns table of the SQL-92 Information Schema. Includes five
+	 * non-standard fields: `column_type`, `column_key`, `extra`, `privileges`
+	 * and `column_comment`.
 	 *
 	 * ENUM and SET also have their possible values extracted into `options`.
 	 *
+	 * MySQL does not allow column defaults to be defined using expressions.
+	 * As a consequence, `column_default` contains the column's default value
+	 * rather than its definition. It is not possible to distinguish between
+	 * a column without a DEFAULT definition and a column with a DEFAULT value
+	 * of NULL.
+	 *
 	 * @link http://dev.mysql.com/doc/en/columns-table.html
+	 * @link http://dev.mysql.com/doc/en/data-type-defaults.html
 	 *
 	 * @param   array|string|SQL_Identifier $table  Converted to SQL_Table unless SQL_Identifier
 	 * @return  array
