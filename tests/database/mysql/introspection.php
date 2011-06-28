@@ -54,7 +54,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	{
 		return array(
 			array(array($this->_table)),
-			array(new SQL_Identifier($this->_table)),
+			array(new SQL_Table($this->_table)),
 		);
 	}
 
@@ -65,8 +65,7 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_table_columns_argument
 	 *
-	 * @param   string  $column     Column data type
-	 * @param   array   $expected   Expected column attributes
+	 * @param   mixed   $input  Argument to the method
 	 */
 	public function test_table_columns_argument($input)
 	{
