@@ -374,30 +374,6 @@ class Database_PDO extends Database
 	}
 
 	/**
-	 * Convert a generic [SQL_Expression] into a [Database_Statement] with a
-	 * 1-indexed array of literal parameters.
-	 *
-	 * @param   SQL_Expression  $statement  SQL statement
-	 * @return  Database_Statement
-	 */
-	public function parse_statement($statement)
-	{
-		// Pad the array so the next value has an index of one
-		$parameters = array(NULL);
-
-		$statement = $this->_parse(
-			(string) $statement,
-			$statement->parameters,
-			$parameters
-		);
-
-		// Remove padding
-		unset($parameters[0]);
-
-		return new Database_Statement($statement, $parameters);
-	}
-
-	/**
 	 * Create a prepared statement after connecting
 	 *
 	 * @throws  Database_Exception
