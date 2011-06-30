@@ -231,12 +231,13 @@ class Database_PDO extends Database
 
 		if ( ! is_string($statement))
 		{
-			$parameters = array();
-			$statement = $this->_parse(
-				(string) $statement,
-				$statement->parameters,
-				$parameters
-			);
+			if ( ! $statement instanceof Database_Statement)
+			{
+				$statement = $this->parse_statement($statement);
+			}
+
+			$parameters = $statement->parameters();
+			$statement = (string) $statement;
 		}
 
 		if (empty($statement))
@@ -289,8 +290,8 @@ class Database_PDO extends Database
 	 * Not all drivers support this method. When inserting multiple rows, the
 	 * row to which the identity value belongs depends on the driver.
 	 *
-	 * @param   string|SQL_Expression   $statement  SQL insert
-	 * @param   mixed                   $identity   Ignored
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL insert
+	 * @param   mixed                                       $identity   Ignored
 	 * @return  array   List including number of affected rows and an identity value
 	 */
 	public function execute_insert($statement, $identity)
@@ -307,12 +308,13 @@ class Database_PDO extends Database
 
 		if ( ! is_string($statement))
 		{
-			$parameters = array();
-			$statement = $this->_parse(
-				(string) $statement,
-				$statement->parameters,
-				$parameters
-			);
+			if ( ! $statement instanceof Database_Statement)
+			{
+				$statement = $this->parse_statement($statement);
+			}
+
+			$parameters = $statement->parameters();
+			$statement = (string) $statement;
 		}
 
 		if (empty($statement))
