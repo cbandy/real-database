@@ -46,11 +46,21 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_constructor_parameters()
 	{
-		return array
-		(
-			array(array(1 => NULL)),
-			array(array(1 => 'a')),
-			array(array(1 => 5)),
+		return array(
+			// 0-indexed
+			array(array(NULL), array(1 => NULL)),
+			array(array('a'), array(1 => 'a')),
+			array(array(5), array(1 => 5)),
+
+			// 1-indexed
+			array(array(1 => NULL), array(1 => NULL)),
+			array(array(1 => 'a'), array(1 => 'a')),
+			array(array(1 => 5), array(1 => 5)),
+
+			// Named
+			array(array(':a' => NULL), array(':a' => NULL)),
+			array(array(':a' => 'b'), array(':a' => 'b')),
+			array(array(':a' => 5), array(':a' => 5)),
 		);
 	}
 
@@ -60,9 +70,10 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_constructor_parameters
 	 *
-	 * @param   array   $parameters
+	 * @param   array   $parameters Argument to the constructor
+	 * @param   array   $expected   Expected parameters
 	 */
-	public function test_constructor_parameters($parameters)
+	public function test_constructor_parameters($parameters, $expected)
 	{
 		$db = Database::factory();
 
@@ -70,7 +81,7 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 			$db, $db->prepare('SELECT 1'), $parameters
 		);
 
-		$this->assertSame($parameters, $statement->parameters());
+		$this->assertSame($expected, $statement->parameters());
 	}
 
 	/**
