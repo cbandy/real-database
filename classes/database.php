@@ -367,7 +367,7 @@ abstract class Database extends SQL
 	 *
 	 * @throws  Database_Exception
 	 *
-	 * @param   string|SQL_Expression   $statement  SQL statement
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL statement
 	 *
 	 * @return  integer         Number of affected rows
 	 * @return  array           List including number of affected rows and an identity value
@@ -398,7 +398,7 @@ abstract class Database extends SQL
 	 * results.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|SQL_Expression   $statement  SQL command
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL command
 	 * @return  integer Number of affected rows
 	 */
 	abstract public function execute_command($statement);
@@ -410,8 +410,8 @@ abstract class Database extends SQL
 	 * inserting one row.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|SQL_Expression   $statement  SQL insert
-	 * @param   mixed                   $identity   Converted to SQL_Column
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL insert
+	 * @param   mixed                                       $identity   Converted to SQL_Column
 	 * @return  array   List including number of affected rows and an identity value
 	 */
 	abstract public function execute_insert($statement, $identity);
@@ -421,9 +421,9 @@ abstract class Database extends SQL
 	 * statement is not a query (e.g., a DELETE statement).
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|SQL_Expression   $statement  SQL query
-	 * @param   string|boolean          $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 * @param   array                   $arguments  Arguments to pass to the class constructor
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL query
+	 * @param   string|boolean                              $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array                                       $arguments  Arguments to pass to the class constructor
 	 * @return  Database_Result Result set or NULL
 	 */
 	abstract public function execute_query($statement, $as_object = FALSE, $arguments = array());
