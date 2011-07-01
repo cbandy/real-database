@@ -370,6 +370,63 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Execute a parameterized statement after connecting.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $statement  SQL statement
+	 * @param   array   $parameters Unquoted literal parameters
+	 * @return  resource    Result resource
+	 */
+	protected function _execute_parameters($statement, $parameters)
+	{
+		$this->_connection or $this->connect();
+
+		if ( ! empty($this->_config['profiling']))
+		{
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', $statement
+			);
+		}
+
+		if ( ! pg_send_query_params($this->_connection, $statement, $parameters))
+		{
+			// @codeCoverageIgnoreStart
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
+			// @codeCoverageIgnoreEnd
+		}
+
+		if ( ! $result = pg_get_result($this->_connection))
+		{
+			// @codeCoverageIgnoreStart
+			if (isset($benchmark))
+			{
+				Profiler::delete($benchmark);
+			}
+
+			throw new Database_Exception(
+				':error',
+				array(':error' => pg_last_error($this->_connection))
+			);
+			// @codeCoverageIgnoreEnd
+		}
+
+		if (isset($benchmark))
+		{
+			Profiler::stop($benchmark);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Execute a prepared statement after connecting
 	 *
 	 * @throws  Database_Exception
@@ -912,10 +969,22 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		if ( ! is_string($statement))
 		{
-			$statement = $this->quote($statement);
+			if ($statement instanceof Database_Statement)
+			{
+				$parameters = $statement->parameters();
+				$statement = (string) $statement;
+			}
+			else
+			{
+				$statement = $this->quote($statement);
+			}
 		}
 
-		$rows = $this->_evaluate_command($this->_execute($statement));
+		$result = empty($parameters)
+			? $this->_execute($statement)
+			: $this->_execute_parameters($statement, $parameters);
+
+		$rows = $this->_evaluate_command($result);
 
 		while ($result = pg_get_result($this->_connection))
 		{
@@ -962,7 +1031,18 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$identity = new SQL_Column($identity);
 		}
 
-		if ($statement instanceof Database_iReturning
+		if ($statement instanceof Database_Statement)
+		{
+			$parameters = $statement->parameters();
+			$statement = (string) $statement;
+
+			$result = empty($parameters)
+				? $this->_execute($statement)
+				: $this->_execute_parameters($statement, $parameters);
+
+			$result = $this->_evaluate_query($result, $as_object, $arguments);
+		}
+		elseif ($statement instanceof Database_iReturning
 			AND ! empty($statement->parameters[':returning']))
 		{
 			$result = $this->_evaluate_query(
@@ -1066,15 +1146,27 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function execute_query($statement, $as_object = FALSE, $arguments = array())
 	{
+		if ( ! is_string($statement))
+		{
+			if ($statement instanceof Database_Statement)
+			{
+				$parameters = $statement->parameters();
+				$statement = (string) $statement;
+			}
+			else
+			{
+				$statement = $this->quote($statement);
+			}
+		}
+
 		if (empty($statement))
 			return NULL;
 
-		if ( ! is_string($statement))
-		{
-			$statement = $this->quote($statement);
-		}
+		$result = empty($parameters)
+			? $this->_execute($statement)
+			: $this->_execute_parameters($statement, $parameters);
 
-		return $this->_evaluate_query($this->_execute($statement), $as_object, $arguments);
+		return $this->_evaluate_query($result, $as_object, $arguments);
 	}
 
 	/**
