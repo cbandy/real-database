@@ -5,7 +5,7 @@
  * [Database_Result::as_array] retrieves one or more columns from multiple rows at once. A single
  * column can be retrieved with [Database_Result::get].
  *
- *     $result = $query->execute($db);
+ *     $result = $db->execute($query);
  *
  *     // iteration
  *     foreach ($result as $row)

@@ -86,7 +86,7 @@ objects. These have the added convenience of consistent caching and system-agnos
 [Database_Result] provides a consistent interface to read and iterate over fresh and cached rows.
 The simplest and most typical use is in a `foreach`:
 
-    foreach ($query->execute($db) as $row)
+    foreach ($db->execute($query) as $row)
     {
         $library->do_something($row['id'], $row['name']);
     }
