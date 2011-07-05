@@ -77,7 +77,7 @@ abstract class Database_MySQL_TestCase extends PHPUnit_Extensions_Database_TestC
 	protected function getConnection()
 	{
 		// Load the configuration
-		$config = Kohana::config('database.default');
+		$config = Kohana::$config->load('database.default');
 
 		// Convert the configuration to PDO arguments
 		$config = self::configuration($config);
