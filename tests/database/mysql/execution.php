@@ -36,6 +36,15 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 			array(7, 'DELETE FROM '.$db->quote($table)),
 			array(7, 'DELETE FROM '.$db->quote($table).' WHERE 1 = 1'),
 
+			// Database_Statement
+			array(7, new Database_Statement('DELETE FROM '.$db->quote($table))),
+			array(
+				7,
+				new Database_Statement(
+					'DELETE FROM '.$db->quote($table).' WHERE ? = ?', array(1,1)
+				),
+			),
+
 			// SQL_Expression
 			array(7, new SQL_Expression('DELETE FROM '.$db->quote($table))),
 			array(7, new SQL_Expression('DELETE FROM ?', array($table))),
@@ -53,8 +62,8 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 	 *
 	 * @dataProvider    provider_execute_command_argument
 	 *
-	 * @param   integer                 $expected
-	 * @param   string|SQL_Expression   $value      Argument to the method
+	 * @param   integer                                     $expected
+	 * @param   string|Database_Statement|SQL_Expression    $value      Argument to the method
 	 */
 	public function test_execute_command_argument($expected, $value)
 	{
@@ -173,6 +182,52 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 				),
 			),
 
+			// Database_Statement
+			array(
+				new Database_Statement(
+					'SELECT * FROM '.$db->quote($table).' WHERE value = 60'
+				),
+				FALSE,
+				array(
+					array('id' => 3, 'value' => 60),
+					array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				new Database_Statement(
+					'SELECT * FROM '.$db->quote($table).' WHERE value = 60'
+				),
+				TRUE,
+				array(
+					(object) array('id' => 3, 'value' => 60),
+					(object) array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				new Database_Statement(
+					'SELECT * FROM '.$db->quote($table).' WHERE value = ?',
+					array(65)
+				),
+				FALSE,
+				array(
+					array('id' => 5, 'value' => 65),
+					array('id' => 6, 'value' => 65),
+					array('id' => 7, 'value' => 65),
+				),
+			),
+			array(
+				new Database_Statement(
+					'SELECT * FROM '.$db->quote($table).' WHERE value = ?',
+					array(65)
+				),
+				TRUE,
+				array(
+					(object) array('id' => 5, 'value' => 65),
+					(object) array('id' => 6, 'value' => 65),
+					(object) array('id' => 7, 'value' => 65),
+				),
+			),
+
 			// SQL_Expression
 			array(
 				new SQL_Expression(
@@ -242,9 +297,9 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 	 *
 	 * @dataProvider    provider_execute_query_argument
 	 *
-	 * @param   string|SQL_Expression   $statement  First argument to the method
-	 * @param   boolean|string          $as_object  Second argument to the method
-	 * @param   array                   $expected
+	 * @param   string|Database_Statement|SQL_Expression    $statement  First argument to the method
+	 * @param   boolean|string                              $as_object  Second argument to the method
+	 * @param   array                                       $expected
 	 */
 	public function test_execute_query_argument($statement, $as_object, $expected)
 	{
