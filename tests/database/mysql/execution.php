@@ -26,21 +26,41 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 		return $dataset;
 	}
 
+	public function provider_execute_command_argument()
+	{
+		$db = Database::factory();
+		$table = new SQL_Table($this->_table);
+
+		return array(
+			// String
+			array(7, 'DELETE FROM '.$db->quote($table)),
+			array(7, 'DELETE FROM '.$db->quote($table).' WHERE 1 = 1'),
+
+			// SQL_Expression
+			array(7, new SQL_Expression('DELETE FROM '.$db->quote($table))),
+			array(7, new SQL_Expression('DELETE FROM ?', array($table))),
+			array(
+				7,
+				new SQL_Expression(
+					'DELETE FROM ? WHERE :a = :a', array($table, ':a' => 1)
+				),
+			),
+		);
+	}
+
 	/**
 	 * @covers  Database_MySQL::execute_command
+	 *
+	 * @dataProvider    provider_execute_command_argument
+	 *
+	 * @param   integer                 $expected
+	 * @param   string|SQL_Expression   $value      Argument to the method
 	 */
-	public function test_execute_command_expression()
+	public function test_execute_command_argument($expected, $value)
 	{
 		$db = Database::factory();
 
-		$result = $db->execute_command(
-			new SQL_Expression(
-				'DELETE FROM ?',
-				array(new SQL_Table($this->_table))
-			)
-		);
-
-		$this->assertSame(7, $result);
+		$this->assertSame($expected, $db->execute_command($value));
 	}
 
 	/**
@@ -104,7 +124,9 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 			NULL
 		);
 
-		$this->assertSame(array(3,8), $result, 'AUTO_INCREMENT of the first row');
+		$this->assertSame(
+			array(3,8), $result, 'AUTO_INCREMENT of the first row'
+		);
 	}
 
 	/**
@@ -122,6 +144,116 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 
 		$result = $db->execute_insert('', NULL);
 
-		$this->assertSame(array(0,8), $result, 'First AUTO_INCREMENT of prior INSERT');
+		$this->assertSame(
+			array(0,8), $result, 'First AUTO_INCREMENT of prior INSERT'
+		);
 	}
+
+	public function provider_execute_query_argument()
+	{
+		$db = Database::factory();
+		$table = new SQL_Table($this->_table);
+
+		return array(
+			// String
+			array(
+				'SELECT * FROM '.$db->quote($table).' WHERE value = 60',
+				FALSE,
+				array(
+					array('id' => 3, 'value' => 60),
+					array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				'SELECT * FROM '.$db->quote($table).' WHERE value = 60',
+				TRUE,
+				array(
+					(object) array('id' => 3, 'value' => 60),
+					(object) array('id' => 4, 'value' => 60),
+				),
+			),
+
+			// SQL_Expression
+			array(
+				new SQL_Expression(
+					'SELECT * FROM '.$db->quote($table).' WHERE value = 60'
+				),
+				FALSE,
+				array(
+					array('id' => 3, 'value' => 60),
+					array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				new SQL_Expression(
+					'SELECT * FROM '.$db->quote($table).' WHERE value = 60'
+				),
+				TRUE,
+				array(
+					(object) array('id' => 3, 'value' => 60),
+					(object) array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				new SQL_Expression(
+					'SELECT * FROM ? WHERE value = 60', array($table)
+				),
+				FALSE,
+				array(
+					array('id' => 3, 'value' => 60),
+					array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				new SQL_Expression(
+					'SELECT * FROM ? WHERE value = 60', array($table)
+				),
+				TRUE,
+				array(
+					(object) array('id' => 3, 'value' => 60),
+					(object) array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				new SQL_Expression(
+					'SELECT * FROM ? WHERE value = ?', array($table, 60)
+				),
+				FALSE,
+				array(
+					array('id' => 3, 'value' => 60),
+					array('id' => 4, 'value' => 60),
+				),
+			),
+			array(
+				new SQL_Expression(
+					'SELECT * FROM ? WHERE value = ?', array($table, 60)
+				),
+				TRUE,
+				array(
+					(object) array('id' => 3, 'value' => 60),
+					(object) array('id' => 4, 'value' => 60),
+				),
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::execute_query
+	 *
+	 * @dataProvider    provider_execute_query_argument
+	 *
+	 * @param   string|SQL_Expression   $statement  First argument to the method
+	 * @param   boolean|string          $as_object  Second argument to the method
+	 * @param   array                   $expected
+	 */
+	public function test_execute_query_argument($statement, $as_object, $expected)
+	{
+		$db = Database::factory();
+
+		$result = $db->execute_query($statement, $as_object);
+
+		$this->assertType('Database_MySQL_Result', $result);
+		$this->assertEquals($expected, $result->as_array());
+	}
+
 }
