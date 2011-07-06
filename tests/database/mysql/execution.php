@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname(dirname(__FILE__)).'/testcase'.EXT;
+require_once dirname(__FILE__).'/testcase'.EXT;
 require_once 'PHPUnit/Extensions/Database/DataSet/CsvDataSet.php';
 
 /**
@@ -11,7 +11,7 @@ require_once 'PHPUnit/Extensions/Database/DataSet/CsvDataSet.php';
  * @group   database
  * @group   database.mysql
  */
-class Database_MySQL_Database_DataSet_Test extends Database_MySQL_TestCase
+class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 {
 	protected $_table = 'kohana_test_table';
 
@@ -20,7 +20,7 @@ class Database_MySQL_Database_DataSet_Test extends Database_MySQL_TestCase
 		$dataset = new PHPUnit_Extensions_Database_DataSet_CsvDataSet;
 		$dataset->addTable(
 			Database::factory()->table_prefix().$this->_table,
-			dirname(dirname(dirname(__FILE__))).'/datasets/values.csv'
+			dirname(dirname(__FILE__)).'/datasets/values.csv'
 		);
 
 		return $dataset;
