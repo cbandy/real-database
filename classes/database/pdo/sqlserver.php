@@ -14,8 +14,8 @@
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
- * @link http://sqlsrvphp.codeplex.com/ Microsoft SQL Server Driver for PHP
- * @link http://msdn.microsoft.com/en-us/library/ff928321.aspx SQL Server Driver for PHP Documentation
+ * @link http://sqlsrvphp.codeplex.com/ Microsoft Drivers for PHP for SQL Server
+ * @link http://msdn.microsoft.com/en-us/library/ee229547.aspx Documentation
  */
 class Database_PDO_SQLServer extends Database_PDO
 {
@@ -385,5 +385,55 @@ class Database_PDO_SQLServer extends Database_PDO
 		$this->_savepoints->push($name);
 
 		return $name;
+	}
+
+	public function table_columns($table)
+	{
+		if ( ! $table instanceof SQL_Identifier)
+		{
+			// Convert to table
+			$table = new SQL_Table($table);
+		}
+
+		$sql =
+			'SELECT column_name, ordinal_position, column_default, is_nullable,'
+			.'   data_type, character_maximum_length,'
+			.'   numeric_precision, numeric_scale, datetime_precision'
+			.' FROM information_schema.columns';
+
+		if ($schema = $table->namespace)
+		{
+			$sql .= ' WHERE table_schema = ?';
+
+			if ($schema instanceof SQL_Identifier)
+			{
+				$parameters[] = $schema->name;
+			}
+			elseif (is_array($schema))
+			{
+				$parameters[] = array_pop($schema);
+			}
+			else
+			{
+				$parameters[] = array_pop(explode('.', $schema));
+			}
+		}
+		else
+		{
+			// Use the default schema of the connected user
+			$sql .= ' JOIN sys.database_principals'
+				." ON (type = 'S' AND name = user_name())"
+				.' WHERE table_schema = default_schema_name';
+		}
+
+		$sql .= ' AND table_name = ?';
+
+		// Only add the table prefix to SQL_Table (exclude from SQL_Identifier)
+		$parameters[] = ($table instanceof SQL_Table)
+			? ($this->_table_prefix.$table->name)
+			: $table->name;
+
+		return $this->execute_query(new Database_Statement($sql, $parameters))
+			->as_array('column_name');
 	}
 }
