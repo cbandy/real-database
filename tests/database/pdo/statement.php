@@ -48,19 +48,19 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 	{
 		return array(
 			// 0-indexed
-			array(array(NULL), array(1 => NULL)),
-			array(array('a'), array(1 => 'a')),
-			array(array(5), array(1 => 5)),
+			array('SELECT ?', array(NULL), array(1 => NULL)),
+			array('SELECT ?', array('a'), array(1 => 'a')),
+			array('SELECT ?', array(5), array(1 => 5)),
 
 			// 1-indexed
-			array(array(1 => NULL), array(1 => NULL)),
-			array(array(1 => 'a'), array(1 => 'a')),
-			array(array(1 => 5), array(1 => 5)),
+			array('SELECT ?', array(1 => NULL), array(1 => NULL)),
+			array('SELECT ?', array(1 => 'a'), array(1 => 'a')),
+			array('SELECT ?', array(1 => 5), array(1 => 5)),
 
 			// Named
-			array(array(':a' => NULL), array(':a' => NULL)),
-			array(array(':a' => 'b'), array(':a' => 'b')),
-			array(array(':a' => 5), array(':a' => 5)),
+			array('SELECT :a', array(':a' => NULL), array(':a' => NULL)),
+			array('SELECT :a', array(':a' => 'b'), array(':a' => 'b')),
+			array('SELECT :a', array(':a' => 5), array(':a' => 5)),
 		);
 	}
 
@@ -70,15 +70,16 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_constructor_parameters
 	 *
+	 * @param   string  $statement  SQL statement to prepare
 	 * @param   array   $parameters Argument to the constructor
 	 * @param   array   $expected   Expected parameters
 	 */
-	public function test_constructor_parameters($parameters, $expected)
+	public function test_constructor_parameters($statement, $parameters, $expected)
 	{
 		$db = Database::factory();
 
 		$statement = new Database_PDO_Statement(
-			$db, $db->prepare('SELECT 1'), $parameters
+			$db, $db->prepare($statement), $parameters
 		);
 
 		$this->assertSame($expected, $statement->parameters());
