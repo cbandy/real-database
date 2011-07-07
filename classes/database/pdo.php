@@ -231,12 +231,13 @@ class Database_PDO extends Database
 
 		if ( ! is_string($statement))
 		{
-			$parameters = array();
-			$statement = $this->_parse(
-				(string) $statement,
-				$statement->parameters,
-				$parameters
-			);
+			if ( ! $statement instanceof Database_Statement)
+			{
+				$statement = $this->parse_statement($statement);
+			}
+
+			$parameters = $statement->parameters();
+			$statement = (string) $statement;
 		}
 
 		if (empty($statement))
@@ -289,8 +290,8 @@ class Database_PDO extends Database
 	 * Not all drivers support this method. When inserting multiple rows, the
 	 * row to which the identity value belongs depends on the driver.
 	 *
-	 * @param   string|SQL_Expression   $statement  SQL insert
-	 * @param   mixed                   $identity   Ignored
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL insert
+	 * @param   mixed                                       $identity   Ignored
 	 * @return  array   List including number of affected rows and an identity value
 	 */
 	public function execute_insert($statement, $identity)
@@ -307,12 +308,13 @@ class Database_PDO extends Database
 
 		if ( ! is_string($statement))
 		{
-			$parameters = array();
-			$statement = $this->_parse(
-				(string) $statement,
-				$statement->parameters,
-				$parameters
-			);
+			if ( ! $statement instanceof Database_Statement)
+			{
+				$statement = $this->parse_statement($statement);
+			}
+
+			$parameters = $statement->parameters();
+			$statement = (string) $statement;
 		}
 
 		if (empty($statement))
@@ -371,30 +373,6 @@ class Database_PDO extends Database
 	public function last_insert_id()
 	{
 		return $this->_connection->lastInsertId();
-	}
-
-	/**
-	 * Convert a generic [SQL_Expression] into a [Database_Statement] with a
-	 * 1-indexed array of literal parameters.
-	 *
-	 * @param   SQL_Expression  $statement  SQL statement
-	 * @return  Database_Statement
-	 */
-	public function parse_statement($statement)
-	{
-		// Pad the array so the next value has an index of one
-		$parameters = array(NULL);
-
-		$statement = $this->_parse(
-			(string) $statement,
-			$statement->parameters,
-			$parameters
-		);
-
-		// Remove padding
-		unset($parameters[0]);
-
-		return new Database_Statement($statement, $parameters);
 	}
 
 	/**

@@ -488,7 +488,26 @@ class Database_MySQL extends Database
 	{
 		if ( ! is_string($statement))
 		{
-			$statement = $this->quote($statement);
+			if ( ! $statement instanceof Database_Statement)
+			{
+				$statement = $this->quote($statement);
+			}
+			elseif ( ! $parameters = $statement->parameters())
+			{
+				$statement = (string) $statement;
+			}
+			else
+			{
+				// This is convoluted, but a prepared statement is the only way
+				// to pass parameters using the MySQL driver.
+				$statement = new Database_MySQL_Statement(
+					$this,
+					$this->prepare(NULL, (string) $statement),
+					$parameters
+				);
+
+				return $statement->execute_command();
+			}
 		}
 
 		if (empty($statement))
@@ -525,7 +544,26 @@ class Database_MySQL extends Database
 	{
 		if ( ! is_string($statement))
 		{
-			$statement = $this->quote($statement);
+			if ( ! $statement instanceof Database_Statement)
+			{
+				$statement = $this->quote($statement);
+			}
+			elseif ( ! $parameters = $statement->parameters())
+			{
+				$statement = (string) $statement;
+			}
+			else
+			{
+				// This is convoluted, but a prepared statement is the only way
+				// to pass parameters using the MySQL driver.
+				$statement = new Database_MySQL_Statement(
+					$this,
+					$this->prepare(NULL, (string) $statement),
+					$parameters
+				);
+
+				return $statement->execute_query($as_object, $arguments);
+			}
 		}
 
 		if (empty($statement))

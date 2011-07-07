@@ -25,7 +25,7 @@ class Database_PDO_Statement extends Database_Statement
 	protected $_statement;
 
 	/**
-	 * @uses Database_PDO_Statement::parameters()
+	 * @uses Database_PDO_Statement::bind()
 	 *
 	 * @param   Database_PDO    $db
 	 * @param   PDOStatement    $statement  Prepared statement
@@ -37,10 +37,21 @@ class Database_PDO_Statement extends Database_Statement
 		$this->_parameters = array();
 		$this->_statement = $statement;
 
-		foreach ($parameters as $param => $value)
+		if (array_key_exists(0, $parameters))
 		{
-			// Capture possible reference
-			$this->bind($param, $parameters[$param]);
+			foreach ($parameters as $param => $value)
+			{
+				// Convert to 1-indexed and capture possible reference
+				$this->bind($param + 1, $parameters[$param]);
+			}
+		}
+		else
+		{
+			foreach ($parameters as $param => $value)
+			{
+				// Capture possible reference
+				$this->bind($param, $parameters[$param]);
+			}
 		}
 	}
 
