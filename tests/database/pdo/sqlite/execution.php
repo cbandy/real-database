@@ -1,16 +1,17 @@
 <?php
 
-require_once dirname(dirname(__FILE__)).'/testcase'.EXT;
+require_once dirname(__FILE__).'/testcase'.EXT;
 require_once 'PHPUnit/Extensions/Database/DataSet/CsvDataSet.php';
 
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  SQLite
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_PDO_SQLite_Dataset_Database_Test extends Database_PDO_SQLite_TestCase
+class Database_PDO_SQLite_Execution_Test extends Database_PDO_SQLite_TestCase
 {
 	protected $_table = 'kohana_test_table';
 
@@ -19,7 +20,7 @@ class Database_PDO_SQLite_Dataset_Database_Test extends Database_PDO_SQLite_Test
 		$dataset = new PHPUnit_Extensions_Database_DataSet_CsvDataSet;
 		$dataset->addTable(
 			Database::factory()->table_prefix().$this->_table,
-			dirname(dirname(dirname(dirname(__FILE__)))).'/datasets/values.csv'
+			dirname(dirname(dirname(__FILE__))).'/datasets/values.csv'
 		);
 
 		return $dataset;
@@ -27,14 +28,17 @@ class Database_PDO_SQLite_Dataset_Database_Test extends Database_PDO_SQLite_Test
 
 	public function provider_execute_command_query()
 	{
-		$db = Database::factory();
-		$table = $db->quote_table($this->_table);
+		$table = new SQL_Table($this->_table);
 
 		return array(
 			// Always zero
 			array(0, 'SELECT 1'),
 			array(0, 'SELECT 1 UNION SELECT 2'),
-			array(0, 'SELECT * FROM '.$table),
+			array(0, new SQL_Expression('SELECT * FROM ?', array($table))),
+			array(0, new SQL_Expression('SELECT * FROM ?', array($table))),
+			array(0, new SQL_Expression(
+				'SELECT * FROM ? WHERE ? = ?', array($table, 1, 1)
+			)),
 		);
 	}
 
@@ -64,7 +68,7 @@ class Database_PDO_SQLite_Dataset_Database_Test extends Database_PDO_SQLite_Test
 			array(5, new SQL_Expression(
 				'DELETE FROM :table WHERE id > 5; DELETE FROM :table',
 				array(':table' => new SQL_Table($this->_table))
-			))
+			)),
 		);
 	}
 
@@ -92,8 +96,12 @@ class Database_PDO_SQLite_Dataset_Database_Test extends Database_PDO_SQLite_Test
 		$table = $db->quote_table($this->_table);
 
 		return array(
-			array(7, 'SELECT * FROM '.$table.' WHERE id < 3; DELETE FROM '.$table),
-			array(2, 'DELETE FROM '.$table.' WHERE id < 3; SELECT * FROM '.$table),
+			array(7,
+				'SELECT * FROM '.$table.' WHERE id < 3; DELETE FROM '.$table
+			),
+			array(2,
+				'DELETE FROM '.$table.' WHERE id < 3; SELECT * FROM '.$table
+			),
 			array(4,
 				'SELECT * FROM '.$table.';'
 				.'DELETE FROM '.$table.' WHERE id < 3;'
@@ -153,8 +161,12 @@ class Database_PDO_SQLite_Dataset_Database_Test extends Database_PDO_SQLite_Test
 		$table = $db->quote_table($this->_table);
 
 		return array(
-			array(2, 7, 'SELECT * FROM '.$table.' WHERE id < 3; DELETE FROM '.$table),
-			array(0, 5, 'DELETE FROM '.$table.' WHERE id < 3; SELECT * FROM '.$table),
+			array(2, 7,
+				'SELECT * FROM '.$table.' WHERE id < 3; DELETE FROM '.$table
+			),
+			array(0, 5,
+				'DELETE FROM '.$table.' WHERE id < 3; SELECT * FROM '.$table
+			),
 			array(0, 5,
 				'DELETE FROM '.$table.' WHERE id < 3;'
 				.'DELETE FROM '.$table.' WHERE id < 6;'
