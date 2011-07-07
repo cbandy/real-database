@@ -30,7 +30,7 @@ class Database_SQLServer_Select extends Database_Select
 			$value .= ' TOP (:limit)';
 		}
 
-		$value .= ' :columns';
+		$value .= empty($this->parameters[':values']) ? ' *' : ' :values';
 
 		if ( ! empty($this->parameters[':offset']))
 		{

@@ -34,6 +34,13 @@ class Database_MySQL_Select_Test extends PHPUnit_Framework_TestCase
 			'SELECT DISTINCT * FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit',
 			(string) $statement
 		);
+
+		$statement->column('h');
+
+		$this->assertSame(
+			'SELECT DISTINCT :values FROM :from WHERE :where GROUP BY :groupby HAVING :having ORDER BY :orderby LIMIT :limit',
+			(string) $statement
+		);
 	}
 
 	/**
