@@ -387,6 +387,67 @@ class Database_PDO_SQLServer extends Database_PDO
 		return $name;
 	}
 
+	public function schema_tables($schema = NULL)
+	{
+		$sql = 'SELECT table_name, table_type FROM information_schema.tables';
+		$parameters = array();
+
+		if ( ! $schema)
+		{
+			// Use the default schema of the connected user
+			$sql .= ' JOIN sys.database_principals'
+				." ON (type = 'S' AND name = user_name())"
+				.' WHERE table_schema = default_schema_name';
+		}
+		else
+		{
+			if ( ! $schema instanceof SQL_Identifier)
+			{
+				// Convert to identifier
+				$schema = new SQL_Identifier($schema);
+			}
+
+			$sql .= ' WHERE table_schema = ?';
+			$parameters[] = $schema->name;
+
+			if ($catalog = $schema->namespace)
+			{
+				if ( ! $catalog instanceof SQL_Identifier)
+				{
+					// Convert to identifier
+					$catalog = new SQL_Identifier($catalog);
+				}
+
+				$sql .= ' AND table_catalog = ?';
+				$parameters[] = $catalog->name;
+			}
+		}
+
+		if ( ! $this->_table_prefix)
+		{
+			// No table prefix
+			return $this->execute_query(new Database_Statement($sql, $parameters))
+				->as_array('table_name');
+		}
+
+		// Filter on table prefix
+		$sql .= ' AND table_name LIKE ? ESCAPE ?';
+		$parameters[] = strtr($this->_table_prefix, array('_' => '\_', '%' => '\%')).'%';
+		$parameters[] = '\\';
+
+		$prefix = strlen($this->_table_prefix);
+		$result = array();
+
+		foreach ($this->execute_query(new Database_Statement($sql, $parameters)) as $table)
+		{
+			// Strip table prefix from table name
+			$table['table_name'] = substr($table['table_name'], $prefix);
+			$result[$table['table_name']] = $table;
+		}
+
+		return $result;
+	}
+
 	public function table_columns($table)
 	{
 		if ( ! $table instanceof SQL_Identifier)
