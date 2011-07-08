@@ -18,6 +18,7 @@
  * @link http://msdn.microsoft.com/en-us/library/ee229547.aspx Documentation
  */
 class Database_PDO_SQLServer extends Database_PDO
+	implements Database_iIntrospect
 {
 	/**
 	 * Create a column expression.
