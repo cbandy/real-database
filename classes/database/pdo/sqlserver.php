@@ -401,29 +401,35 @@ class Database_PDO_SQLServer extends Database_PDO
 			.'   numeric_precision, numeric_scale, datetime_precision'
 			.' FROM information_schema.columns';
 
-		if ($schema = $table->namespace)
-		{
-			$sql .= ' WHERE table_schema = ?';
-
-			if ($schema instanceof SQL_Identifier)
-			{
-				$parameters[] = $schema->name;
-			}
-			elseif (is_array($schema))
-			{
-				$parameters[] = array_pop($schema);
-			}
-			else
-			{
-				$parameters[] = array_pop(explode('.', $schema));
-			}
-		}
-		else
+		if ( ! $schema = $table->namespace)
 		{
 			// Use the default schema of the connected user
 			$sql .= ' JOIN sys.database_principals'
 				." ON (type = 'S' AND name = user_name())"
 				.' WHERE table_schema = default_schema_name';
+		}
+		else
+		{
+			if ( ! $schema instanceof SQL_Identifier)
+			{
+				// Convert to identifier
+				$schema = new SQL_Identifier($schema);
+			}
+
+			$sql .= ' WHERE table_schema = ?';
+			$parameters[] = $schema->name;
+
+			if ($catalog = $schema->namespace)
+			{
+				if ( ! $catalog instanceof SQL_Identifier)
+				{
+					// Convert to identifier
+					$catalog = new SQL_Identifier($catalog);
+				}
+
+				$sql .= ' AND table_catalog = ?';
+				$parameters[] = $catalog->name;
+			}
 		}
 
 		$sql .= ' AND table_name = ?';
