@@ -45,7 +45,7 @@ class SQL_DDL_Drop extends SQL_Expression
 	{
 		$value = $this->_value;
 
-		if ( ! empty($this->_if_exists))
+		if ($this->_if_exists)
 		{
 			// Not allowed in MSSQL
 			$value .= ' IF EXISTS';

@@ -115,7 +115,7 @@ class SQL_Conditions extends SQL_Expression
 		$this->parameters[] = $left;
 		$this->_value .= '?';
 
-		if ( ! empty($operator))
+		if ($operator)
 		{
 			$this->_add_rhs($operator, $right);
 		}
@@ -203,7 +203,7 @@ class SQL_Conditions extends SQL_Expression
 		$this->parameters[] = $left;
 		$this->_value .= 'NOT ?';
 
-		if ( ! empty($operator))
+		if ($operator)
 		{
 			$this->_add_rhs($operator, $right);
 		}

@@ -31,7 +31,7 @@ class Database_PostgreSQL_Create_Index extends SQL_DDL_Create_Index
 
 		$value .= ' INDEX :name ON :table';
 
-		if ( ! empty($this->_using))
+		if ($this->_using)
 		{
 			$value .= ' USING '.$this->_using;
 		}

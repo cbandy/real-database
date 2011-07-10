@@ -47,7 +47,7 @@ class Database_PostgreSQL_Delete extends Database_Delete
 
 	public function using($reference, $table_alias = NULL)
 	{
-		if ( ! empty($reference) AND isset($this->parameters[':limit']))
+		if ($reference AND isset($this->parameters[':limit']))
 			throw new Kohana_Exception('PostgreSQL DELETE does not support LIMIT with USING');
 
 		return parent::using($reference, $table_alias);

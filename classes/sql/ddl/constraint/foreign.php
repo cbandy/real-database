@@ -61,7 +61,7 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 			$value .= ' (:columns)';
 		}
 
-		if ( ! empty($this->_match))
+		if ($this->_match)
 		{
 			// Not allowed in MSSQL
 			// Not allowed in MySQL

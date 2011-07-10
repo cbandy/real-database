@@ -50,7 +50,7 @@ class Database_Insert extends SQL_DML_Insert
 
 	public function identity($column)
 	{
-		if ( ! empty($column))
+		if ($column)
 		{
 			$this->returning = NULL;
 

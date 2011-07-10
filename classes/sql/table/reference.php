@@ -56,7 +56,7 @@ class SQL_Table_Reference extends SQL_Expression
 		$this->_value .= ($table instanceof SQL_Expression) ? '(?)' : '?';
 		$this->parameters[] = $table;
 
-		if ( ! empty($alias))
+		if ($alias)
 		{
 			$this->_value .= ' AS ?';
 			$this->parameters[] = new SQL_Identifier($alias);

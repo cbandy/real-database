@@ -57,7 +57,7 @@ class Database_MySQL_Statement extends Database_Statement
 	{
 		$result = 'EXECUTE '.$this->_name;
 
-		if ( ! empty($this->_parameters))
+		if ($this->_parameters)
 		{
 			foreach ($this->_parameters as $key => $value)
 			{

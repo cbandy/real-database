@@ -39,8 +39,10 @@ class Database_PostgreSQL_Update extends Database_Update
 
 	public function from($reference, $table_alias = NULL)
 	{
-		if ( ! empty($reference) AND isset($this->parameters[':limit']))
-			throw new Kohana_Exception('PostgreSQL UPDATE does not support LIMIT with FROM');
+		if ($reference AND isset($this->parameters[':limit']))
+			throw new Kohana_Exception(
+				'PostgreSQL UPDATE does not support LIMIT with FROM'
+			);
 
 		return parent::from($reference, $table_alias);
 	}
@@ -48,7 +50,9 @@ class Database_PostgreSQL_Update extends Database_Update
 	public function limit($count)
 	{
 		if ($count !== NULL AND ! empty($this->parameters[':from']))
-			throw new Kohana_Exception('PostgreSQL UPDATE does not support LIMIT with FROM');
+			throw new Kohana_Exception(
+				'PostgreSQL UPDATE does not support LIMIT with FROM'
+			);
 
 		return parent::limit($count);
 	}

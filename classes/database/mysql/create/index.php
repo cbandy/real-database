@@ -24,7 +24,7 @@ class Database_MySQL_Create_Index extends SQL_DDL_Create_Index
 	{
 		$value = parent::__toString();
 
-		if ( ! empty($this->_using))
+		if ($this->_using)
 		{
 			$value .= ' USING '.$this->_using;
 		}

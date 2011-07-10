@@ -23,7 +23,13 @@ class Database_PostgreSQL_Insert extends Database_Insert
 	 */
 	public function identity($column)
 	{
-		if (empty($column))
+		if ($column)
+		{
+			parent::identity($column);
+
+			$this->parameters[':returning'] = $this->identity;
+		}
+		else
 		{
 			if (isset($this->parameters[':returning'])
 				AND $this->parameters[':returning'] === $this->identity)
@@ -33,19 +39,13 @@ class Database_PostgreSQL_Insert extends Database_Insert
 
 			parent::identity($column);
 		}
-		else
-		{
-			parent::identity($column);
-
-			$this->parameters[':returning'] = $this->identity;
-		}
 
 		return $this;
 	}
 
 	public function returning($columns)
 	{
-		if ( ! empty($this->identity))
+		if ($this->identity)
 		{
 			$this->parameters[':returning'] = array();
 		}
