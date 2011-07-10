@@ -18,6 +18,13 @@
 class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {
 	/**
+	 * Maximum number of bytes allowed in an identifier
+	 *
+	 * @link http://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+	 */
+	const MAX_LENGTH_IDENTIFIER = 63;
+
+	/**
 	 * @link http://bugs.php.net/51607
 	 * @var boolean
 	 */

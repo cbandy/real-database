@@ -19,6 +19,20 @@ class Database_MySQL extends Database
 	implements Database_iEscape, Database_iIntrospect
 {
 	/**
+	 * Maxium number of unicode characters allowed in an alias
+	 *
+	 * @link http://dev.mysql.com/doc/en/identifiers.html
+	 */
+	const MAX_LENGTH_ALIAS = 256;
+
+	/**
+	 * Maxium number of unicode characters allowed in a schema object name
+	 *
+	 * @link http://dev.mysql.com/doc/en/identifiers.html
+	 */
+	const MAX_LENGTH_IDENTIFIER = 64;
+
+	/**
 	 * @see Database_MySQL::_select_database()
 	 *
 	 * @var array   Active databases

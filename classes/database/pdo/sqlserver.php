@@ -21,6 +21,13 @@ class Database_PDO_SQLServer extends Database_PDO
 	implements Database_iIntrospect
 {
 	/**
+	 * Maximum number of unicode characters allowed in an identifier
+	 *
+	 * @link http://msdn.microsoft.com/library/ms175874.aspx Identifiers
+	 */
+	const MAX_LENGTH_IDENTIFIER = 116;
+
+	/**
 	 * Create a column expression.
 	 *
 	 * @param   mixed   $name   Converted to SQL_Column
