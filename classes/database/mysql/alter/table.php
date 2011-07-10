@@ -113,7 +113,9 @@ class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 	 */
 	public function option($option, $value)
 	{
-		$this->parameters[':actions'][] = new SQL_Expression("$option ?", array($value));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			$option.' ?', array($value)
+		);
 
 		return $this;
 	}

@@ -218,7 +218,9 @@ class Database_MySQL extends Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", $statement);
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', $statement
+			);
 		}
 
 		try

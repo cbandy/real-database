@@ -70,7 +70,10 @@ class Database_PDO_Statement extends Database_Statement
 	{
 		if ($this->_db->profiling())
 		{
-			$benchmark = Profiler::start("Database ($this->_db)", 'Prepared: '.$this->_statement->queryString);
+			$benchmark = Profiler::start(
+				'Database ('.$this->_db.')',
+				'Prepared: '.$this->_statement->queryString
+			);
 		}
 
 		try

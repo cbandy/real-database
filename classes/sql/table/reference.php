@@ -43,7 +43,7 @@ class SQL_Table_Reference extends SQL_Expression
 	{
 		if ( ! $this->_empty)
 		{
-			$this->_value .= "$glue ";
+			$this->_value .= $glue.' ';
 		}
 
 		if ( ! $table instanceof SQL_Expression

@@ -328,7 +328,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($this->_config['profiling']))
 		{
-			$benchmark = Profiler::start("Database ($this->_name)", $statement);
+			$benchmark = Profiler::start(
+				'Database ('.$this->_name.')', $statement
+			);
 		}
 
 		if ( ! pg_send_query($this->_connection, $statement))
@@ -441,8 +443,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		if ( ! empty($this->_config['profiling']))
 		{
 			$benchmark = Profiler::start(
-				"Database ($this->_name)",
-				"Prepared: $name"
+				'Database ('.$this->_name.')', 'Prepared: '.$name
 			);
 		}
 
@@ -1330,9 +1331,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 			// Default schema is first in the array
 			list($this->_schema) = explode(
-				',',
-				trim(pg_fetch_result($result, 0), '{}'),
-				2
+				',', trim(pg_fetch_result($result, 0), '{}'), 2
 			);
 
 			pg_free_result($result);

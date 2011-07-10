@@ -49,7 +49,7 @@ class SQL_Conditions extends SQL_Expression
 		// SQL operators are always uppercase
 		$operator = strtoupper($operator);
 
-		$this->_value .= " $operator ";
+		$this->_value .= ' '.$operator.' ';
 
 		if ($operator === 'IN')
 		{
@@ -63,7 +63,7 @@ class SQL_Conditions extends SQL_Expression
 
 			$this->parameters[] = $min;
 			$this->parameters[] = $max;
-			$this->_value .= "? AND ?";
+			$this->_value .= '? AND ?';
 		}
 		else
 		{
