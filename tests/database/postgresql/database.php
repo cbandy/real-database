@@ -545,17 +545,6 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL::quote
-	 */
-	public function test_quote_binary()
-	{
-		$db = Database::factory();
-		$binary = new Database_Binary("\200\0\350");
-
-		$this->assertSame("'\\\\200\\\\000\\\\350'", $db->quote($binary));
-	}
-
-	/**
 	 * @covers  Database_PostgreSQL::quote_expression
 	 */
 	public function test_quote_expression()
@@ -579,8 +568,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_quote_literal()
 	{
-		return array
-		(
+		return array(
 			array(NULL, 'NULL'),
 			array(FALSE, "'0'"),
 			array(TRUE, "'1'"),
@@ -594,8 +582,6 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 			array("multiple\nlines", "'multiple\nlines'"),
 			array("single'quote", "'single''quote'"),
 			array("double\"quote", "'double\"quote'"),
-
-			array(new Database_Binary("\x0"), "'\\\\000'"),
 		);
 	}
 
@@ -613,6 +599,48 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db = Database::factory();
 
 		$this->assertSame($expected, $db->quote_literal($value));
+	}
+
+	public function provider_quote_literal_binary()
+	{
+		return array(
+			array(
+				new Database_Binary("\x0"),
+				"'\\\\000'",
+				"'\\\\x00'"
+			),
+			array(
+				new Database_Binary("\200\0\350"),
+				"'\\\\200\\\\000\\\\350'",
+				"'\\\\x8000e8'"
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::escape_literal
+	 * @covers  Database_PostgreSQL::quote_literal
+	 *
+	 * @dataProvider    provider_quote_literal_binary
+	 *
+	 * @param   Database_Binary $value  Argument to the method
+	 * @param   string          $escape Expected result in escape format
+	 * @param   string          $hex    Expected result in hex format
+	 */
+	public function test_quote_literal_binary($value, $escape, $hex)
+	{
+		$db = Database::factory();
+		$result = $db->quote($value);
+
+		if (version_compare($db->version(), '9.0', '<')
+			OR $db->execute_query('SHOW bytea_output')->get() === 'escape')
+		{
+			$this->assertSame($escape, $result);
+		}
+		else
+		{
+			$this->assertSame($hex, $result);
+		}
 	}
 
 	/**
