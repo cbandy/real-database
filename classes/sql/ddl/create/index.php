@@ -11,7 +11,7 @@
  * @link http://dev.mysql.com/doc/en/create-index.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-createindex.html PostgreSQL
  * @link http://www.sqlite.org/lang_createindex.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms188783.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms188783.aspx Transact-SQL
  */
 class SQL_DDL_Create_Index extends SQL_Expression
 {

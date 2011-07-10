@@ -13,7 +13,7 @@
  * @link http://dev.mysql.com/doc/en/delete.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-delete.html PostgreSQL
  * @link http://www.sqlite.org/lang_delete.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms189835.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms189835.aspx Transact-SQL
  */
 class SQL_DML_Delete extends SQL_Expression
 {

@@ -13,7 +13,7 @@
  * @link http://dev.mysql.com/doc/en/update.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-update.html PostgreSQL
  * @link http://www.sqlite.org/lang_update.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms177523.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms177523.aspx Transact-SQL
  */
 class SQL_DML_Update extends SQL_Expression
 {

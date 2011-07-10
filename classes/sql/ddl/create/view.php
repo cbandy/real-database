@@ -11,7 +11,7 @@
  * @link http://dev.mysql.com/doc/en/create-view.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-createview.html PostgreSQL
  * @link http://www.sqlite.org/lang_createview.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms187956.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms187956.aspx Transact-SQL
  */
 class SQL_DDL_Create_View extends SQL_Expression
 {

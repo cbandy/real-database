@@ -11,7 +11,7 @@
  * @link http://dev.mysql.com/doc/en/drop-table.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-droptable.html PostgreSQL
  * @link http://www.sqlite.org/lang_droptable.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms173790.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms173790.aspx Transact-SQL
  */
 class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 {

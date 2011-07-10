@@ -11,7 +11,7 @@
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
- * @link http://msdn.microsoft.com/en-us/library/ms174335.aspx
+ * @link http://msdn.microsoft.com/library/ms174335.aspx
  */
 class Database_SQLServer_Insert extends Database_Insert
 {

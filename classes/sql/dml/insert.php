@@ -13,7 +13,7 @@
  * @link http://dev.mysql.com/doc/en/insert.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-insert.html PostgreSQL
  * @link http://www.sqlite.org/lang_insert.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms174335.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms174335.aspx Transact-SQL
  */
 class SQL_DML_Insert extends SQL_Expression
 {

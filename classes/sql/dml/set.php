@@ -13,7 +13,7 @@
  * @link http://dev.mysql.com/doc/en/select.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-select.html PostgreSQL
  * @link http://www.sqlite.org/lang_select.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms189499.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms189499.aspx Transact-SQL
  */
 class SQL_DML_Set extends SQL_Expression
 {

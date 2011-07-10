@@ -10,7 +10,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/ddl-constraints.html PostgreSQL
  * @link http://www.sqlite.org/syntaxdiagrams.html#table-constraint SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms188258.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms188258.aspx Transact-SQL
  */
 class SQL_DDL_Constraint_Check extends SQL_DDL_Constraint
 {

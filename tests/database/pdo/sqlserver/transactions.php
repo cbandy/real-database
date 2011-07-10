@@ -29,7 +29,7 @@ class Database_PDO_SQLServer_Transactions_Test extends Database_PDO_SQLServer_Te
 	/**
 	 * Verify that a savepoint is also released during rollback.
 	 *
-	 * @link http://msdn.microsoft.com/en-us/library/ms181299.aspx
+	 * @link http://msdn.microsoft.com/library/ms181299.aspx
 	 *
 	 * @covers  PDO::exec
 	 */
@@ -54,7 +54,7 @@ class Database_PDO_SQLServer_Transactions_Test extends Database_PDO_SQLServer_Te
 	/**
 	 * Verify that savepoint names can be reused.
 	 *
-	 * @link http://msdn.microsoft.com/en-us/library/ms178157.aspx
+	 * @link http://msdn.microsoft.com/library/ms178157.aspx
 	 *
 	 * @covers  Database_PDO_SQLServer::commit
 	 * @covers  Database_PDO_SQLServer::rollback

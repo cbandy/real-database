@@ -11,7 +11,7 @@
  * @link http://dev.mysql.com/doc/en/ansi-diff-foreign-keys.html MySQL
  * @link http://www.postgresql.org/docs/current/static/ddl-constraints.html#DDL-CONSTRAINTS-FK PostgreSQL
  * @link http://www.sqlite.org/foreignkeys.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms175464.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms175464.aspx Transact-SQL
  */
 class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 {

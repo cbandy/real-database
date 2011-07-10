@@ -11,7 +11,7 @@
  * @link http://dev.mysql.com/doc/en/create-table.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-createtable.html PostgreSQL
  * @link http://www.sqlite.org/syntaxdiagrams.html#column-def SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms174979.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms174979.aspx Transact-SQL
  */
 class SQL_DDL_Column extends SQL_Expression
 {

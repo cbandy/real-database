@@ -11,7 +11,7 @@
  * @link http://dev.mysql.com/doc/en/create-table.html MySQL
  * @link http://www.postgresql.org/docs/current/static/ddl-constraints.html PostgreSQL
  * @link http://www.sqlite.org/syntaxdiagrams.html#table-constraint SQLite
- * @link http://msdn.microsoft.com/en-us/library/ms191166.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/ms191166.aspx Transact-SQL
  */
 class SQL_DDL_Constraint_Unique extends SQL_DDL_Constraint
 {

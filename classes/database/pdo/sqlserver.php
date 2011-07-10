@@ -15,7 +15,7 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
  * @link http://sqlsrvphp.codeplex.com/ Microsoft Drivers for PHP for SQL Server
- * @link http://msdn.microsoft.com/en-us/library/ee229547.aspx Documentation
+ * @link http://msdn.microsoft.com/library/ee229547.aspx Documentation
  */
 class Database_PDO_SQLServer extends Database_PDO
 	implements Database_iIntrospect
@@ -96,7 +96,7 @@ class Database_PDO_SQLServer extends Database_PDO
 	 *
 	 *  Configuration Option    | Type    | Description
 	 *  --------------------    | ----    | -----------
-	 *  charset                 | integer | [Encoding Constant](http://msdn.microsoft.com/en-US/library/cc296183.aspx)
+	 *  charset                 | integer | [Encoding Constant](http://msdn.microsoft.com/library/cc296183.aspx)
 	 *  profiling               | boolean | Enable execution profiling
 	 *  release_during_rollback | boolean | Release savepoints during rollback
 	 *  table_prefix            | string  | Table prefix
@@ -110,7 +110,7 @@ class Database_PDO_SQLServer extends Database_PDO
 	 * *[DSN]: Data Source Name
 	 * *[URI]: Uniform Resource Identifier
 	 *
-	 * @link http://msdn.microsoft.com/en-US/library/ff628159.aspx PDO connection parameters
+	 * @link http://msdn.microsoft.com/library/ff628159.aspx PDO connection parameters
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
@@ -134,7 +134,7 @@ class Database_PDO_SQLServer extends Database_PDO
 	/**
 	 * Set the connection encoding.
 	 *
-	 * @link http://msdn.microsoft.com/en-US/library/cc296183.aspx
+	 * @link http://msdn.microsoft.com/library/cc296183.aspx
 	 *
 	 * @throws  Database_Exception
 	 * @param   integer $encoding   Encoding constant

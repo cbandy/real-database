@@ -11,7 +11,7 @@
  * @link http://dev.mysql.com/doc/en/sql-syntax-data-definition.html MySQL
  * @link http://www.postgresql.org/docs/current/static/sql-commands.html PostgreSQL
  * @link http://www.sqlite.org/lang.html SQLite
- * @link http://msdn.microsoft.com/en-us/library/cc879259.aspx Transact-SQL
+ * @link http://msdn.microsoft.com/library/cc879259.aspx Transact-SQL
  */
 class SQL_DDL_Drop extends SQL_Expression
 {

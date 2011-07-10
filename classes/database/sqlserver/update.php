@@ -11,7 +11,7 @@
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
- * @link http://msdn.microsoft.com/en-us/library/ms177523.aspx
+ * @link http://msdn.microsoft.com/library/ms177523.aspx
  */
 class Database_SQLServer_Update extends Database_Update
 {
