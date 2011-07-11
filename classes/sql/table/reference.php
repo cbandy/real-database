@@ -18,8 +18,8 @@ class SQL_Table_Reference extends SQL_Expression
 	protected $_empty = TRUE;
 
 	/**
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 */
 	public function __construct($table = NULL, $alias = NULL)
 	{
@@ -32,11 +32,11 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Add a table reference using a separator when necessary
+	 * Add a table reference using a separator when necessary.
 	 *
-	 * @param   string  $glue   Comma or JOIN
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   string                                      $glue   Comma or JOIN
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	protected function _add($glue, $table, $alias)
@@ -58,8 +58,14 @@ class SQL_Table_Reference extends SQL_Expression
 
 		if ($alias)
 		{
+			if ( ! $alias instanceof SQL_Expression
+				AND ! $alias instanceof SQL_Identifier)
+			{
+				$alias = new SQL_Identifier($alias);
+			}
+
 			$this->_value .= ' AS ?';
-			$this->parameters[] = new SQL_Identifier($alias);
+			$this->parameters[] = $alias;
 		}
 
 		return $this;
@@ -97,10 +103,10 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Add a table or query
+	 * Add a table or query.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function add($table, $alias = NULL)
@@ -109,11 +115,11 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Join a table or query
+	 * Join a table or query.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
-	 * @param   string  $type   Join type (e.g., INNER)
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
+	 * @param   string                                      $type   Join type (e.g., INNER)
 	 * @return  $this
 	 */
 	public function join($table, $alias = NULL, $type = NULL)
@@ -127,11 +133,12 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Set the join conditions
+	 * Set the join condition(s). When no operator is specified, the first
+	 * argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
-	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right_column   Right operand, converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $left_column    Left operand, converted to SQL_Column
+	 * @param   string                                      $operator       Comparison operator
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $right_column   Right operand, converted to SQL_Column
 	 * @return  $this
 	 */
 	public function on($left_column, $operator = NULL, $right_column = NULL)
@@ -187,10 +194,10 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Cross join a table or query
+	 * Cross join a table or query.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function cross_join($table, $alias = NULL)
@@ -199,12 +206,12 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Full join a table or query
+	 * Full join a table or query.
 	 *
 	 * [!!] Not supported by MySQL or SQLite
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function full_join($table, $alias = NULL)
@@ -213,10 +220,10 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Inner join a table or query
+	 * Inner join a table or query.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function inner_join($table, $alias = NULL)
@@ -225,10 +232,10 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Left join a table or query
+	 * Left join a table or query.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function left_join($table, $alias = NULL)
@@ -237,12 +244,12 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Naturally full join a table or query
+	 * Naturally full join a table or query.
 	 *
 	 * [!!] Not supported by MySQL, SQLite or SQL Server
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function natural_full_join($table, $alias = NULL)
@@ -251,12 +258,12 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Naturally inner join a table or query
+	 * Naturally inner join a table or query.
 	 *
 	 * [!!] Not supported by SQL Server
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function natural_join($table, $alias = NULL)
@@ -265,12 +272,12 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Naturally left join a table or query
+	 * Naturally left join a table or query.
 	 *
 	 * [!!] Not supported by SQL Server
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function natural_left_join($table, $alias = NULL)
@@ -279,12 +286,12 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Naturally right join a table or query
+	 * Naturally right join a table or query.
 	 *
 	 * [!!] Not supported by SQLite or SQL Server
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function natural_right_join($table, $alias = NULL)
@@ -293,12 +300,12 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Right join a table or query
+	 * Right join a table or query.
 	 *
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function right_join($table, $alias = NULL)
