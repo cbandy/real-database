@@ -151,8 +151,7 @@ class SQL_DML_Update extends SQL_Expression
 	/**
 	 * Set the table(s) referenced in the search conditions.
 	 *
-	 * [!!] Not supported by MySQL
-	 * [!!] Not supported by SQLite
+	 * [!!] Not supported by MySQL or SQLite
 	 *
 	 * @param   mixed   $reference      SQL_Table_Reference or converted to SQL_Table
 	 * @param   string  $table_alias    Table alias when converting to SQL_Table
