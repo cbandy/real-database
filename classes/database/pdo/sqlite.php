@@ -84,12 +84,12 @@ class Database_PDO_SQLite extends Database_PDO
 	 *  Configuration Option  | Type    | Description
 	 *  --------------------  | ----    | -----------
 	 *  charset               | string  | Character set
-	 *  pragmas               | array   | [PRAGMA][] settings as "key => value" pairs
 	 *  profiling             | boolean | Enable execution profiling
 	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
 	 *  connection.options    | array   | PDO options
 	 *  connection.persistent | boolean | Use the PHP connection pool
+	 *  connection.pragmas    | array   | [PRAGMA][] settings as "key => value" pairs
 	 *  connection.uri        | string  | URI to a file containing the DSN
 	 *
 	 * *[DSN]: Data Source Name
@@ -118,12 +118,17 @@ class Database_PDO_SQLite extends Database_PDO
 	{
 		parent::connect();
 
-		if ( ! empty($this->_config['pragmas']))
+		if ( ! empty($this->_config['connection']['pragmas']))
 		{
-			foreach ($this->_config['pragmas'] as $pragma => $value)
+			$pragmas = $this->_config['connection']['pragmas'];
+
+			foreach ($pragmas as $pragma => $value)
 			{
-				$this->execute_command('PRAGMA '.$pragma.' = '.$this->quote_literal($value));
+				$pragmas[$pragma] =
+					'PRAGMA '.$pragma.' = '.$this->quote_literal($value);
 			}
+
+			$this->execute_command(implode('; ', $pragmas));
 		}
 
 		// Initialize the savepoint stack
