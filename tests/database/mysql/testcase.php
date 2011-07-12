@@ -48,13 +48,15 @@ abstract class Database_MySQL_TestCase extends PHPUnit_Extensions_Database_TestC
 			$result['dsn'] .= ';charset='.$array['charset'];
 		}
 
-		if ( ! empty($array['variables']))
+		if ( ! empty($array['connection']['variables']))
 		{
-			foreach ($array['variables'] as $variable => $value)
+			foreach ($array['connection']['variables'] as $variable => $value)
 			{
-				$result['options'][PDO::MYSQL_ATTR_INIT_COMMAND] .=
-					"SET SESSION $variable = $value";
+				$variables[] = "SESSION $variable = $value";
 			}
+
+			$result['options'][PDO::MYSQL_ATTR_INIT_COMMAND]
+				= 'SET '.implode(', ', $variables);
 		}
 
 		return $result;

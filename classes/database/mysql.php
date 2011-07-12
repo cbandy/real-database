@@ -172,7 +172,6 @@ class Database_MySQL extends Database
 	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
 	 *  table_prefix          | string  | Table prefix
-	 *  variables             | array   | [System variables][] as "key => value" pairs
 	 *  connection.database   | string  |
 	 *  connection.flags      | integer | Combination of [client constants][], e.g. MYSQL_CLIENT_SSL
 	 *  connection.hostname   | string  | Server address or path to a local socket. Use `'127.0.0.1'` to [connect locally using TCP/IP][loopback]
@@ -180,6 +179,7 @@ class Database_MySQL extends Database
 	 *  connection.persistent | boolean | Use the PHP connection pool
 	 *  connection.port       | integer | Server port
 	 *  connection.username   | string  |
+	 *  connection.variables  | array   | [System variables][] as "key => value" pairs
 	 *
 	 * [Client constants]: http://php.net/manual/mysql.constants
 	 * [Loopback]:         http://dev.mysql.com/doc/en/can-not-connect-to-server.html
@@ -400,14 +400,15 @@ class Database_MySQL extends Database
 			$this->charset($this->_config['charset']);
 		}
 
-		if ( ! empty($this->_config['variables']))
+		if ( ! empty($variables))
 		{
-			foreach ($this->_config['variables'] as $variable => $value)
+			foreach ($variables as $variable => $value)
 			{
-				$this->_execute(
-					'SET SESSION '.$variable.' = '.$this->quote_literal($value)
-				);
+				$variables[$variable] =
+					'SESSION '.$variable.' = '.$this->quote_literal($value);
 			}
+
+			$this->_execute('SET '.implode(', ', $variables));
 		}
 
 		// Initialize the savepoint stack
