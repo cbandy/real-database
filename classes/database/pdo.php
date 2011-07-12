@@ -210,7 +210,7 @@ class Database_PDO extends Database
 	}
 
 	/**
-	 * Quote a literal value while escaping characters that could cause a SQL
+	 * Quote a literal value while escaping characters that could cause an SQL
 	 * injection attack.
 	 *
 	 * Not all drivers support this method.

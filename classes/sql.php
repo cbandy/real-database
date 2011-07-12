@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Interface for a SQL implementation and factory for SQL expressions and
+ * Interface for an SQL implementation and factory for SQL expressions and
  * identifiers.
  *
  * @package     RealDatabase
@@ -348,7 +348,7 @@ class SQL
 	}
 
 	/**
-	 * Return information about a SQL data type.
+	 * Return information about an SQL data type.
 	 *
 	 * @param   string  $type       SQL data type
 	 * @param   string  $attribute  Attribute to return
@@ -425,7 +425,7 @@ class SQL
 	}
 
 	/**
-	 * Quote a value for inclusion in a SQL statement. Dispatches to other
+	 * Quote a value for inclusion in an SQL statement. Dispatches to other
 	 * quote_* methods.
 	 *
 	 * @uses SQL::quote_column()
@@ -465,7 +465,7 @@ class SQL
 	}
 
 	/**
-	 * Quote a column identifier for inclusion in a SQL statement. Adds the
+	 * Quote a column identifier for inclusion in an SQL statement. Adds the
 	 * table prefix unless the namespace is an instance of [SQL_Identifier].
 	 *
 	 * @uses SQL::quote_identifier()
@@ -519,7 +519,7 @@ class SQL
 	}
 
 	/**
-	 * Quote an expression's parameters for inclusion in a SQL statement.
+	 * Quote an expression's parameters for inclusion in an SQL statement.
 	 *
 	 * @param   SQL_Expression  $value  Expression to quote
 	 * @return  string  SQL fragment
@@ -572,7 +572,7 @@ class SQL
 	}
 
 	/**
-	 * Quote an identifier for inclusion in a SQL statement.
+	 * Quote an identifier for inclusion in an SQL statement.
 	 *
 	 * @param   array|string|SQL_Identifier $value  Identifier to quote
 	 * @return  string  SQL fragment
@@ -620,7 +620,7 @@ class SQL
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL statement.
+	 * Quote a literal value for inclusion in an SQL statement.
 	 *
 	 * @param   mixed   $value  Literal value to quote
 	 * @return  string  SQL fragment
@@ -660,8 +660,8 @@ class SQL
 	}
 
 	/**
-	 * Quote a table identifier for inclusion in a SQL query. Adds the table
-	 * prefix.
+	 * Quote a table identifier for inclusion in an SQL statement. Adds the
+	 * table prefix.
 	 *
 	 * @uses SQL::quote_identifier()
 	 *

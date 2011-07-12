@@ -598,8 +598,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Recursively convert an array to a SQL fragment with parameters consisting
-	 * only of unquoted literals.
+	 * Recursively convert an array to an SQL fragment with parameters
+	 * consisting only of unquoted literals.
 	 *
 	 * @param   array   $array              Unquoted parameters
 	 * @param   array   $result_parameters  Parameters for the resulting fragment
@@ -949,7 +949,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Quote a literal value while escaping characters that could cause a SQL
+	 * Quote a literal value while escaping characters that could cause an SQL
 	 * injection attack.
 	 *
 	 * @link http://archives.postgresql.org/pgsql-php/2007-02/msg00014.php
@@ -1021,7 +1021,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Execute a SQL statement, returning the value of a column from the first
+	 * Execute an SQL statement, returning the value of a column from the first
 	 * row.
 	 *
 	 * @throws  Database_Exception
@@ -1268,7 +1268,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query.
+	 * Quote a literal value for inclusion in an SQL statement.
 	 *
 	 * @uses Database_PostgreSQL::escape_literal()
 	 *

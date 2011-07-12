@@ -643,7 +643,7 @@ class Database_MySQL extends Database
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query.
+	 * Quote a literal value for inclusion in an SQL statement.
 	 *
 	 * @uses Database_MySQL::escape_literal()
 	 *

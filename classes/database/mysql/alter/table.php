@@ -16,7 +16,7 @@
 class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 {
 	/**
-	 * Append a FIRST or AFTER clause to a SQL_Expression.
+	 * Append a FIRST or AFTER clause to an SQL_Expression.
 	 *
 	 * @param   SQL_Expression  $expression
 	 * @param   boolean|mixed   $after      TRUE for FIRST or Converted to SQL_Column

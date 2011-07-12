@@ -147,7 +147,7 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Create or redefine a SQL aggregate function.
+	 * Create or redefine an SQL aggregate function.
 	 *
 	 * @link http://php.net/manual/function.pdo-sqlitecreateaggregate
 	 *
@@ -168,7 +168,7 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Create or redefine a SQL function.
+	 * Create or redefine an SQL function.
 	 *
 	 * @link http://php.net/manual/function.pdo-sqlitecreatefunction
 	 *
@@ -188,7 +188,7 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Return information about a SQLite data type
+	 * Return information about an SQLite data type.
 	 *
 	 * @link http://www.sqlite.org/datatype3.html
 	 *
@@ -245,7 +245,7 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Quote a literal value for inclusion in a SQL query.
+	 * Quote a literal value for inclusion in an SQL statement.
 	 *
 	 * @uses Database_PDO::escape_literal()
 	 *

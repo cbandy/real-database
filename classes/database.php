@@ -268,8 +268,8 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Recursively expand a parameter value to a SQL fragment consisting only of
-	 * positional placeholders.
+	 * Recursively expand a parameter value to an SQL fragment consisting only
+	 * of positional placeholders.
 	 *
 	 * @param   array           $array              Unquoted parameters
 	 * @param   integer|string  $key                Index of the parameter value to parse
@@ -354,7 +354,7 @@ abstract class Database extends SQL
 	abstract public function disconnect();
 
 	/**
-	 * Execute a SQL statement by dispatching to other execute_* methods.
+	 * Execute an SQL statement by dispatching to other execute_* methods.
 	 *
 	 * Returns a result set when the statement is [Database_iQuery] or is
 	 * [Database_iReturning] and has returning set. Returns an array when the
@@ -391,7 +391,7 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Execute a SQL statement, returning the number of rows affected.
+	 * Execute an SQL statement, returning the number of rows affected.
 	 *
 	 * Do not use this method to count the rows returned by a query (e.g., a
 	 * SELECT statement). Always use execute_query() for statements that return
@@ -404,7 +404,7 @@ abstract class Database extends SQL
 	abstract public function execute_command($statement);
 
 	/**
-	 * Execute a SQL statement, returning the value of an IDENTITY column.
+	 * Execute an SQL statement, returning the value of an IDENTITY column.
 	 *
 	 * Behavior varies between database implementations. Reliable only when
 	 * inserting one row.
@@ -417,7 +417,7 @@ abstract class Database extends SQL
 	abstract public function execute_insert($statement, $identity);
 
 	/**
-	 * Execute a SQL statement, returning the result set or NULL when the
+	 * Execute an SQL statement, returning the result set or NULL when the
 	 * statement is not a query (e.g., a DELETE statement).
 	 *
 	 * @throws  Database_Exception

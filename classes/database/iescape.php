@@ -11,7 +11,7 @@
 interface Database_iEscape
 {
 	/**
-	 * Quote a literal value while escaping characters that could cause a SQL
+	 * Quote a literal value while escaping characters that could cause an SQL
 	 * injection attack.
 	 *
 	 * @param   mixed   $value  Literal value to quote
