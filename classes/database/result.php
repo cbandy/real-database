@@ -23,7 +23,7 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
 abstract class Database_Result
-	implements ArrayAccess, Countable, Iterator, SeekableIterator
+	implements ArrayAccess, Countable, SeekableIterator
 {
 	/**
 	 * @var string|boolean  Row object class or FALSE for associative array

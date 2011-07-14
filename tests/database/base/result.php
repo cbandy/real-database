@@ -7,6 +7,17 @@
  */
 class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 {
+	public function test_interfaces()
+	{
+		$class = new ReflectionClass('Database_Result');
+
+		$this->assertTrue($class->implementsInterface('ArrayAccess'));
+		$this->assertTrue($class->implementsInterface('Countable'));
+		$this->assertTrue($class->implementsInterface('Iterator'));
+		$this->assertTrue($class->implementsInterface('SeekableIterator'));
+		$this->assertTrue($class->implementsInterface('Traversable'));
+	}
+
 	public function provider_count()
 	{
 		return array
