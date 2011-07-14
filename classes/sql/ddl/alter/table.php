@@ -18,7 +18,7 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	/**
 	 * @uses SQL_DDL_Alter_Table::name()
 	 *
-	 * @param   mixed   $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 */
 	public function __construct($name = NULL)
 	{
@@ -38,7 +38,9 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	 */
 	public function add_column($column)
 	{
-		$this->parameters[':actions'][] = new SQL_Expression('ADD ?', array($column));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			'ADD ?', array($column)
+		);
 
 		return $this;
 	}
@@ -53,7 +55,9 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	 */
 	public function add_constraint($constraint)
 	{
-		$this->parameters[':actions'][] = new SQL_Expression('ADD ?', array($constraint));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			'ADD ?', array($constraint)
+		);
 
 		return $this;
 	}
@@ -63,7 +67,7 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	 *
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function drop_column($name)
@@ -74,7 +78,9 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new SQL_Expression('DROP COLUMN ?', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			'DROP COLUMN ?', array($name)
+		);
 
 		return $this;
 	}
@@ -84,8 +90,8 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	 *
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   string  $type   CHECK, FOREIGN, PRIMARY or UNIQUE
-	 * @param   mixed   $name   Converted to SQL_Identifier
+	 * @param   string                                      $type   CHECK, FOREIGN, PRIMARY or UNIQUE
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function drop_constraint($type, $name)
@@ -96,7 +102,9 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 			$name = new SQL_Identifier($name);
 		}
 
-		$this->parameters[':actions'][] = new SQL_Expression('DROP CONSTRAINT ?', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			'DROP CONSTRAINT ?', array($name)
+		);
 
 		return $this;
 	}
@@ -106,7 +114,7 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	 *
 	 * [!!] Not supported by SQLite or SQL Server
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function drop_default($name)
@@ -117,7 +125,9 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new SQL_Expression('ALTER ? DROP DEFAULT', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			'ALTER ? DROP DEFAULT', array($name)
+		);
 
 		return $this;
 	}
@@ -125,7 +135,7 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	/**
 	 * Set the name of the table to be altered.
 	 *
-	 * @param   mixed   $value  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $value  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function name($value)
@@ -146,7 +156,7 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	 *
 	 * [!!] Not supported by SQL Server
 	 *
-	 * @param   mixed   $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function rename($name)
@@ -157,7 +167,9 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 			$name = new SQL_Table($name);
 		}
 
-		$this->parameters[':actions'] = array(new SQL_Expression('RENAME TO ?', array($name)));
+		$this->parameters[':actions'] = array(
+			new SQL_Expression('RENAME TO ?', array($name))
+		);
 
 		return $this;
 	}
@@ -167,8 +179,8 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	 *
 	 * [!!] Not supported by SQLite or SQL Server
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
-	 * @param   mixed   $value
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
+	 * @param   mixed                                       $value
 	 * @return  $this
 	 */
 	public function set_default($name, $value)
@@ -179,7 +191,9 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new SQL_Expression('ALTER ? SET DEFAULT ?', array($name, $value));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			'ALTER ? SET DEFAULT ?', array($name, $value)
+		);
 
 		return $this;
 	}

@@ -24,8 +24,8 @@ class SQL_DDL_Column extends SQL_Expression
 	 * @uses SQL_DDL_Column::name()
 	 * @uses SQL_DDL_Column::type()
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
-	 * @param   mixed   $type   Converted to SQL_Expression
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
+	 * @param   mixed                                       $type   Converted to SQL_Expression
 	 */
 	public function __construct($name = NULL, $type = NULL)
 	{
@@ -65,9 +65,9 @@ class SQL_DDL_Column extends SQL_Expression
 	}
 
 	/**
-	 * Set the name of the column
+	 * Set the name of the column.
 	 *
-	 * @param   mixed   $value  Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $value  Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function name($value)

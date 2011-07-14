@@ -24,9 +24,9 @@ abstract class SQL_DDL_Constraint extends SQL_Expression
 	}
 
 	/**
-	 * Set the name of the constraint
+	 * Set the name of the constraint.
 	 *
-	 * @param   mixed   $value  Converted to SQL_Identifier
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $value  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function name($value)

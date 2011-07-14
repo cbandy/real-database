@@ -34,8 +34,8 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	 * @uses SQL_DDL_Constraint_Foreign::table()
 	 * @uses SQL_DDL_Constraint_Foreign::columns()
 	 *
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 */
 	public function __construct($table = NULL, $columns = NULL)
 	{
@@ -103,7 +103,7 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	/**
 	 * Append multiple referenced columns.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns, each converted to SQL_Column, or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)
@@ -172,7 +172,7 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	/**
 	 * Append multiple referencing columns.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns, each converted to SQL_Column, or NULL to reset
 	 * @return  $this
 	 */
 	public function referencing($columns)
@@ -199,9 +199,9 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	}
 
 	/**
-	 * Set the referenced table
+	 * Set the referenced table.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function table($table)
