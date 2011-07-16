@@ -29,9 +29,9 @@ class SQL_DDL_Drop extends SQL_Expression
 	 * @uses SQL_DDL_Drop::name()
 	 * @uses SQL_DDL_Drop::cascade()
 	 *
-	 * @param   string  $type       INDEX, SCHEMA, VIEW, etc.
-	 * @param   mixed   $name       Converted to SQL_Identifier
-	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
+	 * @param   string                                      $type       INDEX, SCHEMA, VIEW, etc.
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
+	 * @param   boolean                                     $cascade    Whether or not dependent objects should be dropped
 	 */
 	public function __construct($type, $name = NULL, $cascade = NULL)
 	{
@@ -65,7 +65,7 @@ class SQL_DDL_Drop extends SQL_Expression
 	}
 
 	/**
-	 * Set whether or not dependent objects should be dropped
+	 * Set whether or not dependent objects should be dropped.
 	 *
 	 * [!!] Not supported by MySQL, SQLite or SQL Server
 	 *
@@ -81,7 +81,7 @@ class SQL_DDL_Drop extends SQL_Expression
 
 	/**
 	 * Set whether or not an error should be suppressed if the object does not
-	 * exist
+	 * exist.
 	 *
 	 * @param   boolean $value
 	 * @return  $this
@@ -95,6 +95,8 @@ class SQL_DDL_Drop extends SQL_Expression
 
 	/**
 	 * Append the name of an object to be dropped.
+	 *
+	 * [!!] SQLite allows only one object per statement
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Identifier or NULL to reset
 	 * @return  $this
@@ -122,7 +124,9 @@ class SQL_DDL_Drop extends SQL_Expression
 	/**
 	 * Append the names of multiple objects to be dropped.
 	 *
-	 * @param   array   $names  List of names converted to SQL_Identifier or NULL to reset
+	 * [!!] SQLite allows only one object per statement
+	 *
+	 * @param   array   $names  List of names, each converted to SQL_Identifier, or NULL to reset
 	 * @return  $this
 	 */
 	public function names($names)
@@ -133,7 +137,6 @@ class SQL_DDL_Drop extends SQL_Expression
 		}
 		else
 		{
-			// SQLite allows only one
 			foreach ($names as $name)
 			{
 				if ( ! $name instanceof SQL_Expression

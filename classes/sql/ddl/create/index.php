@@ -20,9 +20,9 @@ class SQL_DDL_Create_Index extends SQL_Expression
 	 * @uses SQL_DDL_Create_Index::name()
 	 * @uses SQL_DDL_Create_Index::on()
 	 *
-	 * @param   mixed                   $name       Converted to SQL_Identifier
-	 * @param   mixed                   $table      Converted to SQL_Table
-	 * @param   array|SQL_Expression    $columns    List of columns converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Identifier
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array $columns                                      List of columns, each converted to SQL_Column
 	 */
 	public function __construct($name = NULL, $table = NULL, $columns = NULL)
 	{
@@ -61,9 +61,9 @@ class SQL_DDL_Create_Index extends SQL_Expression
 	}
 
 	/**
-	 * Set the name of the index to be created
+	 * Set the name of the index to be created.
 	 *
-	 * @param   mixed   $value  Converted to SQL_Identifier
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $value  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function name($value)
@@ -80,9 +80,9 @@ class SQL_DDL_Create_Index extends SQL_Expression
 	}
 
 	/**
-	 * Set the table to be indexed
+	 * Set the table to be indexed.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function on($table)
@@ -136,7 +136,7 @@ class SQL_DDL_Create_Index extends SQL_Expression
 	/**
 	 * Append columns and/or expressions to be included in the index.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns, each converted to SQL_Column, or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)

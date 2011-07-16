@@ -16,8 +16,8 @@
 class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 {
 	/**
-	 * @param   mixed   $name       Converted to SQL_Table
-	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Table
+	 * @param   boolean                                     $cascade    Whether or not dependent objects should be dropped
 	 */
 	public function __construct($name = NULL, $cascade = NULL)
 	{
@@ -26,6 +26,8 @@ class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 
 	/**
 	 * Append the name of a table to be dropped.
+	 *
+	 * [!!] SQLite allows only one table per statement
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table or NULL to reset
 	 * @return  $this
@@ -53,7 +55,9 @@ class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 	/**
 	 * Append the names of multiple tables to be dropped.
 	 *
-	 * @param   array   $tables List of names converted to SQL_Table or NULL to reset
+	 * [!!] SQLite allows only one table per statement
+	 *
+	 * @param   array   $tables List of names, each converted to SQL_Table, or NULL to reset
 	 * @return  $this
 	 */
 	public function names($tables)
@@ -64,7 +68,6 @@ class SQL_DDL_Drop_Table extends SQL_DDL_Drop
 		}
 		else
 		{
-			// SQLite allows only one
 			foreach ($tables as $table)
 			{
 				if ( ! $table instanceof SQL_Expression

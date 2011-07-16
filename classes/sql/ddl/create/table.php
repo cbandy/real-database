@@ -23,7 +23,7 @@ class SQL_DDL_Create_Table extends SQL_Expression
 	/**
 	 * @uses SQL_DDL_Create_Table::name()
 	 *
-	 * @param   mixed   $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 */
 	public function __construct($name = NULL)
 	{
@@ -71,9 +71,9 @@ class SQL_DDL_Create_Table extends SQL_Expression
 	}
 
 	/**
-	 * Append a column definition
+	 * Append a column definition.
 	 *
-	 * @param   SQL_DDL_Column  $column
+	 * @param   SQL_DDL_Column  $column NULL to reset
 	 * @return  $this
 	 */
 	public function column($column)
@@ -91,9 +91,9 @@ class SQL_DDL_Create_Table extends SQL_Expression
 	}
 
 	/**
-	 * Append a table constraint
+	 * Append a table constraint.
 	 *
-	 * @param   SQL_DDL_Constraint  $constraint
+	 * @param   SQL_DDL_Constraint  $constraint NULL to reset
 	 * @return  $this
 	 */
 	public function constraint($constraint)
@@ -111,9 +111,9 @@ class SQL_DDL_Create_Table extends SQL_Expression
 	}
 
 	/**
-	 * Set the name of the table
+	 * Set the name of the table.
 	 *
-	 * @param   mixed   $value  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $value  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function name($value)
@@ -130,7 +130,7 @@ class SQL_DDL_Create_Table extends SQL_Expression
 	}
 
 	/**
-	 * Set the query from which the table definition is inferred
+	 * Set the query from which the table definition is inferred.
 	 *
 	 * @param   SQL_Expression  $query
 	 * @return  $this
@@ -143,7 +143,7 @@ class SQL_DDL_Create_Table extends SQL_Expression
 	}
 
 	/**
-	 * Set whether or not the table should be dropped at the end of the session
+	 * Set whether or not the table should be dropped at the end of the session.
 	 *
 	 * @param   boolean $value
 	 * @return  $this

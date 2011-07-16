@@ -29,8 +29,8 @@ class SQL_DDL_Create_View extends SQL_Expression
 	 * @uses SQL_DDL_Create_View::name()
 	 * @uses SQL_DDL_Create_View::query()
 	 *
-	 * @param   mixed           $name   Converted to SQL_Table
-	 * @param   SQL_Expression  $query
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
+	 * @param   SQL_Expression                              $query
 	 */
 	public function __construct($name = NULL, $query = NULL)
 	{
@@ -100,7 +100,7 @@ class SQL_DDL_Create_View extends SQL_Expression
 	/**
 	 * Append multiple columns and/or expressions to be included in the view.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns, each converted to SQL_Column, or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)
@@ -127,9 +127,9 @@ class SQL_DDL_Create_View extends SQL_Expression
 	}
 
 	/**
-	 * Set the name of the view
+	 * Set the name of the view.
 	 *
-	 * @param   mixed   $value  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $value  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function name($value)
@@ -146,7 +146,7 @@ class SQL_DDL_Create_View extends SQL_Expression
 	}
 
 	/**
-	 * Set the query which will provide the columns and rows of the view
+	 * Set the query which will provide the columns and rows of the view.
 	 *
 	 * @param   SQL_Expression  $query
 	 * @return  $this
@@ -159,7 +159,7 @@ class SQL_DDL_Create_View extends SQL_Expression
 	}
 
 	/**
-	 * Set whether or not an existing view should be replaced
+	 * Set whether or not an existing view should be replaced.
 	 *
 	 * @param   boolean $value
 	 * @return  $this
@@ -172,7 +172,7 @@ class SQL_DDL_Create_View extends SQL_Expression
 	}
 
 	/**
-	 * Set whether or not the view should be dropped at the end of the session
+	 * Set whether or not the view should be dropped at the end of the session.
 	 *
 	 * @param   boolean $value
 	 * @return  $this
