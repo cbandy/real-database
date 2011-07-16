@@ -1,7 +1,8 @@
 <?php
 
 /**
- * ALTER TABLE statement for PostgreSQL. Allows the name and type of columns to be changed.
+ * ALTER TABLE statement for PostgreSQL. Allows the name and type of columns to
+ * be changed.
  *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
@@ -18,8 +19,8 @@ class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 	/**
 	 * Remove a column from the table, optionally removing dependent objects.
 	 *
-	 * @param   mixed   $name       Converted to SQL_Column
-	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Column
+	 * @param   boolean                                     $cascade    Whether or not dependent objects should be dropped
 	 * @return  $this
 	 */
 	public function drop_column($name, $cascade = NULL)
@@ -43,11 +44,12 @@ class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 	}
 
 	/**
-	 * Remove a constraint from the table, optionally removing dependent objects.
+	 * Remove a constraint from the table, optionally removing dependent
+	 * objects.
 	 *
-	 * @param   string  $type       Unused
-	 * @param   mixed   $name       Converted to SQL_Identifier
-	 * @param   boolean $cascade    Whether or not dependent objects should be dropped
+	 * @param   string                                      $type       Ignored
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Column
+	 * @param   boolean                                     $cascade    Whether or not dependent objects should be dropped
 	 * @return  $this
 	 */
 	public function drop_constraint($type, $name, $cascade = NULL)
@@ -55,7 +57,7 @@ class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 		if ( ! $name instanceof SQL_Expression
 			AND ! $name instanceof SQL_Identifier)
 		{
-			$name = new SQL_Identifier($name);
+			$name = new SQL_Column($name);
 		}
 
 		$result = new SQL_Expression('DROP CONSTRAINT ?', array($name));
@@ -71,10 +73,12 @@ class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 	}
 
 	/**
-	 * Rename a column. This cannot be combined with other actions.
+	 * Rename a column.
 	 *
-	 * @param   mixed   $old_name   Converted to SQL_Column
-	 * @param   mixed   $new_name   Converted to SQL_Column
+	 * [!!] This cannot be combined with other actions.
+	 *
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $old_name   Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $new_name   Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function rename_column($old_name, $new_name)
@@ -91,7 +95,9 @@ class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 			$new_name = new SQL_Column($new_name);
 		}
 
-		$this->parameters[':actions'] = new SQL_Expression('RENAME ? TO ?', array($old_name, $new_name));
+		$this->parameters[':actions'] = new SQL_Expression(
+			'RENAME ? TO ?', array($old_name, $new_name)
+		);
 
 		return $this;
 	}
@@ -99,8 +105,8 @@ class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 	/**
 	 * Add or remove the NOT NULL constraint on a column.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
-	 * @param   boolean $value  TRUE to add or FALSE to remove
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
+	 * @param   boolean                                     $value  TRUE to add or FALSE to remove
 	 * @return  $this
 	 */
 	public function set_not_null($name, $value = TRUE)
@@ -111,17 +117,20 @@ class Database_PostgreSQL_Alter_Table extends SQL_DDL_Alter_Table
 			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = new SQL_Expression(($value ? 'SET' : 'DROP').' NOT NULL ?', array($name));
+		$this->parameters[':actions'][] = new SQL_Expression(
+			($value ? 'SET' : 'DROP').' NOT NULL ?', array($name)
+		);
 
 		return $this;
 	}
 
 	/**
-	 * Change the type of a column, optionally using an expression to facilitate the conversion.
+	 * Change the type of a column, optionally using an expression to facilitate
+	 * the conversion.
 	 *
-	 * @param   mixed   $column Converted to SQL_Column
-	 * @param   mixed   $type   Converted to SQL_Expression
-	 * @param   mixed   $using  Converted to SQL_Expression
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column Converted to SQL_Column
+	 * @param   mixed                                       $type   Converted to SQL_Expression
+	 * @param   mixed                                       $using  Converted to SQL_Expression
 	 * @return  $this
 	 */
 	public function type($name, $type, $using = NULL)

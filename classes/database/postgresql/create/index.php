@@ -107,9 +107,9 @@ class Database_PostgreSQL_Create_Index extends SQL_DDL_Create_Index
 	}
 
 	/**
-	 * Set the tablespace in which to create the index
+	 * Set the tablespace in which to create the index.
 	 *
-	 * @param   mixed   Converted to SQL_Identifier
+	 * @param   array|string|SQL_Expression|SQL_Identifier  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function tablespace($value)
