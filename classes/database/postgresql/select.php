@@ -74,7 +74,7 @@ class Database_PostgreSQL_Select extends Database_Select
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/sql-select.html#SQL-DISTINCT
 	 *
-	 * @param   array|boolean   $columns    List of columns converted to SQL_Column, TRUE for the entire row or NULL or FALSE to reset
+	 * @param   array|boolean   $columns    List of columns, each converted to SQL_Column; TRUE for the entire row or NULL or FALSE to reset
 	 * @return  $this
 	 */
 	public function distinct($columns = TRUE)

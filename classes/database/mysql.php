@@ -42,7 +42,7 @@ class Database_MySQL extends Database
 	/**
 	 * Create an ALTER TABLE statement.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 * @return  Database_MySQL_Alter_Table
 	 */
 	public static function alter_table($name = NULL)
@@ -53,9 +53,9 @@ class Database_MySQL extends Database
 	/**
 	 * Create a CREATE INDEX statement.
 	 *
-	 * @param   mixed                   $name       Converted to SQL_Identifier
-	 * @param   mixed                   $table      Converted to SQL_Table
-	 * @param   array|SQL_Expression    $columns    List of columns converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  Database_MySQL_Create_Index
 	 */
 	public static function create_index($name = NULL, $table = NULL, $columns = NULL)
@@ -66,7 +66,7 @@ class Database_MySQL extends Database
 	/**
 	 * Create a CREATE TABLE statement.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 * @return  Database_MySQL_Create_Table
 	 */
 	public static function create_table($name = NULL)
@@ -77,8 +77,8 @@ class Database_MySQL extends Database
 	/**
 	 * Create a CREATE VIEW statement.
 	 *
-	 * @param   mixed           $name   Converted to SQL_Table
-	 * @param   SQL_Expression  $query
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
+	 * @param   SQL_Expression                              $query
 	 * @return  Database_MySQL_Create_View
 	 */
 	public static function create_view($name = NULL, $query = NULL)
@@ -87,10 +87,10 @@ class Database_MySQL extends Database
 	}
 
 	/**
-	 * Create a column expression
+	 * Create a column expression.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
-	 * @param   mixed   $type   Converted to SQL_Expression
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
+	 * @param   mixed                                       $type   Converted to SQL_Expression
 	 * @return  Database_MySQL_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -135,9 +135,9 @@ class Database_MySQL extends Database
 	}
 
 	/**
-	 * Create a SELECT query.
+	 * Create a SELECT statement.
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs
 	 * @return  Database_MySQL_Select
 	 */
 	public static function select($columns = NULL)
@@ -545,8 +545,8 @@ class Database_MySQL extends Database
 	 * the AUTO_INCREMENT of the first row.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|SQL_Expression   $statement  SQL insert
-	 * @param   mixed                   $identity   Ignored
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL insert
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $identity   Ignored
 	 * @return  array   List including number of affected rows and the AUTO_INCREMENT of the first row
 	 */
 	public function execute_insert($statement, $identity)

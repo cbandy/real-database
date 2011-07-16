@@ -21,7 +21,7 @@ class Database_PDO_SQLite extends Database_PDO
 	/**
 	 * Create a CREATE TABLE statement.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 * @return  Database_SQLite_Create_Table
 	 */
 	public static function create_table($name = NULL)
@@ -30,10 +30,10 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Create a column expression
+	 * Create a column expression.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
-	 * @param   mixed   $type   Converted to SQL_Expression
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
+	 * @param   mixed                                       $type   Converted to SQL_Expression
 	 * @return  Database_SQLite_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -56,10 +56,10 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Create an INSERT command
+	 * Create an INSERT statement.
 	 *
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  Database_SQLite_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -79,9 +79,9 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
-	 * Create a SELECT query.
+	 * Create a SELECT statement.
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs
 	 * @return  Database_SQLite_Select
 	 */
 	public static function select($columns = NULL)

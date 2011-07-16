@@ -43,9 +43,9 @@ abstract class Database extends SQL
 	/**
 	 * Create a timestamp literal value.
 	 *
-	 * @param   integer|string  $time       Unix timestamp or time in a format accepted by strtotime()
-	 * @param   mixed           $timezone   Fallback timezone, converted to DateTimeZone
-	 * @param   string          $format     Format accepted by date(), defaults to Database_DateTime::SQL
+	 * @param   integer|string      $time       Unix timestamp or time in a format accepted by strtotime()
+	 * @param   string|DateTimeZone $timezone   Fallback timezone, converted to DateTimeZone
+	 * @param   string              $format     Format accepted by date()
 	 * @return  Database_DateTime
 	 */
 	public static function datetime($time = 'now', $timezone = NULL, $format = Database_DateTime::SQL)
@@ -54,10 +54,10 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Create a DELETE command
+	 * Create a DELETE statement.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  Database_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
@@ -94,10 +94,10 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Create an INSERT command
+	 * Create an INSERT statement.
 	 *
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  Database_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -126,7 +126,7 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Create a query
+	 * Create a query.
 	 *
 	 * @param   string  $statement  SQL query
 	 * @param   array   $parameters Unquoted parameters
@@ -138,7 +138,7 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Create a query set
+	 * Create a query set.
 	 *
 	 * @param   SQL_Expression  $query
 	 * @return  Database_Query_Set
@@ -149,9 +149,9 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Create a SELECT query
+	 * Create a SELECT statement.
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs
 	 * @return  Database_Select
 	 */
 	public static function select($columns = NULL)
@@ -160,11 +160,11 @@ abstract class Database extends SQL
 	}
 
 	/**
-	 * Create an UPDATE command
+	 * Create an UPDATE statement.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
-	 * @param   array   $values Hash of (column => value) assignments
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
+	 * @param   array                                       $values Hash of (column => value) assignments
 	 * @return  Database_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
@@ -411,7 +411,7 @@ abstract class Database extends SQL
 	 *
 	 * @throws  Database_Exception
 	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL insert
-	 * @param   mixed                                       $identity   Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $identity   Converted to SQL_Column
 	 * @return  array   List including number of affected rows and an identity value
 	 */
 	abstract public function execute_insert($statement, $identity);

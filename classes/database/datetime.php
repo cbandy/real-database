@@ -25,7 +25,7 @@ class Database_DateTime extends DateTime
 	/**
 	 * @param   integer|string      $time       Unix timestamp or time in a format accepted by strtotime()
 	 * @param   string|DateTimeZone $timezone   Fallback timezone, converted to DateTimeZone
-	 * @param   string              $format     Format accepted by date(), defaults to Database_DateTime::SQL
+	 * @param   string              $format     Format accepted by date()
 	 */
 	public function __construct($time = 'now', $timezone = NULL, $format = Database_DateTime::SQL)
 	{

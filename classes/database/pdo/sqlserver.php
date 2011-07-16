@@ -30,8 +30,8 @@ class Database_PDO_SQLServer extends Database_PDO
 	/**
 	 * Create a column expression.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
-	 * @param   mixed   $type   Converted to SQL_Expression
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
+	 * @param   mixed                                       $type   Converted to SQL_Expression
 	 * @return  Database_SQLServer_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -42,8 +42,8 @@ class Database_PDO_SQLServer extends Database_PDO
 	/**
 	 * Create a DELETE statement.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  Database_SQLServer_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
@@ -54,8 +54,8 @@ class Database_PDO_SQLServer extends Database_PDO
 	/**
 	 * Create an INSERT statement.
 	 *
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  Database_SQLServer_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -66,7 +66,7 @@ class Database_PDO_SQLServer extends Database_PDO
 	/**
 	 * Create a SELECT statement.
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs
 	 * @return  Database_SQLServer_Select
 	 */
 	public static function select($columns = NULL)
@@ -77,9 +77,9 @@ class Database_PDO_SQLServer extends Database_PDO
 	/**
 	 * Create an UPDATE statement.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
-	 * @param   array   $values Hash of (column => value) assignments
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
+	 * @param   array                                       $values Hash of (column => value) assignments
 	 * @return  Database_SQLServer_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
@@ -171,8 +171,8 @@ class Database_PDO_SQLServer extends Database_PDO
 			else
 			{
 				// Remove this savepoint and all savepoints after it from the
-				// uncommitted stack. TODO: a NULL result means the savepoint is
-				// invalid
+				// uncommitted stack.
+				// TODO: a NULL result means the savepoint is invalid
 				if ( ! $this->_savepoints->commit_to($name));
 			}
 		}

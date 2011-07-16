@@ -45,7 +45,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	/**
 	 * Create an ALTER TABLE statement.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 * @return  Database_PostgreSQL_Alter_Table
 	 */
 	public static function alter_table($name = NULL)
@@ -56,9 +56,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	/**
 	 * Create a CREATE INDEX statement.
 	 *
-	 * @param   mixed                   $name       Converted to SQL_Identifier
-	 * @param   mixed                   $table      Converted to SQL_Table
-	 * @param   array|SQL_Expression    $columns    List of columns converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  Database_PostgreSQL_Create_Index
 	 */
 	public static function create_index($name = NULL, $table = NULL, $columns = NULL)
@@ -67,10 +67,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Create a column expression
+	 * Create a column expression.
 	 *
-	 * @param   mixed   $name   Converted to SQL_Column
-	 * @param   mixed   $type   Converted to SQL_Expression
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
+	 * @param   mixed                                       $type   Converted to SQL_Expression
 	 * @return  Database_PostgreSQL_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -79,10 +79,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Create a DELETE command
+	 * Create a DELETE statement.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  Database_PostgreSQL_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
@@ -105,10 +105,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Create an INSERT command
+	 * Create an INSERT statement.
 	 *
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  Database_PostgreSQL_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -117,9 +117,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Create a SELECT query
+	 * Create a SELECT statement.
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs
 	 * @return  Database_PostgreSQL_Select
 	 */
 	public static function select($columns = NULL)
@@ -128,11 +128,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Create an UPDATE command
+	 * Create an UPDATE statement.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
-	 * @param   array   $values Hash of (column => value) assignments
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
+	 * @param   array                                       $values Hash of (column => value) assignments
 	 * @return  Database_PostgreSQL_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
@@ -752,10 +752,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * Insert records into a table from an array of strings describing each row
 	 *
 	 * @throws  Database_Exception
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $rows       Each element is a delimited string
-	 * @param   string  $delimiter  Column delimiter
-	 * @param   string  $null       NULL representation
+	 * @param   array|string|SQL_Identifier $table      Converted to SQL_Table
+	 * @param   array                       $rows       Each element is a delimited string
+	 * @param   string                      $delimiter  Column delimiter
+	 * @param   string                      $null       NULL representation
 	 * @return  void
 	 */
 	public function copy_from($table, $rows, $delimiter = "\t", $null = '\\N')
@@ -801,9 +801,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 *
 	 * @throws  Database_Exception
 	 * @throws  Kohana_Exception
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   string  $delimiter  Column delimiter
-	 * @param   string  $null       NULL representation
+	 * @param   array|string|SQL_Identifier $table      Converted to SQL_Table
+	 * @param   string                      $delimiter  Column delimiter
+	 * @param   string                      $null       NULL representation
 	 * @return  array   Rows from the table as delimited strings
 	 */
 	public function copy_to($table, $delimiter = "\t", $null = '\\N')
@@ -1025,10 +1025,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * row.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string|SQL_Expression   $statement  SQL insert
-	 * @param   mixed                   $identity   Converted to SQL_Column
-	 * @param   string|boolean          $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 * @param   array                   $arguments  Arguments to pass to the row class constructor
+	 * @param   string|Database_Statement|SQL_Expression    $statement  SQL insert
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $identity   Converted to SQL_Column
+	 * @param   string|boolean                              $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array                                       $arguments  Arguments to pass to the row class constructor
 	 * @return  array   List including number of affected rows and a value from the first row
 	 */
 	public function execute_insert($statement, $identity, $as_object = FALSE, $arguments = array())
@@ -1103,11 +1103,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * row.
 	 *
 	 * @throws  Database_Exception
-	 * @param   string          $name       Statement name
-	 * @param   mixed           $identity   Converted to SQL_Column
-	 * @param   array           $parameters Unquoted statement parameters
-	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
-	 * @param   array           $arguments  Arguments to pass to the row class constructor
+	 * @param   string                                      $name       Statement name
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $identity   Converted to SQL_Column
+	 * @param   array                                       $parameters Unquoted statement parameters
+	 * @param   string|boolean                              $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
+	 * @param   array                                       $arguments  Arguments to pass to the row class constructor
 	 * @return  array   List including number of affected rows and a value from the first row
 	 */
 	public function execute_prepared_insert($name, $identity, $parameters = array(), $as_object = FALSE, $arguments = array())
