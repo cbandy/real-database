@@ -18,7 +18,7 @@ class SQL_DDL_Constraint_Unique extends SQL_DDL_Constraint
 	/**
 	 * @uses SQL_DDL_Constraint_Unique::columns()
 	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns, each converted to SQL_Column
 	 */
 	public function __construct($columns = NULL)
 	{
@@ -42,7 +42,7 @@ class SQL_DDL_Constraint_Unique extends SQL_DDL_Constraint
 	/**
 	 * Append multiple columns that must contain unique values.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns, each converted to SQL_Column, or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)

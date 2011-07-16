@@ -23,6 +23,8 @@ class SQL_DML_Set extends SQL_Expression
 	protected $_empty = TRUE;
 
 	/**
+	 * @uses SQL_DML_Set::add()
+	 *
 	 * @param   SQL_Expression  $query
 	 */
 	public function __construct($query = NULL)

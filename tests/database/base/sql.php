@@ -400,9 +400,25 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array(array('index'), new SQL_DDL_Drop('index')),
 			array(array('index', 'a'), new SQL_DDL_Drop('index', 'a')),
+			array(
+				array('index', 'a', FALSE),
+				new SQL_DDL_Drop('index', 'a', FALSE),
+			),
+			array(
+				array('index', 'a', TRUE),
+				new SQL_DDL_Drop('index', 'a', TRUE),
+			),
 
 			array(array('table'), new SQL_DDL_Drop('table')),
 			array(array('table', 'a'), new SQL_DDL_Drop('table', 'a')),
+			array(
+				array('table', 'a', FALSE),
+				new SQL_DDL_Drop('table', 'a', FALSE),
+			),
+			array(
+				array('table', 'a', TRUE),
+				new SQL_DDL_Drop('table', 'a', TRUE),
+			),
 		);
 	}
 
@@ -426,6 +442,8 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array(array(), new SQL_DDL_Drop_Table),
 			array(array('a'), new SQL_DDL_Drop_Table('a')),
+			array(array('a', FALSE), new SQL_DDL_Drop_Table('a', FALSE)),
+			array(array('a', TRUE), new SQL_DDL_Drop_Table('a', TRUE)),
 		);
 	}
 

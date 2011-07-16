@@ -75,7 +75,7 @@ class SQL
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
-	 * @param   array                                       $columns    List of columns converted to SQL_Column
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  SQL_DDL_Create_Index
 	 */
 	public static function create_index($name = NULL, $table = NULL, $columns = NULL)
@@ -121,7 +121,7 @@ class SQL
 	 * Create a column expression.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
-	 * @param   string|SQL_Expression                       $type   Converted to SQL_Expression
+	 * @param   mixed                                       $type   Converted to SQL_Expression
 	 * @return  SQL_DDL_Column
 	 */
 	public static function ddl_column($name = NULL, $type = NULL)
@@ -133,7 +133,7 @@ class SQL
 	 * Create a FOREIGN KEY constraint.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
-	 * @param   array                                       $columns    List of columns converted to SQL_Column
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Foreign
 	 */
 	public static function ddl_foreign($table = NULL, $columns = NULL)
@@ -144,7 +144,7 @@ class SQL
 	/**
 	 * Create a PRIMARY KEY constraint.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column
+	 * @param   array   $columns    List of columns, each converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Primary
 	 */
 	public static function ddl_primary($columns = NULL)
@@ -155,7 +155,7 @@ class SQL
 	/**
 	 * Create a UNIQUE constraint.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column
+	 * @param   array   $columns    List of columns, each converted to SQL_Column
 	 * @return  SQL_DDL_Constraint_Unique
 	 */
 	public static function ddl_unique($columns = NULL)
@@ -167,7 +167,7 @@ class SQL
 	 * Create a DELETE statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
-	 * @param   string                                      $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  SQL_DML_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
@@ -178,24 +178,26 @@ class SQL
 	/**
 	 * Create a DROP statement.
 	 *
-	 * @param   string                                      $type   INDEX, SCHEMA, VIEW, etc.
-	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Identifier
+	 * @param   string                                      $type       INDEX, SCHEMA, VIEW, etc.
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
+	 * @param   boolean                                     $cascade    Whether or not dependent objects should be dropped
 	 * @return  SQL_DDL_Drop
 	 */
-	public static function drop($type, $name = NULL)
+	public static function drop($type, $name = NULL, $cascade = NULL)
 	{
-		return new SQL_DDL_Drop($type, $name);
+		return new SQL_DDL_Drop($type, $name, $cascade);
 	}
 
 	/**
 	 * Create a DROP TABLE statement.
 	 *
-	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Table
+	 * @param   boolean                                     $cascade    Whether or not dependent objects should be dropped
 	 * @return  SQL_DDL_Drop_Table
 	 */
-	public static function drop_table($name = NULL)
+	public static function drop_table($name = NULL, $cascade = NULL)
 	{
-		return new SQL_DDL_Drop_Table($name);
+		return new SQL_DDL_Drop_Table($name, $cascade);
 	}
 
 	/**
@@ -239,7 +241,7 @@ class SQL
 	 * Create an INSERT statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
-	 * @param   array                                       $columns    List of columns converted to SQL_Column
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 * @return  SQL_DML_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
@@ -262,7 +264,7 @@ class SQL
 	 * Create a table reference accumulator.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
-	 * @param   string                                      $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  SQL_Table_Reference
 	 */
 	public static function reference($table = NULL, $alias = NULL)
@@ -296,7 +298,7 @@ class SQL
 	 * Create an UPDATE statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
-	 * @param   string                                      $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @param   array                                       $values Hash of (column => value) assignments
 	 * @return  SQL_DML_Update
 	 */
