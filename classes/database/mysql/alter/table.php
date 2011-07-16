@@ -1,7 +1,8 @@
 <?php
 
 /**
- * ALTER TABLE statement for MySQL. Allows the name, type and position of columns to be changed.
+ * ALTER TABLE statement for MySQL. Allows the name, type and position of
+ * columns to be changed.
  *
  * @package     RealDatabase
  * @subpackage  MySQL
@@ -18,8 +19,8 @@ class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 	/**
 	 * Append a FIRST or AFTER clause to an SQL_Expression.
 	 *
-	 * @param   SQL_Expression  $expression
-	 * @param   boolean|mixed   $after      TRUE for FIRST or Converted to SQL_Column
+	 * @param   SQL_Expression                                      $expression
+	 * @param   array|boolean|string|SQL_Expression|SQL_Identifier  $after      TRUE for FIRST or Converted to SQL_Column
 	 * @return  SQL_Expression Modified expression object
 	 */
 	protected function _position($expression, $after)
@@ -46,13 +47,15 @@ class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 	/**
 	 * Add a column to the table, optionally specifying the position.
 	 *
-	 * @param   SQL_DDL_Column  $column
-	 * @param   boolean|mixed   $after  TRUE for FIRST or Converted to SQL_Column
+	 * @param   SQL_DDL_Column                                      $column
+	 * @param   array|boolean|string|SQL_Expression|SQL_Identifier  $after  TRUE for FIRST or Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function add_column($column, $after = FALSE)
 	{
-		$this->parameters[':actions'][] = $this->_position(new SQL_Expression('ADD ?', array($column)), $after);
+		$this->parameters[':actions'][] = $this->_position(
+			new SQL_Expression('ADD ?', array($column)), $after
+		);
 
 		return $this;
 	}
@@ -60,9 +63,9 @@ class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 	/**
 	 * Change a column in the table, optionally specifying the position.
 	 *
-	 * @param   mixed           $name   Converted to SQL_Column
-	 * @param   SQL_DDL_Column  $column
-	 * @param   boolean|mixed   $after  TRUE for FIRST or Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier          $name   Converted to SQL_Column
+	 * @param   SQL_DDL_Column                                      $column
+	 * @param   array|boolean|string|SQL_Expression|SQL_Identifier  $after  TRUE for FIRST or Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function change_column($name, $column, $after = FALSE)
@@ -73,7 +76,9 @@ class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 			$name = new SQL_Column($name);
 		}
 
-		$this->parameters[':actions'][] = $this->_position(new SQL_Expression('CHANGE ? ?', array($name, $column)), $after);
+		$this->parameters[':actions'][] = $this->_position(
+			new SQL_Expression('CHANGE ? ?', array($name, $column)), $after
+		);
 
 		return $this;
 	}
@@ -90,15 +95,21 @@ class Database_MySQL_Alter_Table extends SQL_DDL_Alter_Table
 
 		if ($type === 'FOREIGN')
 		{
-			$this->parameters[':actions'][] = new SQL_Expression('DROP FOREIGN KEY ?', array($name));
+			$this->parameters[':actions'][] = new SQL_Expression(
+				'DROP FOREIGN KEY ?', array($name)
+			);
 		}
 		elseif ($type === 'PRIMARY')
 		{
-			$this->parameters[':actions'][] = new SQL_Expression('DROP PRIMARY KEY');
+			$this->parameters[':actions'][] = new SQL_Expression(
+				'DROP PRIMARY KEY'
+			);
 		}
 		elseif ($type !== 'CHECK')
 		{
-			$this->parameters[':actions'][] = new SQL_Expression('DROP INDEX ?', array($name));
+			$this->parameters[':actions'][] = new SQL_Expression(
+				'DROP INDEX ?', array($name)
+			);
 		}
 
 		return $this;

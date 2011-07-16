@@ -84,9 +84,9 @@ class Database_MySQL_Create_Table extends SQL_DDL_Create_Table
 	}
 
 	/**
-	 * Set the table from which to copy this table definition
+	 * Set the table from which to copy this table definition.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function like($table)
