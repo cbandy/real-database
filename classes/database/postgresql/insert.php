@@ -16,9 +16,9 @@
 class Database_PostgreSQL_Insert extends Database_Insert
 {
 	/**
-	 * Set the name of the column to return from the first row when executed
+	 * Set the name of the column to return from the first row when executed.
 	 *
-	 * @param   mixed   $column Converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function identity($column)

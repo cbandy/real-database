@@ -19,7 +19,7 @@ interface Database_iInsert
 	 * Behavior varies between database implementations. Reliable only when
 	 * inserting one row.
 	 *
-	 * @param   mixed   $column Converted to Database_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $column Converted to SQL_Column
 	 * @return  $this
 	 */
 	public function identity($column);
