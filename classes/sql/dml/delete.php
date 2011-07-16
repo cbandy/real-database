@@ -20,8 +20,8 @@ class SQL_DML_Delete extends SQL_Expression
 	/**
 	 * @uses SQL_DML_Delete::from()
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 */
 	public function __construct($table = NULL, $alias = NULL)
 	{
@@ -65,10 +65,11 @@ class SQL_DML_Delete extends SQL_Expression
 	}
 
 	/**
-	 * Set the table from which to delete rows
+	 * Set the table from which to delete rows, optionally assigning it an
+	 * alias.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function from($table, $alias = NULL)
@@ -143,8 +144,8 @@ class SQL_DML_Delete extends SQL_Expression
 	 *
 	 * [!!] Not supported by SQLite
 	 *
-	 * @param   mixed   $reference      SQL_Table_Reference or converted to SQL_Table
-	 * @param   string  $table_alias    Table alias when converting to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier|SQL_Table_Reference  $reference      SQL_Table_Reference or converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier                      $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
 	public function using($reference, $table_alias = NULL)
@@ -163,9 +164,9 @@ class SQL_DML_Delete extends SQL_Expression
 	 * Set the search condition(s). When no operator is specified, the first
 	 * argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
-	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right          Right operand
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $left_column    Left operand, converted to SQL_Column
+	 * @param   string                                      $operator       Comparison operator
+	 * @param   mixed                                       $right          Right operand
 	 * @return  $this
 	 */
 	public function where($left_column, $operator = NULL, $right = NULL)

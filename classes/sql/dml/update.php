@@ -21,9 +21,9 @@ class SQL_DML_Update extends SQL_Expression
 	 * @uses SQL_DML_Update::table()
 	 * @uses SQL_DML_Update::set()
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
-	 * @param   array   $values Hash of (column => value) assignments
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
+	 * @param   array                                       $values Hash of (column => value) assignments
 	 */
 	public function __construct($table = NULL, $alias = NULL, $values = NULL)
 	{
@@ -68,10 +68,10 @@ class SQL_DML_Update extends SQL_Expression
 	}
 
 	/**
-	 * Set the table in which to update rows
+	 * Set the table in which to update rows.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
-	 * @param   string  $alias  Table alias
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function table($table, $alias = NULL)
@@ -153,8 +153,8 @@ class SQL_DML_Update extends SQL_Expression
 	 *
 	 * [!!] Not supported by MySQL or SQLite
 	 *
-	 * @param   mixed   $reference      SQL_Table_Reference or converted to SQL_Table
-	 * @param   string  $table_alias    Table alias when converting to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier|SQL_Table_Reference  $reference      SQL_Table_Reference or converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier                      $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
 	public function from($reference, $table_alias = NULL)
@@ -173,9 +173,9 @@ class SQL_DML_Update extends SQL_Expression
 	 * Set the search condition(s). When no operator is specified, the first
 	 * argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
-	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right          Right operand
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $left_column    Left operand, converted to SQL_Column
+	 * @param   string                                      $operator       Comparison operator
+	 * @param   mixed                                       $right          Right operand
 	 * @return  $this
 	 */
 	public function where($left_column, $operator = NULL, $right = NULL)

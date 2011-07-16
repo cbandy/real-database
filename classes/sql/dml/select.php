@@ -153,7 +153,7 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Set whether or not retrieved rows should be unique
+	 * Set whether or not retrieved rows should be unique.
 	 *
 	 * @param   boolean $value
 	 * @return  $this
@@ -166,10 +166,10 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Set the table(s) from which to retrieve rows
+	 * Set the table(s) from which to retrieve rows.
 	 *
-	 * @param   mixed   $reference      SQL_Table_Reference or converted to SQL_Table
-	 * @param   string  $table_alias    Table alias when converting to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier|SQL_Table_Reference  $reference      SQL_Table_Reference or converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier                      $table_alias    Table alias when converting to SQL_Table
 	 * @return  $this
 	 */
 	public function from($reference, $table_alias = NULL)
@@ -188,7 +188,7 @@ class SQL_DML_Select extends SQL_Expression
 	 * Append multiple columns and/or expressions by which rows should be
 	 * grouped.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns, each converted to SQL_Column, or NULL to reset
 	 * @return  $this
 	 */
 	public function group_by($columns)
@@ -218,9 +218,9 @@ class SQL_DML_Select extends SQL_Expression
 	 * Set the group search condition(s). When no operator is specified, the
 	 * first argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
-	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right          Right operand
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $left_column    Left operand, converted to SQL_Column
+	 * @param   string                                      $operator       Comparison operator
+	 * @param   mixed                                       $right          Right operand
 	 * @return  $this
 	 */
 	public function having($left_column, $operator = NULL, $right = NULL)
@@ -242,7 +242,7 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Set the maximum number of rows
+	 * Set the maximum number of rows to return.
 	 *
 	 * @param   integer $count  Number of rows
 	 * @return  $this
@@ -255,7 +255,7 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Set the number of rows to skip
+	 * Set the number of rows to skip.
 	 *
 	 * @param   integer $start  Number of rows
 	 * @return  $this
@@ -304,8 +304,8 @@ class SQL_DML_Select extends SQL_Expression
 	/**
 	 * Append one literal value or expression to be selected.
 	 *
-	 * @param   mixed|SQL_Expression    $value  Literal value to append
-	 * @param   string                  $alias  Value alias
+	 * @param   mixed|SQL_Expression                        $value  Literal value to append
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Value alias, converted to SQL_Identifier
 	 * @return  $this
 	 */
 	public function value($value, $alias = NULL)
@@ -352,9 +352,9 @@ class SQL_DML_Select extends SQL_Expression
 	 * Set the search condition(s). When no operator is specified, the first
 	 * argument is used directly.
 	 *
-	 * @param   mixed   $left_column    Left operand, converted to SQL_Column
-	 * @param   string  $operator       Comparison operator
-	 * @param   mixed   $right          Right operand
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $left_column    Left operand, converted to SQL_Column
+	 * @param   string                                      $operator       Comparison operator
+	 * @param   mixed                                       $right          Right operand
 	 * @return  $this
 	 */
 	public function where($left_column, $operator = NULL, $right = NULL)

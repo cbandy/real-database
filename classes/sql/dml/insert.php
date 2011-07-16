@@ -21,8 +21,8 @@ class SQL_DML_Insert extends SQL_Expression
 	 * @uses SQL_DML_Insert::into()
 	 * @uses SQL_DML_Insert::columns()
 	 *
-	 * @param   mixed   $table      Converted to SQL_Table
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
+	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
 	 */
 	public function __construct($table = NULL, $columns = NULL)
 	{
@@ -69,7 +69,7 @@ class SQL_DML_Insert extends SQL_Expression
 	/**
 	 * Append multiple columns to be populated with values.
 	 *
-	 * @param   array   $columns    List of columns converted to SQL_Column or NULL to reset
+	 * @param   array   $columns    List of columns, each converted to SQL_Column, or NULL to reset
 	 * @return  $this
 	 */
 	public function columns($columns)
@@ -96,9 +96,9 @@ class SQL_DML_Insert extends SQL_Expression
 	}
 
 	/**
-	 * Set the table in which to insert rows
+	 * Set the table in which to insert rows.
 	 *
-	 * @param   mixed   $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @return  $this
 	 */
 	public function into($table)
@@ -151,9 +151,9 @@ class SQL_DML_Insert extends SQL_Expression
 	}
 
 	/**
-	 * Append rows of values to be inserted
+	 * Append rows of values to be inserted.
 	 *
-	 * @param   mixed|NULL  $values,... Row of values
+	 * @param   array   $values,... Row of values or NULL to reset
 	 * @return  $this
 	 */
 	public function values($values)
