@@ -25,7 +25,7 @@ class Database_Update extends SQL_DML_Update
 	public $as_object = FALSE;
 
 	/**
-	 * @var mixed   Columns to return from the updated rows when executed
+	 * @var array   Columns to return from the updated rows when executed
 	 */
 	public $returning;
 

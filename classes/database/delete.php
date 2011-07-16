@@ -25,7 +25,7 @@ class Database_Delete extends SQL_DML_Delete
 	public $as_object = FALSE;
 
 	/**
-	 * @var mixed   Columns to return from the deleted rows when executed
+	 * @var array   Columns to return from the deleted rows when executed
 	 */
 	public $returning;
 

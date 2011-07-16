@@ -26,12 +26,12 @@ class Database_Insert extends SQL_DML_Insert
 	public $as_object = FALSE;
 
 	/**
-	 * @var SQL_Expression|SQL_Identifier Column to return when executed
+	 * @var SQL_Expression|SQL_Identifier   Column to return when executed
 	 */
 	public $identity;
 
 	/**
-	 * @var mixed   Columns to return from the inserted rows when executed
+	 * @var array   Columns to return from the inserted rows when executed
 	 */
 	public $returning;
 

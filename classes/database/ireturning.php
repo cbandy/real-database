@@ -33,7 +33,7 @@ interface Database_iReturning
 	 * Append multiple columns or expressions to be returned from the affected
 	 * rows when executed.
 	 *
-	 * @param   mixed   $columns    Hash of (alias => column) pairs
+	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
 	 * @return  $this
 	 */
 	public function returning($columns);
