@@ -114,8 +114,8 @@ class SQL_DML_Set extends SQL_Expression
 		}
 
 		$this->_empty = FALSE;
-		$this->parameters[] = $query;
 		$this->_value .= '(?)';
+		$this->parameters[] = $query;
 
 		return $this;
 	}

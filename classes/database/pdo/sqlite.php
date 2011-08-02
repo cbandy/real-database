@@ -68,6 +68,17 @@ class Database_PDO_SQLite extends Database_PDO
 	}
 
 	/**
+	 * Create a query set.
+	 *
+	 * @param   SQL_Expression  $query
+	 * @return  Database_SQLite_Set
+	 */
+	public static function query_set($query = NULL)
+	{
+		return new Database_SQLite_Set($query);
+	}
+
+	/**
 	 * Create a SELECT query.
 	 *
 	 * @param   mixed   $columns    Hash of (alias => column) pairs

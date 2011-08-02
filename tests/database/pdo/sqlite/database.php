@@ -153,6 +153,28 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 		$db->prepare('kohana invalid sql');
 	}
 
+	public function provider_query_set()
+	{
+		return array(
+			array(array(), new Database_SQLite_Set),
+			array(array(new SQL_Expression('a')), new Database_SQLite_Set(new SQL_Expression('a'))),
+		);
+	}
+
+	/**
+	 * @covers  Database_PDO_SQLite::query_set
+	 *
+	 * @dataProvider    provider_query_set
+	 *
+	 * @param   array               $arguments
+	 * @param   Database_SQLite_Set $expected
+	 */
+	public function test_query_set($arguments, $expected)
+	{
+		$statement = call_user_func_array('Database_PDO_SQLite::query_set', $arguments);
+		$this->assertEquals($expected, $statement);
+	}
+
 	public function provider_quote_literal()
 	{
 		return array
