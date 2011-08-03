@@ -9,6 +9,8 @@
  */
 class Database_SQLite_Dialect_Test extends PHPUnit_Framework_TestCase
 {
+	protected $_table = 'kohana_test_table';
+
 	public static function setUpBeforeClass()
 	{
 		if ( ! extension_loaded('pdo_sqlite'))
@@ -20,6 +22,55 @@ class Database_SQLite_Dialect_Test extends PHPUnit_Framework_TestCase
 			throw new PHPUnit_Framework_SkippedTestSuiteError(
 				'Database not configured for SQLite'
 			);
+	}
+
+	public function provider_insert()
+	{
+		$db = Database::factory();
+		$table = $db->quote_table($this->_table);
+
+		return array(
+			array(TRUE, 'INSERT INTO '.$table.' ("value") VALUES (5)', 1),
+			array(
+				FALSE,
+				'INSERT INTO '.$table.' ("value") VALUES (5), (6)',
+				'syntax error',
+			),
+
+			array(TRUE, 'INSERT INTO '.$table.' ("value") SELECT 5', 1),
+			array(
+				TRUE,
+				'INSERT INTO '.$table.' ("value") SELECT 5 UNION SELECT 6',
+				2,
+			),
+		);
+	}
+
+	/**
+	 * INSERT cannot have more than than one literal row.
+	 *
+	 * @link http://www.sqlite.org/lang_insert.html
+	 *
+	 * @covers  PDO::exec
+	 *
+	 * @dataProvider    provider_insert
+	 *
+	 * @param boolean           $valid
+	 * @param string            $statement
+	 * @param integer|string    $expected   Affected rows or exception message
+	 */
+	public function test_insert($valid, $statement, $expected)
+	{
+		$db = Database::factory();
+
+		if ( ! $valid)
+		{
+			$this->setExpectedException(
+				'Database_Exception', $expected, 'HY000'
+			);
+		}
+
+		$this->assertSame($expected, $db->execute_command($statement));
 	}
 
 	public function provider_union()
