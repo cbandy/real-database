@@ -214,7 +214,7 @@ class Database_PDO_SQLite_Execution_Test extends Database_PDO_SQLite_TestCase
 			array(array(0,0), ''),
 			array(array(1,8), 'INSERT INTO '.$table.' (value) VALUES (99)'),
 			array(
-				array(1,9),
+				array(2,9),
 				$db->insert($this->_table, array('value'))
 					->identity('id')
 					->values(array('99'), array('100'))

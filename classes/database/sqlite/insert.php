@@ -15,47 +15,48 @@
  */
 class Database_SQLite_Insert extends Database_Insert
 {
-	/**
-	 * @var integer Number of rows to be inserted
-	 */
-	protected $_values = 0;
-
-	public function __toString()
-	{
-		if ( ! $this->_values OR ! empty($this->parameters[':values']))
-			return parent::__toString();
-
-		$value = 'INSERT INTO :table ';
-
-		if ( ! empty($this->parameters[':columns']))
-		{
-			$value .= '(:columns) ';
-		}
-
-		$value .= 'VALUES ?;';
-
-		return str_repeat($value, $this->_values);
-	}
-
 	public function values($values)
 	{
 		if (is_array($values))
 		{
-			unset($this->parameters[':values']);
-
-			foreach (func_get_args() as $row)
+			if (empty($this->parameters[':values']) AND func_num_args() === 1)
 			{
-				// Wrap each row in parentheses
-				$this->parameters[$this->_values++] = new SQL_Expression('(?)', array($row));
+				// Wrap in parentheses
+				$this->parameters[':values'][] = new SQL_Expression(
+					'(?)', array($values)
+				);
 			}
-		}
-		elseif ($values === NULL)
-		{
-			unset($this->parameters[':values']);
-
-			while ($this->_values)
+			else
 			{
-				unset($this->parameters[--$this->_values]);
+				if (empty($this->parameters[':values']))
+				{
+					// Initialize the query set
+					$this->parameters[':values'] = new Database_SQLite_Set;
+				}
+				elseif (is_array($this->parameters[':values']))
+				{
+					$row = reset($this->parameters[':values']);
+
+					// Convert the previous row into a query set
+					$select = new SQL_DML_Select;
+					$select->values(reset($row->parameters));
+
+					$this->parameters[':values'] = new Database_SQLite_Set($select);
+				}
+				elseif ( ! $this->parameters[':values'] instanceof SQL_DML_Set)
+				{
+					throw new Kohana_Exception(
+						'Parameter :values must be an array or SQL_DML_Select'
+					);
+				}
+
+				foreach (func_get_args() as $row)
+				{
+					$select = new SQL_DML_Select;
+					$select->values($row);
+
+					$this->parameters[':values']->union($select, TRUE);
+				}
 			}
 		}
 		else
