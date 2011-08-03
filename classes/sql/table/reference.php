@@ -168,27 +168,31 @@ class SQL_Table_Reference extends SQL_Expression
 	}
 
 	/**
-	 * Set the join columns
+	 * Set the join columns.
 	 *
 	 * [!!] Not supported by SQL Server
 	 *
-	 * @param   array   $columns    Each element converted to SQL_Column
+	 * @param   array   $columns    List of columns, each converted to SQL_Column
 	 * @return  $this
 	 */
-	public function using(array $columns)
+	public function using($columns)
 	{
-		foreach ($columns as & $column)
+		$result = array();
+
+		foreach ($columns as $column)
 		{
 			if ( ! $column instanceof SQL_Expression
 				AND ! $column instanceof SQL_Identifier)
 			{
 				$column = new SQL_Column($column);
 			}
+
+			$result[] = $column;
 		}
 
 		$this->_empty = FALSE;
 		$this->_value .= ' USING (?)';
-		$this->parameters[] = $columns;
+		$this->parameters[] = $result;
 
 		return $this;
 	}
