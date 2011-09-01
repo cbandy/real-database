@@ -191,22 +191,6 @@ class Database_MySQL extends Database
 	public function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
-
-		if ( ! isset($this->_config['connection']['flags']))
-		{
-			$this->_config['connection']['flags'] = 0;
-		}
-
-		if ( ! empty($this->_config['connection']['port']))
-		{
-			$this->_config['connection']['hostname'] .=
-				':'.$this->_config['connection']['port'];
-		}
-
-		$this->_connection_id = $this->_config['connection']['hostname']
-			.'_'.$this->_config['connection']['username']
-			.'_'.$this->_config['connection']['password']
-			.'_'.$this->_config['connection']['flags'];
 	}
 
 	/**
@@ -374,6 +358,23 @@ class Database_MySQL extends Database
 	public function connect()
 	{
 		extract($this->_config['connection']);
+
+		if ( ! $this->_connection_id)
+		{
+			if ( ! isset($flags))
+			{
+				$flags = $this->_config['connection']['flags'] = 0;
+			}
+
+			if ( ! empty($port))
+			{
+				$hostname = $this->_config['connection']['hostname']
+					.= ':'.$port;
+			}
+
+			$this->_connection_id
+				= $hostname.'_'.$username.'_'.$password.'_'.$flags;
+		}
 
 		try
 		{
