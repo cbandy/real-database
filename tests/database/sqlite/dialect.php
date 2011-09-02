@@ -129,7 +129,7 @@ class Database_SQLite_Dialect_Test extends PHPUnit_Framework_TestCase
 
 		$result = $db->execute_query($statement);
 
-		$this->assertType('Database_Result', $result);
+		$this->assertInstanceOf('Database_Result', $result);
 		$this->assertSame($expected, $result->as_array());
 	}
 }

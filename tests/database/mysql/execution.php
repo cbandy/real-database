@@ -307,7 +307,7 @@ class Database_MySQL_Execution_Test extends Database_MySQL_TestCase
 
 		$result = $db->execute_query($statement, $as_object);
 
-		$this->assertType('Database_MySQL_Result', $result);
+		$this->assertInstanceOf('Database_MySQL_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
 	}
 

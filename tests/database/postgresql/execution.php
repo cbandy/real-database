@@ -666,7 +666,7 @@ class Database_PostgreSQL_Execution_Test extends Database_PostgreSQL_TestCase
 
 		$result = $db->execute_prepared_query($name, $parameters, $as_object);
 
-		$this->assertType('Database_PostgreSQL_Result', $result);
+		$this->assertInstanceOf('Database_PostgreSQL_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
 	}
 
@@ -824,7 +824,7 @@ class Database_PostgreSQL_Execution_Test extends Database_PostgreSQL_TestCase
 
 		$result = $db->execute_query($statement, $as_object);
 
-		$this->assertType('Database_PostgreSQL_Result', $result);
+		$this->assertInstanceOf('Database_PostgreSQL_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
 	}
 

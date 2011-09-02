@@ -353,7 +353,7 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 
 		$result = $db->execute_query(new SQL_Expression('SELECT ?', array(1)));
 
-		$this->assertType('Database_MySQL_Result', $result);
+		$this->assertInstanceOf('Database_MySQL_Result', $result);
 		$this->assertSame(1, count($result));
 	}
 

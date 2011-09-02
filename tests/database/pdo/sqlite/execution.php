@@ -151,7 +151,7 @@ class Database_PDO_SQLite_Execution_Test extends Database_PDO_SQLite_TestCase
 			'SELECT * FROM '.$table.' WHERE id < 3; SELECT * FROM '.$table
 		);
 
-		$this->assertType('Database_Result', $result);
+		$this->assertInstanceOf('Database_Result', $result);
 		$this->assertSame(2, count($result));
 	}
 
@@ -196,7 +196,7 @@ class Database_PDO_SQLite_Execution_Test extends Database_PDO_SQLite_TestCase
 		$this->assertSame(
 			$expected_table,
 
-			// https://github.com/sebastianbergmann/dbunit/issues/34
+			// https://github.com/sebastianbergmann/dbunit/issues/34 Fixed in DbUnit 1.0.2
 			// $this->getConnection()->getRowCount($db->table_prefix().$this->_table)
 
 			(int) $this->getConnection()->getConnection()->query(

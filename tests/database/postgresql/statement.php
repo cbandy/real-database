@@ -211,7 +211,7 @@ class Database_PostgreSQL_Statement_Test extends Database_PostgreSQL_TestCase
 
 		$result = $statement->execute_query();
 
-		$this->assertType('Database_PostgreSQL_Result', $result);
+		$this->assertInstanceOf('Database_PostgreSQL_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
 	}
 }

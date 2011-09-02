@@ -179,7 +179,7 @@ class Database_MySQL_Statement_Test extends Database_MySQL_TestCase
 
 		$result = $statement->execute_query();
 
-		$this->assertType('Database_MySQL_Result', $result);
+		$this->assertInstanceOf('Database_MySQL_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
 	}
 }

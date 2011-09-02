@@ -123,7 +123,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 		$result = Database::factory($name);
 
-		$this->assertType($class, $result);
+		$this->assertInstanceOf($class, $result);
 		$this->assertSame($name, (string) $result);
 	}
 
@@ -141,7 +141,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 
 		$result = Database::instance($name, array('type' => $driver));
 
-		$this->assertType($class, $result);
+		$this->assertInstanceOf($class, $result);
 		$this->assertSame($name, (string) $result);
 
 		$this->assertSame($result, Database::instance($name));

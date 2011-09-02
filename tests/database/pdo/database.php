@@ -99,7 +99,7 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 
 		$result = $db->execute_query($statement);
 
-		$this->assertType('Database_PDO_Result', $result);
+		$this->assertInstanceOf('Database_PDO_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
 	}
 
@@ -168,7 +168,7 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		$db = Database::factory();
 		$statement = $db->prepare('SELECT * FROM '.$db->quote_table($this->_table));
 
-		$this->assertType('PDOStatement', $statement);
+		$this->assertInstanceOf('PDOStatement', $statement);
 	}
 
 	public function provider_prepare_statement()
@@ -208,7 +208,7 @@ class Database_PDO_Database_Test extends PHPUnit_Framework_TestCase
 		$db = Database::factory();
 		$prepared = $db->prepare_statement($argument);
 
-		$this->assertType('Database_PDO_Statement', $prepared);
+		$this->assertInstanceOf('Database_PDO_Statement', $prepared);
 		$this->assertSame($sql, (string) $prepared);
 		$this->assertSame($parameters, $prepared->parameters());
 	}

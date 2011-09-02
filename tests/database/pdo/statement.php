@@ -271,7 +271,7 @@ class Database_PDO_Statement_Test extends PHPUnit_Framework_TestCase
 
 		$result = $statement->execute_query();
 
-		$this->assertType('Database_PDO_Result', $result);
+		$this->assertInstanceOf('Database_PDO_Result', $result);
 		$this->assertEquals($expected, $result->as_array());
 	}
 
