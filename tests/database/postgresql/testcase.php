@@ -96,7 +96,7 @@ abstract class Database_PostgreSQL_TestCase extends PHPUnit_Extensions_Database_
 	protected function getConnection()
 	{
 		// Load the configuration
-		$config = Kohana::config('database.default');
+		$config = Kohana::$config->load('database.default');
 
 		// Convert the configuration to PDO arguments
 		$config = self::configuration($config);

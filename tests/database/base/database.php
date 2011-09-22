@@ -98,7 +98,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_factory_load_config()
 	{
-		$config = Kohana::config('database');
+		$config = Kohana::$config->load('database');
 
 		// Find an unused config group
 		for ($i = 0; $i < 10; ++$i)

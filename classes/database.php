@@ -80,7 +80,7 @@ abstract class Database extends SQL
 		if ($config === NULL)
 		{
 			// Load the configuration
-			$config = Kohana::config('database')->$name;
+			$config = Kohana::$config->load('database')->$name;
 		}
 
 		if (empty($config['type']))
