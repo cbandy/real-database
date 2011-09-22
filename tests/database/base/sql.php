@@ -935,7 +935,7 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = new SQL;
 
-		$this->setExpectedException('PHPUnit_Framework_Error', 'Undefined', E_NOTICE);
+		$this->setExpectedException('ErrorException', 'Undefined', E_NOTICE);
 
 		$db->quote_expression($value);
 	}
