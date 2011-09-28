@@ -167,20 +167,25 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 *
 	 *  Configuration Option  | Type    | Description
 	 *  --------------------  | ----    | -----------
-	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
 	 *  search_path           | string  | Initial search_path
 	 *  table_prefix          | string  | Table prefix
 	 *  connection.database   | string  |
 	 *  connection.hostname   | string  | Server address or path to a local socket
+	 *  connection.options    | string  | [PGOPTIONS][] parameter string
 	 *  connection.password   | string  |
 	 *  connection.persistent | boolean | Use the PHP connection pool
 	 *  connection.port       | integer | Server port
 	 *  connection.ssl        | mixed   | TRUE to require, FALSE to disable, or 'prefer' to negotiate
 	 *  connection.username   | string  |
 	 *
+	 * [PGOPTIONS]: http://www.postgresql.org/docs/current/static/runtime-config.html
+	 *
 	 * Instead of separate parameters, the full connection string can be
 	 * configured in `connection.info` to be passed directly to `pg_connect()`.
+	 *
+	 * [!!] Set `--client_encoding` in `connection.options` to use an encoding
+	 * different than the database default.
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
 	 * @link http://www.postgresql.org/docs/current/static/ddl-schemas.html#DDL-SCHEMAS-PATH Schema search path
@@ -222,6 +227,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			if ( ! empty($database))
 			{
 				$info .= " dbname='$database'";
+			}
+
+			if ( ! empty($options))
+			{
+				$info .= " options='$options'";
 			}
 
 			if (isset($ssl))
@@ -664,6 +674,15 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		return $name;
 	}
 
+	/**
+	 * Set the connection encoding.
+	 *
+	 * @link http://www.postgresql.org/docs/current/static/multibyte.html
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $charset    Character set
+	 * @return  void
+	 */
 	public function charset($charset)
 	{
 		$this->_connection or $this->connect();
@@ -731,11 +750,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$this->_connection,
 			'server_version'
 		);
-
-		if ( ! empty($this->_config['charset']))
-		{
-			$this->charset($this->_config['charset']);
-		}
 
 		if ( ! empty($this->_config['search_path']))
 		{

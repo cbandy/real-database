@@ -55,6 +55,11 @@ abstract class Database_PostgreSQL_TestCase extends PHPUnit_Extensions_Database_
 				$result['dsn'] .= " dbname='$database'";
 			}
 
+			if ( ! empty($options))
+			{
+				$result['dsn'] .= " options='$options'";
+			}
+
 			if (isset($ssl))
 			{
 				if ($ssl === TRUE)
