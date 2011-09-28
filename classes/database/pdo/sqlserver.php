@@ -96,7 +96,6 @@ class Database_PDO_SQLServer extends Database_PDO
 	 *
 	 *  Configuration Option    | Type    | Description
 	 *  --------------------    | ----    | -----------
-	 *  charset                 | integer | [Encoding Constant](http://msdn.microsoft.com/library/cc296183.aspx)
 	 *  profiling               | boolean | Enable execution profiling
 	 *  release_during_rollback | boolean | Release savepoints during rollback
 	 *  table_prefix            | string  | Table prefix
@@ -110,6 +109,9 @@ class Database_PDO_SQLServer extends Database_PDO
 	 * *[DSN]: Data Source Name
 	 * *[URI]: Uniform Resource Identifier
 	 *
+	 * [!!] Set `PDO::SQLSRV_ATTR_ENCODING` in `connection.options` to use an
+	 * encoding other than UTF-8.
+	 *
 	 * @link http://msdn.microsoft.com/library/ff628159.aspx PDO connection parameters
 	 *
 	 * @param   string  $name   Connection name
@@ -122,13 +124,6 @@ class Database_PDO_SQLServer extends Database_PDO
 		// Execute queries directly by default
 		$this->_config['connection']['options'][PDO::SQLSRV_ATTR_DIRECT_QUERY]
 			= TRUE;
-
-		if ( ! empty($this->_config['charset']))
-		{
-			// Set the configured encoding
-			$this->_config['connection']['options'][PDO::SQLSRV_ATTR_ENCODING]
-				= $this->_config['charset'];
-		}
 	}
 
 	/**
