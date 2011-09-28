@@ -139,7 +139,18 @@ class Database_PDO_SQLServer extends Database_PDO
 	{
 		$this->_connection or $this->connect();
 
-		$this->_connection->setAttribute(PDO::SQLSRV_ATTR_ENCODING, $encoding);
+		try
+		{
+			$this->_connection->setAttribute(
+				PDO::SQLSRV_ATTR_ENCODING, $encoding
+			);
+		}
+		catch (PDOException $e)
+		{
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
+		}
 	}
 
 	public function commit($name = NULL)
