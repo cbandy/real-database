@@ -48,7 +48,7 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PDO_SQLServer::connect
+	 * @covers  Database_PDO::connect
 	 */
 	public function test_connect_error()
 	{

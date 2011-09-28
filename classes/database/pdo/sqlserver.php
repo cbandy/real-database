@@ -196,23 +196,7 @@ class Database_PDO_SQLServer extends Database_PDO
 
 	public function connect()
 	{
-		try
-		{
-			$this->_connection = new PDO(
-				$this->_config['connection']['dsn'],
-				$this->_config['connection']['username'],
-				$this->_config['connection']['password'],
-				$this->_config['connection']['options']
-			);
-		}
-		catch (PDOException $e)
-		{
-			throw new Database_Exception(
-				':error',
-				array(':error' => $e->getMessage()),
-				$e->getCode()
-			);
-		}
+		parent::connect();
 
 		// Initialize the savepoint stack
 		$this->_savepoints = new Database_SQLServer_Savepoints;
