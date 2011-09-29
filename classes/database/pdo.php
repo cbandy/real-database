@@ -32,7 +32,6 @@ class Database_PDO extends Database
 	 *
 	 *  Configuration Option  | Type    | Description
 	 *  --------------------  | ----    | -----------
-	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
 	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
@@ -193,11 +192,6 @@ class Database_PDO extends Database
 			throw new Database_Exception(
 				':error', array(':error' => $e->getMessage()), $e->getCode()
 			);
-		}
-
-		if ( ! empty($this->_config['charset']))
-		{
-			$this->charset($this->_config['charset']);
 		}
 
 		// Initialize the savepoint stack

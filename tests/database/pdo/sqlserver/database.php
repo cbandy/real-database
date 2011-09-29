@@ -48,7 +48,21 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PDO_SQLServer::connect
+	 * @covers  Database_PDO_SQLServer::charset
+	 */
+	public function test_charset_error()
+	{
+		$db = Database::factory();
+
+		$this->setExpectedException(
+			'Database_Exception', 'invalid encoding', 'IMSSP'
+		);
+
+		$db->charset('wrong');
+	}
+
+	/**
+	 * @covers  Database_PDO::connect
 	 */
 	public function test_connect_error()
 	{

@@ -94,7 +94,6 @@ class Database_PDO_SQLite extends Database_PDO
 	 *
 	 *  Configuration Option  | Type    | Description
 	 *  --------------------  | ----    | -----------
-	 *  charset               | string  | Character set
 	 *  profiling             | boolean | Enable execution profiling
 	 *  table_prefix          | string  | Table prefix
 	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
@@ -118,11 +117,6 @@ class Database_PDO_SQLite extends Database_PDO
 
 		$this->_config['connection']['username'] = NULL;
 		$this->_config['connection']['password'] = NULL;
-	}
-
-	public function charset($charset)
-	{
-		$this->execute_command('PRAGMA encoding = "'.$charset.'"');
 	}
 
 	public function connect()

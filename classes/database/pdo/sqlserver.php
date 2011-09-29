@@ -96,7 +96,6 @@ class Database_PDO_SQLServer extends Database_PDO
 	 *
 	 *  Configuration Option    | Type    | Description
 	 *  --------------------    | ----    | -----------
-	 *  charset                 | integer | [Encoding Constant](http://msdn.microsoft.com/library/cc296183.aspx)
 	 *  profiling               | boolean | Enable execution profiling
 	 *  release_during_rollback | boolean | Release savepoints during rollback
 	 *  table_prefix            | string  | Table prefix
@@ -110,6 +109,9 @@ class Database_PDO_SQLServer extends Database_PDO
 	 * *[DSN]: Data Source Name
 	 * *[URI]: Uniform Resource Identifier
 	 *
+	 * [!!] Set `PDO::SQLSRV_ATTR_ENCODING` in `connection.options` to use an
+	 * encoding other than UTF-8.
+	 *
 	 * @link http://msdn.microsoft.com/library/ff628159.aspx PDO connection parameters
 	 *
 	 * @param   string  $name   Connection name
@@ -122,13 +124,6 @@ class Database_PDO_SQLServer extends Database_PDO
 		// Execute queries directly by default
 		$this->_config['connection']['options'][PDO::SQLSRV_ATTR_DIRECT_QUERY]
 			= TRUE;
-
-		if ( ! empty($this->_config['charset']))
-		{
-			// Set the configured encoding
-			$this->_config['connection']['options'][PDO::SQLSRV_ATTR_ENCODING]
-				= $this->_config['charset'];
-		}
 	}
 
 	/**
@@ -144,7 +139,18 @@ class Database_PDO_SQLServer extends Database_PDO
 	{
 		$this->_connection or $this->connect();
 
-		$this->_connection->setAttribute(PDO::SQLSRV_ATTR_ENCODING, $encoding);
+		try
+		{
+			$this->_connection->setAttribute(
+				PDO::SQLSRV_ATTR_ENCODING, $encoding
+			);
+		}
+		catch (PDOException $e)
+		{
+			throw new Database_Exception(
+				':error', array(':error' => $e->getMessage()), $e->getCode()
+			);
+		}
 	}
 
 	public function commit($name = NULL)
@@ -196,23 +202,7 @@ class Database_PDO_SQLServer extends Database_PDO
 
 	public function connect()
 	{
-		try
-		{
-			$this->_connection = new PDO(
-				$this->_config['connection']['dsn'],
-				$this->_config['connection']['username'],
-				$this->_config['connection']['password'],
-				$this->_config['connection']['options']
-			);
-		}
-		catch (PDOException $e)
-		{
-			throw new Database_Exception(
-				':error',
-				array(':error' => $e->getMessage()),
-				$e->getCode()
-			);
-		}
+		parent::connect();
 
 		// Initialize the savepoint stack
 		$this->_savepoints = new Database_SQLServer_Savepoints;
