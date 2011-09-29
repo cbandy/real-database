@@ -168,7 +168,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 *  Configuration Option  | Type    | Description
 	 *  --------------------  | ----    | -----------
 	 *  profiling             | boolean | Enable execution profiling
-	 *  search_path           | string  | Initial search_path
 	 *  table_prefix          | string  | Table prefix
 	 *  connection.database   | string  |
 	 *  connection.hostname   | string  | Server address or path to a local socket
@@ -188,7 +187,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * different than the database default.
 	 *
 	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
-	 * @link http://www.postgresql.org/docs/current/static/ddl-schemas.html#DDL-SCHEMAS-PATH Schema search path
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
@@ -750,13 +748,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$this->_connection,
 			'server_version'
 		);
-
-		if ( ! empty($this->_config['search_path']))
-		{
-			$this->execute_command_ok(
-				'SET search_path = '.$this->_config['search_path']
-			);
-		}
 
 		// Initialize the savepoint stack
 		$this->_savepoints = new Database_Savepoint_Deep;
