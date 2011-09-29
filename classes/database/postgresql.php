@@ -1354,12 +1354,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function schema_tables($schema = NULL)
 	{
-		if ( ! $schema)
-		{
-			// Use default schema
-			$schema = $this->schema();
-		}
-		else
+		$sql = 'SELECT table_name, table_type'
+			.' FROM information_schema.tables WHERE table_schema = ';
+
+		if ($schema)
 		{
 			if ( ! $schema instanceof SQL_Identifier)
 			{
@@ -1367,13 +1365,13 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				$schema = new SQL_Identifier($schema);
 			}
 
-			$schema = $schema->name;
+			$sql .= $this->quote_literal($schema->name);
 		}
-
-		$sql =
-			'SELECT table_name, table_type'
-			.' FROM information_schema.tables WHERE table_schema = '
-			.$this->quote_literal($schema);
+		else
+		{
+			// Use current schema
+			$sql .= 'current_schema()';
+		}
 
 		if ( ! $this->_table_prefix)
 		{
@@ -1419,24 +1417,23 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$table = new SQL_Table($table);
 		}
 
-		if ( ! $schema = $table->namespace)
-		{
-			// Use default schema
-			$schema = $this->schema();
-		}
+		$schema = $table->namespace
+			? $this->quote_literal($table->namespace)
+			: 'current_schema()';
 
 		// Only add table prefix to SQL_Table (exclude from SQL_Identifier)
-		$table = ($table instanceof SQL_Table)
-			? ($this->_table_prefix.$table->name)
-			: $table->name;
+		$table = $this->quote_literal(
+			($table instanceof SQL_Table)
+				? ($this->_table_prefix.$table->name)
+				: $table->name
+		);
 
 		$sql =
 			'SELECT column_name, ordinal_position, column_default, is_nullable,'
 			.'   data_type, character_maximum_length,'
 			.'   numeric_precision, numeric_scale, datetime_precision'
 			.' FROM information_schema.columns'
-			.' WHERE table_schema = '.$this->quote_literal($schema)
-			.'   AND table_name = '.$this->quote_literal($table);
+			.' WHERE table_schema = '.$schema.' AND table_name = '.$table;
 
 		return $this->execute_query($sql)->as_array('column_name');
 	}
