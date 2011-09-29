@@ -153,11 +153,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	protected $_savepoints;
 
 	/**
-	 * @var string  Default schema
-	 */
-	protected $_schema;
-
-	/**
 	 * @var string  Version of the connected server
 	 */
 	protected $_version;
@@ -1324,32 +1319,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		$this->_savepoints->push($name);
 
 		return $name;
-	}
-
-	/**
-	 * Return the default schema
-	 *
-	 * @return  string
-	 */
-	public function schema()
-	{
-		if (empty($this->_schema))
-		{
-			// Retrieve explicit search_path
-			$result = $this->_execute('SELECT current_schemas(FALSE)');
-
-			if (pg_result_status($result) !== PGSQL_TUPLES_OK)
-				throw new Database_PostgreSQL_Exception($result);
-
-			// Default schema is first in the array
-			list($this->_schema) = explode(
-				',', trim(pg_fetch_result($result, 0), '{}'), 2
-			);
-
-			pg_free_result($result);
-		}
-
-		return $this->_schema;
 	}
 
 	public function schema_tables($schema = NULL)
