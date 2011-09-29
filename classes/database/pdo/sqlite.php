@@ -119,11 +119,6 @@ class Database_PDO_SQLite extends Database_PDO
 		$this->_config['connection']['password'] = NULL;
 	}
 
-	public function charset($charset)
-	{
-		$this->execute_command('PRAGMA encoding = "'.$charset.'"');
-	}
-
 	public function connect()
 	{
 		parent::connect();
