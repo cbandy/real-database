@@ -317,6 +317,13 @@ class Database_MySQL extends Database
 		return $name;
 	}
 
+	/**
+	 * Set the connection character set.
+	 *
+	 * @throws  Database_Exception
+	 * @param   string  $charset    Character set
+	 * @return  void
+	 */
 	public function charset($charset)
 	{
 		$this->_connection or $this->connect();

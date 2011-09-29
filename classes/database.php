@@ -321,15 +321,6 @@ abstract class Database extends SQL
 	abstract public function begin($name = NULL);
 
 	/**
-	 * Set the connection character set. May disconnect the session for some drivers.
-	 *
-	 * @throws  Database_Exception
-	 * @param   string  $charset    Character set
-	 * @return  void
-	 */
-	abstract public function charset($charset);
-
-	/**
 	 * Commit the current transaction or release a savepoint.
 	 *
 	 * @throws  Database_Exception
