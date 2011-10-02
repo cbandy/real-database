@@ -1044,6 +1044,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			$parameters = $statement->parameters();
 			$statement = (string) $statement;
 
+			if (empty($statement))
+				return array(0,0);
+
 			$result = empty($parameters)
 				? $this->_execute($statement)
 				: $this->_execute_parameters($statement, $parameters);
@@ -1065,6 +1068,9 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			{
 				$statement = $this->quote($statement);
 			}
+
+			if (empty($statement))
+				return array(0,0);
 
 			$result = $this->_evaluate_query(
 				$this->_execute(

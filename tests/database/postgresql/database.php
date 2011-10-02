@@ -186,14 +186,27 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $statement);
 	}
 
+	public function provider_empty_statement()
+	{
+		return array(
+			array(''),
+			array(new Database_Statement('')),
+			array(new SQL_Expression('')),
+		);
+	}
+
 	/**
 	 * @covers  Database_PostgreSQL::_evaluate_command
+	 *
+	 * @dataProvider  provider_empty_statement
+	 *
+	 * @param   string|Database_Statement|SQL_Expression    $value  Empty statement
 	 */
-	public function test_execute_command_empty()
+	public function test_execute_command_empty($value)
 	{
 		$db = Database::factory();
 
-		$this->assertSame(0, $db->execute_command(''));
+		$this->assertSame(0, $db->execute_command($value));
 	}
 
 	/**
@@ -208,21 +221,26 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db->execute_command('kohana invalid command');
 	}
 
-	public function provider_execute_query_empty()
+	/**
+	 * @covers  Database_PostgreSQL::execute_insert
+	 *
+	 * @dataProvider  provider_empty_statement
+	 *
+	 * @param   string|Database_Statement|SQL_Expression    $value  Empty statement
+	 */
+	public function test_execute_insert_empty($value)
 	{
-		return array
-		(
-			array(''),
-			array(new SQL_Expression('')),
-		);
+		$db = Database::factory();
+
+		$this->assertSame(array(0,0), $db->execute_insert($value, 'id'));
 	}
 
 	/**
 	 * @covers  Database_PostgreSQL::execute_query
 	 *
-	 * @dataProvider  provider_execute_query_empty
+	 * @dataProvider  provider_empty_statement
 	 *
-	 * @param   string|SQL_Expression   $value  Empty statement
+	 * @param   string|Database_Statement|SQL_Expression    $value  Empty statement
 	 */
 	public function test_execute_query_empty($value)
 	{
