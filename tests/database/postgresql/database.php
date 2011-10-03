@@ -196,7 +196,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL::_evaluate_command
+	 * @covers  Database_PostgreSQL::execute_command
 	 *
 	 * @dataProvider  provider_empty_statement
 	 *
@@ -210,13 +210,13 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL::_evaluate_command
+	 * @covers  Database_PostgreSQL::_execute
 	 */
 	public function test_execute_command_error()
 	{
 		$db = Database::factory();
 
-		$this->setExpectedException('Database_Exception', 'syntax error', 42601);
+		$this->setExpectedException('Database_Exception', 'syntax error', E_WARNING);
 
 		$db->execute_command('kohana invalid command');
 	}
@@ -256,7 +256,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = Database::factory();
 
-		$this->setExpectedException('Database_Exception', 'syntax error', 42601);
+		$this->setExpectedException('Database_Exception', 'syntax error', E_WARNING);
 
 		$db->execute_query('kohana invalid query');
 	}

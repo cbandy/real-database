@@ -220,14 +220,14 @@ class Database_PostgreSQL_Execution_Test extends Database_PostgreSQL_TestCase
 		return array(
 			// String
 			array(
-				2,
+				1,
 				'DELETE FROM '.$db->quote($table).' WHERE "id" = 3;'
 				.' DELETE FROM '.$db->quote($table).' WHERE "id" = 5',
 			),
 
 			// Database_Statement
 			array(
-				2,
+				1,
 				new Database_Statement(
 					'DELETE FROM '.$db->quote($table).' WHERE "id" = 3;'
 					.' DELETE FROM '.$db->quote($table).' WHERE "id" = 5'
@@ -236,7 +236,7 @@ class Database_PostgreSQL_Execution_Test extends Database_PostgreSQL_TestCase
 
 			// SQL_Expression
 			array(
-				2,
+				1,
 				new SQL_Expression(
 					'DELETE FROM :a WHERE "id" = 3;'
 					.' DELETE FROM :a WHERE "id" = 5',
@@ -244,7 +244,7 @@ class Database_PostgreSQL_Execution_Test extends Database_PostgreSQL_TestCase
 				),
 			),
 			array(
-				2,
+				1,
 				new SQL_Expression(
 					'DELETE FROM :a WHERE "id" = ?;'
 					.' DELETE FROM :a WHERE "id" = ?',
@@ -260,7 +260,7 @@ class Database_PostgreSQL_Execution_Test extends Database_PostgreSQL_TestCase
 	 *
 	 * @dataProvider    provider_execute_compound_command
 	 *
-	 * @param   integer                                     $expected   Sum of number of rows affected
+	 * @param   integer                                     $expected   Number of rows affected by the last statement
 	 * @param   string|Database_Statement|SQL_Expression    $value      Argument to the method
 	 */
 	public function test_execute_compound_command($expected, $value)

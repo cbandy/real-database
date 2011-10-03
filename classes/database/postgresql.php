@@ -270,13 +270,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		}
 		else
 		{
-			if ($status === PGSQL_BAD_RESPONSE
-				OR $status === PGSQL_NONFATAL_ERROR
-				OR $status === PGSQL_FATAL_ERROR)
-			{
-				throw new Database_PostgreSQL_Exception($result);
-			}
-
 			if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
 			{
 				pg_end_copy($this->_connection);
@@ -308,13 +301,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		if ($status === PGSQL_TUPLES_OK)
 			return new Database_PostgreSQL_Result($result, $as_object, $arguments);
 
-		if ($status === PGSQL_BAD_RESPONSE
-			OR $status === PGSQL_NONFATAL_ERROR
-			OR $status === PGSQL_FATAL_ERROR)
-		{
-			throw new Database_PostgreSQL_Exception($result);
-		}
-
 		if ($status === PGSQL_COPY_IN OR $status === PGSQL_COPY_OUT)
 		{
 			pg_end_copy($this->_connection);
@@ -326,7 +312,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
-	 * Execute a statement after connecting
+	 * Execute a statement after connecting.
 	 *
 	 * @throws  Database_Exception
 	 * @param   string  $statement  SQL statement
@@ -343,7 +329,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			);
 		}
 
-		if ( ! pg_send_query($this->_connection, $statement))
+		try
+		{
+			$result = pg_query($this->_connection, $statement);
+		}
+		catch (Exception $e)
 		{
 			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
@@ -353,12 +343,13 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 			throw new Database_Exception(
 				':error',
-				array(':error' => pg_last_error($this->_connection))
+				array(':error' => $e->getMessage()),
+				$e->getCode()
 			);
 			// @codeCoverageIgnoreEnd
 		}
 
-		if ( ! $result = pg_get_result($this->_connection))
+		if ($result === FALSE)
 		{
 			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
@@ -400,7 +391,13 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			);
 		}
 
-		if ( ! pg_send_query_params($this->_connection, $statement, $parameters))
+		try
+		{
+			$result = pg_query_params(
+				$this->_connection, $statement, $parameters
+			);
+		}
+		catch (Exception $e)
 		{
 			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
@@ -410,12 +407,13 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 			throw new Database_Exception(
 				':error',
-				array(':error' => pg_last_error($this->_connection))
+				array(':error' => $e->getMessage()),
+				$e->getCode()
 			);
 			// @codeCoverageIgnoreEnd
 		}
 
-		if ( ! $result = pg_get_result($this->_connection))
+		if ($result === FALSE)
 		{
 			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
@@ -457,7 +455,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			);
 		}
 
-		if ( ! pg_send_execute($this->_connection, $name, $parameters))
+		try
+		{
+			$result = pg_execute($this->_connection, $name, $parameters);
+		}
+		catch (Exception $e)
 		{
 			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
@@ -467,12 +469,13 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 			throw new Database_Exception(
 				':error',
-				array(':error' => pg_last_error($this->_connection))
+				array(':error' => $e->getMessage()),
+				$e->getCode()
 			);
 			// @codeCoverageIgnoreEnd
 		}
 
-		if ( ! $result = pg_get_result($this->_connection))
+		if ($result === FALSE)
 		{
 			// @codeCoverageIgnoreStart
 			if (isset($benchmark))
@@ -988,18 +991,14 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 		}
 
+		if (empty($statement))
+			return 0;
+
 		$result = empty($parameters)
 			? $this->_execute($statement)
 			: $this->_execute_parameters($statement, $parameters);
 
-		$rows = $this->_evaluate_command($result);
-
-		while ($result = pg_get_result($this->_connection))
-		{
-			$rows += $this->_evaluate_command($result);
-		}
-
-		return $rows;
+		return $this->_evaluate_command($result);
 	}
 
 	/**
