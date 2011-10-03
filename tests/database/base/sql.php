@@ -935,9 +935,18 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = new SQL;
 
-		$this->setExpectedException('ErrorException', 'Undefined', E_NOTICE);
+		if (error_reporting() & E_NOTICE)
+		{
+			$this->setExpectedException(
+				'ErrorException', 'Undefined', E_NOTICE
+			);
 
-		$db->quote_expression($value);
+			$db->quote_expression($value);
+		}
+		else
+		{
+			$this->assertSame('NULL', $db->quote_expression($value));
+		}
 	}
 
 	public function provider_quote()
