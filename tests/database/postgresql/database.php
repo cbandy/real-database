@@ -74,7 +74,11 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = Database::factory();
 
-		$this->setExpectedException('Database_Exception', 'does not exist', E_WARNING);
+		$this->setExpectedException(
+			'Database_Exception',
+			'does not exist',
+			error_reporting() & E_WARNING
+		);
 
 		$db->copy_from('kohana-nonexistent-table', array("8\t70"));
 	}
@@ -88,7 +92,11 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = Database::factory();
 
-		$this->setExpectedException('Database_Exception', 'does not exist', E_WARNING);
+		$this->setExpectedException(
+			'Database_Exception',
+			'does not exist',
+			error_reporting() & E_WARNING
+		);
 
 		$db->copy_to('kohana-nonexistent-table');
 	}
@@ -216,7 +224,11 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = Database::factory();
 
-		$this->setExpectedException('Database_Exception', 'syntax error', E_WARNING);
+		$this->setExpectedException(
+			'Database_Exception',
+			'syntax error',
+			error_reporting() & E_WARNING
+		);
 
 		$db->execute_command('kohana invalid command');
 	}
@@ -256,7 +268,11 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$db = Database::factory();
 
-		$this->setExpectedException('Database_Exception', 'syntax error', E_WARNING);
+		$this->setExpectedException(
+			'Database_Exception',
+			'syntax error',
+			error_reporting() & E_WARNING
+		);
 
 		$db->execute_query('kohana invalid query');
 	}

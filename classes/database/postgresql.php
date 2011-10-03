@@ -331,6 +331,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		try
 		{
+			// Raises E_WARNING upon error
 			$result = pg_query($this->_connection, $statement);
 		}
 		catch (Exception $e)
@@ -393,6 +394,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		try
 		{
+			// Raises E_WARNING upon error
 			$result = pg_query_params(
 				$this->_connection, $statement, $parameters
 			);
@@ -457,6 +459,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		try
 		{
+			// Raises E_WARNING upon error
 			$result = pg_execute($this->_connection, $name, $parameters);
 		}
 		catch (Exception $e)
@@ -776,7 +779,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		try
 		{
-			// Raises E_WARNING on error
+			// Raises E_WARNING upon error
 			$result = pg_copy_from(
 				$this->_connection,
 				$table,
@@ -852,7 +855,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 			try
 			{
-				// Raises E_WARNING on error
+				// Raises E_WARNING upon error
 				$result = pg_copy_to(
 					$this->_connection,
 					$table,
@@ -873,7 +876,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		{
 			try
 			{
-				// Raises E_WARNING on error
+				// Raises E_WARNING upon error
 				$result = pg_copy_to(
 					$this->_connection,
 					$table,
