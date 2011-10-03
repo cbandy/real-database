@@ -842,6 +842,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		$this->_connection or $this->connect();
 
+		// @codeCoverageIgnoreStart
 		if (Database_PostgreSQL::$bug_copy_to_null)
 		{
 			if ($null !== '\\N')
@@ -867,6 +868,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 				);
 			}
 		}
+		// @codeCoverageIgnoreEnd
 		else
 		{
 			try
