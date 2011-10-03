@@ -765,10 +765,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$table = $this->quote_table($table);
 
+		// @codeCoverageIgnoreStart
 		if (Database_PostgreSQL::$bug_copy_quote_table)
 		{
-			$table = trim($table, $this->_quote);
+			$table = trim($table, $this->_quote_left.$this->_quote_right);
 		}
+		// @codeCoverageIgnoreEnd
 
 		$this->_connection or $this->connect();
 
@@ -815,9 +817,10 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 		{
 			$table = $this->quote_table($table);
 		}
+		// @codeCoverageIgnoreStart
 		elseif (Database_PostgreSQL::$bug_copy_to_schema)
 		{
-			$table = trim($this->quote_table($table), $this->_quote);
+			$table = trim($this->quote_table($table), $this->_quote_left.$this->_quote_right);
 		}
 		else
 		{
@@ -828,13 +831,14 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 			if (empty($table->namespace))
 			{
-				$table = trim($this->quote_table($table), $this->_quote);
+				$table = trim($this->quote_table($table), $this->_quote_left.$this->_quote_right);
 			}
 			else
 			{
 				$table = $this->quote_table($table);
 			}
 		}
+		// @codeCoverageIgnoreEnd
 
 		$this->_connection or $this->connect();
 
