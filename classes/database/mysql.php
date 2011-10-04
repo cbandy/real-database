@@ -5,6 +5,26 @@
  *
  * [!!] Requires MySQL >= 5.0.7
  *
+ *  Configuration Option  | Type    | Description
+ *  --------------------  | ----    | -----------
+ *  charset               | string  | Character set
+ *  profiling             | boolean | Enable execution profiling
+ *  table_prefix          | string  | Table prefix
+ *  connection.database   | string  |
+ *  connection.flags      | integer | Combination of [client constants][], e.g. MYSQL_CLIENT_SSL
+ *  connection.hostname   | string  | Server address or path to a local socket. Use `'127.0.0.1'` to [connect locally using TCP/IP][loopback]
+ *  connection.password   | string  |
+ *  connection.persistent | boolean | Use the PHP connection pool
+ *  connection.port       | integer | Server port
+ *  connection.username   | string  |
+ *  connection.variables  | array   | [System variables][] as "key => value" pairs
+ *
+ * [Client constants]: http://www.php.net/manual/mysql.constants
+ * [Loopback]:         http://dev.mysql.com/doc/en/can-not-connect-to-server.html
+ * [System variables]: http://dev.mysql.com/doc/en/dynamic-system-variables.html
+ *
+ * @link http://www.php.net/manual/book.mysql
+ *
  * @package     RealDatabase
  * @subpackage  MySQL
  * @category    Drivers
@@ -12,8 +32,6 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * @link http://php.net/manual/book.mysql
  */
 class Database_MySQL extends Database
 	implements Database_iEscape, Database_iIntrospect
@@ -166,24 +184,6 @@ class Database_MySQL extends Database
 
 	/**
 	 * Create a MySQL connection
-	 *
-	 *  Configuration Option  | Type    | Description
-	 *  --------------------  | ----    | -----------
-	 *  charset               | string  | Character set
-	 *  profiling             | boolean | Enable execution profiling
-	 *  table_prefix          | string  | Table prefix
-	 *  connection.database   | string  |
-	 *  connection.flags      | integer | Combination of [client constants][], e.g. MYSQL_CLIENT_SSL
-	 *  connection.hostname   | string  | Server address or path to a local socket. Use `'127.0.0.1'` to [connect locally using TCP/IP][loopback]
-	 *  connection.password   | string  |
-	 *  connection.persistent | boolean | Use the PHP connection pool
-	 *  connection.port       | integer | Server port
-	 *  connection.username   | string  |
-	 *  connection.variables  | array   | [System variables][] as "key => value" pairs
-	 *
-	 * [Client constants]: http://php.net/manual/mysql.constants
-	 * [Loopback]:         http://dev.mysql.com/doc/en/can-not-connect-to-server.html
-	 * [System variables]: http://dev.mysql.com/doc/en/dynamic-system-variables.html
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration

@@ -3,7 +3,23 @@
 /**
  * [SQLite](http://www.sqlite.org/) connection and expression factory using PDO.
  *
+ *  Configuration Option  | Type    | Description
+ *  --------------------  | ----    | -----------
+ *  profiling             | boolean | Enable execution profiling
+ *  table_prefix          | string  | Table prefix
+ *  connection.dsn        | string  | Full DSN or a predefined DSN name
+ *  connection.options    | array   | PDO options
+ *  connection.persistent | boolean | Use the PHP connection pool
+ *  connection.pragmas    | array   | [PRAGMA][] settings as "key => value" pairs
+ *  connection.uri        | string  | URI to a file containing the DSN
+ *
+ * *[DSN]: Data Source Name
  * *[PDO]: PHP Data Objects
+ * *[URI]: Uniform Resource Identifier
+ * [PRAGMA]: http://www.sqlite.org/pragma.html
+ *
+ * @link http://www.php.net/manual/ref.pdo-sqlite
+ * @link http://www.php.net/manual/ref.pdo-sqlite.connection PDO SQLite DSN
  *
  * @package     RealDatabase
  * @subpackage  SQLite
@@ -12,8 +28,6 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * @link http://php.net/manual/ref.pdo-sqlite
  */
 class Database_PDO_SQLite extends Database_PDO
 	implements Database_iEscape, Database_iIntrospect
@@ -91,22 +105,6 @@ class Database_PDO_SQLite extends Database_PDO
 
 	/**
 	 * Create a PDO connection for SQLite
-	 *
-	 *  Configuration Option  | Type    | Description
-	 *  --------------------  | ----    | -----------
-	 *  profiling             | boolean | Enable execution profiling
-	 *  table_prefix          | string  | Table prefix
-	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
-	 *  connection.options    | array   | PDO options
-	 *  connection.persistent | boolean | Use the PHP connection pool
-	 *  connection.pragmas    | array   | [PRAGMA][] settings as "key => value" pairs
-	 *  connection.uri        | string  | URI to a file containing the DSN
-	 *
-	 * *[DSN]: Data Source Name
-	 * *[URI]: Uniform Resource Identifier
-	 * [PRAGMA]: http://www.sqlite.org/pragma.html
-	 *
-	 * @link http://php.net/manual/ref.pdo-sqlite.connection PDO SQLite DSN
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration

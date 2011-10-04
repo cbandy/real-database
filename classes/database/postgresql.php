@@ -5,6 +5,30 @@
  *
  * [!!] Requires PostgreSQL >= 8.2
  *
+ *  Configuration Option  | Type    | Description
+ *  --------------------  | ----    | -----------
+ *  profiling             | boolean | Enable execution profiling
+ *  table_prefix          | string  | Table prefix
+ *  connection.database   | string  |
+ *  connection.hostname   | string  | Server address or path to a local socket
+ *  connection.options    | string  | [PGOPTIONS][] parameter string
+ *  connection.password   | string  |
+ *  connection.persistent | boolean | Use the PHP connection pool
+ *  connection.port       | integer | Server port
+ *  connection.ssl        | mixed   | TRUE to require, FALSE to disable, or 'prefer' to negotiate
+ *  connection.username   | string  |
+ *
+ * [PGOPTIONS]: http://www.postgresql.org/docs/current/static/runtime-config.html
+ *
+ * Instead of separate parameters, the full connection string can be
+ * configured in `connection.info` to be passed directly to `pg_connect()`.
+ *
+ * [!!] Set `--client_encoding` in `connection.options` to use an encoding
+ * different than the database default.
+ *
+ * @link http://www.php.net/manual/book.pgsql
+ * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Drivers
@@ -12,8 +36,6 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * @link http://php.net/manual/book.pgsql
  */
 class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {
@@ -159,29 +181,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	/**
 	 * Create a PostgreSQL connection
-	 *
-	 *  Configuration Option  | Type    | Description
-	 *  --------------------  | ----    | -----------
-	 *  profiling             | boolean | Enable execution profiling
-	 *  table_prefix          | string  | Table prefix
-	 *  connection.database   | string  |
-	 *  connection.hostname   | string  | Server address or path to a local socket
-	 *  connection.options    | string  | [PGOPTIONS][] parameter string
-	 *  connection.password   | string  |
-	 *  connection.persistent | boolean | Use the PHP connection pool
-	 *  connection.port       | integer | Server port
-	 *  connection.ssl        | mixed   | TRUE to require, FALSE to disable, or 'prefer' to negotiate
-	 *  connection.username   | string  |
-	 *
-	 * [PGOPTIONS]: http://www.postgresql.org/docs/current/static/runtime-config.html
-	 *
-	 * Instead of separate parameters, the full connection string can be
-	 * configured in `connection.info` to be passed directly to `pg_connect()`.
-	 *
-	 * [!!] Set `--client_encoding` in `connection.options` to use an encoding
-	 * different than the database default.
-	 *
-	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
