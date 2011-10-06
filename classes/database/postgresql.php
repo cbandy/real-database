@@ -76,6 +76,70 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	}
 
 	/**
+	 * Convert a configuration array into a connection string.
+	 *
+	 * @param   array   $array  Database_PostgreSQL configuration
+	 * @return  string  Connection string
+	 */
+	public static function configuration($array)
+	{
+		if (empty($array['connection']))
+			return '';
+
+		extract($array['connection']);
+
+		$info = '';
+
+		if ( ! empty($hostname))
+		{
+			$info .= "host='".$hostname."'";
+		}
+
+		if ( ! empty($port))
+		{
+			$info .= " port='".$port."'";
+		}
+
+		if ( ! empty($username))
+		{
+			$info .= " user='".$username."'";
+		}
+
+		if ( ! empty($password))
+		{
+			$info .= " password='".$password."'";
+		}
+
+		if ( ! empty($database))
+		{
+			$info .= " dbname='".$database."'";
+		}
+
+		if ( ! empty($options))
+		{
+			$info .= " options='$options'";
+		}
+
+		if (isset($ssl))
+		{
+			if ($ssl === TRUE)
+			{
+				$info .= " sslmode='require'";
+			}
+			elseif ($ssl === FALSE)
+			{
+				$info .= " sslmode='disable'";
+			}
+			else
+			{
+				$info .= " sslmode='".$ssl."'";
+			}
+		}
+
+		return $info;
+	}
+
+	/**
 	 * Create a CREATE INDEX statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
@@ -188,62 +252,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	public function __construct($name, $config)
 	{
 		parent::__construct($name, $config);
-
-		if (empty($this->_config['connection']['info']))
-		{
-			// Build connection string
-			$this->_config['connection']['info'] = '';
-
-			extract($this->_config['connection']);
-
-			if ( ! empty($hostname))
-			{
-				$info .= "host='$hostname'";
-			}
-
-			if ( ! empty($port))
-			{
-				$info .= " port='$port'";
-			}
-
-			if ( ! empty($username))
-			{
-				$info .= " user='$username'";
-			}
-
-			if ( ! empty($password))
-			{
-				$info .= " password='$password'";
-			}
-
-			if ( ! empty($database))
-			{
-				$info .= " dbname='$database'";
-			}
-
-			if ( ! empty($options))
-			{
-				$info .= " options='$options'";
-			}
-
-			if (isset($ssl))
-			{
-				if ($ssl === TRUE)
-				{
-					$info .= " sslmode='require'";
-				}
-				elseif ($ssl === FALSE)
-				{
-					$info .= " sslmode='disable'";
-				}
-				else
-				{
-					$info .= " sslmode='$ssl'";
-				}
-			}
-
-			$this->_config['connection']['info'] = $info;
-		}
 	}
 
 	/**
@@ -720,6 +728,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function connect()
 	{
+		if ( ! isset($this->_config['connection']['info']))
+		{
+			$this->_config['connection']['info']
+				= Database_PostgreSQL::configuration($this->_config);
+		}
+
 		try
 		{
 			// Raises E_WARNING upon error
