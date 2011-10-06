@@ -244,17 +244,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	protected $_version;
 
 	/**
-	 * Create a PostgreSQL connection
-	 *
-	 * @param   string  $name   Connection name
-	 * @param   array   $config Configuration
-	 */
-	public function __construct($name, $config)
-	{
-		parent::__construct($name, $config);
-	}
-
-	/**
 	 * Evaluate a result resource as though it were a command
 	 *
 	 * Frees the resource.
