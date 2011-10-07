@@ -5,6 +5,30 @@
  *
  * [!!] Requires PostgreSQL >= 8.2
  *
+ *  Configuration Option  | Type    | Description
+ *  --------------------  | ----    | -----------
+ *  profiling             | boolean | Enable execution profiling
+ *  table_prefix          | string  | Table prefix
+ *  connection.database   | string  |
+ *  connection.hostname   | string  | Server address or path to a local socket
+ *  connection.options    | string  | [PGOPTIONS][] parameter string
+ *  connection.password   | string  |
+ *  connection.persistent | boolean | Use the PHP connection pool
+ *  connection.port       | integer | Server port
+ *  connection.ssl        | mixed   | TRUE to require, FALSE to disable, or 'prefer' to negotiate
+ *  connection.username   | string  |
+ *
+ * [PGOPTIONS]: http://www.postgresql.org/docs/current/static/runtime-config.html
+ *
+ * Instead of separate parameters, the full connection string can be
+ * configured in `connection.info` to be passed directly to `pg_connect()`.
+ *
+ * [!!] Set `--client_encoding` in `connection.options` to use an encoding
+ * different than the database default.
+ *
+ * @link http://www.php.net/manual/book.pgsql
+ * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
+ *
  * @package     RealDatabase
  * @subpackage  PostgreSQL
  * @category    Drivers
@@ -12,8 +36,6 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * @link http://php.net/manual/book.pgsql
  */
 class Database_PostgreSQL extends Database implements Database_iEscape, Database_iIntrospect
 {
@@ -51,6 +73,70 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	public static function alter_table($name = NULL)
 	{
 		return new Database_PostgreSQL_Alter_Table($name);
+	}
+
+	/**
+	 * Convert a configuration array into a connection string.
+	 *
+	 * @param   array   $array  Database_PostgreSQL configuration
+	 * @return  string  Connection string
+	 */
+	public static function configuration($array)
+	{
+		if (empty($array['connection']))
+			return '';
+
+		extract($array['connection']);
+
+		$info = '';
+
+		if ( ! empty($hostname))
+		{
+			$info .= "host='".addcslashes($hostname, "'\\")."'";
+		}
+
+		if ( ! empty($port))
+		{
+			$info .= " port='".addcslashes($port, "'\\")."'";
+		}
+
+		if ( ! empty($username))
+		{
+			$info .= " user='".addcslashes($username, "'\\")."'";
+		}
+
+		if ( ! empty($password))
+		{
+			$info .= " password='".addcslashes($password, "'\\")."'";
+		}
+
+		if ( ! empty($database))
+		{
+			$info .= " dbname='".addcslashes($database, "'\\")."'";
+		}
+
+		if ( ! empty($options))
+		{
+			$info .= " options='".addcslashes($options, "'\\")."'";
+		}
+
+		if (isset($ssl))
+		{
+			if ($ssl === TRUE)
+			{
+				$info .= " sslmode='require'";
+			}
+			elseif ($ssl === FALSE)
+			{
+				$info .= " sslmode='disable'";
+			}
+			else
+			{
+				$info .= " sslmode='".addcslashes($ssl, "'\\")."'";
+			}
+		}
+
+		return $info;
 	}
 
 	/**
@@ -156,96 +242,6 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @var string  Version of the connected server
 	 */
 	protected $_version;
-
-	/**
-	 * Create a PostgreSQL connection
-	 *
-	 *  Configuration Option  | Type    | Description
-	 *  --------------------  | ----    | -----------
-	 *  profiling             | boolean | Enable execution profiling
-	 *  table_prefix          | string  | Table prefix
-	 *  connection.database   | string  |
-	 *  connection.hostname   | string  | Server address or path to a local socket
-	 *  connection.options    | string  | [PGOPTIONS][] parameter string
-	 *  connection.password   | string  |
-	 *  connection.persistent | boolean | Use the PHP connection pool
-	 *  connection.port       | integer | Server port
-	 *  connection.ssl        | mixed   | TRUE to require, FALSE to disable, or 'prefer' to negotiate
-	 *  connection.username   | string  |
-	 *
-	 * [PGOPTIONS]: http://www.postgresql.org/docs/current/static/runtime-config.html
-	 *
-	 * Instead of separate parameters, the full connection string can be
-	 * configured in `connection.info` to be passed directly to `pg_connect()`.
-	 *
-	 * [!!] Set `--client_encoding` in `connection.options` to use an encoding
-	 * different than the database default.
-	 *
-	 * @link http://www.postgresql.org/docs/current/static/libpq-connect.html Connection string definition
-	 *
-	 * @param   string  $name   Connection name
-	 * @param   array   $config Configuration
-	 */
-	public function __construct($name, $config)
-	{
-		parent::__construct($name, $config);
-
-		if (empty($this->_config['connection']['info']))
-		{
-			// Build connection string
-			$this->_config['connection']['info'] = '';
-
-			extract($this->_config['connection']);
-
-			if ( ! empty($hostname))
-			{
-				$info .= "host='$hostname'";
-			}
-
-			if ( ! empty($port))
-			{
-				$info .= " port='$port'";
-			}
-
-			if ( ! empty($username))
-			{
-				$info .= " user='$username'";
-			}
-
-			if ( ! empty($password))
-			{
-				$info .= " password='$password'";
-			}
-
-			if ( ! empty($database))
-			{
-				$info .= " dbname='$database'";
-			}
-
-			if ( ! empty($options))
-			{
-				$info .= " options='$options'";
-			}
-
-			if (isset($ssl))
-			{
-				if ($ssl === TRUE)
-				{
-					$info .= " sslmode='require'";
-				}
-				elseif ($ssl === FALSE)
-				{
-					$info .= " sslmode='disable'";
-				}
-				else
-				{
-					$info .= " sslmode='$ssl'";
-				}
-			}
-
-			$this->_config['connection']['info'] = $info;
-		}
-	}
 
 	/**
 	 * Evaluate a result resource as though it were a command
@@ -721,6 +717,12 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 	public function connect()
 	{
+		if ( ! isset($this->_config['connection']['info']))
+		{
+			$this->_config['connection']['info']
+				= Database_PostgreSQL::configuration($this->_config);
+		}
+
 		try
 		{
 			// Raises E_WARNING upon error

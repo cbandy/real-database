@@ -4,7 +4,28 @@
  * [SQL Server](http://www.microsoft.com/sqlserver/) connection and expression
  * factory using PDO.
  *
+ *  Configuration Option    | Type    | Description
+ *  --------------------    | ----    | -----------
+ *  profiling               | boolean | Enable execution profiling
+ *  release_during_rollback | boolean | Release savepoints during rollback
+ *  table_prefix            | string  | Table prefix
+ *  connection.dsn          | string  | Full DSN or a predefined DSN name
+ *  connection.options      | array   | PDO options
+ *  connection.password     | string  |
+ *  connection.persistent   | boolean | Use the PHP connection pool
+ *  connection.uri          | string  | URI to a file containing the DSN
+ *  connection.username     | string  |
+ *
+ * *[DSN]: Data Source Name
  * *[PDO]: PHP Data Objects
+ * *[URI]: Uniform Resource Identifier
+ *
+ * [!!] Set `PDO::SQLSRV_ATTR_ENCODING` in `connection.options` to use an
+ * encoding other than UTF-8.
+ *
+ * @link http://sqlsrvphp.codeplex.com/ Microsoft Drivers for PHP for SQL Server
+ * @link http://msdn.microsoft.com/library/ee229547.aspx Documentation
+ * @link http://msdn.microsoft.com/library/ff628159.aspx PDO connection parameters
  *
  * @package     RealDatabase
  * @subpackage  Microsoft SQL Server
@@ -13,9 +34,6 @@
  * @author      Chris Bandy
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * @link http://sqlsrvphp.codeplex.com/ Microsoft Drivers for PHP for SQL Server
- * @link http://msdn.microsoft.com/library/ee229547.aspx Documentation
  */
 class Database_PDO_SQLServer extends Database_PDO
 	implements Database_iIntrospect
@@ -93,26 +111,6 @@ class Database_PDO_SQLServer extends Database_PDO
 
 	/**
 	 * Create a PDO connection for SQL Server
-	 *
-	 *  Configuration Option    | Type    | Description
-	 *  --------------------    | ----    | -----------
-	 *  profiling               | boolean | Enable execution profiling
-	 *  release_during_rollback | boolean | Release savepoints during rollback
-	 *  table_prefix            | string  | Table prefix
-	 *  connection.dsn          | string  | Full DSN or a predefined DSN name
-	 *  connection.options      | array   | PDO options
-	 *  connection.password     | string  |
-	 *  connection.persistent   | boolean | Use the PHP connection pool
-	 *  connection.uri          | string  | URI to a file containing the DSN
-	 *  connection.username     | string  |
-	 *
-	 * *[DSN]: Data Source Name
-	 * *[URI]: Uniform Resource Identifier
-	 *
-	 * [!!] Set `PDO::SQLSRV_ATTR_ENCODING` in `connection.options` to use an
-	 * encoding other than UTF-8.
-	 *
-	 * @link http://msdn.microsoft.com/library/ff628159.aspx PDO connection parameters
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration

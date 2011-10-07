@@ -65,6 +65,73 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db->charset('kohana-invalid-encoding');
 	}
 
+	public function provider_configuration()
+	{
+		return array(
+			array(array(), ''),
+			array(array('connection' => array()), ''),
+
+			array(array('connection' => array('hostname' => 'a')), "host='a'"),
+			array(array('connection' => array('port' => 1)), " port='1'"),
+			array(array('connection' => array('username' => 'b')), " user='b'"),
+			array(array('connection' => array('password' => 'c')), " password='c'"),
+			array(array('connection' => array('password' => "q'c")), " password='q\\'c'"),
+			array(array('connection' => array('database' => 'd')), " dbname='d'"),
+
+			array(
+				array('connection' => array('options' => '--x=y')),
+				" options='--x=y'",
+			),
+			array(
+				array('connection' => array('options' => "--z='m n'")),
+				" options='--z=\'m n\''",
+			),
+
+			array(
+				array('connection' => array('ssl' => FALSE)),
+				" sslmode='disable'",
+			),
+			array(
+				array('connection' => array('ssl' => TRUE)),
+				" sslmode='require'",
+			),
+			array(
+				array('connection' => array('ssl' => 's')),
+				" sslmode='s'",
+			),
+
+			array(
+				array(
+					'connection' => array(
+						'hostname' => 'j',
+						'port' => 2,
+						'username' => 'k',
+						'password' => 'l',
+						'database' => 'm',
+						'options' => '--n=o',
+						'ssl' => 'p',
+					),
+				),
+				"host='j' port='2' user='k' password='l' dbname='m' options='--n=o' sslmode='p'",
+			),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL::configuration
+	 *
+	 * @dataProvider    provider_configuration
+	 *
+	 * @param   array   $argument
+	 * @param   string  $expected   Connection string
+	 */
+	public function test_configuration($argument, $expected)
+	{
+		$this->assertSame(
+			$expected, Database_PostgreSQL::configuration($argument)
+		);
+	}
+
 	/**
 	 * Throws an exception when the table does not exist.
 	 *

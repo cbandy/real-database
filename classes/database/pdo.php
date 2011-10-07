@@ -3,7 +3,23 @@
 /**
  * PDO connection.
  *
+ *  Configuration Option  | Type    | Description
+ *  --------------------  | ----    | -----------
+ *  profiling             | boolean | Enable execution profiling
+ *  table_prefix          | string  | Table prefix
+ *  connection.dsn        | string  | Full DSN or a predefined DSN name
+ *  connection.options    | array   | Driver-specific options
+ *  connection.password   | string  |
+ *  connection.persistent | boolean | Use the PHP connection pool
+ *  connection.uri        | string  | URI to a file containing the DSN
+ *  connection.username   | string  |
+ *
+ * *[DSN]: Data Source Name
  * *[PDO]: PHP Data Objects
+ * *[URI]: Uniform Resource Identifier
+ *
+ * @link http://www.php.net/manual/book.pdo
+ * @link http://www.php.net/manual/pdo.construct PDO connection parameters
  *
  * @package     RealDatabase
  * @subpackage  PDO
@@ -12,8 +28,6 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
- *
- * @link http://php.net/manual/book.pdo
  */
 class Database_PDO extends Database
 {
@@ -29,22 +43,6 @@ class Database_PDO extends Database
 
 	/**
 	 * Create a PDO connection
-	 *
-	 *  Configuration Option  | Type    | Description
-	 *  --------------------  | ----    | -----------
-	 *  profiling             | boolean | Enable execution profiling
-	 *  table_prefix          | string  | Table prefix
-	 *  connection.dsn        | string  | Full DSN or a predefined DSN name
-	 *  connection.options    | array   | Driver-specific options
-	 *  connection.password   | string  |
-	 *  connection.persistent | boolean | Use the PHP connection pool
-	 *  connection.uri        | string  | URI to a file containing the DSN
-	 *  connection.username   | string  |
-	 *
-	 * *[DSN]: Data Source Name
-	 * *[URI]: Uniform Resource Identifier
-	 *
-	 * @link http://php.net/manual/pdo.construct PDO connection parameters
 	 *
 	 * @param   string  $name   Connection name
 	 * @param   array   $config Configuration
