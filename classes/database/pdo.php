@@ -183,7 +183,8 @@ class Database_PDO extends Database
 				$this->_config['connection']['dsn'],
 				$this->_config['connection']['username'],
 				$this->_config['connection']['password'],
-				$this->_config['connection']['options']);
+				$this->_config['connection']['options']
+			);
 		}
 		catch (PDOException $e)
 		{

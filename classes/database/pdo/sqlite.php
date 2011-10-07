@@ -123,15 +123,14 @@ class Database_PDO_SQLite extends Database_PDO
 
 		if ( ! empty($this->_config['connection']['pragmas']))
 		{
-			$pragmas = $this->_config['connection']['pragmas'];
+			$pragmas = '';
 
-			foreach ($pragmas as $pragma => $value)
+			foreach ($this->_config['connection']['pragmas'] as $key => $value)
 			{
-				$pragmas[$pragma] =
-					'PRAGMA '.$pragma.' = '.$this->quote_literal($value);
+				$pragmas .= '; PRAGMA '.$key.' = '.$this->quote_literal($value);
 			}
 
-			$this->execute_command(implode('; ', $pragmas));
+			$this->execute_command($pragmas);
 		}
 
 		// Initialize the savepoint stack
