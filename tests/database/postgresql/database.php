@@ -75,11 +75,16 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 			array(array('connection' => array('port' => 1)), " port='1'"),
 			array(array('connection' => array('username' => 'b')), " user='b'"),
 			array(array('connection' => array('password' => 'c')), " password='c'"),
+			array(array('connection' => array('password' => "q'c")), " password='q\\'c'"),
 			array(array('connection' => array('database' => 'd')), " dbname='d'"),
 
 			array(
 				array('connection' => array('options' => '--x=y')),
 				" options='--x=y'",
+			),
+			array(
+				array('connection' => array('options' => "--z='m n'")),
+				" options='--z=\'m n\''",
 			),
 
 			array(

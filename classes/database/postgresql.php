@@ -92,32 +92,32 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 
 		if ( ! empty($hostname))
 		{
-			$info .= "host='".$hostname."'";
+			$info .= "host='".addcslashes($hostname, "'\\")."'";
 		}
 
 		if ( ! empty($port))
 		{
-			$info .= " port='".$port."'";
+			$info .= " port='".addcslashes($port, "'\\")."'";
 		}
 
 		if ( ! empty($username))
 		{
-			$info .= " user='".$username."'";
+			$info .= " user='".addcslashes($username, "'\\")."'";
 		}
 
 		if ( ! empty($password))
 		{
-			$info .= " password='".$password."'";
+			$info .= " password='".addcslashes($password, "'\\")."'";
 		}
 
 		if ( ! empty($database))
 		{
-			$info .= " dbname='".$database."'";
+			$info .= " dbname='".addcslashes($database, "'\\")."'";
 		}
 
 		if ( ! empty($options))
 		{
-			$info .= " options='$options'";
+			$info .= " options='".addcslashes($options, "'\\")."'";
 		}
 
 		if (isset($ssl))
@@ -132,7 +132,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 			}
 			else
 			{
-				$info .= " sslmode='".$ssl."'";
+				$info .= " sslmode='".addcslashes($ssl, "'\\")."'";
 			}
 		}
 
