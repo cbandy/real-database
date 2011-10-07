@@ -183,17 +183,6 @@ class Database_MySQL extends Database
 	protected $_savepoints;
 
 	/**
-	 * Create a MySQL connection
-	 *
-	 * @param   string  $name   Connection name
-	 * @param   array   $config Configuration
-	 */
-	public function __construct($name, $config)
-	{
-		parent::__construct($name, $config);
-	}
-
-	/**
 	 * Execute a statement after connecting
 	 *
 	 * @throws  Database_Exception
