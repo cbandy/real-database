@@ -26,14 +26,204 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 		return $dataset;
 	}
 
+	public function provider_fetch()
+	{
+		$entire = Database::factory()->select()->from($this->_table);
+
+		return array(
+			// data set #0
+			array($entire, FALSE, 0, array('id' => 1, 'value' => 50)),
+			array($entire, FALSE, 1, array('id' => 2, 'value' => 55)),
+			array($entire, FALSE, 2, array('id' => 3, 'value' => 60)),
+			array($entire, FALSE, 6, array('id' => 7, 'value' => 65)),
+
+			// data set #4
+			array($entire, TRUE, 0, (object) array('id' => 1, 'value' => 50)),
+			array($entire, TRUE, 1, (object) array('id' => 2, 'value' => 55)),
+			array($entire, TRUE, 2, (object) array('id' => 3, 'value' => 60)),
+			array($entire, TRUE, 6, (object) array('id' => 7, 'value' => 65)),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::__construct
+	 * @covers  Database_PostgreSQL_Result::fetch
+	 *
+	 * @dataProvider    provider_fetch
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   string|boolean  $as_object
+	 * @param   integer         $position
+	 * @param   array           $expected
+	 */
+	public function test_fetch($query, $as_object, $position, $expected)
+	{
+		$result = Database::factory()->execute_query($query, $as_object);
+
+		$this->assertEquals($expected, $result->fetch($position));
+		$this->assertSame(0, $result->key(), 'Do not move pointer');
+	}
+
+	public function provider_fetch_object_arguments()
+	{
+		$entire = Database::factory()->select()->from($this->_table);
+
+		return array(
+			// data set #0
+			array($entire, 0, array()),
+			array($entire, 2, array()),
+
+			// data set #2
+			array($entire, 1, array(1)),
+			array($entire, 3, array(1)),
+
+			// data set #4
+			array($entire, 4, array('a', 'b')),
+			array($entire, 5, array('a', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::__construct
+	 * @covers  Database_PostgreSQL_Result::fetch
+	 *
+	 * @dataProvider    provider_fetch_object_arguments
+	 *
+	 * @todo This test would be better using a mocked constructor
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   integer         $position
+	 * @param   array           $arguments
+	 */
+	public function test_fetch_object_arguments($query, $position, $arguments)
+	{
+		$result = Database::factory()
+			->execute_query(
+				$query, 'Database_PostgreSQL_Result_Test_Constructor', $arguments
+			)
+			->fetch($position);
+
+		$this->assertSame($arguments, $result->arguments());
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::__construct
+	 * @covers  Database_PostgreSQL_Result::fetch
+	 */
+	public function test_fetch_object_arguments_no_constructor()
+	{
+		$db = Database::factory();
+
+		// No errors about missing constructor
+		$db->execute_query(
+			$db->select()->from($this->_table), 'stdClass', array()
+		)
+		->fetch(0);
+	}
+
+	public function provider_fetch_after_seek()
+	{
+		$entire = Database::factory()->select()->from($this->_table);
+
+		return array(
+			// data set #0
+			array($entire, FALSE, 0, 0, array('id' => 1, 'value' => 50)),
+			array($entire, FALSE, 1, 0, array('id' => 1, 'value' => 50)),
+			array($entire, FALSE, 2, 0, array('id' => 1, 'value' => 50)),
+
+			// data set #3
+			array($entire, FALSE, 0, 1, array('id' => 2, 'value' => 55)),
+			array($entire, FALSE, 1, 1, array('id' => 2, 'value' => 55)),
+			array($entire, FALSE, 2, 1, array('id' => 2, 'value' => 55)),
+
+			// data set #6
+			array($entire, FALSE, 0, 6, array('id' => 7, 'value' => 65)),
+			array($entire, FALSE, 1, 6, array('id' => 7, 'value' => 65)),
+			array($entire, FALSE, 2, 6, array('id' => 7, 'value' => 65)),
+
+			// data set #9
+			array($entire, TRUE, 0, 0, (object) array('id' => 1, 'value' => 50)),
+			array($entire, TRUE, 1, 0, (object) array('id' => 1, 'value' => 50)),
+			array($entire, TRUE, 2, 0, (object) array('id' => 1, 'value' => 50)),
+
+			// data set #12
+			array($entire, TRUE, 0, 1, (object) array('id' => 2, 'value' => 55)),
+			array($entire, TRUE, 1, 1, (object) array('id' => 2, 'value' => 55)),
+			array($entire, TRUE, 2, 1, (object) array('id' => 2, 'value' => 55)),
+
+			// data set #15
+			array($entire, TRUE, 0, 6, (object) array('id' => 7, 'value' => 65)),
+			array($entire, TRUE, 1, 6, (object) array('id' => 7, 'value' => 65)),
+			array($entire, TRUE, 2, 6, (object) array('id' => 7, 'value' => 65)),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::fetch
+	 *
+	 * @dataProvider    provider_fetch_after_seek
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   string|boolean  $as_object
+	 * @param   integer         $seek
+	 * @param   integer         $position
+	 * @param   array           $expected
+	 */
+	public function test_fetch_after_seek($query, $as_object, $seek, $position, $expected)
+	{
+		$result = Database::factory()->execute_query($query, $as_object)->seek($seek);
+
+		$this->assertEquals($expected, $result->fetch($position));
+		$this->assertSame($seek, $result->key(), 'Do not move pointer');
+	}
+
+	public function provider_fetch_invalid()
+	{
+		$entire = Database::factory()->select()->from($this->_table);
+
+		return array(
+			array($entire, -5),
+			array($entire, -1),
+			array($entire, 7),
+			array($entire, 8),
+			array($entire, 10),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::fetch
+	 *
+	 * @dataProvider    provider_fetch_invalid
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   integer         $position
+	 */
+	public function test_fetch_invalid($query, $position)
+	{
+		if ($position == -1)
+			$this->markTestIncomplete('http://bugs.php.net/60244');
+
+		$result = Database::factory()->execute_query($query);
+
+		if (error_reporting() & E_WARNING)
+		{
+			$this->setExpectedException(
+				'ErrorException', 'Unable to jump to row', E_WARNING
+			);
+
+			$result->fetch($position);
+		}
+		else
+		{
+			$this->assertFalse($result->fetch($position));
+		}
+	}
+
 	public function provider_current()
 	{
-		$entire = Database::factory()
-			->select(array('*'))
-			->from($this->_table);
+		$entire = Database::factory()->select()->from($this->_table);
 
-		return array
-		(
+		return array(
 			array($entire, FALSE, array('id' => 1, 'value' => 50)),
 			array($entire, TRUE, (object) array('id' => 1, 'value' => 50)),
 		);
@@ -41,6 +231,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Result::current
+	 *
 	 * @dataProvider    provider_current
 	 *
 	 * @param   SQL_Expression  $query
@@ -57,16 +248,16 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	public function provider_current_after_seek()
 	{
-		$entire = Database::factory()
-			->select(array('*'))
-			->from($this->_table);
+		$entire = Database::factory()->select()->from($this->_table);
 
-		return array
-		(
+		return array(
+			// data set #0
 			array($entire, FALSE, 0, array('id' => 1, 'value' => 50)),
 			array($entire, FALSE, 1, array('id' => 2, 'value' => 55)),
 			array($entire, FALSE, 2, array('id' => 3, 'value' => 60)),
 			array($entire, FALSE, 6, array('id' => 7, 'value' => 65)),
+
+			// data set #4
 			array($entire, TRUE, 0, (object) array('id' => 1, 'value' => 50)),
 			array($entire, TRUE, 1, (object) array('id' => 2, 'value' => 55)),
 			array($entire, TRUE, 2, (object) array('id' => 3, 'value' => 60)),
@@ -76,6 +267,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Result::current
+	 *
 	 * @dataProvider    provider_current_after_seek
 	 *
 	 * @param   SQL_Expression  $query
@@ -91,67 +283,11 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 		$this->assertEquals($expected, $result->current(), 'Do not move pointer');
 	}
 
-	public function provider_current_object_arguments()
-	{
-		$entire = Database::factory()
-			->select(array('*'))
-			->from($this->_table);
-
-		return array
-		(
-			array($entire, array()),
-			array($entire, array(1)),
-			array($entire, array('a', 'b')),
-		);
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Result::__construct
-	 * @covers  Database_PostgreSQL_Result::current
-	 *
-	 * @dataProvider    provider_current_object_arguments
-	 *
-	 * @todo This test would be better using a mocked constructor
-	 *
-	 * @param   SQL_Expression  $query
-	 * @param   array           $arguments
-	 */
-	public function test_current_object_arguments($query, $arguments)
-	{
-		$result = Database::factory()
-			->execute_query($query, 'Database_PostgreSQL_Result_Test_Constructor', $arguments)
-			->current();
-
-		$this->assertSame($arguments, $result->arguments());
-	}
-
-	/**
-	 * @covers  Database_PostgreSQL_Result::__construct
-	 * @covers  Database_PostgreSQL_Result::current
-	 *
-	 * @param   SQL_Expression  $query
-	 * @param   array           $arguments
-	 */
-	public function test_current_object_arguments_no_constructor()
-	{
-		$db = Database::factory();
-
-		// No errors about missing constructor
-		$db->execute_query(
-			$db->select(array('*'))->from($this->_table),
-			'stdClass',
-			array()
-		)->current();
-	}
-
 	public function provider_get()
 	{
-		$entire = Database::factory()
-			->select(array('*'))
-			->from($this->_table);
+		$entire = Database::factory()->select()->from($this->_table);
 
-		return array
-		(
+		return array(
 			// data set #0
 			array($entire, FALSE, NULL, NULL, 1),
 			array($entire, FALSE, 'id', NULL, 1),
@@ -172,6 +308,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Result::get
+	 *
 	 * @dataProvider    provider_get
 	 *
 	 * @param   SQL_Expression  $query
@@ -190,12 +327,9 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	public function provider_get_after_seek()
 	{
-		$entire = Database::factory()
-			->select(array('*'))
-			->from($this->_table);
+		$entire = Database::factory()->select()->from($this->_table);
 
-		return array
-		(
+		return array(
 			// data set #0
 			array($entire, FALSE, 0, NULL, NULL, 1),
 			array($entire, FALSE, 1, NULL, NULL, 2),
@@ -212,6 +346,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Result::get
+	 *
 	 * @dataProvider    provider_get_after_seek
 	 *
 	 * @param   SQL_Expression  $query
@@ -236,8 +371,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 			->from($this->_table)
 			->where('value', '>', 1000);
 
-		return array
-		(
+		return array(
 			// data set #0
 			array($empty, FALSE, NULL, NULL),
 			array($empty, FALSE, NULL, 'asdf'),
@@ -254,6 +388,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Result::get
+	 *
 	 * @dataProvider    provider_get_invalid
 	 *
 	 * @param   SQL_Expression  $query      SQL that returns no rows
@@ -273,8 +408,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 	{
 		$null = 'SELECT NULL AS value';
 
-		return array
-		(
+		return array(
 			// data set #0
 			array($null, FALSE, NULL, NULL),
 			array($null, FALSE, NULL, 'asdf'),
@@ -291,6 +425,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Result::get
+	 *
 	 * @dataProvider    provider_get_null
 	 *
 	 * @param   SQL_Expression  $query      SQL that returns a NULL value
@@ -306,12 +441,114 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 		$this->assertSame($default, $result->get($name, $default), 'Do not move pointer');
 	}
 
+	public function provider_offset_get()
+	{
+		$entire = Database::factory()->select()->from($this->_table);
+
+		return array(
+			array($entire, FALSE, 0, array('id' => 1, 'value' => 50)),
+			array($entire, FALSE, 3, array('id' => 4, 'value' => 60)),
+			array($entire, TRUE, 0, (object) array('id' => 1, 'value' => 50)),
+			array($entire, TRUE, 3, (object) array('id' => 4, 'value' => 60)),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::fetch
+	 * @covers  Database_PostgreSQL_Result::offsetGet
+	 *
+	 * @dataProvider    provider_offset_get
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   string|boolean  $as_object
+	 * @param   integer         $offset
+	 * @param   array           $expected
+	 */
+	public function test_offset_get($query, $as_object, $offset, $expected)
+	{
+		$result = Database::factory()->execute_query($query, $as_object);
+
+		$this->assertEquals($expected, $result->offsetGet($offset));
+	}
+
+	public function provider_offset_get_after_seek()
+	{
+		$entire = Database::factory()->select()->from($this->_table);
+
+		return array(
+			// data set #0
+			array($entire, FALSE, 0, 0, array('id' => 1, 'value' => 50)),
+			array($entire, FALSE, 1, 0, array('id' => 1, 'value' => 50)),
+			array($entire, FALSE, 2, 0, array('id' => 1, 'value' => 50)),
+
+			// data set #3
+			array($entire, FALSE, 0, 1, array('id' => 2, 'value' => 55)),
+			array($entire, FALSE, 1, 1, array('id' => 2, 'value' => 55)),
+			array($entire, FALSE, 2, 1, array('id' => 2, 'value' => 55)),
+
+			// data set #6
+			array($entire, FALSE, 0, 6, array('id' => 7, 'value' => 65)),
+			array($entire, FALSE, 1, 6, array('id' => 7, 'value' => 65)),
+			array($entire, FALSE, 2, 6, array('id' => 7, 'value' => 65)),
+
+			// data set #9
+			array($entire, TRUE, 0, 0, (object) array('id' => 1, 'value' => 50)),
+			array($entire, TRUE, 1, 0, (object) array('id' => 1, 'value' => 50)),
+			array($entire, TRUE, 2, 0, (object) array('id' => 1, 'value' => 50)),
+
+			// data set #12
+			array($entire, TRUE, 0, 1, (object) array('id' => 2, 'value' => 55)),
+			array($entire, TRUE, 1, 1, (object) array('id' => 2, 'value' => 55)),
+			array($entire, TRUE, 2, 1, (object) array('id' => 2, 'value' => 55)),
+
+			// data set #15
+			array($entire, TRUE, 0, 6, (object) array('id' => 7, 'value' => 65)),
+			array($entire, TRUE, 1, 6, (object) array('id' => 7, 'value' => 65)),
+			array($entire, TRUE, 2, 6, (object) array('id' => 7, 'value' => 65)),
+		);
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::fetch
+	 * @covers  Database_PostgreSQL_Result::offsetGet
+	 *
+	 * @dataProvider    provider_offset_get_after_seek
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   string|boolean  $as_object
+	 * @param   integer         $position
+	 * @param   integer         $offset
+	 * @param   array           $expected
+	 */
+	public function test_offset_get_after_seek($query, $as_object, $position, $offset, $expected)
+	{
+		$result = Database::factory()->execute_query($query, $as_object)->seek($position);
+
+		$this->assertEquals($expected, $result->offsetGet($offset));
+		$this->assertSame($position, $result->key(), 'Do not move pointer');
+	}
+
+	/**
+	 * @covers  Database_PostgreSQL_Result::offsetGet
+	 *
+	 * @dataProvider    provider_fetch_invalid
+	 *
+	 * @param   SQL_Expression  $query
+	 * @param   integer         $offset
+	 */
+	public function test_offset_get_invalid($query, $offset)
+	{
+		$result = Database::factory()->execute_query($query);
+
+		$this->assertNull($result->offsetGet($offset));
+	}
+
 	public function provider_as_array()
 	{
 		$result = array();
 
 		$empty = Database::factory()
-			->select(array('*'))
+			->select()
 			->from($this->_table)
 			->where('value', '>', 1000);
 
@@ -333,9 +570,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 		$result[] = array($empty, TRUE, 'id', NULL, array());
 		$result[] = array($empty, TRUE, 'value', NULL, array());
 
-		$entire = Database::factory()
-			->select(array('*'))
-			->from($this->_table);
+		$entire = Database::factory()->select()->from($this->_table);
 
 		// data set #14
 		$result[] = array($entire, FALSE, NULL, NULL, array(
@@ -428,6 +663,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 
 	/**
 	 * @covers  Database_PostgreSQL_Result::as_array
+	 *
 	 * @dataProvider    provider_as_array
 	 *
 	 * @param   SQL_Expression  $query

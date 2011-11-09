@@ -64,22 +64,35 @@ class Database_PostgreSQL_Result extends Database_Result
 
 	public function current()
 	{
+		return $this->fetch($this->_position);
+	}
+
+	/**
+	 * Retrieve a specific row without moving the pointer.
+	 *
+	 * Raises E_WARNING and returns FALSE when $position is invalid.
+	 *
+	 * @param   integer $position
+	 * @return  mixed
+	 */
+	public function fetch($position)
+	{
 		// Associative array
 		if ( ! $this->_as_object)
-			return pg_fetch_assoc($this->_result, $this->_position);
+			return pg_fetch_assoc($this->_result, $position);
 
 		// Object without constructor arguments
 		if ( ! $this->_arguments)
 			return pg_fetch_object(
 				$this->_result,
-				$this->_position,
+				$position,
 				$this->_as_object
 			);
 
 		// Object with constructor arguments
 		return pg_fetch_object(
 			$this->_result,
-			$this->_position,
+			$position,
 			$this->_as_object,
 			$this->_arguments
 		);
@@ -99,5 +112,13 @@ class Database_PostgreSQL_Result extends Database_Result
 		}
 
 		return $default;
+	}
+
+	public function offsetGet($offset)
+	{
+		if ( ! $this->offsetExists($offset))
+			return NULL;
+
+		return $this->fetch($offset);
 	}
 }
