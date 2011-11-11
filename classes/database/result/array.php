@@ -34,11 +34,25 @@ class Database_Result_Array extends Database_Result
 		return parent::as_array($key, $value);
 	}
 
+	/**
+	 * Return the current row without validating the current position.
+	 * Implements [Iterator::current].
+	 *
+	 * @return  mixed
+	 */
 	public function current()
 	{
 		return $this->_data[$this->_position];
 	}
 
+	/**
+	 * Return the row at the specified offset without moving the pointer.
+	 * Returns NULL if the offset does not exist. Implements
+	 * [ArrayAccess::offsetGet].
+	 *
+	 * @param   integer $offset
+	 * @return  mixed
+	 */
 	public function offsetGet($offset)
 	{
 		return $this->offsetExists($offset) ? $this->_data[$offset] : NULL;

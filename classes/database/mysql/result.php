@@ -56,6 +56,12 @@ class Database_MySQL_Result extends Database_Result
 		return parent::as_array($key, $value);
 	}
 
+	/**
+	 * Return the current row without validating the current position.
+	 * Implements [Iterator::current].
+	 *
+	 * @return  mixed
+	 */
 	public function current()
 	{
 		return $this->fetch($this->_position);
@@ -112,6 +118,14 @@ class Database_MySQL_Result extends Database_Result
 		return $default;
 	}
 
+	/**
+	 * Return the row at the specified offset without moving the pointer.
+	 * Returns NULL if the offset does not exist. Implements
+	 * [ArrayAccess::offsetGet].
+	 *
+	 * @param   integer $offset
+	 * @return  mixed
+	 */
 	public function offsetGet($offset)
 	{
 		if ( ! $this->offsetExists($offset))
