@@ -146,7 +146,7 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 		 */
 		$result = $this->getMock(
 			'Database_Result',
-			array('current', 'serializable'),
+			array('current', 'offsetGet', 'serializable'),
 			array(NULL, 0)
 		);
 
@@ -274,7 +274,7 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 		 */
 		$result = $this->getMock(
 			'Database_Result',
-			array('current', 'serializable'),
+			array('current', 'offsetGet', 'serializable'),
 			array(NULL, 0)
 		);
 

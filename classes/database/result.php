@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Read-only, seekable result set iterator. Individual rows can be accessed using brackets, while
- * [Database_Result::as_array] retrieves one or more columns from multiple rows at once. A single
- * column can be retrieved with [Database_Result::get].
+ * Read-only, seekable result set iterator. Individual rows can be accessed
+ * using brackets, while [Database_Result::as_array] retrieves one or more
+ * columns from multiple rows at once. A single column can be retrieved with
+ * [Database_Result::get].
  *
  *     $result = $db->execute($query);
  *
@@ -142,9 +143,7 @@ abstract class Database_Result
 	}
 
 	/**
-	 * The number of rows in the result set
-	 *
-	 * @link http://php.net/manual/countable.count Countable::count()
+	 * The number of rows in the result set. Implements [Countable::count].
 	 *
 	 * @return  integer
 	 */
@@ -152,15 +151,6 @@ abstract class Database_Result
 	{
 		return $this->_count;
 	}
-
-	/**
-	 * Return the current row without validating the current position
-	 *
-	 * @link http://php.net/manual/iterator.current Iterator::current()
-	 *
-	 * @return  mixed
-	 */
-	//abstract public function current();
 
 	/**
 	 * Return a column from the current row.
@@ -202,9 +192,8 @@ abstract class Database_Result
 	}
 
 	/**
-	 * The offset of the row that will be returned by the next call to current()
-	 *
-	 * @link http://php.net/manual/iterator.key Iterator::key()
+	 * The offset of the row that will be returned by the next call to
+	 * current(). Implements [Iterator::key].
 	 *
 	 * @return integer
 	 */
@@ -214,9 +203,7 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Move the current position to the next row
-	 *
-	 * @link http://php.net/manual/iterator.next Iterator::next()
+	 * Move the current position to the next row. Implements [Iterator::next].
 	 *
 	 * @return  $this
 	 */
@@ -227,9 +214,7 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Whether or not an offset exists
-	 *
-	 * @link http://php.net/manual/arrayaccess.offsetexists ArrayAccess::offsetExists()
+	 * Whether or not an offset exists. Implements [ArrayAccess::offsetExists].
 	 *
 	 * @param   integer $offset
 	 * @return  boolean
@@ -240,32 +225,8 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Return the row at the specified offset. Returns NULL if the offset does
-	 * not exist.
-	 *
-	 * @link http://php.net/manual/arrayaccess.offsetget ArrayAccess::offsetGet()
-	 *
-	 * @param   integer $offset
-	 * @return  mixed
-	 */
-	public function offsetGet($offset)
-	{
-		try
-		{
-			$this->seek($offset);
-		}
-		catch (OutOfBoundsException $e)
-		{
-			return NULL;
-		}
-
-		return $this->current();
-	}
-
-	/**
-	 * No-op because this class is read-only
-	 *
-	 * @link http://php.net/manual/arrayaccess.offsetset ArrayAccess::offsetSet()
+	 * No-op because this class is read-only. Implements
+	 * [ArrayAccess::offsetSet].
 	 *
 	 * @throws Kohana_Exception
 	 */
@@ -275,9 +236,8 @@ abstract class Database_Result
 	}
 
 	/**
-	 * No-op because this class is read-only
-	 *
-	 * @link http://php.net/manual/arrayaccess.offsetunset ArrayAccess::offsetUnset()
+	 * No-op because this class is read-only. Implements
+	 * [ArrayAccess::offsetUnset].
 	 *
 	 * @throws Kohana_Exception
 	 */
@@ -287,7 +247,7 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Move the current position to the previous row
+	 * Move the current position to the previous row.
 	 *
 	 * @return  $this
 	 */
@@ -298,9 +258,8 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Move the current position to the first row
-	 *
-	 * @link http://php.net/manual/iterator.rewind Iterator::rewind()
+	 * Move the current position to the first row. Implements
+	 * [Iterator::rewind].
 	 *
 	 * @return  $this
 	 */
@@ -311,9 +270,7 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Set the current position
-	 *
-	 * @link http://php.net/manual/seekableiterator.seek SeekableIterator::seek()
+	 * Set the current position. Implements [SeekableIterator::seek].
 	 *
 	 * @throws  OutOfBoundsException
 	 * @param   integer $position
@@ -339,9 +296,8 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Whether or not the next call to current() will succeed
-	 *
-	 * @link http://php.net/manual/iterator.valid Iterator::valid()
+	 * Whether or not the next call to current() will succeed. Implements
+	 * [Iterator::valid].
 	 *
 	 * @return  boolean
 	 */

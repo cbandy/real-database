@@ -313,60 +313,6 @@ class Database_Base_Result_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Result::offsetGet
-	 */
-	public function test_offset_get()
-	{
-		$value = array('key' => 'value');
-
-		$result = $this->getMockForAbstractClass(
-			'Database_Result',
-			array(FALSE, 1)
-		);
-
-		$result->expects($this->once())
-			->method('current')
-			->will($this->returnValue($value));
-
-		$this->assertSame($value, $result->offsetGet(0));
-	}
-
-	/**
-	 * @covers  Database_Result::offsetGet
-	 *
-	 * @dataProvider    provider_count
-	 *
-	 * @param   integer $count
-	 */
-	public function test_offset_get_error_low($count)
-	{
-		$result = $this->getMockForAbstractClass(
-			'Database_Result',
-			array(FALSE, $count)
-		);
-
-		$this->assertNull($result->offsetGet(-1));
-	}
-
-	/**
-	 * @covers  Database_Result::offsetGet
-	 *
-	 * @dataProvider    provider_seek_error_high
-	 *
-	 * @param   integer $count
-	 * @param   integer $position
-	 */
-	public function test_offset_get_error_high($count, $position)
-	{
-		$result = $this->getMockForAbstractClass(
-			'Database_Result',
-			array(FALSE, $count)
-		);
-
-		$this->assertNull($result->offsetGet($position));
-	}
-
-	/**
 	 * Always throws an exception.
 	 *
 	 * @covers  Database_Result::offsetSet

@@ -62,24 +62,43 @@ class Database_PostgreSQL_Result extends Database_Result
 		);
 	}
 
+	/**
+	 * Return the current row without validating the current position.
+	 * Implements [Iterator::current].
+	 *
+	 * @return  mixed
+	 */
 	public function current()
+	{
+		return $this->fetch($this->_position);
+	}
+
+	/**
+	 * Retrieve a specific row without moving the pointer.
+	 *
+	 * Raises E_WARNING and returns FALSE when $position is invalid.
+	 *
+	 * @param   integer $position
+	 * @return  mixed
+	 */
+	public function fetch($position)
 	{
 		// Associative array
 		if ( ! $this->_as_object)
-			return pg_fetch_assoc($this->_result, $this->_position);
+			return pg_fetch_assoc($this->_result, $position);
 
 		// Object without constructor arguments
 		if ( ! $this->_arguments)
 			return pg_fetch_object(
 				$this->_result,
-				$this->_position,
+				$position,
 				$this->_as_object
 			);
 
 		// Object with constructor arguments
 		return pg_fetch_object(
 			$this->_result,
-			$this->_position,
+			$position,
 			$this->_as_object,
 			$this->_arguments
 		);
@@ -99,5 +118,21 @@ class Database_PostgreSQL_Result extends Database_Result
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Return the row at the specified offset without moving the pointer.
+	 * Returns NULL if the offset does not exist. Implements
+	 * [ArrayAccess::offsetGet].
+	 *
+	 * @param   integer $offset
+	 * @return  mixed
+	 */
+	public function offsetGet($offset)
+	{
+		if ( ! $this->offsetExists($offset))
+			return NULL;
+
+		return $this->fetch($offset);
 	}
 }

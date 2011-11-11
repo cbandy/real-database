@@ -56,20 +56,35 @@ class Database_MySQL_Result extends Database_Result
 		return parent::as_array($key, $value);
 	}
 
+	/**
+	 * Return the current row without validating the current position.
+	 * Implements [Iterator::current].
+	 *
+	 * @return  mixed
+	 */
 	public function current()
 	{
-		if ($this->_internal_position !== $this->_position)
+		return $this->fetch($this->_position);
+	}
+
+	/**
+	 * Retrieve a specific row without moving the pointer.
+	 *
+	 * Raises E_WARNING and returns FALSE when $position is invalid.
+	 *
+	 * @param   integer $position
+	 * @return  mixed
+	 */
+	public function fetch($position)
+	{
+		if ($this->_internal_position !== $position)
 		{
 			// Raises E_WARNING when position is out of bounds
-			if ( ! mysql_data_seek($this->_result, $this->_position))
-				throw new OutOfBoundsException;
+			if ( ! mysql_data_seek($this->_result, $position))
+				return FALSE;
+		}
 
-			$this->_internal_position = $this->_position + 1;
-		}
-		else
-		{
-			++$this->_internal_position;
-		}
+		$this->_internal_position = $position + 1;
 
 		// Associative array
 		if ( ! $this->_as_object)
@@ -101,5 +116,21 @@ class Database_MySQL_Result extends Database_Result
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Return the row at the specified offset without moving the pointer.
+	 * Returns NULL if the offset does not exist. Implements
+	 * [ArrayAccess::offsetGet].
+	 *
+	 * @param   integer $offset
+	 * @return  mixed
+	 */
+	public function offsetGet($offset)
+	{
+		if ( ! $this->offsetExists($offset))
+			return NULL;
+
+		return $this->fetch($offset);
 	}
 }
