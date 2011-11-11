@@ -367,7 +367,7 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 	public function provider_get_invalid()
 	{
 		$empty = Database::factory()
-			->select(array('*'))
+			->select()
 			->from($this->_table)
 			->where('value', '>', 1000);
 

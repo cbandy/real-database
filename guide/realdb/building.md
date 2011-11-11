@@ -137,10 +137,7 @@ Sorting can be done with Expressions or Columns:
 Paging is accomplished with `limit()` and `offset()`:
 
     // Retrieve 50 rows starting from the 100th
-    $db->select(array('*'))
-        ->from('things')
-        ->offset(100)
-        ->limit(50);
+    $db->select()->from('things')->offset(100)->limit(50);
 
 Queries can be combined using the `except()`, `intersect()` and `union()` methods of the
 [Database_Query_Set] class:
@@ -149,9 +146,9 @@ Queries can be combined using the `except()`, `intersect()` and `union()` method
     //   UNION
     // SELECT * FROM "others" WHERE "name" = 'reversed'
     $db->query_set(
-        $db->select(array('*'))->from('things')->where('name', '=', 'effect')
+        $db->select()->from('things')->where('name', '=', 'effect')
     )->union(
-        $db->select(array('*'))->from('others')->where('name', '=', 'reversed')
+        $db->select()->from('others')->where('name', '=', 'reversed')
     );
 
 When executed, all queries will return a [Database_Result] object.

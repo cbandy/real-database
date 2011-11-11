@@ -89,7 +89,7 @@ To retrieve the number of rows a query would return without paging applied,
 reset the `limit` and `offset` parameters of a SELECT query:
 
     $query = $db
-        ->select(array('*'))
+        ->select()
         ->from($table)
         ->where($conditions)
         ->limit($number)
