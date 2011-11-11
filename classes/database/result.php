@@ -1,9 +1,10 @@
 <?php
 
 /**
- * Read-only, seekable result set iterator. Individual rows can be accessed using brackets, while
- * [Database_Result::as_array] retrieves one or more columns from multiple rows at once. A single
- * column can be retrieved with [Database_Result::get].
+ * Read-only, seekable result set iterator. Individual rows can be accessed
+ * using brackets, while [Database_Result::as_array] retrieves one or more
+ * columns from multiple rows at once. A single column can be retrieved with
+ * [Database_Result::get].
  *
  *     $result = $db->execute($query);
  *
@@ -240,27 +241,15 @@ abstract class Database_Result
 	}
 
 	/**
-	 * Return the row at the specified offset. Returns NULL if the offset does
-	 * not exist.
+	 * Return the row at the specified offset without moving the pointer.
+	 * Returns NULL if the offset does not exist.
 	 *
 	 * @link http://php.net/manual/arrayaccess.offsetget ArrayAccess::offsetGet()
 	 *
 	 * @param   integer $offset
 	 * @return  mixed
 	 */
-	public function offsetGet($offset)
-	{
-		try
-		{
-			$this->seek($offset);
-		}
-		catch (OutOfBoundsException $e)
-		{
-			return NULL;
-		}
-
-		return $this->current();
-	}
+	//abstract public function offsetGet($offset);
 
 	/**
 	 * No-op because this class is read-only

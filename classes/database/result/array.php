@@ -38,4 +38,9 @@ class Database_Result_Array extends Database_Result
 	{
 		return $this->_data[$this->_position];
 	}
+
+	public function offsetGet($offset)
+	{
+		return $this->offsetExists($offset) ? $this->_data[$offset] : NULL;
+	}
 }

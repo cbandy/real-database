@@ -30,6 +30,7 @@ class Database_Base_Result_Array_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_Result_Array::__construct
+	 *
 	 * @dataProvider    provider_constructor
 	 *
 	 * @param   array           $rows
@@ -95,6 +96,7 @@ class Database_Base_Result_Array_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_Result_Array::as_array
+	 *
 	 * @dataProvider    provider_as_array
 	 *
 	 * @param   string|boolean  $as_object
@@ -112,8 +114,7 @@ class Database_Base_Result_Array_Test extends PHPUnit_Framework_TestCase
 
 	public function provider_current()
 	{
-		return array
-		(
+		return array(
 			array(
 				FALSE,
 				array(
@@ -122,7 +123,6 @@ class Database_Base_Result_Array_Test extends PHPUnit_Framework_TestCase
 				),
 				array('a' => 'A'),
 			),
-
 
 			array(
 				TRUE,
@@ -137,6 +137,7 @@ class Database_Base_Result_Array_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_Result_Array::current
+	 *
 	 * @dataProvider    provider_current
 	 *
 	 * @param   string|boolean  $as_object
@@ -180,6 +181,7 @@ class Database_Base_Result_Array_Test extends PHPUnit_Framework_TestCase
 
 	/**
 	 * @covers  Database_Result_Array::current
+	 *
 	 * @dataProvider    provider_current_after_seek
 	 *
 	 * @param   string|boolean  $as_object
@@ -195,5 +197,166 @@ class Database_Base_Result_Array_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expected, $result->current());
 		$this->assertEquals($expected, $result->current(), 'Do not move pointer');
+	}
+
+	public function provider_offset_get()
+	{
+		$result = array();
+
+		$rows = array(
+			array('a' => 'A'),
+			array('b' => 'B'),
+			array('c' => 'C'),
+		);
+
+		$result[] = array($rows, FALSE, 0, array('a' => 'A'));
+		$result[] = array($rows, FALSE, 1, array('b' => 'B'));
+		$result[] = array($rows, FALSE, 2, array('c' => 'C'));
+
+		$rows = array(
+			(object) array('a' => 'A'),
+			(object) array('b' => 'B'),
+			(object) array('c' => 'C'),
+		);
+
+		$result[] = array($rows, TRUE, 0, (object) array('a' => 'A'));
+		$result[] = array($rows, TRUE, 1, (object) array('b' => 'B'));
+		$result[] = array($rows, TRUE, 2, (object) array('c' => 'C'));
+
+		return $result;
+	}
+
+	/**
+	 * @covers  Database_Result_Array::offsetGet
+	 *
+	 * @dataProvider    provider_offset_get
+	 *
+	 * @param   array           $rows       Data set
+	 * @param   string|boolean  $as_object
+	 * @param   integer         $offset
+	 * @param   array           $expected
+	 */
+	public function test_offset_get($rows, $as_object, $offset, $expected)
+	{
+		$result = new Database_Result_Array($rows, $as_object);
+
+		$this->assertEquals($expected, $result->offsetGet($offset));
+	}
+
+	public function provider_offset_get_after_seek()
+	{
+		$result = array();
+
+		$rows = array(
+			array('a' => 'A'),
+			array('b' => 'B'),
+			array('c' => 'C'),
+		);
+
+		// data set #0
+		$result[] = array($rows, FALSE, 0, 0, array('a' => 'A'));
+		$result[] = array($rows, FALSE, 1, 0, array('a' => 'A'));
+		$result[] = array($rows, FALSE, 2, 0, array('a' => 'A'));
+
+		// data set #3
+		$result[] = array($rows, FALSE, 0, 1, array('b' => 'B'));
+		$result[] = array($rows, FALSE, 1, 1, array('b' => 'B'));
+		$result[] = array($rows, FALSE, 2, 1, array('b' => 'B'));
+
+		// data set #6
+		$result[] = array($rows, FALSE, 0, 2, array('c' => 'C'));
+		$result[] = array($rows, FALSE, 1, 2, array('c' => 'C'));
+		$result[] = array($rows, FALSE, 2, 2, array('c' => 'C'));
+
+		$rows = array(
+			(object) array('a' => 'A'),
+			(object) array('b' => 'B'),
+			(object) array('c' => 'C'),
+		);
+
+		// data set #9
+		$result[] = array($rows, TRUE, 0, 0, (object) array('a' => 'A'));
+		$result[] = array($rows, TRUE, 1, 0, (object) array('a' => 'A'));
+		$result[] = array($rows, TRUE, 2, 0, (object) array('a' => 'A'));
+
+		// data set #12
+		$result[] = array($rows, TRUE, 0, 1, (object) array('b' => 'B'));
+		$result[] = array($rows, TRUE, 1, 1, (object) array('b' => 'B'));
+		$result[] = array($rows, TRUE, 2, 1, (object) array('b' => 'B'));
+
+		// data set #15
+		$result[] = array($rows, TRUE, 0, 2, (object) array('c' => 'C'));
+		$result[] = array($rows, TRUE, 1, 2, (object) array('c' => 'C'));
+		$result[] = array($rows, TRUE, 2, 2, (object) array('c' => 'C'));
+
+		return $result;
+	}
+
+	/**
+	 * @covers  Database_Result_Array::offsetGet
+	 *
+	 * @dataProvider    provider_offset_get_after_seek
+	 *
+	 * @param   array           $rows       Data set
+	 * @param   string|boolean  $as_object
+	 * @param   integer         $position
+	 * @param   integer         $offset
+	 * @param   array           $expected
+	 */
+	public function test_offset_get_after_seek($rows, $as_object, $position, $offset, $expected)
+	{
+		$result = new Database_Result_Array($rows, $as_object);
+		$result->seek($position);
+
+		$this->assertEquals($expected, $result->offsetGet($offset));
+		$this->assertSame($position, $result->key(), 'Do not move pointer');
+	}
+
+	public function provider_offset_get_invalid()
+	{
+		$result = array();
+
+		$rows = array(
+			array('a' => 'A'),
+			array('b' => 'B'),
+			array('c' => 'C'),
+		);
+
+		// data set #0
+		$result[] = array($rows, FALSE, -5);
+		$result[] = array($rows, FALSE, -1);
+		$result[] = array($rows, FALSE, 7);
+		$result[] = array($rows, FALSE, 8);
+		$result[] = array($rows, FALSE, 10);
+
+		$rows = array(
+			(object) array('a' => 'A'),
+			(object) array('b' => 'B'),
+			(object) array('c' => 'C'),
+		);
+
+		// data set #5
+		$result[] = array($rows, TRUE, -5);
+		$result[] = array($rows, TRUE, -1);
+		$result[] = array($rows, TRUE, 7);
+		$result[] = array($rows, TRUE, 8);
+		$result[] = array($rows, TRUE, 10);
+
+		return $result;
+	}
+
+	/**
+	 * @covers  Database_Result_Array::offsetGet
+	 *
+	 * @dataProvider    provider_offset_get_invalid
+	 *
+	 * @param   array   $rows       Data set
+	 * @param   integer $offset
+	 */
+	public function test_offset_get_invalid($rows, $as_object, $offset)
+	{
+		$result = new Database_Result_Array($rows, $as_object);
+
+		$this->assertNull($result->offsetGet($offset));
 	}
 }
