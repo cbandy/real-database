@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic ALTER TABLE statement. Some drivers do not support some features.
+ *
  * @package     RealDatabase
  * @category    Data Definition Commands
  *

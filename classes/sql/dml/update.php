@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Command for building UPDATE statements.
+ * Generic UPDATE statement. Some drivers do not support some features.
  *
  * @package     RealDatabase
  * @category    Commands

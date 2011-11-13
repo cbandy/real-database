@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic DROP TABLE statement.
+ *
  * @package     RealDatabase
  * @category    Data Definition Commands
  *

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic FOREIGN KEY constraint. Some drivers do not support some features.
+ *
  * @package     RealDatabase
  * @category    Data Definition Expressions
  *
@@ -130,7 +132,10 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	}
 
 	/**
-	 * Set whether or not the constraint can be deferred and when it should be checked
+	 * Set whether or not the constraint can be deferred and when it should be
+	 * checked.
+	 *
+	 * [!!] Not supported by MySQL nor SQL Server
 	 *
 	 * @param   boolean|string  DEFERRED or IMMEDIATE
 	 * @return  $this
@@ -143,7 +148,9 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	}
 
 	/**
-	 * Set the match type
+	 * Set the match type.
+	 *
+	 * [!!] Not supported by MySQL nor SQL Server
 	 *
 	 * @param   string  $value  FULL, PARTIAL, or SIMPLE
 	 * @return  $this

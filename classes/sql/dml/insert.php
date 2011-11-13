@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Command for building INSERT statements.
+ * Generic INSERT statement. Some drivers do not support some features.
  *
  * @package     RealDatabase
  * @category    Commands

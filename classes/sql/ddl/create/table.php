@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic CREATE TABLE statement. Some drivers do not support some features.
+ *
  * @package     RealDatabase
  * @category    Data Definition Commands
  *
@@ -131,6 +133,8 @@ class SQL_DDL_Create_Table extends SQL_Expression
 
 	/**
 	 * Set the query from which the table definition is inferred.
+	 *
+	 * [!!] Not supported by PostgreSQL nor SQL Server
 	 *
 	 * @param   SQL_Expression  $query
 	 * @return  $this

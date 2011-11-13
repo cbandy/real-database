@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic CHECK constraint.
+ *
  * @package     RealDatabase
  * @category    Data Definition Expressions
  *

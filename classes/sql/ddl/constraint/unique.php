@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic UNIQUE constraint.
+ *
  * @package     RealDatabase
  * @category    Data Definition Expressions
  *

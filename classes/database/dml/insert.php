@@ -1,7 +1,7 @@
 <?php
 
 /**
- * An INSERT command which can return the identity of an inserted row when
+ * An INSERT statement which can return the identity of an inserted row when
  * executed. Alternatively, columns from the inserted rows can be returned as a
  * result set.
  *

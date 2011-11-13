@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Expression for building a table reference.
+ * Expression for building a table reference. Some drivers do not support some
+ * features.
  *
  * @package     RealDatabase
  * @category    Expressions

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic PRIMARY KEY constraint.
+ *
  * @package     RealDatabase
  * @category    Data Definition Expressions
  *

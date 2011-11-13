@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic CREATE INDEX statement.
+ *
  * @package     RealDatabase
  * @category    Data Definition Commands
  *

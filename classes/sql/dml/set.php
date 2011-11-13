@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Builder for combining queries using the UNION, INTERSECT and EXCEPT operators.
+ * Generic statement for combining queries using the UNION, INTERSECT and EXCEPT
+ * operators. Some drivers do not support some features.
  *
  * @package     RealDatabase
  * @category    Queries

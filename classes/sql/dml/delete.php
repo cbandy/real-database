@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Command for building DELETE statements.
+ * Generic DELETE statement. Some drivers do not support some features.
  *
  * @package     RealDatabase
  * @category    Commands

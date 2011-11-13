@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic column expression for use in ALTER TABLE and CREATE TABLE statements.
+ *
  * @package     RealDatabase
  * @category    Data Definition Expressions
  *

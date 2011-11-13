@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Generic CREATE VIEW statement. Some drivers do not support some features.
+ *
  * @package     RealDatabase
  * @category    Data Definition Commands
  *
@@ -161,6 +163,8 @@ class SQL_DDL_Create_View extends SQL_Expression
 	/**
 	 * Set whether or not an existing view should be replaced.
 	 *
+	 * [!!] Not supported by SQLite nor SQL Server
+	 *
 	 * @param   boolean $value
 	 * @return  $this
 	 */
@@ -173,6 +177,8 @@ class SQL_DDL_Create_View extends SQL_Expression
 
 	/**
 	 * Set whether or not the view should be dropped at the end of the session.
+	 *
+	 * [!!] Not supported by MySQL nor SQL Server
 	 *
 	 * @param   boolean $value
 	 * @return  $this

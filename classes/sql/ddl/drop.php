@@ -1,6 +1,9 @@
 <?php
 
 /**
+ * Generic DROP statement. Some drivers do not support some features. Use the
+ * more specific [SQL_DDL_Drop_Table] statement for dropping tables.
+ *
  * @package     RealDatabase
  * @category    Data Definition Commands
  *
