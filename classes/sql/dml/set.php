@@ -180,11 +180,11 @@ class SQL_DML_Set extends SQL_Expression
 	}
 
 	/**
-	 * Set the maximum number of rows
+	 * Set the maximum number of rows to retrieve.
 	 *
 	 * [!!] Not supported by SQL Server
 	 *
-	 * @param   integer $count  Number of rows
+	 * @param   integer $count  Number of rows or NULL to reset
 	 * @return  $this
 	 */
 	public function limit($count)

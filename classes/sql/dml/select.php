@@ -242,9 +242,9 @@ class SQL_DML_Select extends SQL_Expression
 	}
 
 	/**
-	 * Set the maximum number of rows to return.
+	 * Set the maximum number of rows to retrieve.
 	 *
-	 * @param   integer $count  Number of rows
+	 * @param   integer $count  Number of rows or NULL to reset
 	 * @return  $this
 	 */
 	public function limit($count)

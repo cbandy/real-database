@@ -199,7 +199,7 @@ class SQL_DML_Update extends SQL_Expression
 	/**
 	 * Set the maximum number of rows to be updated.
 	 *
-	 * @param   integer $count  Number of rows
+	 * @param   integer $count  Number of rows or NULL to reset
 	 * @return  $this
 	 */
 	public function limit($count)
