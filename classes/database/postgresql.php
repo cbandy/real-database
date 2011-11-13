@@ -1264,6 +1264,8 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * Created a prepared statement from a PostgreSQL-compatible
 	 * [Database_Statement] or a generic [SQL_Expression].
 	 *
+	 * @uses Database_PostgreSQL::prepare()
+	 *
 	 * @throws  Database_Exception
 	 * @param   Database_Statement|SQL_Expression   $statement  SQL statement
 	 * @return  Database_PostgreSQL_Statement

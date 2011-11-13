@@ -13,6 +13,8 @@
  * @license     http://www.opensource.org/licenses/isc-license.txt
  *
  * @link http://www.postgresql.org/docs/current/static/libpq-exec.html#LIBPQ-PQPREPARE
+ *
+ * @see Database_PostgreSQL::prepare_statement()
  */
 class Database_PostgreSQL_Statement extends Database_Statement
 {

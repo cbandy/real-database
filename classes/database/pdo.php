@@ -415,6 +415,8 @@ class Database_PDO extends Database
 	 * Created a prepared statement from a PDO-compatible [Database_Statement]
 	 * or a generic [SQL_Expression].
 	 *
+	 * @uses Database_PDO::prepare()
+	 *
 	 * @throws  Database_Exception
 	 * @param   Database_Statement|SQL_Expression   $statement  SQL statement
 	 * @return  Database_PDO_Statement

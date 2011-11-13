@@ -620,6 +620,8 @@ class Database_MySQL extends Database
 	 * Created a prepared statement from a MySQL-compatible [Database_Statement]
 	 * or a generic [SQL_Expression].
 	 *
+	 * @uses Database_MySQL::prepare()
+	 *
 	 * @throws  Database_Exception
 	 * @param   Database_Statement|SQL_Expression   $statement  SQL statement
 	 * @return  Database_MySQL_Statement

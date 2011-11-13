@@ -10,6 +10,8 @@
  * @author      Chris Bandy
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @see Database_MySQL::prepare_statement()
  */
 class Database_MySQL_Statement extends Database_Statement
 {
