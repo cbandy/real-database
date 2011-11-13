@@ -14,7 +14,7 @@
  *
  * @link http://dev.mysql.com/doc/en/select.html
  */
-class Database_MySQL_Select extends Database_Select
+class Database_MySQL_Select extends Database_DML_Select
 {
 	public function __toString()
 	{

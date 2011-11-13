@@ -1,15 +1,18 @@
 <?php
 
 /**
+ * An UPDATE statement which can return columns from the affected rows when
+ * executed.
+ *
  * @package     RealDatabase
- * @category    Queries
+ * @category    Commands
  *
  * @author      Chris Bandy
- * @copyright   (c) 2010 Chris Bandy
+ * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Select extends SQL_DML_Select
-	implements Database_iQuery
+class Database_DML_Update extends SQL_DML_Update
+	implements Database_iReturning
 {
 	/**
 	 * @var array   Arguments to pass to the class constructor
@@ -21,6 +24,11 @@ class Database_Select extends SQL_DML_Select
 	 */
 	public $as_object = FALSE;
 
+	/**
+	 * @var array   Columns to return from the updated rows when executed
+	 */
+	public $returning;
+
 	public function as_assoc()
 	{
 		return $this->as_object(FALSE);
@@ -30,6 +38,15 @@ class Database_Select extends SQL_DML_Select
 	{
 		$this->as_object = $class;
 		$this->arguments = $arguments;
+
+		return $this;
+	}
+
+	public function returning($columns)
+	{
+		parent::returning($columns);
+
+		$this->returning = $this->parameters[':returning'];
 
 		return $this;
 	}

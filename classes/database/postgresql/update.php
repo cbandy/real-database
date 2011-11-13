@@ -13,7 +13,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-update.html
  */
-class Database_PostgreSQL_Update extends Database_Update
+class Database_PostgreSQL_Update extends Database_DML_Update
 {
 	public function __toString()
 	{

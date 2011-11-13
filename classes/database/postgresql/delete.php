@@ -13,7 +13,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-delete.html
  */
-class Database_PostgreSQL_Delete extends Database_Delete
+class Database_PostgreSQL_Delete extends Database_DML_Delete
 {
 	public function __toString()
 	{

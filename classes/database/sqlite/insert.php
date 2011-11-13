@@ -13,7 +13,7 @@
  *
  * @link http://www.sqlite.org/lang_insert.html
  */
-class Database_SQLite_Insert extends Database_Insert
+class Database_SQLite_Insert extends Database_DML_Insert
 {
 	public function values($values)
 	{

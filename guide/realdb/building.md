@@ -6,10 +6,10 @@ statements:
 
  SQL    | Class
  ---    | -----
- DELETE | [Database_Delete]
- INSERT | [Database_Insert]
- UPDATE | [Database_Update]
- SELECT | [Database_Select] <br /> [Database_Query_Set]
+ DELETE | [Database_DML_Delete]
+ INSERT | [Database_DML_Insert]
+ UPDATE | [Database_DML_Update]
+ SELECT | [Database_DML_Select] <br /> [Database_Query_Set]
 
 *[DML]: Data Manipulation Language
 [Fluent Interface]: http://martinfowler.com/bliki/FluentInterface.html
@@ -17,9 +17,9 @@ statements:
 
 ## Conditions
 
-[Database_Delete], [Database_Update] and [Database_Select] filter the rows they
-affect by some criteria, and these criteria are built using the [SQL_Conditions]
-class.
+[Database_DML_Delete], [Database_DML_Update] and [Database_DML_Select] filter
+the rows they affect by some criteria, and these criteria are built using the
+[SQL_Conditions] class.
 
     // "id" = 10
     new SQL_Conditions(new SQL_Column('id'), '=', 10);
@@ -49,9 +49,9 @@ It is possible to nest criteria and force operator precedence using the parenthe
 
 ## Table References
 
-[Database_Select] can return rows from multiple tables by combining them into what is called a
-table reference. Similar to criteria, these tables can be joined in a myriad of ways using the
-[SQL_Table_Reference] class.
+[Database_DML_Select] can return rows from multiple tables by combining them
+into what is called a table reference. Similar to criteria, these tables can be
+joined in a myriad of ways using the [SQL_Table_Reference] class.
 
     // Straightforward JOIN
     // "things" JOIN "sprockets" ON ("sprockets"."thing_id" = "things"."id")
@@ -71,8 +71,9 @@ table reference. Similar to criteria, these tables can be joined in a myriad of 
 
 ## Commands
 
-[Database_Delete] and [Database_Update], respectively, remove and modify rows from a
-table which match some criteria. When executed, these will return the number of rows they affected.
+[Database_DML_Delete] and [Database_DML_Update], respectively, remove and modify
+rows from a table which match some criteria. When executed, these will return
+the number of rows they affected.
 
     $rows = $db->execute(
         $db->delete('things')->where('id', '=', 10)
@@ -82,8 +83,9 @@ table which match some criteria. When executed, these will return the number of 
         $db->update('things')->value('name', 'effect')->where('id', '=', 20)
     );
 
-[Database_Insert] adds one or more rows to a table. In addition to returning the number of
-rows added, it can also return the primary key, or identity, of one of the rows.
+[Database_DML_Insert] adds one or more rows to a table. In addition to returning
+the number of rows added, it can also return the primary key, or identity, of
+one of the rows.
 
     $rows = $db->execute(
         $db->insert('things')
@@ -103,9 +105,9 @@ rows added, it can also return the primary key, or identity, of one of the rows.
 
 ## Queries
 
-SELECT queries are the most frequently used statements and the most complex. [Database_Select]
-combines a table reference with search criteria while sorting and paging results. Basic searches are
-straightforward:
+SELECT queries are the most frequently used statements and the most complex.
+[Database_DML_Select] combines a table reference with search criteria while
+sorting and paging results. Basic searches are straightforward:
 
     $db->select(array('id', 'name', 'value'))
         ->from('things')

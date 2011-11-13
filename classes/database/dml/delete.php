@@ -1,7 +1,7 @@
 <?php
 
 /**
- * An UPDATE statement which can return columns from the affected rows when
+ * A DELETE statement which can return columns from the deleted rows when
  * executed.
  *
  * @package     RealDatabase
@@ -11,7 +11,7 @@
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Update extends SQL_DML_Update
+class Database_DML_Delete extends SQL_DML_Delete
 	implements Database_iReturning
 {
 	/**
@@ -25,7 +25,7 @@ class Database_Update extends SQL_DML_Update
 	public $as_object = FALSE;
 
 	/**
-	 * @var array   Columns to return from the updated rows when executed
+	 * @var array   Columns to return from the deleted rows when executed
 	 */
 	public $returning;
 

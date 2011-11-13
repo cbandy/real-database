@@ -12,7 +12,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Insert extends SQL_DML_Insert
+class Database_DML_Insert extends SQL_DML_Insert
 	implements Database_iInsert, Database_iReturning
 {
 	/**

@@ -196,9 +196,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_delete()
 	{
 		return array(
-			array(array(), new Database_Delete),
-			array(array('a'), new Database_Delete('a')),
-			array(array('a', 'b'), new Database_Delete('a', 'b')),
+			array(array(), new Database_DML_Delete),
+			array(array('a'), new Database_DML_Delete('a')),
+			array(array('a', 'b'), new Database_DML_Delete('a', 'b')),
 		);
 	}
 
@@ -207,8 +207,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_delete
 	 *
-	 * @param   array           $arguments
-	 * @param   Database_Delete $expected
+	 * @param   array               $arguments
+	 * @param   Database_DML_Delete $expected
 	 */
 	public function test_delete($arguments, $expected)
 	{
@@ -222,7 +222,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_insert()
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
 		$mock->expects($this->once())
@@ -237,7 +237,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_insert_identity()
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 		$statement->identity('a');
 
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
@@ -256,7 +256,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_query()
 	{
-		$statement = new Database_Select;
+		$statement = new Database_DML_Select;
 
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
 		$mock->expects($this->once())
@@ -274,7 +274,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_returning()
 	{
-		$statement = new Database_Delete;
+		$statement = new Database_DML_Delete;
 
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
 		$mock->expects($this->once())
@@ -289,7 +289,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_execute_returning_returning()
 	{
-		$statement = new Database_Delete;
+		$statement = new Database_DML_Delete;
 		$statement->returning(array('a'));
 
 		$mock = $this->getMockForAbstractClass('Database', array('name', array()));
@@ -319,9 +319,9 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_insert()
 	{
 		return array(
-			array(array(), new Database_Insert),
-			array(array('a'), new Database_Insert('a')),
-			array(array('a', array('b')), new Database_Insert('a', array('b'))),
+			array(array(), new Database_DML_Insert),
+			array(array('a'), new Database_DML_Insert('a')),
+			array(array('a', array('b')), new Database_DML_Insert('a', array('b'))),
 		);
 	}
 
@@ -330,8 +330,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_insert
 	 *
-	 * @param   array           $arguments
-	 * @param   Database_Insert $expected
+	 * @param   array               $arguments
+	 * @param   Database_DML_Insert $expected
 	 */
 	public function test_insert($arguments, $expected)
 	{
@@ -511,8 +511,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_select()
 	{
 		return array(
-			array(array(), new Database_Select),
-			array(array(array('a' => 'b')), new Database_Select(array('a' => 'b'))),
+			array(array(), new Database_DML_Select),
+			array(array(array('a' => 'b')), new Database_DML_Select(array('a' => 'b'))),
 		);
 	}
 
@@ -521,8 +521,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_select
 	 *
-	 * @param   array           $arguments
-	 * @param   Database_Select $expected
+	 * @param   array               $arguments
+	 * @param   Database_DML_Select $expected
 	 */
 	public function test_select($arguments, $expected)
 	{
@@ -534,10 +534,10 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_update()
 	{
 		return array(
-			array(array(), new Database_Update),
-			array(array('a'), new Database_Update('a')),
-			array(array('a', 'b'), new Database_Update('a', 'b')),
-			array(array('a', 'b', array('c' => 'd')), new Database_Update('a', 'b', array('c' => 'd'))),
+			array(array(), new Database_DML_Update),
+			array(array('a'), new Database_DML_Update('a')),
+			array(array('a', 'b'), new Database_DML_Update('a', 'b')),
+			array(array('a', 'b', array('c' => 'd')), new Database_DML_Update('a', 'b', array('c' => 'd'))),
 		);
 	}
 
@@ -546,8 +546,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_update
 	 *
-	 * @param   array           $arguments
-	 * @param   Database_Update $expected
+	 * @param   array               $arguments
+	 * @param   Database_DML_Update $expected
 	 */
 	public function test_update($arguments, $expected)
 	{

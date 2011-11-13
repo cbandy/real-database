@@ -13,7 +13,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-insert.html
  */
-class Database_PostgreSQL_Insert extends Database_Insert
+class Database_PostgreSQL_Insert extends Database_DML_Insert
 {
 	/**
 	 * Set the name of the column to return from the first row when executed.

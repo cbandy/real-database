@@ -13,7 +13,7 @@
  *
  * @link http://msdn.microsoft.com/library/ms189499.aspx
  */
-class Database_SQLServer_Select extends Database_Select
+class Database_SQLServer_Select extends Database_DML_Select
 {
 	public function __toString()
 	{

@@ -1,18 +1,15 @@
 <?php
 
 /**
- * A DELETE statement which can return columns from the deleted rows when
- * executed.
- *
  * @package     RealDatabase
- * @category    Commands
+ * @category    Queries
  *
  * @author      Chris Bandy
- * @copyright   (c) 2011 Chris Bandy
+ * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Delete extends SQL_DML_Delete
-	implements Database_iReturning
+class Database_DML_Select extends SQL_DML_Select
+	implements Database_iQuery
 {
 	/**
 	 * @var array   Arguments to pass to the class constructor
@@ -24,11 +21,6 @@ class Database_Delete extends SQL_DML_Delete
 	 */
 	public $as_object = FALSE;
 
-	/**
-	 * @var array   Columns to return from the deleted rows when executed
-	 */
-	public $returning;
-
 	public function as_assoc()
 	{
 		return $this->as_object(FALSE);
@@ -38,15 +30,6 @@ class Database_Delete extends SQL_DML_Delete
 	{
 		$this->as_object = $class;
 		$this->arguments = $arguments;
-
-		return $this;
-	}
-
-	public function returning($columns)
-	{
-		parent::returning($columns);
-
-		$this->returning = $this->parameters[':returning'];
 
 		return $this;
 	}

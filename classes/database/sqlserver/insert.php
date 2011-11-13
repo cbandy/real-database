@@ -13,7 +13,7 @@
  *
  * @link http://msdn.microsoft.com/library/ms174335.aspx
  */
-class Database_SQLServer_Insert extends Database_Insert
+class Database_SQLServer_Insert extends Database_DML_Insert
 {
 	public function __toString()
 	{

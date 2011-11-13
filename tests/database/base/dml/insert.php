@@ -6,14 +6,14 @@
  * @group   database
  * @group   database.commands
  */
-class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
+class Database_Base_DML_Insert_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Insert::as_assoc
+	 * @covers  Database_DML_Insert::as_assoc
 	 */
 	public function test_as_assoc()
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 
 		$this->assertSame($statement, $statement->as_assoc(), 'Chainable');
 		$this->assertSame(FALSE, $statement->as_object);
@@ -31,7 +31,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Insert::as_object
+	 * @covers  Database_DML_Insert::as_object
 	 *
 	 * @dataProvider    provider_as_object
 	 *
@@ -41,7 +41,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_as_object($arguments, $as_object, $expected)
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 
 		$this->assertSame($statement, call_user_func_array(array($statement, 'as_object'), $arguments), 'Chainable');
 		$this->assertSame($as_object, $statement->as_object);
@@ -60,7 +60,8 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Insert::identity
+	 * @covers  Database_DML_Insert::identity
+	 *
 	 * @dataProvider    provider_identity
 	 *
 	 * @param   mixed                       $identity   Argument
@@ -68,7 +69,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity($identity, $expected)
 	{
-		$insert = new Database_Insert;
+		$insert = new Database_DML_Insert;
 
 		$this->assertSame($insert, $insert->identity($identity), 'Chainable');
 		$this->assertEquals($expected, $insert->identity);
@@ -76,7 +77,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Insert::identity
+	 * @covers  Database_DML_Insert::identity
 	 *
 	 * @dataProvider    provider_identity
 	 *
@@ -84,7 +85,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_reset($value)
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 		$statement->identity($value);
 
 		$this->assertSame($statement, $statement->identity(NULL), 'Chainable');
@@ -104,7 +105,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Insert::identity
+	 * @covers  Database_DML_Insert::identity
 	 *
 	 * @dataProvider    provider_identity_returning
 	 *
@@ -115,7 +116,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_identity_returning($identity, $returning, $expected_identity, $expected_returning)
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 		$statement->returning($returning);
 
 		$this->assertSame($statement, $statement->identity($identity), 'Chainable');
@@ -153,7 +154,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Insert::returning
+	 * @covers  Database_DML_Insert::returning
 	 *
 	 * @dataProvider    provider_returning
 	 *
@@ -162,7 +163,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning($value, $expected)
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 
 		$this->assertSame($statement, $statement->returning($value), 'Chainable');
 		$this->assertEquals($expected, $statement->returning);
@@ -182,7 +183,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Insert::returning
+	 * @covers  Database_DML_Insert::returning
 	 *
 	 * @dataProvider    provider_returning_identity
 	 *
@@ -193,7 +194,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning_identity($returning, $identity, $expected_returning, $expected_identity)
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 		$statement->identity($identity);
 
 		$this->assertSame($statement, $statement->returning($returning), 'Chainable');
@@ -202,7 +203,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Insert::returning
+	 * @covers  Database_DML_Insert::returning
 	 *
 	 * @dataProvider    provider_returning
 	 *
@@ -210,7 +211,7 @@ class Database_Base_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning_reset($value)
 	{
-		$statement = new Database_Insert;
+		$statement = new Database_DML_Insert;
 		$statement->returning($value);
 
 		$this->assertSame($statement, $statement->returning(NULL), 'Chainable');

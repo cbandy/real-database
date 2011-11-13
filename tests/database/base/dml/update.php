@@ -6,14 +6,14 @@
  * @group   database
  * @group   database.commands
  */
-class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
+class Database_Base_DML_Update_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Delete::as_assoc
+	 * @covers  Database_DML_Update::as_assoc
 	 */
 	public function test_as_assoc()
 	{
-		$statement = new Database_Delete;
+		$statement = new Database_DML_Update;
 
 		$this->assertSame($statement, $statement->as_assoc(), 'Chainable');
 		$this->assertSame(FALSE, $statement->as_object);
@@ -31,7 +31,7 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Delete::as_object
+	 * @covers  Database_DML_Update::as_object
 	 *
 	 * @dataProvider    provider_as_object
 	 *
@@ -41,7 +41,7 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_as_object($arguments, $as_object, $expected)
 	{
-		$statement = new Database_Delete;
+		$statement = new Database_DML_Update;
 
 		$this->assertSame($statement, call_user_func_array(array($statement, 'as_object'), $arguments), 'Chainable');
 		$this->assertSame($as_object, $statement->as_object);
@@ -78,7 +78,7 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Delete::returning
+	 * @covers  Database_DML_Update::returning
 	 *
 	 * @dataProvider    provider_returning
 	 *
@@ -87,7 +87,7 @@ class Database_Base_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_returning($value, $expected)
 	{
-		$statement = new Database_Delete;
+		$statement = new Database_DML_Update;
 
 		$this->assertSame($statement, $statement->returning($value), 'Chainable');
 		$this->assertEquals($expected, $statement->returning);
