@@ -592,6 +592,18 @@ class Database_MySQL extends Database
 	}
 
 	/**
+	 * Check whether or not the connection to the server is working.
+	 *
+	 *     if ( ! $db->ping()) $db->connect();
+	 *
+	 * @return  boolean
+	 */
+	public function ping()
+	{
+		return ($this->_connection AND mysql_ping($this->_connection));
+	}
+
+	/**
 	 * Create a prepared statement after connecting.
 	 *
 	 * @link http://dev.mysql.com/doc/en/prepare.html

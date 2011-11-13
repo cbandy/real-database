@@ -380,6 +380,39 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
+	/**
+	 * @covers  Database_MySQL::ping
+	 */
+	public function test_ping_initial()
+	{
+		$db = Database::factory();
+
+		$this->assertFalse($db->ping());
+	}
+
+	/**
+	 * @covers  Database_MySQL::ping
+	 */
+	public function test_ping_connected()
+	{
+		$db = Database::factory();
+		$db->connect();
+
+		$this->assertTrue($db->ping());
+	}
+
+	/**
+	 * @covers  Database_MySQL::ping
+	 */
+	public function test_ping_disconnected()
+	{
+		$db = Database::factory();
+		$db->connect();
+		$db->disconnect();
+
+		$this->assertFalse($db->ping());
+	}
+
 	public function provider_prepare()
 	{
 		return array(
