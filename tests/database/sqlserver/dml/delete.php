@@ -7,14 +7,14 @@
  * @group   database
  * @group   database.sqlserver
  */
-class Database_SQLServer_Delete_Test extends PHPUnit_Framework_TestCase
+class Database_SQLServer_DML_Delete_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_SQLServer_Delete::__toString
+	 * @covers  Database_SQLServer_DML_Delete::__toString
 	 */
 	public function test_toString()
 	{
-		$statement = new Database_SQLServer_Delete;
+		$statement = new Database_SQLServer_DML_Delete;
 		$statement
 			->from('a')
 			->using('b')

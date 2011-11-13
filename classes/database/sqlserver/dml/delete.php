@@ -13,7 +13,7 @@
  *
  * @link http://msdn.microsoft.com/library/ms189835.aspx
  */
-class Database_SQLServer_Delete extends Database_DML_Delete
+class Database_SQLServer_DML_Delete extends Database_DML_Delete
 {
 	public function __toString()
 	{

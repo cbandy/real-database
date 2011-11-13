@@ -138,9 +138,9 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(array(), new Database_SQLServer_Delete),
-			array(array('a'), new Database_SQLServer_Delete('a')),
-			array(array('a', 'b'), new Database_SQLServer_Delete('a', 'b')),
+			array(array(), new Database_SQLServer_DML_Delete),
+			array(array('a'), new Database_SQLServer_DML_Delete('a')),
+			array(array('a', 'b'), new Database_SQLServer_DML_Delete('a', 'b')),
 		);
 	}
 
@@ -149,8 +149,8 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_delete
 	 *
-	 * @param   array                       $arguments
-	 * @param   Database_SQLServer_Delete   $expected
+	 * @param   array                           $arguments
+	 * @param   Database_SQLServer_DML_Delete   $expected
 	 */
 	public function test_delete($arguments, $expected)
 	{
@@ -174,9 +174,9 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(array(), new Database_SQLServer_Insert),
-			array(array('a'), new Database_SQLServer_Insert('a')),
-			array(array('a', array('b')), new Database_SQLServer_Insert('a', array('b'))),
+			array(array(), new Database_SQLServer_DML_Insert),
+			array(array('a'), new Database_SQLServer_DML_Insert('a')),
+			array(array('a', array('b')), new Database_SQLServer_DML_Insert('a', array('b'))),
 		);
 	}
 
@@ -185,8 +185,8 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_insert
 	 *
-	 * @param   array   $arguments
-	 * @param   Database_SQLServer_Select   $expected
+	 * @param   array                           $arguments
+	 * @param   Database_SQLServer_DML_Select   $expected
 	 */
 	public function test_insert($arguments, $expected)
 	{
@@ -200,8 +200,8 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(array(), new Database_SQLServer_Select),
-			array(array(array('a' => 'b')), new Database_SQLServer_Select(array('a' => 'b'))),
+			array(array(), new Database_SQLServer_DML_Select),
+			array(array(array('a' => 'b')), new Database_SQLServer_DML_Select(array('a' => 'b'))),
 		);
 	}
 
@@ -223,8 +223,8 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_select
 	 *
-	 * @param   array                       $arguments
-	 * @param   Database_SQLServer_Select   $expected
+	 * @param   array                           $arguments
+	 * @param   Database_SQLServer_DML_Select   $expected
 	 */
 	public function test_select($arguments, $expected)
 	{
@@ -238,10 +238,10 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		return array
 		(
-			array(array(), new Database_SQLServer_Update),
-			array(array('a'), new Database_SQLServer_Update('a')),
-			array(array('a', 'b'), new Database_SQLServer_Update('a', 'b')),
-			array(array('a', 'b', array('c' => 'd')), new Database_SQLServer_Update('a', 'b', array('c' => 'd'))),
+			array(array(), new Database_SQLServer_DML_Update),
+			array(array('a'), new Database_SQLServer_DML_Update('a')),
+			array(array('a', 'b'), new Database_SQLServer_DML_Update('a', 'b')),
+			array(array('a', 'b', array('c' => 'd')), new Database_SQLServer_DML_Update('a', 'b', array('c' => 'd'))),
 		);
 	}
 
@@ -250,8 +250,8 @@ class Database_PDO_SQLServer_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_update
 	 *
-	 * @param   array                       $arguments
-	 * @param   Database_SQLServer_Update   $expected
+	 * @param   array                           $arguments
+	 * @param   Database_SQLServer_DML_Update   $expected
 	 */
 	public function test_update($arguments, $expected)
 	{

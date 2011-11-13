@@ -7,14 +7,14 @@
  * @group   database
  * @group   database.sqlserver
  */
-class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
+class Database_SQLServer_DML_Select_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_SQLServer_Select::__toString
+	 * @covers  Database_SQLServer_DML_Select::__toString
 	 */
 	public function test_toString()
 	{
-		$statement = new Database_SQLServer_Select;
+		$statement = new Database_SQLServer_DML_Select;
 		$statement
 			->distinct()
 			->from('a')
@@ -30,11 +30,11 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLServer_Select::__toString
+	 * @covers  Database_SQLServer_DML_Select::__toString
 	 */
 	public function test_toString_limit()
 	{
-		$statement = new Database_SQLServer_Select;
+		$statement = new Database_SQLServer_DML_Select;
 		$statement
 			->limit(1);
 
@@ -44,11 +44,11 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLServer_Select::__toString
+	 * @covers  Database_SQLServer_DML_Select::__toString
 	 */
 	public function test_toString_offset()
 	{
-		$statement = new Database_SQLServer_Select;
+		$statement = new Database_SQLServer_DML_Select;
 		$statement
 			->offset(1);
 
@@ -60,11 +60,11 @@ class Database_SQLServer_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLServer_Select::__toString
+	 * @covers  Database_SQLServer_DML_Select::__toString
 	 */
 	public function test_toString_offset_limit()
 	{
-		$statement = new Database_SQLServer_Select;
+		$statement = new Database_SQLServer_DML_Select;
 		$statement
 			->limit(1)
 			->offset(2);

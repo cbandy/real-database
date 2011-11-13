@@ -7,14 +7,14 @@
  * @group   database
  * @group   database.sqlserver
  */
-class Database_SQLServer_Update_Test extends PHPUnit_Framework_TestCase
+class Database_SQLServer_DML_Update_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_SQLServer_Update::__toString
+	 * @covers  Database_SQLServer_DML_Update::__toString
 	 */
 	public function test_toString()
 	{
-		$statement = new Database_SQLServer_Update;
+		$statement = new Database_SQLServer_DML_Update;
 		$statement
 			->table('a')
 			->set(array('b' => 0))

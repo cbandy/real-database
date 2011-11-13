@@ -62,11 +62,11 @@ class Database_PDO_SQLServer extends Database_PDO
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
-	 * @return  Database_SQLServer_Delete
+	 * @return  Database_SQLServer_DML_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
 	{
-		return new Database_SQLServer_Delete($table, $alias);
+		return new Database_SQLServer_DML_Delete($table, $alias);
 	}
 
 	/**
@@ -74,22 +74,22 @@ class Database_PDO_SQLServer extends Database_PDO
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
 	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
-	 * @return  Database_SQLServer_Insert
+	 * @return  Database_SQLServer_DML_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_SQLServer_Insert($table, $columns);
+		return new Database_SQLServer_DML_Insert($table, $columns);
 	}
 
 	/**
 	 * Create a SELECT statement.
 	 *
 	 * @param   array   $columns    Hash of (alias => column) pairs
-	 * @return  Database_SQLServer_Select
+	 * @return  Database_SQLServer_DML_Select
 	 */
 	public static function select($columns = NULL)
 	{
-		return new Database_SQLServer_Select($columns);
+		return new Database_SQLServer_DML_Select($columns);
 	}
 
 	/**
@@ -98,11 +98,11 @@ class Database_PDO_SQLServer extends Database_PDO
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @param   array                                       $values Hash of (column => value) assignments
-	 * @return  Database_SQLServer_Update
+	 * @return  Database_SQLServer_DML_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
 	{
-		return new Database_SQLServer_Update($table, $alias, $values);
+		return new Database_SQLServer_DML_Update($table, $alias, $values);
 	}
 
 	protected $_quote_left = '[';

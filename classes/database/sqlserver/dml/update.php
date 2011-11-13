@@ -13,7 +13,7 @@
  *
  * @link http://msdn.microsoft.com/library/ms177523.aspx
  */
-class Database_SQLServer_Update extends Database_DML_Update
+class Database_SQLServer_DML_Update extends Database_DML_Update
 {
 	public function __toString()
 	{

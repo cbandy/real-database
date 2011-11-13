@@ -7,14 +7,14 @@
  * @group   database
  * @group   database.sqlserver
  */
-class Database_SQLServer_Insert_Test extends PHPUnit_Framework_TestCase
+class Database_SQLServer_DML_Insert_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_SQLServer_Insert::__toString
+	 * @covers  Database_SQLServer_DML_Insert::__toString
 	 */
 	public function test_toString()
 	{
-		$statement = new Database_SQLServer_Insert;
+		$statement = new Database_SQLServer_DML_Insert;
 		$statement
 			->into('a')
 			->columns(array('b'))
