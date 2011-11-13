@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Result set backed by an array of rows.
+ *
  * @package     RealDatabase
  * @category    Result Sets
  *
