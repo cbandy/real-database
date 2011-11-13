@@ -213,7 +213,7 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Full join a table or query.
 	 *
-	 * [!!] Not supported by MySQL or SQLite
+	 * [!!] Not supported by MySQL nor SQLite
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
@@ -251,7 +251,7 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Naturally full join a table or query.
 	 *
-	 * [!!] Not supported by MySQL, SQLite or SQL Server
+	 * [!!] Not supported by MySQL, SQLite nor SQL Server
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
@@ -293,7 +293,7 @@ class SQL_Table_Reference extends SQL_Expression
 	/**
 	 * Naturally right join a table or query.
 	 *
-	 * [!!] Not supported by SQLite or SQL Server
+	 * [!!] Not supported by SQLite nor SQL Server
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier

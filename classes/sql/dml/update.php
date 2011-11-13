@@ -151,7 +151,7 @@ class SQL_DML_Update extends SQL_Expression
 	/**
 	 * Set the table(s) referenced in the search conditions.
 	 *
-	 * [!!] Not supported by MySQL or SQLite
+	 * [!!] Not supported by MySQL nor SQLite
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier|SQL_Table_Reference  $reference      SQL_Table_Reference or converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier                      $table_alias    Table alias when converting to SQL_Table
@@ -212,7 +212,7 @@ class SQL_DML_Update extends SQL_Expression
 	/**
 	 * Append multiple columns or expressions to be returned when executed.
 	 *
-	 * [!!] Not supported by MySQL or SQLite
+	 * [!!] Not supported by MySQL nor SQLite
 	 *
 	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
 	 * @return  $this

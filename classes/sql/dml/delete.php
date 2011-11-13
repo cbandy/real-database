@@ -106,7 +106,7 @@ class SQL_DML_Delete extends SQL_Expression
 	/**
 	 * Append multiple columns and/or expressions to be returned when executed.
 	 *
-	 * [!!] Not supported by MySQL or SQLite
+	 * [!!] Not supported by MySQL nor SQLite
 	 *
 	 * @param   array   $columns    Hash of (alias => column) pairs or NULL to reset
 	 * @return  $this

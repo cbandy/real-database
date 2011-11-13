@@ -114,7 +114,7 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	/**
 	 * Remove the default value on a column.
 	 *
-	 * [!!] Not supported by SQLite or SQL Server
+	 * [!!] Not supported by SQLite nor SQL Server
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
 	 * @return  $this
@@ -179,7 +179,7 @@ class SQL_DDL_Alter_Table extends SQL_Expression
 	/**
 	 * Set the default value of a column.
 	 *
-	 * [!!] Not supported by SQLite or SQL Server
+	 * [!!] Not supported by SQLite nor SQL Server
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Column
 	 * @param   mixed                                       $value
