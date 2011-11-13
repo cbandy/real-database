@@ -5,6 +5,9 @@
  * processed for execution, placeholders are replaced with their escaped/quoted
  * parameter values.
  *
+ * Positional placeholders are indicated by a `?` while named placeholders begin
+ * with a colon.
+ *
  * Anything may be used as a parameter value including other [SQL_Expression]s.
  *
  * @package     RealDatabase
@@ -12,6 +15,8 @@
  * @author      Chris Bandy
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
+ *
+ * @see SQL::quote_expression()
  */
 class SQL_Expression
 {
