@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_DML_Delete_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_limit()
 	{
@@ -20,7 +20,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @covers  Database_PostgreSQL_DML_Delete::limit
 	 * @dataProvider    provider_limit
 	 *
 	 * @param   mixed   $value
@@ -29,14 +29,14 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	public function test_limit($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Delete;
+		$command = new Database_PostgreSQL_DML_Delete;
 
 		$this->assertSame($command, $command->limit($value), 'Chainable');
 		$this->assertSame($expected, $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @covers  Database_PostgreSQL_DML_Delete::limit
 	 * @dataProvider    provider_limit
 	 *
 	 * @param   mixed   $value
@@ -44,7 +44,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	public function test_limit_reset($value)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Delete;
+		$command = new Database_PostgreSQL_DML_Delete;
 		$command->limit($value);
 
 		$command->limit(NULL);
@@ -65,7 +65,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @covers  Database_PostgreSQL_DML_Delete::limit
 	 * @dataProvider    provider_limit_using
 	 *
 	 * @param   mixed   $limit
@@ -73,7 +73,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit_using($limit, $using)
 	{
-		$command = new Database_PostgreSQL_Delete;
+		$command = new Database_PostgreSQL_DML_Delete;
 		$command->using($using);
 
 		$this->setExpectedException('Kohana_Exception');
@@ -96,21 +96,21 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Delete::limit
+	 * @covers  Database_PostgreSQL_DML_Delete::limit
 	 * @dataProvider    provider_limit_using_reset
 	 *
 	 * @param   mixed   $using
 	 */
 	public function test_limit_using_reset($using)
 	{
-		$command = new Database_PostgreSQL_Delete;
+		$command = new Database_PostgreSQL_DML_Delete;
 		$command->using($using);
 
 		$this->assertSame($command, $command->limit(NULL));
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Delete::using
+	 * @covers  Database_PostgreSQL_DML_Delete::using
 	 * @dataProvider    provider_limit_using
 	 *
 	 * @param   mixed   $limit
@@ -118,7 +118,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using_limit($limit, $using)
 	{
-		$command = new Database_PostgreSQL_Delete;
+		$command = new Database_PostgreSQL_DML_Delete;
 		$command->limit($limit);
 
 		$this->setExpectedException('Kohana_Exception');
@@ -143,7 +143,7 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Delete::using
+	 * @covers  Database_PostgreSQL_DML_Delete::using
 	 * @dataProvider    provider_using_limit_reset
 	 *
 	 * @param   mixed   $limit
@@ -151,18 +151,18 @@ class Database_PostgreSQL_Delete_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_using_limit_reset($limit, $using)
 	{
-		$command = new Database_PostgreSQL_Delete;
+		$command = new Database_PostgreSQL_DML_Delete;
 		$command->limit($limit);
 
 		$this->assertSame($command, $command->using($using));
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Delete::__toString
+	 * @covers  Database_PostgreSQL_DML_Delete::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_PostgreSQL_Delete;
+		$command = new Database_PostgreSQL_DML_Delete;
 
 		$this->assertSame('DELETE FROM :table', (string) $command);
 

@@ -415,24 +415,24 @@ class Database_PostgreSQL_Execution_Test extends Database_PostgreSQL_TestCase
 		);
 
 		// Database_iReturning
-		$delete = new Database_PostgreSQL_Delete($this->_table);
+		$delete = new Database_PostgreSQL_DML_Delete($this->_table);
 		$delete->where('value', '=', 60)->returning(array('id'));
 		$result[] = array(array(2, '3'), $delete, 'id');
 
-		$delete = new Database_PostgreSQL_Delete($this->_table);
+		$delete = new Database_PostgreSQL_DML_Delete($this->_table);
 		$delete->where('value', '>', 60)->returning(array('value'));
 		$result[] = array(array(3, '65'), $delete, 'value');
 
-		$insert = new Database_PostgreSQL_Insert($this->_table);
+		$insert = new Database_PostgreSQL_DML_Insert($this->_table);
 		$insert->columns(array('value'))->values(array(100));
 		$result[] = array(array(1, '8'), $insert, 'id');
 		$result[] = array(array(1, '100'), $insert, 'value');
 
-		$insert = new Database_PostgreSQL_Insert($this->_table);
+		$insert = new Database_PostgreSQL_DML_Insert($this->_table);
 		$insert->columns(array('value'))->values(array(50))->identity('id');
 		$result[] = array(array(1, '8'), $insert, 'id');
 
-		$insert = new Database_PostgreSQL_Insert($this->_table);
+		$insert = new Database_PostgreSQL_DML_Insert($this->_table);
 		$insert->columns(array('value'))->values(array(50))->identity('value');
 		$result[] = array(array(1, '50'), $insert, 'value');
 

@@ -6,15 +6,15 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_DDL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_PostgreSQL_Alter_Table::drop_column
+	 * @covers  Database_PostgreSQL_DDL_Alter_Table::drop_column
 	 */
 	public function test_drop_column()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Alter_Table('a');
+		$command = new Database_PostgreSQL_DDL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
 		$this->assertSame($command, $command->drop_column('b'), 'Chainable (string)');
@@ -28,12 +28,12 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Alter_Table::drop_constraint
+	 * @covers  Database_PostgreSQL_DDL_Alter_Table::drop_constraint
 	 */
 	public function test_drop_constraint()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Alter_Table('a');
+		$command = new Database_PostgreSQL_DDL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
 		$this->assertSame($command, $command->drop_constraint('b', 'c'), 'Chainable (string, string)');
@@ -47,12 +47,12 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Alter_Table::rename_column
+	 * @covers  Database_PostgreSQL_DDL_Alter_Table::rename_column
 	 */
 	public function test_rename_column()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Alter_Table('a');
+		$command = new Database_PostgreSQL_DDL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
 		$this->assertSame($command, $command->rename_column('b', 'c'));
@@ -60,12 +60,12 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Alter_Table::set_not_null
+	 * @covers  Database_PostgreSQL_DDL_Alter_Table::set_not_null
 	 */
 	public function test_set_not_null()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Alter_Table('a');
+		$command = new Database_PostgreSQL_DDL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
 		$this->assertSame($command, $command->set_not_null('b'), 'Chainable (string)');
@@ -79,12 +79,12 @@ class Database_PostgreSQL_Alter_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Alter_Table::type
+	 * @covers  Database_PostgreSQL_DDL_Alter_Table::type
 	 */
 	public function test_type()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Alter_Table('a');
+		$command = new Database_PostgreSQL_DDL_Alter_Table('a');
 		$table = $db->quote_table('a');
 
 		$this->assertSame($command, $command->type('b', 'c'), 'Chainable (string, string)');

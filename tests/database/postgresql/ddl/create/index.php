@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_DDL_Create_Index_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_column()
 	{
@@ -57,7 +57,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::column
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::column
 	 *
 	 * @dataProvider    provider_column
 	 *
@@ -67,7 +67,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	public function test_column($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Create_Index;
+		$statement = new Database_PostgreSQL_DDL_Create_Index;
 
 		$result = call_user_func_array(array($statement, 'column'), $arguments);
 
@@ -76,7 +76,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::column
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::column
 	 *
 	 * @dataProvider    provider_column
 	 *
@@ -85,7 +85,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	public function test_column_reset($arguments)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Create_Index;
+		$statement = new Database_PostgreSQL_DDL_Create_Index;
 
 		call_user_func_array(array($statement, 'column'), $arguments);
 
@@ -95,12 +95,12 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::tablespace
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::tablespace
 	 */
 	public function test_tablespace()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Create_Index('a', 'b');
+		$command = new Database_PostgreSQL_DDL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
 		$this->assertSame($command, $command->tablespace('c'));
@@ -108,12 +108,12 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::using
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::using
 	 */
 	public function test_using()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Create_Index('a', 'b');
+		$command = new Database_PostgreSQL_DDL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
 		$this->assertSame($command, $command->using('btree'));
@@ -121,12 +121,12 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::where
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::where
 	 */
 	public function test_where()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Create_Index('a', 'b');
+		$command = new Database_PostgreSQL_DDL_Create_Index('a', 'b');
 		$table = $db->quote_table('b');
 
 		$this->assertSame($command, $command->where(new SQL_Conditions(1)));
@@ -150,7 +150,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::with
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::with
 	 *
 	 * @dataProvider    provider_with
 	 *
@@ -160,14 +160,14 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	public function test_with($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Create_Index;
+		$statement = new Database_PostgreSQL_DDL_Create_Index;
 
 		$this->assertSame($statement, $statement->with($value), 'Chainable');
 		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::with
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::with
 	 *
 	 * @dataProvider    provider_with
 	 *
@@ -176,7 +176,7 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	public function test_with_reset($value)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Create_Index;
+		$statement = new Database_PostgreSQL_DDL_Create_Index;
 		$statement->with($value);
 
 		$statement->with(NULL);
@@ -185,11 +185,11 @@ class Database_PostgreSQL_Create_Index_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Create_Index::__toString
+	 * @covers  Database_PostgreSQL_DDL_Create_Index::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_PostgreSQL_Create_Index;
+		$command = new Database_PostgreSQL_DDL_Create_Index;
 		$command
 			->unique()
 			->using('a')

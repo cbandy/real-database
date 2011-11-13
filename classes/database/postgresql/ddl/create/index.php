@@ -13,7 +13,7 @@
  *
  * @link http://www.postgresql.org/docs/current/static/sql-createindex.html
  */
-class Database_PostgreSQL_Create_Index extends SQL_DDL_Create_Index
+class Database_PostgreSQL_DDL_Create_Index extends SQL_DDL_Create_Index
 {
 	/**
 	 * @var string  Index method

@@ -68,11 +68,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * Create an ALTER TABLE statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
-	 * @return  Database_PostgreSQL_Alter_Table
+	 * @return  Database_PostgreSQL_DDL_Alter_Table
 	 */
 	public static function alter_table($name = NULL)
 	{
-		return new Database_PostgreSQL_Alter_Table($name);
+		return new Database_PostgreSQL_DDL_Alter_Table($name);
 	}
 
 	/**
@@ -145,11 +145,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
 	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
-	 * @return  Database_PostgreSQL_Create_Index
+	 * @return  Database_PostgreSQL_DDL_Create_Index
 	 */
 	public static function create_index($name = NULL, $table = NULL, $columns = NULL)
 	{
-		return new Database_PostgreSQL_Create_Index($name, $table, $columns);
+		return new Database_PostgreSQL_DDL_Create_Index($name, $table, $columns);
 	}
 
 	/**
@@ -169,11 +169,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
-	 * @return  Database_PostgreSQL_Delete
+	 * @return  Database_PostgreSQL_DML_Delete
 	 */
 	public static function delete($table = NULL, $alias = NULL)
 	{
-		return new Database_PostgreSQL_Delete($table, $alias);
+		return new Database_PostgreSQL_DML_Delete($table, $alias);
 	}
 
 	/**
@@ -195,22 +195,22 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
 	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
-	 * @return  Database_PostgreSQL_Insert
+	 * @return  Database_PostgreSQL_DML_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_PostgreSQL_Insert($table, $columns);
+		return new Database_PostgreSQL_DML_Insert($table, $columns);
 	}
 
 	/**
 	 * Create a SELECT statement.
 	 *
 	 * @param   array   $columns    Hash of (alias => column) pairs
-	 * @return  Database_PostgreSQL_Select
+	 * @return  Database_PostgreSQL_DML_Select
 	 */
 	public static function select($columns = NULL)
 	{
-		return new Database_PostgreSQL_Select($columns);
+		return new Database_PostgreSQL_DML_Select($columns);
 	}
 
 	/**
@@ -219,11 +219,11 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
 	 * @param   array                                       $values Hash of (column => value) assignments
-	 * @return  Database_PostgreSQL_Update
+	 * @return  Database_PostgreSQL_DML_Update
 	 */
 	public static function update($table = NULL, $alias = NULL, $values = NULL)
 	{
-		return new Database_PostgreSQL_Update($table, $alias, $values);
+		return new Database_PostgreSQL_DML_Update($table, $alias, $values);
 	}
 
 	/**

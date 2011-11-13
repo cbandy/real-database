@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_DML_Insert_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_identity()
 	{
@@ -27,7 +27,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Insert::identity
+	 * @covers  Database_PostgreSQL_DML_Insert::identity
 	 * @dataProvider    provider_identity
 	 *
 	 * @param   mixed   $value
@@ -37,7 +37,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity($value, $column, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Insert;
+		$command = new Database_PostgreSQL_DML_Insert;
 
 		$this->assertSame($command, $command->identity($value), 'Chainable');
 		$this->assertSame($expected, $db->quote($command));
@@ -46,7 +46,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Insert::identity
+	 * @covers  Database_PostgreSQL_DML_Insert::identity
 	 *
 	 * @dataProvider    provider_identity
 	 *
@@ -55,7 +55,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity_reset($value)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Insert;
+		$statement = new Database_PostgreSQL_DML_Insert;
 		$statement->identity($value);
 
 		$this->assertSame($statement, $statement->identity(NULL), 'Chainable');
@@ -86,7 +86,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Insert::identity
+	 * @covers  Database_PostgreSQL_DML_Insert::identity
 	 *
 	 * @dataProvider    provider_identity_returning
 	 *
@@ -99,7 +99,7 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_identity_returning($returning, $identity, $expected_returning, $expected_identity, $expected_sql)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Insert;
+		$statement = new Database_PostgreSQL_DML_Insert;
 		$statement->returning($returning);
 
 		$this->assertSame($statement, $statement->identity($identity), 'Chainable');
@@ -109,11 +109,11 @@ class Database_PostgreSQL_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Insert::returning
+	 * @covers  Database_PostgreSQL_DML_Insert::returning
 	 */
 	public function test_returning_identity()
 	{
-		$statement = new Database_PostgreSQL_Insert;
+		$statement = new Database_PostgreSQL_DML_Insert;
 		$statement->identity('a');
 
 		$this->assertSame($statement, $statement->returning(array('b')), 'Chainable');

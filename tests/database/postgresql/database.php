@@ -24,8 +24,8 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_alter_table()
 	{
 		return array(
-			array(array(), new Database_PostgreSQL_Alter_Table()),
-			array(array('a'), new Database_PostgreSQL_Alter_Table('a')),
+			array(array(), new Database_PostgreSQL_DDL_Alter_Table()),
+			array(array('a'), new Database_PostgreSQL_DDL_Alter_Table('a')),
 		);
 	}
 
@@ -35,7 +35,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_alter_table
 	 *
 	 * @param   array                           $arguments
-	 * @param   Database_PostgreSQL_Alter_Table $expected
+	 * @param   Database_PostgreSQL_DDL_Alter_Table $expected
 	 */
 	public function test_alter_table($arguments, $expected)
 	{
@@ -171,10 +171,10 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_create_index()
 	{
 		return array(
-			array(array(), new Database_PostgreSQL_Create_Index),
-			array(array('a'), new Database_PostgreSQL_Create_Index('a')),
-			array(array('a', 'b'), new Database_PostgreSQL_Create_Index('a', 'b')),
-			array(array('a', 'b', array('c')), new Database_PostgreSQL_Create_Index('a', 'b', array('c'))),
+			array(array(), new Database_PostgreSQL_DDL_Create_Index),
+			array(array('a'), new Database_PostgreSQL_DDL_Create_Index('a')),
+			array(array('a', 'b'), new Database_PostgreSQL_DDL_Create_Index('a', 'b')),
+			array(array('a', 'b', array('c')), new Database_PostgreSQL_DDL_Create_Index('a', 'b', array('c'))),
 		);
 	}
 
@@ -184,7 +184,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_create_index
 	 *
 	 * @param   array                               $arguments
-	 * @param   Database_PostgreSQL_Create_Index    $expected
+	 * @param   Database_PostgreSQL_DDL_Create_Index    $expected
 	 */
 	public function test_create_index($arguments, $expected)
 	{
@@ -241,9 +241,9 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_delete()
 	{
 		return array(
-			array(array(), new Database_PostgreSQL_Delete),
-			array(array('a'), new Database_PostgreSQL_Delete('a')),
-			array(array('a', 'b'), new Database_PostgreSQL_Delete('a', 'b')),
+			array(array(), new Database_PostgreSQL_DML_Delete),
+			array(array('a'), new Database_PostgreSQL_DML_Delete('a')),
+			array(array('a', 'b'), new Database_PostgreSQL_DML_Delete('a', 'b')),
 		);
 	}
 
@@ -253,7 +253,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_delete
 	 *
 	 * @param   array                       $arguments
-	 * @param   Database_PostgreSQL_Delete  $expected
+	 * @param   Database_PostgreSQL_DML_Delete  $expected
 	 */
 	public function test_delete($arguments, $expected)
 	{
@@ -370,11 +370,11 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_insert()
 	{
 		return array(
-			array(array(), new Database_PostgreSQL_Insert),
-			array(array('a'), new Database_PostgreSQL_Insert('a')),
+			array(array(), new Database_PostgreSQL_DML_Insert),
+			array(array('a'), new Database_PostgreSQL_DML_Insert('a')),
 			array(
 				array('a', array('b')),
-				new Database_PostgreSQL_Insert('a', array('b'))
+				new Database_PostgreSQL_DML_Insert('a', array('b'))
 			),
 		);
 	}
@@ -385,7 +385,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_insert
 	 *
 	 * @param   array                       $arguments
-	 * @param   Database_PostgreSQL_Insert  $expected
+	 * @param   Database_PostgreSQL_DML_Insert  $expected
 	 */
 	public function test_insert($arguments, $expected)
 	{
@@ -760,8 +760,8 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_select()
 	{
 		return array(
-			array(array(), new Database_PostgreSQL_Select),
-			array(array(array('a')), new Database_PostgreSQL_Select(array('a'))),
+			array(array(), new Database_PostgreSQL_DML_Select),
+			array(array(array('a')), new Database_PostgreSQL_DML_Select(array('a'))),
 		);
 	}
 
@@ -771,7 +771,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_select
 	 *
 	 * @param   array                       $arguments
-	 * @param   Database_PostgreSQL_Select  $expected
+	 * @param   Database_PostgreSQL_DML_Select  $expected
 	 */
 	public function test_select($arguments, $expected)
 	{
@@ -782,12 +782,12 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_update()
 	{
 		return array(
-			array(array(), new Database_PostgreSQL_Update),
-			array(array('a'), new Database_PostgreSQL_Update('a')),
-			array(array('a', 'b'), new Database_PostgreSQL_Update('a', 'b')),
+			array(array(), new Database_PostgreSQL_DML_Update),
+			array(array('a'), new Database_PostgreSQL_DML_Update('a')),
+			array(array('a', 'b'), new Database_PostgreSQL_DML_Update('a', 'b')),
 			array(
 				array('a', 'b', array('c' => 'd')),
-				new Database_PostgreSQL_Update('a', 'b', array('c' => 'd'))
+				new Database_PostgreSQL_DML_Update('a', 'b', array('c' => 'd'))
 			),
 		);
 	}
@@ -798,7 +798,7 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_update
 	 *
 	 * @param   array                       $arguments
-	 * @param   Database_PostgreSQL_Update  $expected
+	 * @param   Database_PostgreSQL_DML_Update  $expected
 	 */
 	public function test_update($arguments, $expected)
 	{

@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_DML_Update_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_from_limit()
 	{
@@ -21,7 +21,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Update::from
+	 * @covers  Database_PostgreSQL_DML_Update::from
 	 * @dataProvider    provider_from_limit
 	 *
 	 * @param   mixed   $limit
@@ -29,7 +29,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from_limit($limit, $from)
 	{
-		$command = new Database_PostgreSQL_Update;
+		$command = new Database_PostgreSQL_DML_Update;
 		$command->limit($limit);
 
 		$this->setExpectedException('Kohana_Exception');
@@ -54,7 +54,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Update::from
+	 * @covers  Database_PostgreSQL_DML_Update::from
 	 * @dataProvider    provider_from_limit_reset
 	 *
 	 * @param   mixed   $limit
@@ -62,7 +62,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_from_limit_reset($limit, $from)
 	{
-		$command = new Database_PostgreSQL_Update;
+		$command = new Database_PostgreSQL_DML_Update;
 		$command->limit($limit);
 
 		$this->assertSame($command, $command->from($from));
@@ -80,7 +80,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Update::limit
+	 * @covers  Database_PostgreSQL_DML_Update::limit
 	 * @dataProvider    provider_limit
 	 *
 	 * @param   mixed   $value
@@ -89,14 +89,14 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_limit($value, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Update;
+		$command = new Database_PostgreSQL_DML_Update;
 
 		$this->assertSame($command, $command->limit($value), 'Chainable');
 		$this->assertSame($expected, $db->quote($command));
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Update::limit
+	 * @covers  Database_PostgreSQL_DML_Update::limit
 	 * @dataProvider    provider_from_limit
 	 *
 	 * @param   mixed   $limit
@@ -104,7 +104,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_limit_from($limit, $from)
 	{
-		$command = new Database_PostgreSQL_Update;
+		$command = new Database_PostgreSQL_DML_Update;
 		$command->from($from);
 
 		$this->setExpectedException('Kohana_Exception');
@@ -127,21 +127,21 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Update::limit
+	 * @covers  Database_PostgreSQL_DML_Update::limit
 	 * @dataProvider    provider_limit_from_reset
 	 *
 	 * @param   mixed   $from
 	 */
 	public function test_limit_from_reset($from)
 	{
-		$command = new Database_PostgreSQL_Update;
+		$command = new Database_PostgreSQL_DML_Update;
 		$command->from($from);
 
 		$this->assertSame($command, $command->limit(NULL));
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Update::limit
+	 * @covers  Database_PostgreSQL_DML_Update::limit
 	 * @dataProvider    provider_limit
 	 *
 	 * @param   mixed   $value
@@ -149,7 +149,7 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	public function test_limit_reset($value)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_PostgreSQL_Update;
+		$command = new Database_PostgreSQL_DML_Update;
 		$command->limit($value);
 
 		$command->limit(NULL);
@@ -158,11 +158,11 @@ class Database_PostgreSQL_Update_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Update::__toString
+	 * @covers  Database_PostgreSQL_DML_Update::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_PostgreSQL_Update;
+		$command = new Database_PostgreSQL_DML_Update;
 
 		$this->assertSame('UPDATE :table SET :values', (string) $command);
 

@@ -6,7 +6,7 @@
  * @group   database
  * @group   database.postgresql
  */
-class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
+class Database_PostgreSQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_distinct()
 	{
@@ -47,7 +47,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Select::distinct
+	 * @covers  Database_PostgreSQL_DML_Select::distinct
 	 *
 	 * @dataProvider    provider_distinct
 	 *
@@ -57,7 +57,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 	public function test_distinct($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Select;
+		$statement = new Database_PostgreSQL_DML_Select;
 
 		$result = call_user_func_array(array($statement, 'distinct'), $arguments);
 
@@ -66,7 +66,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Select::distinct
+	 * @covers  Database_PostgreSQL_DML_Select::distinct
 	 *
 	 * @dataProvider    provider_distinct
 	 *
@@ -75,7 +75,7 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 	public function test_distinct_reset($arguments)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_PostgreSQL_Select;
+		$statement = new Database_PostgreSQL_DML_Select;
 
 		call_user_func_array(array($statement, 'distinct'), $arguments);
 
@@ -85,11 +85,11 @@ class Database_PostgreSQL_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_PostgreSQL_Select::__toString
+	 * @covers  Database_PostgreSQL_DML_Select::__toString
 	 */
 	public function test_toString()
 	{
-		$statement = new Database_PostgreSQL_Select;
+		$statement = new Database_PostgreSQL_DML_Select;
 		$statement
 			->distinct()
 			->from('a')
