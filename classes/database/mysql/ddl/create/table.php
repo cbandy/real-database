@@ -13,7 +13,7 @@
  *
  * @link http://dev.mysql.com/doc/en/create-table.html
  */
-class Database_MySQL_Create_Table extends SQL_DDL_Create_Table
+class Database_MySQL_DDL_Create_Table extends SQL_DDL_Create_Table
 {
 	/**
 	 * @var boolean

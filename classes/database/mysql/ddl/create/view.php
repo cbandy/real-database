@@ -13,7 +13,7 @@
  *
  * @link http://dev.mysql.com/doc/en/create-view.html
  */
-class Database_MySQL_Create_View extends SQL_DDL_Create_View
+class Database_MySQL_DDL_Create_View extends SQL_DDL_Create_View
 {
 	/**
 	 * @var string  MERGE, TEMPTABLE or UNDEFINED

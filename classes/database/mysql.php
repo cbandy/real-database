@@ -61,11 +61,11 @@ class Database_MySQL extends Database
 	 * Create an ALTER TABLE statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
-	 * @return  Database_MySQL_Alter_Table
+	 * @return  Database_MySQL_DDL_Alter_Table
 	 */
 	public static function alter_table($name = NULL)
 	{
-		return new Database_MySQL_Alter_Table($name);
+		return new Database_MySQL_DDL_Alter_Table($name);
 	}
 
 	/**
@@ -74,22 +74,22 @@ class Database_MySQL extends Database
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
 	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
-	 * @return  Database_MySQL_Create_Index
+	 * @return  Database_MySQL_DDL_Create_Index
 	 */
 	public static function create_index($name = NULL, $table = NULL, $columns = NULL)
 	{
-		return new Database_MySQL_Create_Index($name, $table, $columns);
+		return new Database_MySQL_DDL_Create_Index($name, $table, $columns);
 	}
 
 	/**
 	 * Create a CREATE TABLE statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
-	 * @return  Database_MySQL_Create_Table
+	 * @return  Database_MySQL_DDL_Create_Table
 	 */
 	public static function create_table($name = NULL)
 	{
-		return new Database_MySQL_Create_Table($name);
+		return new Database_MySQL_DDL_Create_Table($name);
 	}
 
 	/**
@@ -97,11 +97,11 @@ class Database_MySQL extends Database
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
 	 * @param   SQL_Expression                              $query
-	 * @return  Database_MySQL_Create_View
+	 * @return  Database_MySQL_DDL_Create_View
 	 */
 	public static function create_view($name = NULL, $query = NULL)
 	{
-		return new Database_MySQL_Create_View($name, $query);
+		return new Database_MySQL_DDL_Create_View($name, $query);
 	}
 
 	/**
@@ -156,11 +156,11 @@ class Database_MySQL extends Database
 	 * Create a SELECT statement.
 	 *
 	 * @param   array   $columns    Hash of (alias => column) pairs
-	 * @return  Database_MySQL_Select
+	 * @return  Database_MySQL_DML_Select
 	 */
 	public static function select($columns = NULL)
 	{
-		return new Database_MySQL_Select($columns);
+		return new Database_MySQL_DML_Select($columns);
 	}
 
 	/**

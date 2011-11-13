@@ -6,17 +6,17 @@
  * @group   database
  * @group   database.mysql
  */
-class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
+class Database_MySQL_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_MySQL_Create_Table::if_not_exists
+	 * @covers  Database_MySQL_DDL_Create_Table::if_not_exists
 	 */
 	public function test_if_not_exists()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array(
 			'quote_character' => '`',
 		)));
-		$command = new Database_MySQL_Create_Table('a');
+		$command = new Database_MySQL_DDL_Create_Table('a');
 
 		$this->assertSame($command, $command->if_not_exists(), 'Chainable (void)');
 		$this->assertSame("CREATE TABLE IF NOT EXISTS `a`", $db->quote($command));
@@ -29,14 +29,14 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_MySQL_Create_Table::like
+	 * @covers  Database_MySQL_DDL_Create_Table::like
 	 */
 	public function test_like()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array(
 			'quote_character' => '`',
 		)));
-		$command = new Database_MySQL_Create_Table('a');
+		$command = new Database_MySQL_DDL_Create_Table('a');
 
 		$this->assertSame($command, $command->like('b'));
 		$this->assertSame("CREATE TABLE `a` LIKE `b`", $db->quote($command));
@@ -63,7 +63,7 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_MySQL_Create_Table::options
+	 * @covers  Database_MySQL_DDL_Create_Table::options
 	 *
 	 * @dataProvider    provider_options
 	 *
@@ -75,14 +75,14 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$db = $this->getMockForAbstractClass('Database', array('name', array(
 			'quote_character' => '`',
 		)));
-		$statement = new Database_MySQL_Create_Table;
+		$statement = new Database_MySQL_DDL_Create_Table;
 
 		$this->assertSame($statement, $statement->options($value), 'Chainable');
 		$this->assertSame($expected, $db->quote($statement));
 	}
 
 	/**
-	 * @covers  Database_MySQL_Create_Table::options
+	 * @covers  Database_MySQL_DDL_Create_Table::options
 	 *
 	 * @dataProvider    provider_options
 	 *
@@ -93,7 +93,7 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 		$db = $this->getMockForAbstractClass('Database', array('name', array(
 			'quote_character' => '`',
 		)));
-		$statement = new Database_MySQL_Create_Table;
+		$statement = new Database_MySQL_DDL_Create_Table;
 		$statement->options($value);
 
 		$statement->options(NULL);
@@ -102,11 +102,11 @@ class Database_MySQL_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_MySQL_Create_Table::__toString
+	 * @covers  Database_MySQL_DDL_Create_Table::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_MySQL_Create_Table;
+		$command = new Database_MySQL_DDL_Create_Table;
 		$command
 			->temporary()
 			->if_not_exists()

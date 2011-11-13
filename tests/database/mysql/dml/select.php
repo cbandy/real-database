@@ -7,14 +7,14 @@
  * @group   database
  * @group   database.mysql
  */
-class Database_MySQL_Select_Test extends PHPUnit_Framework_TestCase
+class Database_MySQL_DML_Select_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_MySQL_Select::__toString
+	 * @covers  Database_MySQL_DML_Select::__toString
 	 */
 	public function test_toString()
 	{
-		$statement = new Database_MySQL_Select;
+		$statement = new Database_MySQL_DML_Select;
 		$statement
 			->distinct()
 			->where('a', '=', 'b')
@@ -44,11 +44,11 @@ class Database_MySQL_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_MySQL_Select::__toString
+	 * @covers  Database_MySQL_DML_Select::__toString
 	 */
 	public function test_toString_offset()
 	{
-		$statement = new Database_MySQL_Select;
+		$statement = new Database_MySQL_DML_Select;
 		$statement->offset(1);
 
 		$this->assertSame(

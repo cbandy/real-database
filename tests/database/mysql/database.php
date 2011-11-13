@@ -23,8 +23,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_alter_table()
 	{
 		return array(
-			array(array(), new Database_MySQL_Alter_Table()),
-			array(array('a'), new Database_MySQL_Alter_Table('a')),
+			array(array(), new Database_MySQL_DDL_Alter_Table()),
+			array(array('a'), new Database_MySQL_DDL_Alter_Table('a')),
 		);
 	}
 
@@ -33,8 +33,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_alter_table
 	 *
-	 * @param   array                       $arguments
-	 * @param   Database_MySQL_Alter_Table  $expected
+	 * @param   array                           $arguments
+	 * @param   Database_MySQL_DDL_Alter_Table  $expected
 	 */
 	public function test_alter_table($arguments, $expected)
 	{
@@ -67,10 +67,10 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_create_index()
 	{
 		return array(
-			array(array(), new Database_MySQL_Create_Index),
-			array(array('a'), new Database_MySQL_Create_Index('a')),
-			array(array('a', 'b'), new Database_MySQL_Create_Index('a', 'b')),
-			array(array('a', 'b', array('c')), new Database_MySQL_Create_Index('a', 'b', array('c'))),
+			array(array(), new Database_MySQL_DDL_Create_Index),
+			array(array('a'), new Database_MySQL_DDL_Create_Index('a')),
+			array(array('a', 'b'), new Database_MySQL_DDL_Create_Index('a', 'b')),
+			array(array('a', 'b', array('c')), new Database_MySQL_DDL_Create_Index('a', 'b', array('c'))),
 		);
 	}
 
@@ -79,8 +79,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_create_index
 	 *
-	 * @param   array                       $arguments
-	 * @param   Database_MySQL_Create_Index $expected
+	 * @param   array                           $arguments
+	 * @param   Database_MySQL_DDL_Create_Index $expected
 	 */
 	public function test_create_index($arguments, $expected)
 	{
@@ -91,8 +91,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_create_table()
 	{
 		return array(
-			array(array(), new Database_MySQL_Create_Table),
-			array(array('a'), new Database_MySQL_Create_Table('a')),
+			array(array(), new Database_MySQL_DDL_Create_Table),
+			array(array('a'), new Database_MySQL_DDL_Create_Table('a')),
 		);
 	}
 
@@ -101,8 +101,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_create_table
 	 *
-	 * @param   array                       $arguments
-	 * @param   Database_MySQL_Create_Table $expected
+	 * @param   array                           $arguments
+	 * @param   Database_MySQL_DDL_Create_Table $expected
 	 */
 	public function test_create_table($arguments, $expected)
 	{
@@ -113,9 +113,9 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_create_view()
 	{
 		return array(
-			array(array(), new Database_MySQL_Create_View),
-			array(array('a'), new Database_MySQL_Create_View('a')),
-			array(array('a', new SQL_Expression('b')), new Database_MySQL_Create_View('a', new SQL_Expression('b'))),
+			array(array(), new Database_MySQL_DDL_Create_View),
+			array(array('a'), new Database_MySQL_DDL_Create_View('a')),
+			array(array('a', new SQL_Expression('b')), new Database_MySQL_DDL_Create_View('a', new SQL_Expression('b'))),
 		);
 	}
 
@@ -124,8 +124,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_create_view
 	 *
-	 * @param   array                       $arguments
-	 * @param   Database_MySQL_Create_View  $expected
+	 * @param   array                           $arguments
+	 * @param   Database_MySQL_DDL_Create_View  $expected
 	 */
 	public function test_create_view($arguments, $expected)
 	{
@@ -532,8 +532,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_select()
 	{
 		return array(
-			array(array(), new Database_MySQL_Select),
-			array(array(array('a' => 'b')), new Database_MySQL_Select(array('a' => 'b'))),
+			array(array(), new Database_MySQL_DML_Select),
+			array(array(array('a' => 'b')), new Database_MySQL_DML_Select(array('a' => 'b'))),
 		);
 	}
 
@@ -542,8 +542,8 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_select
 	 *
-	 * @param   array                   $arguments
-	 * @param   Database_MySQL_Select   $expected
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_DML_Select   $expected
 	 */
 	public function test_select($arguments, $expected)
 	{
