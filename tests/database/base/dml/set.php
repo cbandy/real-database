@@ -6,14 +6,14 @@
  * @group   database
  * @group   database.queries
  */
-class Database_Base_Query_Set_Test extends PHPUnit_Framework_TestCase
+class Database_Base_DML_Set_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_Query_Set::as_assoc
+	 * @covers  Database_DML_Set::as_assoc
 	 */
 	public function test_as_assoc()
 	{
-		$query = new Database_Query_Set;
+		$query = new Database_DML_Set;
 
 		$this->assertSame($query, $query->as_assoc(), 'Chainable');
 		$this->assertSame(FALSE, $query->as_object);
@@ -31,7 +31,7 @@ class Database_Base_Query_Set_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_Query_Set::as_object
+	 * @covers  Database_DML_Set::as_object
 	 *
 	 * @dataProvider    provider_as_object
 	 *
@@ -41,7 +41,7 @@ class Database_Base_Query_Set_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_as_object($arguments, $as_object, $expected)
 	{
-		$query = new Database_Query_Set;
+		$query = new Database_DML_Set;
 
 		$this->assertSame($query, call_user_func_array(array($query, 'as_object'), $arguments), 'Chainable');
 		$this->assertSame($as_object, $query->as_object);

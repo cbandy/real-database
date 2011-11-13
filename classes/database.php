@@ -141,11 +141,11 @@ abstract class Database extends SQL
 	 * Create a query set.
 	 *
 	 * @param   SQL_Expression  $query
-	 * @return  Database_Query_Set
+	 * @return  Database_DML_Set
 	 */
 	public static function query_set($query = NULL)
 	{
-		return new Database_Query_Set($query);
+		return new Database_DML_Set($query);
 	}
 
 	/**

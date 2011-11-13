@@ -8,7 +8,7 @@
  * @copyright   (c) 2010 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_Query_Set extends SQL_DML_Set
+class Database_DML_Set extends SQL_DML_Set
 	implements Database_iQuery
 {
 	/**

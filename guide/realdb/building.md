@@ -9,7 +9,7 @@ statements:
  DELETE | [Database_DML_Delete]
  INSERT | [Database_DML_Insert]
  UPDATE | [Database_DML_Update]
- SELECT | [Database_DML_Select] <br /> [Database_Query_Set]
+ SELECT | [Database_DML_Select] <br /> [Database_DML_Set]
 
 *[DML]: Data Manipulation Language
 [Fluent Interface]: http://martinfowler.com/bliki/FluentInterface.html
@@ -142,7 +142,7 @@ Paging is accomplished with `limit()` and `offset()`:
     $db->select()->from('things')->offset(100)->limit(50);
 
 Queries can be combined using the `except()`, `intersect()` and `union()` methods of the
-[Database_Query_Set] class:
+[Database_DML_Set] class:
 
     // SELECT * FROM "things" WHERE "name" = 'effect'
     //   UNION

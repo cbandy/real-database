@@ -9,7 +9,7 @@
  * @copyright   (c) 2011 Chris Bandy
  * @license     http://www.opensource.org/licenses/isc-license.txt
  */
-class Database_SQLite_DML_Set extends Database_Query_Set
+class Database_SQLite_DML_Set extends Database_DML_Set
 {
 	public function add($operator, $query)
 	{

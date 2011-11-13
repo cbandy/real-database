@@ -488,8 +488,8 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_query_set()
 	{
 		return array(
-			array(array(), new Database_Query_Set),
-			array(array(new SQL_Expression('a')), new Database_Query_Set(new SQL_Expression('a'))),
+			array(array(), new Database_DML_Set),
+			array(array(new SQL_Expression('a')), new Database_DML_Set(new SQL_Expression('a'))),
 		);
 	}
 
@@ -499,7 +499,7 @@ class Database_Base_Database_Test extends PHPUnit_Framework_TestCase
 	 * @dataProvider    provider_query_set
 	 *
 	 * @param   array               $arguments
-	 * @param   Database_Query_Set  $expected
+	 * @param   Database_DML_Set    $expected
 	 */
 	public function test_query_set($arguments, $expected)
 	{
