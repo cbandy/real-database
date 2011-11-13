@@ -36,11 +36,11 @@ class Database_PDO_SQLite extends Database_PDO
 	 * Create a CREATE TABLE statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name   Converted to SQL_Table
-	 * @return  Database_SQLite_Create_Table
+	 * @return  Database_SQLite_DDL_Create_Table
 	 */
 	public static function create_table($name = NULL)
 	{
-		return new Database_SQLite_Create_Table($name);
+		return new Database_SQLite_DDL_Create_Table($name);
 	}
 
 	/**
@@ -74,33 +74,33 @@ class Database_PDO_SQLite extends Database_PDO
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $table      Converted to SQL_Table
 	 * @param   array                                       $columns    List of columns, each converted to SQL_Column
-	 * @return  Database_SQLite_Insert
+	 * @return  Database_SQLite_DML_Insert
 	 */
 	public static function insert($table = NULL, $columns = NULL)
 	{
-		return new Database_SQLite_Insert($table, $columns);
+		return new Database_SQLite_DML_Insert($table, $columns);
 	}
 
 	/**
 	 * Create a query set.
 	 *
 	 * @param   SQL_Expression  $query
-	 * @return  Database_SQLite_Set
+	 * @return  Database_SQLite_DML_Set
 	 */
 	public static function query_set($query = NULL)
 	{
-		return new Database_SQLite_Set($query);
+		return new Database_SQLite_DML_Set($query);
 	}
 
 	/**
 	 * Create a SELECT statement.
 	 *
 	 * @param   array   $columns    Hash of (alias => column) pairs
-	 * @return  Database_SQLite_Select
+	 * @return  Database_SQLite_DML_Select
 	 */
 	public static function select($columns = NULL)
 	{
-		return new Database_SQLite_Select($columns);
+		return new Database_SQLite_DML_Select($columns);
 	}
 
 	/**

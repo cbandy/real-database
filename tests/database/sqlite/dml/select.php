@@ -7,14 +7,14 @@
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_SQLite_Select_Test extends PHPUnit_Framework_TestCase
+class Database_SQLite_DML_Select_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_SQLite_Select::__toString
+	 * @covers  Database_SQLite_DML_Select::__toString
 	 */
 	public function test_toString()
 	{
-		$statement = new Database_SQLite_Select;
+		$statement = new Database_SQLite_DML_Select;
 		$statement
 			->distinct()
 			->from('a')
@@ -38,11 +38,11 @@ class Database_SQLite_Select_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLite_Select::__toString
+	 * @covers  Database_SQLite_DML_Select::__toString
 	 */
 	public function test_toString_offset()
 	{
-		$statement = new Database_SQLite_Select;
+		$statement = new Database_SQLite_DML_Select;
 		$statement->offset(1);
 
 		$this->assertSame(

@@ -23,8 +23,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_create_table()
 	{
 		return array(
-			array(array(), new Database_SQLite_Create_Table),
-			array(array('a'), new Database_SQLite_Create_Table('a')),
+			array(array(), new Database_SQLite_DDL_Create_Table),
+			array(array('a'), new Database_SQLite_DDL_Create_Table('a')),
 		);
 	}
 
@@ -33,8 +33,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_create_table
 	 *
-	 * @param   array                           $arguments
-	 * @param   Database_SQLite_Create_Table    $expected
+	 * @param   array                               $arguments
+	 * @param   Database_SQLite_DDL_Create_Table    $expected
 	 */
 	public function test_create_table($arguments, $expected)
 	{
@@ -118,11 +118,11 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_insert()
 	{
 		return array(
-			array(array(), new Database_SQLite_Insert),
-			array(array('a'), new Database_SQLite_Insert('a')),
+			array(array(), new Database_SQLite_DML_Insert),
+			array(array('a'), new Database_SQLite_DML_Insert('a')),
 			array(
 				array('a', array('b')),
-				new Database_SQLite_Insert('a', array('b'))
+				new Database_SQLite_DML_Insert('a', array('b'))
 			),
 		);
 	}
@@ -132,8 +132,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_insert
 	 *
-	 * @param   array                   $arguments
-	 * @param   Database_SQLite_Insert  $expected
+	 * @param   array                       $arguments
+	 * @param   Database_SQLite_DML_Insert  $expected
 	 */
 	public function test_insert($arguments, $expected)
 	{
@@ -156,8 +156,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_query_set()
 	{
 		return array(
-			array(array(), new Database_SQLite_Set),
-			array(array(new SQL_Expression('a')), new Database_SQLite_Set(new SQL_Expression('a'))),
+			array(array(), new Database_SQLite_DML_Set),
+			array(array(new SQL_Expression('a')), new Database_SQLite_DML_Set(new SQL_Expression('a'))),
 		);
 	}
 
@@ -166,8 +166,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_query_set
 	 *
-	 * @param   array               $arguments
-	 * @param   Database_SQLite_Set $expected
+	 * @param   array                   $arguments
+	 * @param   Database_SQLite_DML_Set $expected
 	 */
 	public function test_query_set($arguments, $expected)
 	{
@@ -217,8 +217,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_select()
 	{
 		return array(
-			array(array(), new Database_SQLite_Select),
-			array(array(array('a' => 'b')), new Database_SQLite_Select(array('a' => 'b'))),
+			array(array(), new Database_SQLite_DML_Select),
+			array(array(array('a' => 'b')), new Database_SQLite_DML_Select(array('a' => 'b'))),
 		);
 	}
 
@@ -227,8 +227,8 @@ class Database_PDO_SQLite_Database_Test extends PHPUnit_Framework_TestCase
 	 *
 	 * @dataProvider    provider_select
 	 *
-	 * @param   array                   $arguments
-	 * @param   Database_SQLite_Select  $expected
+	 * @param   array                       $arguments
+	 * @param   Database_SQLite_DML_Select  $expected
 	 */
 	public function test_select($arguments, $expected)
 	{

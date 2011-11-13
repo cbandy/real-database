@@ -6,18 +6,18 @@
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
+class Database_SQLite_DML_Insert_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_SQLite_Insert::__construct
+	 * @covers  Database_SQLite_DML_Insert::__construct
 	 */
 	public function test_constructor()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
 		$table = $db->quote_table('a');
 
-		$this->assertSame('INSERT INTO '.$table.' DEFAULT VALUES', $db->quote(new Database_SQLite_Insert('a')));
-		$this->assertSame('INSERT INTO '.$table.' ("b") DEFAULT VALUES', $db->quote(new Database_SQLite_Insert('a', array('b'))));
+		$this->assertSame('INSERT INTO '.$table.' DEFAULT VALUES', $db->quote(new Database_SQLite_DML_Insert('a')));
+		$this->assertSame('INSERT INTO '.$table.' ("b") DEFAULT VALUES', $db->quote(new Database_SQLite_DML_Insert('a', array('b'))));
 	}
 
 	public function provider_values_empty()
@@ -34,7 +34,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLite_Insert::values
+	 * @covers  Database_SQLite_DML_Insert::values
 	 *
 	 * @dataProvider    provider_values_empty
 	 *
@@ -44,7 +44,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_values_empty($arguments, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_SQLite_Insert('a');
+		$statement = new Database_SQLite_DML_Insert('a');
 
 		$this->assertSame(
 			$statement,
@@ -130,7 +130,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLite_Insert::values
+	 * @covers  Database_SQLite_DML_Insert::values
 	 *
 	 * @dataProvider    provider_values_not_empty
 	 *
@@ -141,7 +141,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	public function test_values_not_empty($args1, $args2, $expected)
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$statement = new Database_SQLite_Insert('a');
+		$statement = new Database_SQLite_DML_Insert('a');
 
 		call_user_func_array(array($statement, 'values'), $args1);
 
@@ -168,7 +168,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLite_Insert::values
+	 * @covers  Database_SQLite_DML_Insert::values
 	 *
 	 * @dataProvider    provider_values_invalid
 	 *
@@ -177,7 +177,7 @@ class Database_SQLite_Insert_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_values_invalid($args1, $args2)
 	{
-		$statement = new Database_SQLite_Insert;
+		$statement = new Database_SQLite_DML_Insert;
 
 		call_user_func_array(array($statement, 'values'), $args1);
 

@@ -13,7 +13,7 @@
  *
  * @link http://www.sqlite.org/lang_insert.html
  */
-class Database_SQLite_Insert extends Database_DML_Insert
+class Database_SQLite_DML_Insert extends Database_DML_Insert
 {
 	public function values($values)
 	{
@@ -31,7 +31,7 @@ class Database_SQLite_Insert extends Database_DML_Insert
 				if (empty($this->parameters[':values']))
 				{
 					// Initialize the query set
-					$this->parameters[':values'] = new Database_SQLite_Set;
+					$this->parameters[':values'] = new Database_SQLite_DML_Set;
 				}
 				elseif (is_array($this->parameters[':values']))
 				{
@@ -41,7 +41,7 @@ class Database_SQLite_Insert extends Database_DML_Insert
 					$select = new SQL_DML_Select;
 					$select->values(reset($row->parameters));
 
-					$this->parameters[':values'] = new Database_SQLite_Set($select);
+					$this->parameters[':values'] = new Database_SQLite_DML_Set($select);
 				}
 				elseif ( ! $this->parameters[':values'] instanceof SQL_DML_Set)
 				{

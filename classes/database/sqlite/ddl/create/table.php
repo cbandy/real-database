@@ -13,7 +13,7 @@
  *
  * @link http://www.sqlite.org/lang_createtable.html
  */
-class Database_SQLite_Create_Table extends SQL_DDL_Create_Table
+class Database_SQLite_DDL_Create_Table extends SQL_DDL_Create_Table
 {
 	/**
 	 * @var boolean

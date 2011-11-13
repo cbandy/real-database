@@ -6,15 +6,15 @@
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_SQLite_Create_Table_Test extends PHPUnit_Framework_TestCase
+class Database_SQLite_DDL_Create_Table_Test extends PHPUnit_Framework_TestCase
 {
 	/**
-	 * @covers  Database_SQLite_Create_Table::if_not_exists
+	 * @covers  Database_SQLite_DDL_Create_Table::if_not_exists
 	 */
 	public function test_if_not_exists()
 	{
 		$db = $this->getMockForAbstractClass('Database', array('name', array()));
-		$command = new Database_SQLite_Create_Table('a');
+		$command = new Database_SQLite_DDL_Create_Table('a');
 		$command->parameters[':columns'] = array();
 		$table = $db->quote_table('a');
 
@@ -29,11 +29,11 @@ class Database_SQLite_Create_Table_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLite_Create_Table::__toString
+	 * @covers  Database_SQLite_DDL_Create_Table::__toString
 	 */
 	public function test_toString()
 	{
-		$command = new Database_SQLite_Create_Table;
+		$command = new Database_SQLite_DDL_Create_Table;
 		$command
 			->temporary()
 			->if_not_exists()

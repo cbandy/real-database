@@ -14,7 +14,7 @@
  * @link http://www.sqlite.org/lang_select.html
  * @link http://www.sqlite.org/limits.html
  */
-class Database_SQLite_Select extends Database_DML_Select
+class Database_SQLite_DML_Select extends Database_DML_Select
 {
 	public function __toString()
 	{

@@ -7,7 +7,7 @@
  * @group   database
  * @group   database.pdo.sqlite
  */
-class Database_SQLite_Set_Test extends PHPUnit_Framework_TestCase
+class Database_SQLite_DML_Set_Test extends PHPUnit_Framework_TestCase
 {
 	public function provider_add_empty()
 	{
@@ -49,7 +49,7 @@ class Database_SQLite_Set_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLite_Set::add
+	 * @covers  Database_SQLite_DML_Set::add
 	 *
 	 * @dataProvider    provider_add_empty
 	 *
@@ -60,7 +60,7 @@ class Database_SQLite_Set_Test extends PHPUnit_Framework_TestCase
 	public function test_add_empty($operator, $query, $expected)
 	{
 		$db = Database::factory();
-		$statement = new Database_SQLite_Set;
+		$statement = new Database_SQLite_DML_Set;
 
 		$this->assertSame(
 			$statement, $statement->add($operator, $query), 'Chainable'
@@ -109,7 +109,7 @@ class Database_SQLite_Set_Test extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @covers  Database_SQLite_Set::add
+	 * @covers  Database_SQLite_DML_Set::add
 	 *
 	 * @dataProvider    provider_add_not_empty
 	 *
@@ -120,7 +120,7 @@ class Database_SQLite_Set_Test extends PHPUnit_Framework_TestCase
 	public function test_add_not_empty($operator, $query, $expected)
 	{
 		$db = Database::factory();
-		$statement = new Database_SQLite_Set(new SQL_Expression(''));
+		$statement = new Database_SQLite_DML_Set(new SQL_Expression(''));
 
 		$this->assertSame(
 			$statement, $statement->add($operator, $query), 'Chainable'
