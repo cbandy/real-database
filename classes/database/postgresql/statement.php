@@ -109,7 +109,7 @@ class Database_PostgreSQL_Statement extends Database_Statement
 	 * @throws  Database_Exception
 	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 * @param   array           $arguments  Arguments to pass to the row class constructor
-	 * @return  Database_Result Result set or NULL
+	 * @return  Database_PostgreSQL_Result  Result set or NULL
 	 */
 	public function execute_query($as_object = FALSE, $arguments = array())
 	{

@@ -137,7 +137,7 @@ class SQL_DDL_Constraint_Foreign extends SQL_DDL_Constraint
 	 *
 	 * [!!] Not supported by MySQL nor SQL Server
 	 *
-	 * @param   boolean|string  DEFERRED or IMMEDIATE
+	 * @param   boolean|string  $value  DEFERRED or IMMEDIATE
 	 * @return  $this
 	 */
 	public function deferrable($value)

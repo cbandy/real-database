@@ -17,11 +17,18 @@
  */
 class SQL_Identifier
 {
+	/**
+	 * @var string
+	 */
 	public $name;
+
+	/**
+	 * @var array|string|SQL_Identifier
+	 */
 	public $namespace;
 
 	/**
-	 * @param   array|string
+	 * @param   array|string    $value
 	 */
 	public function __construct($value)
 	{

@@ -249,7 +249,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * Frees the resource.
 	 *
 	 * @throws  Database_Exception
-	 * @param   resource    Result resource
+	 * @param   resource    $result Result resource
 	 * @return  integer Number of affected rows
 	 */
 	protected function _evaluate_command($result)
@@ -288,7 +288,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @param   resource        $result     Result resource
 	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 * @param   array           $arguments  Arguments to pass to the row class constructor
-	 * @return  Database_Result Result set or NULL
+	 * @return  Database_PostgreSQL_Result  Result set or NULL
 	 */
 	protected function _evaluate_query($result, $as_object, $arguments)
 	{
@@ -1157,7 +1157,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	 * @param   array           $parameters Unquoted parameters
 	 * @param   string|boolean  $as_object  Class as which to return row results, TRUE for stdClass or FALSE for associative array
 	 * @param   array           $arguments  Arguments to pass to the row class constructor
-	 * @return  Database_Result Result set or NULL
+	 * @return  Database_PostgreSQL_Result  Result set or NULL
 	 */
 	public function execute_prepared_query($name, $parameters = array(), $as_object = FALSE, $arguments = array())
 	{
