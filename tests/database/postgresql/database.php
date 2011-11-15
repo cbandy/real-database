@@ -707,13 +707,13 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array(
 				new Database_Binary("\x0"),
-				"'\\\\000'",
-				"'\\\\x00'"
+				"'\\000'",
+				"'\\x00'",
 			),
 			array(
 				new Database_Binary("\200\0\350"),
-				"'\\\\200\\\\000\\\\350'",
-				"'\\\\x8000e8'"
+				"'\\200\\000\\350'",
+				"'\\x8000e8'",
 			),
 		);
 	}
@@ -733,13 +733,21 @@ class Database_PostgreSQL_Database_Test extends PHPUnit_Framework_TestCase
 		$db = Database::factory();
 		$result = $db->quote($value);
 
-		if (version_compare($db->version(), '9.0', '<')
-			OR $db->execute_query('SHOW bytea_output')->get() === 'escape')
+		if ($db->execute_query('SHOW standard_conforming_strings')->get() === 'off')
 		{
+			// When standard_conforming_strings is off, backslashes are escaped
+			$escape = strtr($escape, array('\\' => '\\\\'));
+			$hex = strtr($hex, array('\\' => '\\\\'));
+		}
+
+		if (version_compare($db->version(), '9.0', '<'))
+		{
+			// Escape is the only format before PostgreSQL 9.0
 			$this->assertSame($escape, $result);
 		}
 		else
 		{
+			// Hex is the default format since PostgreSQL 9.0
 			$this->assertSame($hex, $result);
 		}
 	}
