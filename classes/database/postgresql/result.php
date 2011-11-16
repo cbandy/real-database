@@ -78,6 +78,10 @@ class Database_PostgreSQL_Result extends Database_Result
 	 *
 	 * Raises E_WARNING and returns FALSE when $position is invalid.
 	 *
+	 * [!!] Position `-1` does not behave reliably before PHP 5.3.9
+	 *
+	 * @link http://bugs.php.net/60244
+	 *
 	 * @param   integer $position
 	 * @return  mixed
 	 */

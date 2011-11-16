@@ -200,16 +200,38 @@ class Database_PostgreSQL_Result_Test extends Database_PostgreSQL_TestCase
 	 */
 	public function test_fetch_invalid($query, $position)
 	{
-		if ($position == -1)
-			$this->markTestIncomplete('http://bugs.php.net/60244');
-
 		$result = Database::factory()->execute_query($query);
 
 		if (error_reporting() & E_WARNING)
 		{
-			$this->setExpectedException(
-				'ErrorException', 'Unable to jump to row', E_WARNING
-			);
+			if (version_compare(PHP_VERSION, '5.3.9', '<'))
+			{
+				if ($position == -1)
+				{
+					$this->markTestIncomplete('http://bugs.php.net/60244');
+				}
+				else
+				{
+					$this->setExpectedException(
+						'ErrorException', 'Unable to jump to row', E_WARNING
+					);
+				}
+			}
+			else
+			{
+				if ($position < 0)
+				{
+					$this->setExpectedException(
+						'ErrorException', 'row parameter', E_WARNING
+					);
+				}
+				else
+				{
+					$this->setExpectedException(
+						'ErrorException', 'Unable to jump to row', E_WARNING
+					);
+				}
+			}
 
 			$result->fetch($position);
 		}
