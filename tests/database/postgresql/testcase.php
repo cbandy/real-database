@@ -26,59 +26,13 @@ abstract class Database_PostgreSQL_TestCase extends PHPUnit_Extensions_Database_
 			'options' => array(),
 		);
 
-		if (empty($array['connection']['info']))
+		if (isset($array['connection']['info']))
 		{
-			extract($array['connection']);
-
-			if ( ! empty($hostname))
-			{
-				$result['dsn'] .= " host='$hostname'";
-			}
-
-			if ( ! empty($port))
-			{
-				$result['dsn'] .= " port='$port'";
-			}
-
-			if ( ! empty($username))
-			{
-				$result['dsn'] .= " user='$username'";
-			}
-
-			if ( ! empty($password))
-			{
-				$result['dsn'] .= " password='$password'";
-			}
-
-			if ( ! empty($database))
-			{
-				$result['dsn'] .= " dbname='$database'";
-			}
-
-			if ( ! empty($options))
-			{
-				$result['dsn'] .= " options='$options'";
-			}
-
-			if (isset($ssl))
-			{
-				if ($ssl === TRUE)
-				{
-					$result['dsn'] .= " sslmode='require'";
-				}
-				elseif ($ssl === FALSE)
-				{
-					$result['dsn'] .= " sslmode='disable'";
-				}
-				else
-				{
-					$result['dsn'] .= " sslmode='$ssl'";
-				}
-			}
+			$result['dsn'] .= $array['connection']['info'];
 		}
 		else
 		{
-			$result['dsn'] .= $array['connection']['info'];
+			$result['dsn'] .= ' '.Database_PostgreSQL::configuration($array);
 		}
 
 		return $result;
