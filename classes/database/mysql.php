@@ -139,6 +139,18 @@ class Database_MySQL extends Database
 	}
 
 	/**
+	 * Create a DELETE statement.
+	 *
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
+	 * @return  Database_MySQL_DML_Delete
+	 */
+	public static function delete($table = NULL, $alias = NULL)
+	{
+		return new Database_MySQL_DML_Delete($table, $alias);
+	}
+
+	/**
 	 * Create an expression for comparing whether or not two values are
 	 * distinct.
 	 *
@@ -161,6 +173,19 @@ class Database_MySQL extends Database
 	public static function select($columns = NULL)
 	{
 		return new Database_MySQL_DML_Select($columns);
+	}
+
+	/**
+	 * Create an UPDATE statement.
+	 *
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $table  Converted to SQL_Table
+	 * @param   array|string|SQL_Expression|SQL_Identifier  $alias  Converted to SQL_Identifier
+	 * @param   array                                       $values Hash of (column => value) assignments
+	 * @return  Database_MySQL_DML_Update
+	 */
+	public static function update($table = NULL, $alias = NULL, $values = NULL)
+	{
+		return new Database_MySQL_DML_Update($table, $alias, $values);
 	}
 
 	/**

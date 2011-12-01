@@ -224,6 +224,30 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $column);
 	}
 
+	public function provider_delete()
+	{
+		return array(
+			array(array(), new Database_MySQL_DML_Delete),
+			array(array('a'), new Database_MySQL_DML_Delete('a')),
+			array(array('a', 'b'), new Database_MySQL_DML_Delete('a', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::delete
+	 *
+	 * @dataProvider    provider_delete
+	 *
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_DML_Delete   $expected
+	 */
+	public function test_delete($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('Database_MySQL::delete', $arguments)
+		);
+	}
+
 	public function provider_execute_command_empty()
 	{
 		return array(
@@ -582,6 +606,31 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals(
 			$expected, call_user_func_array('Database_MySQL::select', $arguments)
+		);
+	}
+
+	public function provider_update()
+	{
+		return array(
+			array(array(), new Database_MySQL_DML_Update),
+			array(array('a'), new Database_MySQL_DML_Update('a')),
+			array(array('a', 'b'), new Database_MySQL_DML_Update('a', 'b')),
+			array(array('a', 'b', array('c' => 'd')), new Database_MySQL_DML_Update('a', 'b', array('c' => 'd'))),
+		);
+	}
+
+	/**
+	 * @covers  Database_MySQL::update
+	 *
+	 * @dataProvider    provider_update
+	 *
+	 * @param   array                       $arguments
+	 * @param   Database_MySQL_DML_Update   $expected
+	 */
+	public function test_update($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('Database_MySQL::update', $arguments)
 		);
 	}
 }
