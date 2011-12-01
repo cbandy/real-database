@@ -1,8 +1,9 @@
 <?php
 
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  MySQL
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.mysql
@@ -23,7 +24,7 @@ class Database_MySQL_Database_Test extends PHPUnit_Framework_TestCase
 	public function provider_alter_table()
 	{
 		return array(
-			array(array(), new Database_MySQL_DDL_Alter_Table()),
+			array(array(), new Database_MySQL_DDL_Alter_Table),
 			array(array('a'), new Database_MySQL_DDL_Alter_Table('a')),
 		);
 	}

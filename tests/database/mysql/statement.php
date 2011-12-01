@@ -4,8 +4,9 @@ require_once dirname(__FILE__).'/testcase'.EXT;
 require_once 'PHPUnit/Extensions/Database/DataSet/CsvDataSet.php';
 
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  MySQL
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.mysql

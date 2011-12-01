@@ -1,7 +1,8 @@
 <?php
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  MySQL
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.mysql

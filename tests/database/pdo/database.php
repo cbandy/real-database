@@ -1,8 +1,9 @@
 <?php
 
 /**
- * @package RealDatabase
- * @author  Chris Bandy
+ * @package     RealDatabase
+ * @subpackage  PDO
+ * @author      Chris Bandy
  *
  * @group   database
  * @group   database.pdo
