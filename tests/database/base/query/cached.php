@@ -8,74 +8,28 @@
  */
 class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 {
-	public static function setUpBeforeClass()
-	{
-		if ( ! class_exists('Cache'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError(
-				'Cache module not installed'
-			);
-	}
-
-	/**
-	 * @covers  Database_Query_Cached
-	 * @covers  Database_Query_Cached::__construct
-	 * @covers  Database_Query_Cached::key
-	 */
-	public function test_constructor()
-	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('query')
-		);
-
-		$this->assertSame(
-			'Database_Query_Cached(db,query,a:0:{},,N;)', $cached->key()
-		);
-	}
-
 	/**
 	 * @covers  Database_Query_Cached::delete
 	 */
 	public function test_delete()
 	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
+		$cache = $this->getMock(
+			'Database_Query_Cache',
+			array('delete'),
+			array(NULL, NULL)
+		);
+		$query = new Database_Query('test_delete');
 
 		$cache->expects($this->once())
 			->method('delete')
-			->with('Database_Query_Cached(db,test_delete,a:0:{},,N;)');
+			->with($query);
 
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_delete')
-		);
+		$cached = new Database_Query_Cached($cache, $query);
 
 		$this->assertNull($cached->delete());
 	}
 
-	/**
-	 * @covers  Database_Query_Cached::get
-	 */
-	public function test_get()
-	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-		$expected = new stdClass;
-
-		$cache->expects($this->once())
-			->method('get')
-			->with('Database_Query_Cached(db,test_get,a:0:{},,N;)')
-			->will($this->returnValue($expected));
-
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_get')
-		);
-
-		$this->assertSame($expected, $cached->get());
-	}
-
-	public function provider_execute_cache_hit()
+	public function provider_execute()
 	{
 		return array(
 			array(NULL),
@@ -87,161 +41,74 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @covers  Database_Query_Cached::execute
 	 *
-	 * @dataProvider    provider_execute_cache_hit
+	 * @dataProvider    provider_execute
 	 *
 	 * @param   integer $lifetime   Argument to the method
 	 */
-	public function test_execute_cache_hit($lifetime)
+	public function test_execute($lifetime)
 	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
+		$cache = $this->getMock(
+			'Database_Query_Cache',
+			array('execute'),
+			array(NULL, NULL)
+		);
 		$expected = new stdClass;
+		$query = new Database_Query('test_execute');
 
-		// Cache hit
 		$cache->expects($this->once())
-			->method('get')
-			->with(
-				'Database_Query_Cached(db,test_execute_cache_hit,a:0:{},,N;)'
-			)
+			->method('execute')
+			->with($query, $lifetime)
 			->will($this->returnValue($expected));
 
-		// Nothing saved to cache
-		$cache->expects($this->never())
-			->method('set');
-
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_execute_cache_hit')
-		);
+		$cached = new Database_Query_Cached($cache, $query);
 
 		$this->assertSame($expected, $cached->execute($lifetime));
 	}
 
-	public function provider_execute_cache_miss()
-	{
-		return array(
-			array(NULL),
-			array(3),
-		);
-	}
-
 	/**
-	 * @covers  Database_Query_Cached::execute
-	 *
-	 * @dataProvider    provider_execute_cache_miss
-	 *
-	 * @param   integer $lifetime   Argument to the method
+	 * @covers  Database_Query_Cached::get
 	 */
-	public function test_execute_cache_miss($lifetime)
+	public function test_get()
 	{
-		$array = array(array('kohana'));
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-		$expected = new stdClass;
-
-		/**
-		 * Use getMock() rather than getMockForAbstractClass() to mock/stub the
-		 * concrete method, serializable().
-		 *
-		 * @link https://github.com/sebastianbergmann/phpunit-mock-objects/issues/49
-		 */
-		$result = $this->getMock(
-			'Database_Result',
-			array('current', 'offsetGet', 'serializable'),
-			array(NULL, 0)
+		$cache = $this->getMock(
+			'Database_Query_Cache',
+			array('get'),
+			array(NULL, NULL)
 		);
+		$expected = new stdClass;
+		$query = new Database_Query('test_get');
 
-		// Cache miss
 		$cache->expects($this->once())
 			->method('get')
-			->with(
-				'Database_Query_Cached(db,test_execute_cache_miss,a:0:{},,N;)'
-			)
-			->will($this->returnValue(NULL));
-
-		// Sanitized result saved to cache
-		$cache->expects($this->once())
-			->method('set')
-			->with(
-				'Database_Query_Cached(db,test_execute_cache_miss,a:0:{},,N;)',
-				$expected,
-				$lifetime
-			);
-
-		// Query executed
-		$db->expects($this->once())
-			->method('execute_query')
-			->will($this->returnValue($result));
-
-		// Result sanitized
-		$result->expects($this->once())
-			->method('serializable')
+			->with($query)
 			->will($this->returnValue($expected));
 
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_execute_cache_miss')
-		);
+		$cached = new Database_Query_Cached($cache, $query);
 
-		$this->assertSame($result, $cached->execute($lifetime));
+		$this->assertSame($expected, $cached->get());
 	}
 
 	/**
-	 * @covers  Database_Query_Cached::execute
+	 * @covers  Database_Query_Cached::key
 	 */
-	public function test_execute_cache_miss_negative_lifetime()
+	public function test_key()
 	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
+		$cache = $this->getMock(
+			'Database_Query_Cache',
+			array('key'),
+			array(NULL, NULL)
+		);
 		$expected = new stdClass;
+		$query = new Database_Query('test_key');
 
-		// Cache miss
 		$cache->expects($this->once())
-			->method('get')
-			->with(
-				'Database_Query_Cached(db,test_execute_cache_miss_negative_lifetime,a:0:{},,N;)'
-			)
-			->will($this->returnValue(NULL));
-
-		// Nothing saved to cache
-		$cache->expects($this->never())
-			->method('set');
-
-		// Query executed
-		$db->expects($this->once())
-			->method('execute_query')
+			->method('key')
+			->with($query)
 			->will($this->returnValue($expected));
 
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_execute_cache_miss_negative_lifetime')
-		);
+		$cached = new Database_Query_Cached($cache, $query);
 
-		$this->assertSame($expected, $cached->execute(-3));
-	}
-
-	/**
-	 * Statements that return NULL from Database::execute_query() should never
-	 * be cached.
-	 *
-	 * @covers  Database_Query_Cached::execute
-	 */
-	public function test_execute_command()
-	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-
-		// Nothing saved to cache
-		$cache->expects($this->never())
-			->method('set');
-
-		// Query executed
-		$db->expects($this->once())
-			->method('execute_query')
-			->will($this->returnValue(NULL));
-
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_execute_command')
-		);
-
-		$this->assertNull($cached->execute(3));
+		$this->assertSame($expected, $cached->key());
 	}
 
 	public function provider_set()
@@ -249,11 +116,11 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array(NULL),
 			array(3),
+			array(-3),
 		);
 	}
 
 	/**
-	 * @covers  Database_Query_Cached::_execute_set
 	 * @covers  Database_Query_Cached::set
 	 *
 	 * @dataProvider    provider_set
@@ -262,97 +129,21 @@ class Database_Base_Query_Cached_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function test_set($lifetime)
 	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-		$expected = new stdClass;
-
-		/**
-		 * Use getMock() rather than getMockForAbstractClass() to mock/stub the
-		 * concrete method, serializable().
-		 *
-		 * @link https://github.com/sebastianbergmann/phpunit-mock-objects/issues/49
-		 */
-		$result = $this->getMock(
-			'Database_Result',
-			array('current', 'offsetGet', 'serializable'),
-			array(NULL, 0)
+		$cache = $this->getMock(
+			'Database_Query_Cache',
+			array('set'),
+			array(NULL, NULL)
 		);
+		$expected = new stdClass;
+		$query = new Database_Query('test_set');
 
-		// Sanitized result saved to cache
 		$cache->expects($this->once())
 			->method('set')
-			->with(
-				'Database_Query_Cached(db,test_set,a:0:{},,N;)',
-				$expected,
-				$lifetime
-			);
-
-		// Query executed
-		$db->expects($this->once())
-			->method('execute_query')
-			->will($this->returnValue($result));
-
-		// Result sanitized
-		$result->expects($this->once())
-			->method('serializable')
+			->with($query, $lifetime)
 			->will($this->returnValue($expected));
 
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_set')
-		);
+		$cached = new Database_Query_Cached($cache, $query);
 
-		$this->assertSame($result, $cached->set($lifetime));
-	}
-
-	/**
-	 * Statements that return NULL from Database::execute_query() should never
-	 * be cached.
-	 *
-	 * @covers  Database_Query_Cached::_execute_set
-	 */
-	public function test_set_command()
-	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-
-		// Nothing saved to cache
-		$cache->expects($this->never())
-			->method('set');
-
-		// Query executed
-		$db->expects($this->once())
-			->method('execute_query')
-			->will($this->returnValue(NULL));
-
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_set_command')
-		);
-
-		$this->assertNull($cached->set(3));
-	}
-
-	/**
-	 * @covers  Database_Query_Cached::_execute_set
-	 */
-	public function test_set_negative_lifetime()
-	{
-		$cache = $this->getMockForAbstractClass('Cache', array(), '', FALSE);
-		$db = $this->getMockForAbstractClass('Database', array('db', array()));
-		$expected = new stdClass;
-
-		// Nothing saved to cache
-		$cache->expects($this->never())
-			->method('set');
-
-		// Query executed
-		$db->expects($this->once())
-			->method('execute_query')
-			->will($this->returnValue($expected));
-
-		$cached = new Database_Query_Cached(
-			$cache, $db, new Database_Query('test_set_negative_lifetime')
-		);
-
-		$this->assertSame($expected, $cached->set(-3));
+		$this->assertSame($expected, $cached->set($lifetime));
 	}
 }
