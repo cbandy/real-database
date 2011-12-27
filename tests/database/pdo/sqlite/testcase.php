@@ -12,10 +12,14 @@ abstract class Database_PDO_SQLite_TestCase extends Database_PDO_TestCase
 	public static function setUpBeforeClass()
 	{
 		if ( ! extension_loaded('pdo_sqlite'))
-			throw new PHPUnit_Framework_SkippedTestSuiteError('PDO SQLite extension not installed');
+			throw new PHPUnit_Framework_SkippedTestSuiteError(
+				'PDO SQLite extension not installed'
+			);
 
 		if ( ! Database::factory() instanceof Database_PDO_SQLite)
-			throw new PHPUnit_Framework_SkippedTestSuiteError('Database not configured for SQLite using PDO');
+			throw new PHPUnit_Framework_SkippedTestSuiteError(
+				'Database not configured for SQLite using PDO'
+			);
 	}
 
 	protected function getSetUpOperation()
@@ -34,6 +38,8 @@ abstract class Database_PDO_SQLite_TestCase extends Database_PDO_TestCase
  * @package     RealDatabase
  * @subpackage  SQLite
  * @author      Chris Bandy
+ *
+ * @link http://www.sqlite.org/autoinc.html
  */
 class Database_PDO_SQLite_TestCase_Truncate
 	implements PHPUnit_Extensions_Database_Operation_IDatabaseOperation
@@ -46,12 +52,8 @@ class Database_PDO_SQLite_TestCase_Truncate
 		/** @var $table PHPUnit_Extensions_Database_DataSet_ITable */
 		foreach ($dataSet->getReverseIterator() as $table)
 		{
-			$sql = 'DELETE FROM '.$connection->quoteSchemaObject(
-				$table->getTableMetaData()->getTableName()
-			);
-
-			$sql .= '; UPDATE sqlite_sequence SET seq = 0 WHERE'
-				." name = '".$table->getTableMetaData()->getTableName()."'";
+			$name = $table->getTableMetaData()->getTableName();
+			$sql = 'DELETE FROM '.$connection->quoteSchemaObject($name);
 
 			try
 			{
@@ -66,6 +68,19 @@ class Database_PDO_SQLite_TestCase_Truncate
 					$table,
 					$e->getMessage()
 				);
+			}
+
+			try
+			{
+				$connection->getConnection()->exec(
+					'UPDATE sqlite_sequence SET seq = 0'
+					." WHERE name = '".$name."'"
+				);
+			}
+			catch (PDOException $e)
+			{
+				// The sqlite_sequence table only exists if the database
+				// contains a table with an AUTOINCREMENT PRIMARY KEY
 			}
 		}
 	}
