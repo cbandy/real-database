@@ -6,7 +6,6 @@
  *
  *  Configuration Option    | Type    | Description
  *  --------------------    | ----    | -----------
- *  profiling               | boolean | Enable execution profiling
  *  release_during_rollback | boolean | Release savepoints during rollback
  *  table_prefix            | string  | Table prefix
  *  connection.dsn          | string  | Full DSN or a predefined DSN name
@@ -155,7 +154,7 @@ class Database_PDO_SQLServer extends Database_PDO
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'commit('.$name.')'
@@ -256,7 +255,7 @@ class Database_PDO_SQLServer extends Database_PDO
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'rollback('.$name.')'
@@ -348,7 +347,7 @@ class Database_PDO_SQLServer extends Database_PDO
 
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'savepoint('.$name.')'

@@ -7,7 +7,6 @@
  *
  *  Configuration Option  | Type    | Description
  *  --------------------  | ----    | -----------
- *  profiling             | boolean | Enable execution profiling
  *  table_prefix          | string  | Table prefix
  *  connection.database   | string  |
  *  connection.hostname   | string  | Server address or path to a local socket
@@ -318,7 +317,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', $statement
@@ -381,7 +380,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', $statement
@@ -446,7 +445,7 @@ class Database_PostgreSQL extends Database implements Database_iEscape, Database
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'Prepared: '.$name

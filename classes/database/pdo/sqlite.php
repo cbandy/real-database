@@ -5,7 +5,6 @@
  *
  *  Configuration Option  | Type    | Description
  *  --------------------  | ----    | -----------
- *  profiling             | boolean | Enable execution profiling
  *  table_prefix          | string  | Table prefix
  *  connection.dsn        | string  | Full DSN or a predefined DSN name
  *  connection.options    | array   | PDO options

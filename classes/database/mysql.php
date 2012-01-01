@@ -8,7 +8,6 @@
  *  Configuration Option  | Type    | Description
  *  --------------------  | ----    | -----------
  *  charset               | string  | Character set
- *  profiling             | boolean | Enable execution profiling
  *  table_prefix          | string  | Table prefix
  *  connection.database   | string  |
  *  connection.flags      | integer | Combination of [client constants][], e.g. MYSQL_CLIENT_SSL
@@ -228,7 +227,7 @@ class Database_MySQL extends Database
 			$this->_select_database($this->_config['connection']['database']);
 		}
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', $statement

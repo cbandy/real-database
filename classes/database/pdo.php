@@ -5,7 +5,6 @@
  *
  *  Configuration Option  | Type    | Description
  *  --------------------  | ----    | -----------
- *  profiling             | boolean | Enable execution profiling
  *  table_prefix          | string  | Table prefix
  *  connection.dsn        | string  | Full DSN or a predefined DSN name
  *  connection.options    | array   | Driver-specific options
@@ -78,7 +77,7 @@ class Database_PDO extends Database
 
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'begin('.$name.')'
@@ -126,7 +125,7 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'commit('.$name.')'
@@ -236,7 +235,7 @@ class Database_PDO extends Database
 		if (empty($statement))
 			return 0;
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', $statement
@@ -313,7 +312,7 @@ class Database_PDO extends Database
 		if (empty($statement))
 			return NULL;
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', $statement
@@ -380,7 +379,7 @@ class Database_PDO extends Database
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'prepare('.$statement.')'
@@ -435,21 +434,11 @@ class Database_PDO extends Database
 		);
 	}
 
-	/**
-	 * Whether or not profiling is enabled
-	 *
-	 * @return  boolean
-	 */
-	public function profiling()
-	{
-		return ! empty($this->_config['profiling']);
-	}
-
 	public function rollback($name = NULL)
 	{
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'rollback('.$name.')'
@@ -503,7 +492,7 @@ class Database_PDO extends Database
 
 		$this->_connection or $this->connect();
 
-		if ( ! empty($this->_config['profiling']))
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_name.')', 'savepoint('.$name.')'

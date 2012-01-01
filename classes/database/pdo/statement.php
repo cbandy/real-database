@@ -70,7 +70,7 @@ class Database_PDO_Statement extends Database_Statement
 	 */
 	protected function _execute()
 	{
-		if ($this->_db->profiling())
+		if (Kohana::$profiling)
 		{
 			$benchmark = Profiler::start(
 				'Database ('.$this->_db.')',
