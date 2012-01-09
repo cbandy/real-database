@@ -474,6 +474,15 @@ class Database_MySQL_Introspection_Test extends PHPUnit_Framework_TestCase
 				'data_type' => 'multipolygon',
 				'column_type' => 'multipolygon',
 			)),
+
+			// Parentheses in ENUM value
+			// @link http://dev.kohanaframework.org/issues/4393
+			array("enum('retired','other (see description)')", TRUE, array(
+				'data_type' => 'enum',
+				'character_maximum_length' => '23',
+				'column_type' => "enum('retired','other (see description)')",
+				'options' => array('retired', 'other (see description)'),
+			)),
 		);
 	}
 

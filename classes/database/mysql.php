@@ -845,7 +845,7 @@ class Database_MySQL extends Database
 				OR $column['data_type'] === 'set')
 			{
 				$open = strpos($column['column_type'], '(');
-				$close = strpos($column['column_type'], ')', $open);
+				$close = strrpos($column['column_type'], ')', $open);
 
 				// Text between parentheses without single quotes
 				$column['options'] = explode(
