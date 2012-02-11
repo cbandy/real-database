@@ -149,6 +149,31 @@ class Database_Base_SQL_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 
+	public function provider_conditions_stack()
+	{
+		return array(
+			array(array(), new SQL_Conditions_Stack),
+			array(array('a'), new SQL_Conditions_Stack('a')),
+			array(array('a', '='), new SQL_Conditions_Stack('a', '=')),
+			array(array('a', '=', 'b'), new SQL_Conditions_Stack('a', '=', 'b')),
+		);
+	}
+
+	/**
+	 * @covers  SQL::conditions_stack
+	 *
+	 * @dataProvider    provider_conditions_stack
+	 *
+	 * @param   array                   $arguments
+	 * @param   SQL_Conditions_Stack    $expected
+	 */
+	public function test_conditions_stack($arguments, $expected)
+	{
+		$this->assertEquals(
+			$expected, call_user_func_array('SQL::conditions_stack', $arguments)
+		);
+	}
+
 	public function provider_create_index()
 	{
 		return array(

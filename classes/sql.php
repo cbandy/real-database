@@ -71,6 +71,19 @@ class SQL
 	}
 
 	/**
+	 * Create a conditions accumulator that allows predicates to be removed.
+	 *
+	 * @param   mixed   $left       Left operand
+	 * @param   string  $operator   Comparison operator
+	 * @param   mixed   $right      Right operand
+	 * @return  SQL_Conditions_Stack
+	 */
+	public static function conditions_stack($left = NULL, $operator = NULL, $right = NULL)
+	{
+		return new SQL_Conditions_Stack($left, $operator, $right);
+	}
+
+	/**
 	 * Create a CREATE INDEX statement.
 	 *
 	 * @param   array|string|SQL_Expression|SQL_Identifier  $name       Converted to SQL_Identifier
